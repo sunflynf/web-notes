@@ -231,3 +231,4 @@ url("#{$background}.jpg")
 ### Resources:
 1. [sass-lang](https://sass-lang.com/)
 2. [devhints](https://devhints.io/sass)
+3. [w3schools](https://www.w3schools.com/sass)
