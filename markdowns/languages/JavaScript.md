@@ -35,17 +35,120 @@ const C = Math.PI; // constant - can not change
 // Literals (fixed value): 1, 2.5, -10, "some text"
 // Variables: a, b, C
 ```
+| |Scope|Redeclare|Reassign|Hoisted|Binds this|
+|--|--|--|--|--|--|
+|`var`|	|x|x|x|x|
+|`let`|x| |x| | |
+|`const`|x| | | | |
+> ![NOTE] `Array` and `Object` assign with `const` **can update**, but can't reassign
+
 #### Variable's name
 > Start with (A-Z) (a-z) $ _
 > - **Allowed**: `abc`, `student1`, `$prevDOM`, `_current`, `compare_2Arrays`
 > - **Not allowed**: `1student`, `?person`
 
 #### Operators
-- Math: `+` `-` `*` `/` `%` `**`
+- Math:
+    - Number: `+` `-` `*` `/` `%` `**`
+    - Assignment: `=` `++` `+=` `--` `-=` `*=` `/=` `%=`
+    - String: `+` `+=`
+    - Bitwise: (can assign like `<operator>=`)
+        - And `&`
+        - Or `|`
+        - Not `~`
+        - Xor `^`
+        - shift: `<<` `<<<` `>>` `>>>`
 - Compare: 
-    - value: `==` `!=` 
+    - value: `==` `!=` `>` `>=` `<` `<=`
     - type & value: `===` `!==`
-    - not: `!`
+    - logical: `!` (not) `&&` (and) `||` (or)
+    - ternary: `(condition) ? (value if true) : (value if false)`
+    - type: `typeof` -> type; `instanceof` -> true | false
+- **Coalescing (ES2020)**: `??`.
+    - _Exp_: `let val = pi ?? 3.14;`
+    - Explain: `let val = (pi !== null && pi !== undefined) ? pi : 3.14;`
+
+> - `!""`, `!0`, `!null`, `!undefined` -> true
+> - `![]`, `!{}` -> false
+> - `condition && value` -> `condition === true ? value : undefined`
+> - `value || defaultValue` -> `!!value ? value : defaultValue`
+
+### Data Types
+- `undefined`
+- `null`
+- `boolean`: `true`, `false`
+- `number`
+- `string`:
+    - `'single quote'`
+    - `"double quote"`
+    - Template Strings (ES6): `` ` `` `some ${value} here!` `` ` ``-> dynamic value
+    - **String** as **Object**: `let strObj = new String("hi!");`
+- `object`
+    - `{}`
+    - `[]` - `['value 1', 'value 2']` -> `{ 0: 'value 1', 1: 'value 2' }`
+    - `Date`
+    - `Set`
+    - `Map`
+- `function`
+- `Bigint` (ES2020)
+
+### Functions
+```js
+function funcNoParams() {}
+
+function add2Nums(a, b) {
+    return a + b; 
+}
+
+function logAll(all = "nothing") {
+    console.log(all);
+}
+
+// call
+funcNoParams();
+add2Nums(1, 2); // return 3 but not log
+logAll(); // log "nothing"
+logAll("all"); // log "all"
+
+// Assign
+const iCanAdd2Nums = add2Nums; // now iCanAdd2Nums -> function
+console.log(iCanAdd2Nums(1, 3)) // log "4"
+```
+### Object
+```js
+const person = {
+  firstName: "John",
+  lastName : "Doe",
+  id       : 5566,
+  fullName : function() { // anonymous function
+    return this.firstName + " " + this.lastName;
+  }
+};
+// get
+person.firstName; // John
+person['lastName']; // Doe
+person.fullName(); // John Doe
+person.age; // undefined
+person.action(); // Error
+// set
+person.id = 1234;
+person.action = function() {
+    console.log("RUN");
+} // now you can use persion.action()
+```
+
+### Events
+> **HTML** 'thing' need **JS** react
+> - Common: `onchange` `onclick` `onmouseover` `onmouseout` `onkeydown` `onload`
+> - [List DOM events](https://www.w3schools.com/jsref/dom_obj_event.asp)
+
+### `this`
+- Alone -> **global object**.
+- In an object method -> **object**.
+- In a function -> **global object**.
+- In a function, in strict mode -> `undefined`.
+- In an event -> the element that received the event.
+- Methods like `call()`, `apply()`, and `bind()` can refer this to any object.
 
 ### Versions
 | Version (year) | Features |
