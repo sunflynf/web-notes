@@ -37,8 +37,8 @@ const C = Math.PI; // constant - can not change
 ```
 #### Variable's name
 > Start with (A-Z) (a-z) $ _
-> **Allowed**: abc, student1, $prevDOM, _current, compare_2Arrays;
-> **Not allowed**: 1student, ?person
+> - **Allowed**: `abc`, `student1`, `$prevDOM`, `_current`, `compare_2Arrays`
+> - **Not allowed**: `1student`, `?person`
 
 #### Operators
 - Math: `+` `-` `*` `/` `%` `**`
