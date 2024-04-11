@@ -226,8 +226,6 @@ Number.isInteger(num);
 Number.isSafeInteger(num); // safe in range (note)
 ```
 
-### Arrays
-
 > ![NOTE]
 > - Range of number: `-(2^53 - 1)` to `+(2^53 - 1)`
 > - Numbers are **Always 64-bit Floating Point** (the international IEEE 754 standard)
@@ -236,6 +234,40 @@ Number.isSafeInteger(num); // safe in range (note)
 > - Arithmetic between a `BigInt` and a `Number` is **not allowed** (type conversion lose information).
 > - Unsigned right shift (>>>) can not be done on a `BigInt` (it does not have a fixed width).
 > - A `BigInt` can not have decimals.
+
+### Arrays
+```js
+const cars = ["Saab", "Volvo", "BMW"];
+// Getter
+cars[1]; // Volvo
+cars.length; // 3
+// Setter
+cars[2] = "Toyota"; // ["Saab", "Volvo", "Toyota"]
+cars[4] = "Tesla"; // ["Saab", "Volvo", "Toyota", undefined, "Tesla"]
+// Methods
+cars.toString(); // Saab,Volvo,BMW
+cars.sort(); // ["BMW", "Saab", "Volvo"]
+Array.isArray(cars); // true
+typeof cars; // "object"
+```
+```js
+const animals = ["dog", "cat", "duck", "chicken"];
+animals.at(-1); // chicken - (ES2022) works like animal[index] but allow negative
+animals.join(", "); // "dog, cat, duck, chicken"
+animals.concat(["fish", "renekton", "shark"]); // return ["dog", "cat", "duck", "chicken", "fish", "renekton", "shark"]
+animals.concat("fish", "renekton", "shark"); // same above
+animals.pop(); // Remove + return end animal (chicken)
+animals.push("monkey"); // Add new animals at the end + return new length of array
+animals.shift(); // Remove + return first animal (dog)
+animals.unshift("snake"); // Add new animals at the start + return new length of array
+```
+```js
+// Rarely use
+[].copyWithin(indexOverwrite, indexStartCopy?, indexEndCopy?); // arr copy same length (can have diff values)
+[[1,2],[3,4],[5,6]].flat(); // [1, 2, 3, 4, 5, 6] (ES2019) 
+```
+
+> ![Note]: Arrays are a special kind of objects, with **numbered indexes**.
 
 ### Events
 > **HTML** 'thing' need **JS** react
