@@ -114,6 +114,7 @@ logAll("all"); // log "all"
 const iCanAdd2Nums = add2Nums; // now iCanAdd2Nums -> function
 console.log(iCanAdd2Nums(1, 3)) // log "4"
 ```
+
 ### Object
 ```js
 const person = {
@@ -136,6 +137,105 @@ person.action = function() {
     console.log("RUN");
 } // now you can use persion.action()
 ```
+
+### String
+```js
+let text = "Hello    World!";
+text.length; // 15
+// Getter
+text[0]; // H
+text.charAt(0); // H
+text.charCodeAt(0); // 72 (UTF-16)
+text.at(-2); // text.charAt(text.length - 2) -> d | Introduce ES2022
+// Convert
+text.toUpperCase(); // HELLO    WORLD!;
+text.toLowerCase(); // hello    world!;
+// Features
+text.concat(' How r u?'); // Hello    World! How r u?
+text.trim(); // Hello World!
+text.replace("World", "My Fen"); // Hello    My Fen!
+text.replace(/WORLD/ig, "My Fen"); // Hello    My Fen! (use RegEx - insensitive + global match)
+text.split(); // ["H", "e", "l", "l", "o", ... , "!"]
+text.split("   "); // ["Hello", "World!"]
+// Extracting
+text.slice(start, end?); // allowed negative
+text.substring(start, end?);
+text.substr(start, len?);
+```
+```js
+let text = "Please locate where 'locate' occurs!";
+// Search
+text.indexOf('test'); // -1
+text.indexOf('locate'); // 7
+text.indexOf('locate', 15); // 21 
+text.search(/LOCALE/ig, 15); // 21 - same indexOf, but it can use RegEx
+text.lastIndexOf('locale'); // 21 - search from last
+text.match(/locale/g); // ['locate', 'locate']
+text.includes('locate', 15); // true - ES6 + case sensitive (15 is optional) 
+text.startsWith('locate'); // false - ES6 + case sensitive 
+text.endsWith('locate'); // false - ES6 + case sensitive 
+```
+```js
+// Other rarely use features
+text.trimStart(); // ES2019 
+text.trimEnd(); // ES2019
+text.padStart(length, anyText); // ES2017 -> Pad a string with anyText until it reaches the length
+text.padEnd(length, anyText); // ES2017
+text.repeat(count); // ES6
+text.replaceAll(/WORLD/ig, "My Fen"); // ES2021
+text.matchAll(/ate/ig); // ES2020
+```
+
+### Number & BigInt
+```js
+const a1 = 10;
+const a2 = 10.23;
+const a3 = 123e5; // 123 * 10^5 = 12 300 000 // exponent
+const a4 = 123e-5; // 123 * 10^(-5) = 0.00123
+const a5 = 100 / "thing"; // NaN (Not a Number)
+const a6 = 2 / 0; // Infinity; also has -Infinity
+const a7 = 0xFF; // hexadecimal - F * (16^1) + F * (16^0) = 15 * 16 + 15 * 1 = 255
+const a8 = new Number(123) // object - not recommend
+// constant
+Number.NaN;
+Number.EPSILON; // (1 + 1/n) ^ n
+Number.MIN_VALUE; // Min number posible in JS 
+Number.MAX_VALUE; // Max number posible in JS
+Number.NEGATIVE_INFINITY;
+Number.POSITIVE_INFINITY;
+// methods
+a1.toString(base?); // base: 2, 8, 10 (default), 12, 16, 32
+a1.toExponential(count); // Exp: (2.5).toExponential(4) -> 2.5000e+0
+a1.toFixed(count); // Exp: (1234.5678).toFixed(2) -> 1234.56
+a1.toPrecision(len); // Exp: (1234).toPrecision(2) -> 1.2e+3 | (1234).toPrecision(6) -> 1234.00
+Number.isNaN(num);
+// Convert with global JavaScript methods
+Number(val); // Note: Number(new Date('1970-01-01')) -> 0; parse date will calculate from 00:00:00 01/01/1970
+parseFloat(val);
+parseInt(val);
+```
+```js
+let x = 1234567890123456789012345n; // n mark for BigInt
+let y = BigInt(1234567890123456789012345);
+typeof x; // 'bigint'
+// ES6 constants
+Number.MIN_SAFE_INTEGER;
+Number.MAX_SAFE_INTEGER;
+// ES6 methods
+Number.isInteger(num);
+Number.isSafeInteger(num); // safe in range (note)
+```
+
+### Arrays
+
+> ![NOTE]
+> - Range of number: `-(2^53 - 1)` to `+(2^53 - 1)`
+> - Numbers are **Always 64-bit Floating Point** (the international IEEE 754 standard)
+> - This format stores numbers in 64 bits, where the number (the fraction) is stored in bits 0 to 51, the exponent in bits 52 to 62, and the sign in bit 63
+> - Integers (numbers without a period or exponent notation) are accurate **up to 15 digits**.
+> - Arithmetic between a `BigInt` and a `Number` is **not allowed** (type conversion lose information).
+> - Unsigned right shift (>>>) can not be done on a `BigInt` (it does not have a fixed width).
+> - A `BigInt` can not have decimals.
 
 ### Events
 > **HTML** 'thing' need **JS** react
@@ -168,3 +268,21 @@ person.action = function() {
 
 ### Resources
 1. [w3schools](https://www.w3schools.com/js)
+
+--- 
+### Todo
+- [ ] Array
+- [ ] Date
+- [ ] Math
+- [ ] Condition
+    - [ ] If else
+    - [ ] Switch case default
+- [ ] Loop
+    - [ ] For / For in / For of
+    - [ ] While / Do while
+- [ ] Set
+- [ ] Map
+- [ ] Class
+- [ ] Module
+- [ ] JSON
+- [ ] Node.js
