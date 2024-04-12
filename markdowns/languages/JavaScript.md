@@ -67,6 +67,10 @@ const C = Math.PI; // constant - can not change
 - **Coalescing (ES2020)**: `??`.
     - _Exp_: `let val = pi ?? 3.14;`
     - Explain: `let val = (pi !== null && pi !== undefined) ? pi : 3.14;`
+- **Optional Chaining (ES2020)**:
+    - _Exp_: `let currentAge = user?.age;`
+    - Explain: `let currentAge = (user !== null && user !== undefined) ? user.age : undefined`
+    - Note: this operators avoid error when object user is null or undefined
 
 > - `!""`, `!0`, `!null`, `!undefined` -> true
 > - `![]`, `!{}` -> false
@@ -75,7 +79,6 @@ const C = Math.PI; // constant - can not change
 
 ### Data Types
 - `undefined`
-- `null`
 - `boolean`: `true`, `false`
 - `number`
 - `string`:
@@ -84,6 +87,7 @@ const C = Math.PI; // constant - can not change
     - Template Strings (ES6): `` ` `` `some ${value} here!` `` ` ``-> dynamic value
     - **String** as **Object**: `let strObj = new String("hi!");`
 - `object`
+    - `null` - ???
     - `{}`
     - `[]` - `['value 1', 'value 2']` -> `{ 0: 'value 1', 1: 'value 2' }`
     - `Date`
@@ -92,50 +96,14 @@ const C = Math.PI; // constant - can not change
 - `function`
 - `Bigint` (ES2020)
 
-### Functions
 ```js
-function funcNoParams() {}
-
-function add2Nums(a, b) {
-    return a + b; 
-}
-
-function logAll(all = "nothing") {
-    console.log(all);
-}
-
-// call
-funcNoParams();
-add2Nums(1, 2); // return 3 but not log
-logAll(); // log "nothing"
-logAll("all"); // log "all"
-
-// Assign
-const iCanAdd2Nums = add2Nums; // now iCanAdd2Nums -> function
-console.log(iCanAdd2Nums(1, 3)) // log "4"
-```
-
-### Object
-```js
-const person = {
-  firstName: "John",
-  lastName : "Doe",
-  id       : 5566,
-  fullName : function() { // anonymous function
-    return this.firstName + " " + this.lastName;
-  }
-};
-// get
-person.firstName; // John
-person['lastName']; // Doe
-person.fullName(); // John Doe
-person.age; // undefined
-person.action(); // Error
-// set
-person.id = 1234;
-person.action = function() {
-    console.log("RUN");
-} // now you can use persion.action()
+"John".constructor                // Returns function String()  {[native code]}
+(3.14).constructor                // Returns function Number()  {[native code]}
+false.constructor                 // Returns function Boolean() {[native code]}
+[1,2,3,4].constructor             // Returns function Array()   {[native code]}
+{name:'John',age:34}.constructor  // Returns function Object()  {[native code]}
+new Date().constructor            // Returns function Date()    {[native code]}
+function () {}.constructor        // Returns function Function(){[native code]}
 ```
 
 ### String
@@ -235,6 +203,67 @@ Number.isSafeInteger(num); // safe in range (note)
 > - Unsigned right shift (>>>) can not be done on a `BigInt` (it does not have a fixed width).
 > - A `BigInt` can not have decimals.
 
+### Functions
+```js
+function funcNoParams() {}
+
+function add2Nums(a, b) {
+    return a + b; 
+}
+
+function logAll(all = "nothing") { // default parameters introduce in ES2015
+    console.log(all);
+}
+
+// (ES6) This is function, too! Should use as callback
+const arrowFunc = () => {};
+const arrowFuncWithParams = (params = 'ok') => {
+    console.log(params);
+};
+
+// call
+funcNoParams();
+add2Nums(1, 2); // return 3 but not log
+logAll(); // log "nothing"
+logAll("all"); // log "all"
+arrowFuncWithParams(); // log "ok"
+
+// Assign
+const iCanAdd2Nums = add2Nums; // now iCanAdd2Nums -> function
+console.log(iCanAdd2Nums(1, 3)) // log "4"
+```
+
+### Object
+```js
+const person = {
+  firstName: "John",
+  lastName : "Doe",
+  id       : 5566,
+  fullName : function() { // anonymous function
+    return this.firstName + " " + this.lastName;
+  }
+};
+// get
+person.firstName; // John
+person['lastName']; // Doe
+person.fullName(); // John Doe
+person.age; // undefined
+person.action(); // Error
+// set
+person.id = 1234;
+person.action = function() {
+    console.log("RUN");
+} // now you can use persion.action()
+// check
+"id" in person; // true
+```
+```js
+```
+
+> ![Tips & tricks]
+> - Clone object: `const newObj = { ...oldObj };`
+> - Check object has props: `prop_name in {} -> boolean`
+
 ### Arrays
 ```js
 const cars = ["Saab", "Volvo", "BMW"];
@@ -260,14 +289,216 @@ animals.pop(); // Remove + return end animal (chicken)
 animals.push("monkey"); // Add new animals at the end + return new length of array
 animals.shift(); // Remove + return first animal (dog)
 animals.unshift("snake"); // Add new animals at the start + return new length of array
+
+// SPECIALS
+[].slice(start, end?); // Return new Array copy from original array
+[].splice(start, length?, ...items?);
+/* this method can use to insert middle
+    - Exp: animals.splice(2, 0, "bird", "penguin") -> ["dog", "cat", "bird", "penguin", "duck", "chicken"]
+    - Return array includes delete items
+*/
+[].toSpliced(start, length?, ...items?);
+/* this method works like splice but keep original array
+    - ES2023
+    - Return new array
+*/
+```
+```js
+const computer = ["monitor", "mouse", "keyboard", "speaker"];
+// Search
+computer.indexOf("mouse"); // 1 - indexOf(item, start?)
+computer.indexOf("paper"); // -1
+computer.lastIndexOf("mouse"); // 1 - same indexOf but reverse search
+computer.includes("speaker"); // true (ES2016)
+
+computer.find(i => i.length > 5);
+/*  Structure: [].find((item, index, currentArray) => boolean) 
+    - Result (Exp): "monitor"
+    - Return first item match
+    - ES6
+*/
+computer.findIndex(i => i === 'mouse'); // 1 - structure like above feature (ES6)
+[].findLast();
+[].findLastIndex();
+
+// Sort
+[].sort();
+[].sort((a, b) => {}); // custom sort
+[].reverse();
+
+// Iteration
+[].forEach((item, index, currentArray) => {});
+[].map((item, index, currentArray) => any[]); // return new Array + keep original array
+[].filter((item, index, currentArray) => boolean); // return new Array + keep original array
+[].reduce((preValue, item, index, currentArray) => newValue, initialValue); 
+[].reduceRight((preValue, item, index, currentArray) => newValue, initialValue); // right-to-left
+[].every((item, index, currentArray) => boolean);
+// Return true if all items pass conditions.
+// Exp: ["Anna", "Daniel", "Keth"].every(i => i.includes('a')) -> false
+[].some((item, index, currentArray) => boolean);
+// Return true if any item pass conditions.
+// Exp: ["Anna", "Daniel", "Keth"].some(i => i.includes('a')) -> true
+```
+```js
+// Array Spread (ES6)
+const q1 = ["Jan", "Feb", "Mar"];
+const q2 = ["Apr", "May", "Jun"];
+const q3 = ["Jul", "Aug", "Sep"];
+const q4 = ["Oct", "Nov", "Dec"];
+const year = [...q1, ...q2, ...q3, ...q4];
+// ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 ```
 ```js
 // Rarely use
 [].copyWithin(indexOverwrite, indexStartCopy?, indexEndCopy?); // arr copy same length (can have diff values)
+[].toSorted(); // ES2023 - return new Array + keep original array
+[].toReversed(); // ES2023 - return new Array + keep original array
 [[1,2],[3,4],[5,6]].flat(); // [1, 2, 3, 4, 5, 6] (ES2019) 
+[].flatMap((item, index, currentArray) => any[]); // [].map().flat() (ES2019)
+[].with(index, replace); // return new Array with replace item + keep original array
+Array.from("text"); // ["t", "e", "x", "t"] (ES6)
+// Should use only in object
+["a", "b", "c"].keys(); // [0, 1, 2]
+["a", "b", "c"].entries(); // [[0, "a"], [1, "b"], [2, "c"]]
 ```
 
-> ![Note]: Arrays are a special kind of objects, with **numbered indexes**.
+> ![Note]:
+> - Arrays are a special kind of objects, with **numbered indexes**.
+> - Array random order: [].sort(() => 0.5 - Math.random());
+
+### Date
+```js
+// Using
+new Date() // current time
+new Date(date string) // '2024-04-12T14:00:00'
+new Date(year,month)
+new Date(year,month,day)
+new Date(year,month,day,hours)
+new Date(year,month,day,hours,minutes)
+new Date(year,month,day,hours,minutes,seconds)
+new Date(year,month,day,hours,minutes,seconds,ms)
+new Date(milliseconds)
+// Methods
+const dd = new Date('2024-4-32'); // Invalid Date - instanceof Date
+const d = new Date('2024-4-12'); // 2024-04-12T00:00:00.000Z
+d.toString();     // Fri Apr 12 2024 00:00:00 GMT+0000 (Coordinated Universal Time)
+d.toDateString(); // Fri Apr 12 2024
+d.toUTCString();  // Fri, 12 Apr 2024 00:00:00 GMT
+d.toISOString();  // 2024-04-12T00:00:00.000Z
+```
+> [Date methods](https://www.w3schools.com/jsref/jsref_obj_date.asp)
+
+### Math
+```js
+Math.round(4.4); // 4 - rounded to nearest integer
+Math.round(4.5); // 5
+Math.ceil(4.4); // 5 - rounded up
+Math.floor(4.6); // 4 - rounded down
+Math.trunc(4.1); // 4 - get integer part
+Math.trunc(4.9); // 4 (ES6)
+Math.sign(x); // -1: negative, 0, 1: positive (ES6)
+// Calculate
+Math.pow(a, b); // a ^ b
+Math.sqrt(x); // x ^ (1/2)
+Math.abs(x); // |x|
+Math.min(...numbers); // min in list
+Math.max(...numbers); // max in list
+Math.random(); // value from 0 -> 1. Exp: 0.026311254760328362
+```
+> [Number methods]('https://www.w3schools.com/jsref/jsref_obj_math.asp')
+
+### Conditions
+```js
+// Ternary
+const variable = condition ? value_if_true : value_if_false;
+
+// If else
+if (condition1) {  }
+else if (condition2) {  }
+...
+else {  }
+
+// Switch Case (use ===)
+switch(value) {
+    case type1:
+    case type2:
+        // handle
+        break; // or return
+    case type3:
+        // handle
+        break; // or return
+    default:
+        // handle if value not same any type
+        break; // or return
+}
+
+// try catch
+try {
+    // handle
+} catch(error) {
+    // handle if try has error
+} finally {
+    // always handle, it can skip
+}
+```
+
+### Loop
+```js
+// Exp: for(let i = 0; i <= 5; i++) {}
+// Loop with count, arr length, can use break | continue inside
+for (let v = start; v_conditions; v_update) {
+    // handle
+}
+
+for (key in object) {
+    // { firstName: Vo, lastName: Phi, birth: 2001 }
+    // -> loop: firstName >> lastName >> birth
+}
+
+for (value of []) {
+    // for of suit with
+    // - Array
+    // - String
+    // - Set
+    // - Map >> [[k1, v1], [k2, v2], ..., [kn, vn]]
+}
+
+while(condition) {
+    // do it util fail condition
+};
+
+do {
+    // call 1 time before check condition
+    // do it again util fail condition
+} while(condition);
+```
+
+### Features
+#### Set
+```js
+const s = new Set([12, 23, 34, 23, 25]); // Set(4) { 12, 23, 34, 25 }
+s.size; // 4
+s.add(44); // 12, 23, 34, 25, 44
+s.delete(23); // 12, 34, 25, 44
+s.has(23); // false
+s.forEach(i => {})
+s.values(); // use in loop for of
+```
+#### Map
+```js
+const fruits = new Map([
+  ["apples", 500],
+  ["bananas", 300],
+  ["oranges", 200]
+]);
+fruilt.size; // 3
+fruilt.set("mango", 400);
+fruilt.get("bananas"); // 300
+fruits.delete("apples"); // remove apples
+fruits.has("apples"); // false
+fruits.forEach((key, value) => {});
+fruits.entries(); // use in loop for of, item is [key, value]
+```
 
 ### Events
 > **HTML** 'thing' need **JS** react
@@ -281,6 +512,56 @@ animals.unshift("snake"); // Add new animals at the start + return new length of
 - In a function, in strict mode -> `undefined`.
 - In an event -> the element that received the event.
 - Methods like `call()`, `apply()`, and `bind()` can refer this to any object.
+
+### Module
+```js
+// EXPORT
+export const season = "Summer";
+export const year = 2024;
+// or
+const season = "Summer";
+const year = 2024;
+export { season, year };
+// default
+const getMyAge = (birthYear) => currentYear - birthYear; 
+export default getMyAge;
+
+// IMPORT
+import { season, year } from './somefiles';
+import getMyAge from './somefiles2'; // default
+```
+
+### JSON
+```json
+{
+    "employees":[
+          {"firstName":"John", "lastName":"Doe"},
+          {"firstName":"Anna", "lastName":"Smith"},
+          {"firstName":"Peter", "lastName":"Jones"}
+    ]
+}
+```
+```js
+const listEmployee_string = JSON.stringify(employees);
+const listEmployee_object = JSON.parse(employees);
+```
+
+### Class (ES6)
+> - A JavaScript class is not an object.
+> - It is a template for JavaScript objects.
+```js
+class Car {
+  constructor(name, year) {
+    this.name = name;
+    this.year = year;
+  }
+  honk(sound = "beep") {
+    console.log(sound);
+  } 
+}
+
+const car = new Car("Ford", 2014);
+```
 
 ### Versions
 | Version (year) | Features |
@@ -296,25 +577,17 @@ animals.unshift("snake"); // Add new animals at the start + return new length of
 | ECMAScript 2019 | `String.trimStart()` <br> `String.trimEnd()` <br> `Array.flat()` <br> `Object.formEntries()` |
 | ECMAScript 2020 | Nullish Coalescing Operator `??` |
 
-
-
 ### Resources
 1. [w3schools](https://www.w3schools.com/js)
 
 --- 
 ### Todo
-- [ ] Array
-- [ ] Date
-- [ ] Math
-- [ ] Condition
-    - [ ] If else
-    - [ ] Switch case default
-- [ ] Loop
-    - [ ] For / For in / For of
-    - [ ] While / Do while
-- [ ] Set
-- [ ] Map
+- [ ] Object
+- [ ] Function
 - [ ] Class
-- [ ] Module
+- [ ] Async
+- [ ] Document Object Model
+- [ ] Browser Object Model
 - [ ] JSON
+- [ ] jQuery
 - [ ] Node.js
