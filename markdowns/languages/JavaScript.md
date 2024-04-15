@@ -232,6 +232,82 @@ arrowFuncWithParams(); // log "ok"
 const iCanAdd2Nums = add2Nums; // now iCanAdd2Nums -> function
 console.log(iCanAdd2Nums(1, 3)) // log "4"
 ```
+```js
+// Hoisted - function push on top when program start
+sum(1, 1); // run normally
+function sum(a, b) { return a + b; }; 
+// Self-Invoking
+(function () {
+  let x = "Hello!!";  // I will invoke myself
+})();
+// Function -> Object
+function myFunction(a, b) {
+  return arguments.length; // [a, b] -> 2
+}
+// Constructors
+function Person(first, last, age, eye) {
+  this.firstName = first;
+  this.lastName = last;
+  this.age = age;
+  this.eyeColor = eye;
+  this.name = function() {
+    return this.firstName + " " + this.lastName;
+  };
+}
+// Closures - High Order Function
+const add = (function() {
+    let counter = 0; // private, user don't know this
+    return function () {
+        counter += 1;
+        return counter;
+    }
+})();
+// After run self-invoking (only 1 time) -> add = function() { counter += 1; return counter; };
+// counter start with 0, call add() will increase
+```
+> ![Arrow function] (ES6)
+> - Not have own `this`
+> - Arrow function not hoisted -> Define before call
+
+```js
+// call, apply
+const person = {
+  fullName: function() {
+    return this.firstName + " " + this.lastName;
+  },
+  information: function(city, country) {
+    return this.firstName + " " + this.lastName + "," + city + "," + country;
+  }
+}
+const person1 = {
+  firstName:"John",
+  lastName: "Doe"
+}
+person.fullName.call(person1); // John Doe - person (this) -> person1, now person1 is "this"
+person.information.call(person1, "Oslo", "Norway"); // Oslo + Norway are extra arguments
+person.information.aplly(person1, ["Oslo", "Norway"]); // apply use array instead of arguments separately
+// bind - borrow function
+const person = {
+  firstName:"John",
+  lastName: "Doe",
+  fullName: function () {
+    return this.firstName + " " + this.lastName;
+  },
+  display: function () {
+    let x = document.getElementById("demo");
+    x.innerHTML = this.firstName + " " + this.lastName;
+  }
+}
+const member = {
+  firstName:"Hege",
+  lastName: "Nilsen",
+}
+let fullName = person.fullName.bind(member); // Hege Nilsen - current "this" of person in function is "this" of member
+// Use bind in callback
+setTimeout(person.display, 3000); // undefined undefined - current "this" is window
+const display = person.display.bind(person); // point current "this" is person
+setTimeout(display, 3000); // John Doe 
+```
 
 ### Object
 ```js
@@ -258,7 +334,70 @@ person.action = function() {
 "id" in person; // true
 ```
 ```js
+const user1 = { name: 'A', age: 20 };
+const user2 = user1; // user1 === user2
+const user3 = { name: 'A', age: 20 }; // user1 !== user3 && user2 !== user3 (diff address)
+// Update same object
+user2.age = 21; // -> user1['age'] = 21
+user1.name = 'B'; // -> user2['name'] = 'B'
+// Nested Objects
+const myObj = {
+    firstName: "John",
+    lastName: "Doe",
+    age: 30,
+    cars: [
+      {name:"Ford", models:["Fiesta", "Focus", "Mustang"]},
+      {name:"BMW", models:["320", "X3", "X5"]},
+      {name:"Fiat", models:["500", "Panda"]}
+    ],
+    getInformation: () => this.firstName + ' - ' + this.age, // this -> myObj. Using: myObj.getInformation()
+    // ES5 Feature: Accessors (get + set) -> support behind the sences
+    get fullname() {
+        return this.firstName + " " + this.lastName; // using: myObj.fullname
+    },
+    set exactAge (yearBorn) {
+        this.age = new Date().getFullYear() - yearBorn; // this.exactAge = 2001; -> age = 2024 - 2001   
+    }
+}
 ```
+```js
+Object.create(); // {} - new Object, better use literals object like: const newObj = {}
+Object.keys(myObj); // ['firstName', 'lastName', 'age', 'cars', 'getInformation', 'fullname', 'exactAge']
+Object.values(myObj);
+/*
+    [
+      'John',
+      'Doe',
+      30,
+      [
+        { name: 'Ford', models: [Array] },
+        { name: 'BMW', models: [Array] },
+        { name: 'Fiat', models: [Array] }
+      ],
+      [Function: getInformation],
+      'John Doe',
+      undefined // setters
+    ]
+*/
+const obj = { counter: 0 };
+Object.defineProperty(obj, "reset", {
+  get : function () {this.counter = 0;}
+}); // object.reset
+Object.defineProperty(obj, "add", {
+  set : function (value) {this.counter += value;}
+}); // object.add = x; -> counter += x;
+// Protect
+Object.seal(object); // Prevents changes of object properties (not values)
+Object.isSealed(object); // Returns true if object is sealed
+Object.freeze(object); // Prevents any changes to an object
+Object.isFrozen(object); // Returns true if object is frozen
+```
+
+> ![Why using Getters & Setters?]
+> - It gives simpler syntax
+> - It allows equal syntax for properties and methods
+> - It can secure better data quality
+> - It is useful for doing things behind-the-scenes
 
 > ![Tips & tricks]
 > - Clone object: `const newObj = { ...oldObj };`
