@@ -690,16 +690,67 @@ const listEmployee_object = JSON.parse(employees);
 > - It is a template for JavaScript objects.
 ```js
 class Car {
-  constructor(name, year) {
-    this.name = name;
+  constructor(brand, year) {
+    this.brand = brand;
     this.year = year;
   }
-  honk(sound = "beep") {
-    console.log(sound);
+  present() {
+    return 'I have a ' + this.brand;
   } 
 }
 
-const car = new Car("Ford", 2014);
+class Model extends Car {
+  constructor(brand, year, model) {
+    super(brand, year); // Car's contructors
+    this.model = model;
+  }
+  show() {
+    return this.present() + ', it is a ' + this.model;
+  }
+}
+
+const car1 = new Car("Ford", 2014);
+const car2 = new Model("Ford", 2014, "Mustand");
+```
+```js
+// Class with getter & setter
+class Car {
+  constructor(brand) {
+    this._carname = brand;
+  }
+  get carname() {
+    return this._carname;
+  }
+  set carname(x) {
+    this._carname = x;
+  }
+  // static - using: Car.wheels | Car.welcome('Xiaomi')
+  static wheels = 4;
+  static welcome(text = 'Vinfast') {
+    return 'Welcome to ' + text;
+  }
+}
+```
+
+### Promise & Async
+```js
+// Promise
+const myPromise = new Promise(function(resolve, reject) {
+    // someThing
+    if(ok) resolve();
+    else reject();
+})
+myPromise.then(
+    cb_if_success,
+    cb_if_error
+);
+// Promise.all
+const myPromises = Promise.all([promise1, promise2, ..., promiseN]);
+// async + await
+async function () { // return Promise<?>
+    let result = await myPromises;
+    return result;
+};
 ```
 
 ### Versions
@@ -716,15 +767,24 @@ const car = new Car("Ford", 2014);
 | ECMAScript 2019 | `String.trimStart()` <br> `String.trimEnd()` <br> `Array.flat()` <br> `Object.formEntries()` |
 | ECMAScript 2020 | Nullish Coalescing Operator `??` |
 
+### Document Object Model
+- [DOM Document](https://www.w3schools.com/js/js_htmldom_document.asp)
+- Event Listener
+    - `element.addEventListener(eventName, callback, useCapture?)`
+    - `element.removeEventListener(eventName, callback)`
+- Navigation
+- Nodes
+- Collections
+- Node Lists
+
+### Browser Object Model
+
+
 ### Resources
 1. [w3schools](https://www.w3schools.com/js)
 
 --- 
 ### Todo
-- [ ] Object
-- [ ] Function
-- [ ] Class
-- [ ] Async
 - [ ] Document Object Model
 - [ ] Browser Object Model
 - [ ] JSON
