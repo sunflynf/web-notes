@@ -772,10 +772,26 @@ async function () { // return Promise<?>
 - Event Listener
     - `element.addEventListener(eventName, callback, useCapture?)`
     - `element.removeEventListener(eventName, callback)`
-- Navigation
+- Property:
+    - `element.<nodeName|nodeValue|nodeType>`
+    - [Node Properties](https://www.w3schools.com/js/js_htmldom_navigation.asp)
+- Navigation `element.<navigate>`
+    - `parentNode` - li -> ul; li.parentNode
+    - `childNodes[index]` ul -> li(2); ul.childNodes[1]
+    - `firstChild`
+    - `lastChild`
+    - `nextSibling` div -> div (same order)
+    - `previousSibling`
 - Nodes
-- Collections
-- Node Lists
+    - Root Nodes: `document.body`, `document.documentElement`
+    - `document.createElement(tagName)`
+    - `document.createTextNode(text)` - put this inside element
+    - `element.appendChild(node|elementChild)`
+    - `element.insertBefore(markChild, newChild)`
+    - `element.removeChild(node|elementChild)`
+    - `element.replaceChild(markChild, replaceChild)`
+- HTMLCollection (live) - collection of **elements**: `getElementsByTagName()`, `getElementsByClass()` 
+- Node Lists (static) - collection of **nodes**: `querySelectorAll()`
 
 ### Browser Object Model
 
