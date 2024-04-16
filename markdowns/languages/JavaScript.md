@@ -807,10 +807,11 @@ async function () { // return Promise<?>
     - `pathname` - js/js_window_location.asp
     - `protocol` - https:
     - `assign(url)` - navigate to url
-- History: `window.history.<back()|forward()>`
+- History: `window.history.<back()|forward()|go(count)>` - count can negative, base on history stack
 - Navigator: `window.navigator.<?>`
     - Contains **information** about the visitor's browser.
     - Some useful keys: `cookieEnabled`, `platform`, `appVersion`, `language`, `onLine`
+    - [API Geolocation](https://www.w3schools.com/js/js_api_geolocation.asp)
 - Popup:
     - `window.alert(text)` -> void
     - `window.confirm(text)` -> boolean
@@ -821,14 +822,49 @@ async function () { // return Promise<?>
     - `setInterval(function, miliseconds)` - Loop execute after `miliseconds`
     - `clearInterval(var_setInterval)`
 - Cookies: `window.cookie` - Cookie exp: `'firstname="John";lastname="Doe";age:30'`
+- API Storage:
+    - `sessionStorage` - clear after close brower tab
+    - `localStorage`
+    - **Methods**: `<storage>.<?>`
+        - length
+        - key(n) - name of key _n_th
+        - getItem(key)
+        - setItem(key, val)
+        - removeItem(key)
+        - clear()
+
+### Web Workers
+> independent JavaScript works behind the sences
+```js
+let wwk;
+function startWorker() {
+    if (typeof(Worker) == "undefined") {
+        // Web worker support!
+        wwk = new Worker("for_worker.js", {}); // {} is optional        
+    }
+    wwk.onmessage = (e) => { // something here! }
+}
+function stopWorker() {
+    wwk.terminate();
+    wwk = undefined; // reuse
+}
+```
+
+### Fetch API (better than AJAX)
+```js
+// normal fetch return Promise<status>
+fetch(url)
+    .then(() => Promise<?>)
+    // other middlewares "then"
+    .then(() => {})
+    .catch(err => {})
+// async + await
+async function getData() {
+    const result = await fetch(url);
+    return result
+}
+```
 
 ### Resources
 1. [w3schools](https://www.w3schools.com/js)
-
---- 
-### Todo
-- [ ] Document Object Model
-- [ ] Browser Object Model
-- [ ] JSON
-- [ ] jQuery
-- [ ] Node.js
+2. [Asynchronous JavaScript And XML | AJAX](https://www.w3schools.com/js/js_ajax_intro.asp)
