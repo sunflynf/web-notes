@@ -855,12 +855,12 @@ async function () { // return Promise<?>
     - `sessionStorage` - clear after close brower tab
     - `localStorage`
     - **Methods**: `<storage>.<?>`
-        - length
-        - key(n) - name of key _n_th
-        - getItem(key)
-        - setItem(key, val)
-        - removeItem(key)
-        - clear()
+        - `length`
+        - `key(n)` - name of key _n_th
+        - `getItem(key)`
+        - `setItem(key, val)`
+        - `removeItem(key)`
+        - `clear()`
 
 ### Web Workers
 > independent JavaScript works behind the sences
