@@ -794,7 +794,13 @@ async function () { // return Promise<?>
 - Node Lists (static) - collection of **nodes**: `querySelectorAll()`
 
 ### Browser Object Model
-
+- Windows size: `window.innerHeight`, `window.innerWidth`
+- Windows Methods:
+    - `window.open()`
+    - `window.close()`
+    - `window.moveTo()`
+    - `window.resizeTo()`
+- Screen: `screen.` `width | height | availWidth | availHeight | colorDepth | pixelDepth`
 
 ### Resources
 1. [w3schools](https://www.w3schools.com/js)
