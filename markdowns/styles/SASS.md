@@ -1,6 +1,24 @@
+### Table of contents
+1. [Variables](#variables)
+2. [Nesting](#nesting)
+3. [Modules](#modules)
+4. [Mixins](#mixins)
+5. [Extend/Inheritance](#extendinheritance)
+6. [Operators](#operators)
+  - [Build in modules](#build-in-modules)
+  - [Loops](#loops)
+7. [Features](#features)
+  - [Lists](#lists)
+  - [Maps](#maps)
+  - [Conditional](#conditionals)
+  - [Interpolation](#interpolation)
+8. [Resources](#resources)
+
+---
+
 **SASS** is a stylesheet language that’s compiled to **[[CSS]]**
 > **Preprocessing**: `sass --watch input.scss output.css`
----
+
 ### Variables
 > Code styles: `.sass` & `.scss` (use semicolon and curly brackets)
 ```sass
@@ -20,6 +38,7 @@ body {
   color: $primary-color;
 }
 ```
+
 ### Nesting
 ```scss
 .markdown-body {
@@ -39,6 +58,7 @@ body {
   color: red;
 }
 ```
+
 ### Modules
 ```scss
 // _base.scss
@@ -58,6 +78,7 @@ body {
   color: white;
 }
 ```
+
 ### Mixins
 ```scss
 @mixin heading-font {
@@ -102,6 +123,7 @@ h1 {
   color: #fff;
 }
 ```
+
 ### Extend/Inheritance
 ```scss
 /* This CSS will print because %message-shared is extended. */
@@ -153,6 +175,7 @@ h1 {
   border-color: yellow;
 }
 ```
+
 ### Operators
 #### Build-In Modules
 - `sass:math` provides functions that operate on numbers.
@@ -192,6 +215,7 @@ $backgrounds: (home, 'home.jpg'), (about, 'about.jpg');
   }
 }
 ```
+
 ### Features
 #### Lists
 ```scss
@@ -228,6 +252,7 @@ font: #{$size}/#{$line-height}
 url("#{$background}.jpg")
 ```
 ---
+
 ### Resources:
 1. [sass-lang](https://sass-lang.com/)
 2. [devhints](https://devhints.io/sass)

@@ -1,7 +1,18 @@
 ### Table of contents
+1. [Introduction](#introduction)
+2. [Setting](#setting) 
+3. [Using](#using)
+    - [Variables](#variables)
+    - [Operations](#operations)
+    - [Mixins](#mixins)
+    - [Nesting](#nesting)
+    - [Function](#function)
+    - [Namespace & Accessor](#namespaces--accessors)
+    - [Map](#map)
+    - [Import](#import)
+4. [Tips & Tricks](#tips--tricks)
 
-1. [[]]
-2. [[]]
+---
 
 ### Introduction
 
