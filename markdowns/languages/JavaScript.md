@@ -801,9 +801,9 @@ async function () { // return Promise<?>
     - `window.moveTo()`
     - `window.resizeTo()`
 - Screen: `window.screen.<?>` - `width | height | availWidth | availHeight | colorDepth | pixelDepth`
-- Location: `window.location.<?>` (Exp: https://www.w3schools.com/js/js_window_location.asp)
-    - `href` - https://www.w3schools.com/js/js_window_location.asp
-    - `hostname` - https://www.w3schools.com
+- Location: `window.location.<?>` (Exp: `https://www.w3schools.com/js/js_window_location.asp`)
+    - `href` - `https://www.w3schools.com/js/js_window_location.asp`
+    - `hostname` - `https://www.w3schools.com`
     - `pathname` - js/js_window_location.asp
     - `protocol` - https:
     - `assign(url)` - navigate to url
