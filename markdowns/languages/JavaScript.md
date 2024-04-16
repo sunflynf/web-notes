@@ -1,3 +1,7 @@
+### Table of contents
+1. [Position in HTML](#position-in-html)
+2. [Web workers](#web-workers)
+
 ### Position in HTML
 ```html
 <!DOCTYPE html>
@@ -850,7 +854,8 @@ function stopWorker() {
 }
 ```
 
-### Fetch API (better than AJAX)
+### Fetch API 
+> Why? Cause JSON better than AJAX
 ```js
 // normal fetch return Promise<status>
 fetch(url)
