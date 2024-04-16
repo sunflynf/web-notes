@@ -800,7 +800,27 @@ async function () { // return Promise<?>
     - `window.close()`
     - `window.moveTo()`
     - `window.resizeTo()`
-- Screen: `screen.` `width | height | availWidth | availHeight | colorDepth | pixelDepth`
+- Screen: `window.screen.<?>` - `width | height | availWidth | availHeight | colorDepth | pixelDepth`
+- Location: `window.location.<?>` (Exp: https://www.w3schools.com/js/js_window_location.asp)
+    - `href` - https://www.w3schools.com/js/js_window_location.asp
+    - `hostname` - https://www.w3schools.com
+    - `pathname` - js/js_window_location.asp
+    - `protocol` - https:
+    - `assign(url)` - navigate to url
+- History: `window.history.<back()|forward()>`
+- Navigator: `window.navigator.<?>`
+    - Contains **information** about the visitor's browser.
+    - Some useful keys: `cookieEnabled`, `platform`, `appVersion`, `language`, `onLine`
+- Popup:
+    - `window.alert(text)` -> void
+    - `window.confirm(text)` -> boolean
+    - `window.prompt(text, defaultValue)` -> string | null
+- Time:
+    - `setTimeout(function, miliseconds)` - Execute 1 time after waiting
+    - `clearTimeout(var_setTimeout)`
+    - `setInterval(function, miliseconds)` - Loop execute after `miliseconds`
+    - `clearInterval(var_setInterval)`
+- Cookies: `window.cookie` - Cookie exp: `'firstname="John";lastname="Doe";age:30'`
 
 ### Resources
 1. [w3schools](https://www.w3schools.com/js)
