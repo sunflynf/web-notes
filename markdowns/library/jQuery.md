@@ -6,7 +6,7 @@
 
 ### DOM Traversal & Manipulation
 #### Selectors
-> [See more](../../)
+> [See more](../styles/CSS3.md)
 ```js
 
 ```
