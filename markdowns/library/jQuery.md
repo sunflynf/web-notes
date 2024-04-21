@@ -26,7 +26,9 @@ $(document).ready(function(){ // Required
 - `$(selector).text(string | function(index, currentText){ return string; })`
 - `$(selector).html(htmlStr | function(index, currentHtmlStr){ return htmlString; })`
 - `$(selector).val(any)`
-- `$(selector).attr(key, function(index, currentVal))` - `$("#wiki-link").attr("href")`
+- `$(selector).attr(key, function(index, currentVal))`
+  - `$("#w3s").attr({ "href" : "https://www.w3schools.com/jquery/", "title" : "W3Schools jQuery Tutorial" });`
+  - `$("#wiki-link").attr("href", "https://www.link-css.com")`
 
 ### Event handling
 - Mouse: `click`, `dblclick`, `mouseenter`, `mouseleave` 
