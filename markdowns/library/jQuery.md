@@ -29,6 +29,26 @@ $(document).ready(function(){ // Required
 - `$(selector).attr(key, function(index, currentVal))`
   - `$("#w3s").attr({ "href" : "https://www.w3schools.com/jquery/", "title" : "W3Schools jQuery Tutorial" });`
   - `$("#wiki-link").attr("href", "https://www.link-css.com")`
+#### Element changes
+- `$(selector).append(...elements)` - Add at the end of selector element (last child)
+- `$(selector).prepend(...elements)` - Add at the start of seletor element (first child)
+- `$(selector).after(...elements)` - Add AFTER selector element
+- `$(selector).before(...elements)` - Add BEFORE selector element
+- `$(selector).remove()` - Remove selector element (and its child)
+- `$(selector).remove(child_selector)` - Remove child of selector element
+- `$(selector).empty()` - Remove it's child
+#### Styles
+- `$(selector).addClass("class-1 class-2 class-n")` 
+- `$(selector).removeClass()` - same above but remove class
+- `$(selector).toggleClass()` - same above but add + remove
+- `$(selector).css({ "property": "value", ... })` 
+#### Dimension
+- `width()`, `height()` - size of element **(excludes padding, border, margin)**
+- `innerWidth()`, `innerHeight()` - includes **padding**
+- `outerWidth()`, `outerHeight()` - includes **padding** + **border** + _**margin** if add (true)_
+
+#### Traversing
+- ``
 
 ### Event handling
 - Mouse: `click`, `dblclick`, `mouseenter`, `mouseleave` 
