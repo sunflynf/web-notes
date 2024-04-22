@@ -264,15 +264,18 @@ console.log(iCanAdd2Nums(1, 3)) // log "4"
 ```js
 // Hoisted - function push on top when program start
 sum(1, 1); // run normally
-function sum(a, b) { return a + b; }; 
+function sum(a, b) { return a + b; };
+
 // Self-Invoking
 (function () {
   let x = "Hello!!";  // I will invoke myself
 })();
+
 // Function -> Object
 function myFunction(a, b) {
   return arguments.length; // [a, b] -> 2
 }
+
 // Constructors
 function Person(first, last, age, eye) {
   this.firstName = first;
@@ -283,6 +286,7 @@ function Person(first, last, age, eye) {
     return this.firstName + " " + this.lastName;
   };
 }
+
 // Closures - High Order Function
 const add = (function() {
     let counter = 0; // private, user don't know this
@@ -314,7 +318,8 @@ const person1 = {
 }
 person.fullName.call(person1); // John Doe - person (this) -> person1, now person1 is "this"
 person.information.call(person1, "Oslo", "Norway"); // Oslo + Norway are extra arguments
-person.information.aplly(person1, ["Oslo", "Norway"]); // apply use array instead of arguments separately
+person.information.apply(person1, ["Oslo", "Norway"]); // apply use array instead of arguments separately
+
 // bind - borrow function
 const person = {
   firstName:"John",
@@ -332,6 +337,7 @@ const member = {
   lastName: "Nilsen",
 }
 let fullName = person.fullName.bind(member); // Hege Nilsen - current "this" of person in function is "this" of member
+
 // Use bind in callback
 setTimeout(person.display, 3000); // undefined undefined - current "this" is window
 const display = person.display.bind(person); // point current "this" is person
@@ -348,17 +354,20 @@ const person = {
     return this.firstName + " " + this.lastName;
   }
 };
+
 // get
 person.firstName; // John
 person['lastName']; // Doe
 person.fullName(); // John Doe
 person.age; // undefined
 person.action(); // Error
+
 // set
 person.id = 1234;
 person.action = function() {
     console.log("RUN");
 } // now you can use persion.action()
+
 // check
 "id" in person; // true
 ```
@@ -366,9 +375,11 @@ person.action = function() {
 const user1 = { name: 'A', age: 20 };
 const user2 = user1; // user1 === user2
 const user3 = { name: 'A', age: 20 }; // user1 !== user3 && user2 !== user3 (diff address)
+
 // Update same object
 user2.age = 21; // -> user1['age'] = 21
 user1.name = 'B'; // -> user2['name'] = 'B'
+
 // Nested Objects
 const myObj = {
     firstName: "John",
@@ -408,13 +419,16 @@ Object.values(myObj);
       undefined // setters
     ]
 */
+
 const obj = { counter: 0 };
 Object.defineProperty(obj, "reset", {
   get : function () {this.counter = 0;}
 }); // object.reset
+
 Object.defineProperty(obj, "add", {
   set : function (value) {this.counter += value;}
 }); // object.add = x; -> counter += x;
+
 // Protect
 Object.seal(object); // Prevents changes of object properties (not values)
 Object.isSealed(object); // Returns true if object is sealed
@@ -435,12 +449,15 @@ Object.isFrozen(object); // Returns true if object is frozen
 ### Arrays
 ```js
 const cars = ["Saab", "Volvo", "BMW"];
+
 // Getter
 cars[1]; // Volvo
 cars.length; // 3
+
 // Setter
 cars[2] = "Toyota"; // ["Saab", "Volvo", "Toyota"]
 cars[4] = "Tesla"; // ["Saab", "Volvo", "Toyota", undefined, "Tesla"]
+
 // Methods
 cars.toString(); // Saab,Volvo,BMW
 cars.sort(); // ["BMW", "Saab", "Volvo"]
@@ -449,6 +466,7 @@ typeof cars; // "object"
 ```
 ```js
 const animals = ["dog", "cat", "duck", "chicken"];
+
 animals.at(-1); // chicken - (ES2022) works like animal[index] but allow negative
 animals.join(", "); // "dog, cat, duck, chicken"
 animals.concat(["fish", "renekton", "shark"]); // return ["dog", "cat", "duck", "chicken", "fish", "renekton", "shark"]
@@ -500,9 +518,11 @@ computer.findIndex(i => i === 'mouse'); // 1 - structure like above feature (ES6
 [].filter((item, index, currentArray) => boolean); // return new Array + keep original array
 [].reduce((preValue, item, index, currentArray) => newValue, initialValue); 
 [].reduceRight((preValue, item, index, currentArray) => newValue, initialValue); // right-to-left
+
 [].every((item, index, currentArray) => boolean);
 // Return true if all items pass conditions.
 // Exp: ["Anna", "Daniel", "Keth"].every(i => i.includes('a')) -> false
+
 [].some((item, index, currentArray) => boolean);
 // Return true if any item pass conditions.
 // Exp: ["Anna", "Daniel", "Keth"].some(i => i.includes('a')) -> true
@@ -525,6 +545,7 @@ const year = [...q1, ...q2, ...q3, ...q4];
 [].flatMap((item, index, currentArray) => any[]); // [].map().flat() (ES2019)
 [].with(index, replace); // return new Array with replace item + keep original array
 Array.from("text"); // ["t", "e", "x", "t"] (ES6)
+
 // Should use only in object
 ["a", "b", "c"].keys(); // [0, 1, 2]
 ["a", "b", "c"].entries(); // [[0, "a"], [1, "b"], [2, "c"]]
@@ -546,6 +567,7 @@ new Date(year,month,day,hours,minutes)
 new Date(year,month,day,hours,minutes,seconds)
 new Date(year,month,day,hours,minutes,seconds,ms)
 new Date(milliseconds)
+
 // Methods
 const dd = new Date('2024-4-32'); // Invalid Date - instanceof Date
 const d = new Date('2024-4-12'); // 2024-04-12T00:00:00.000Z
@@ -565,6 +587,7 @@ Math.floor(4.6); // 4 - rounded down
 Math.trunc(4.1); // 4 - get integer part
 Math.trunc(4.9); // 4 (ES6)
 Math.sign(x); // -1: negative, 0, 1: positive (ES6)
+
 // Calculate
 Math.pow(a, b); // a ^ b
 Math.sqrt(x); // x ^ (1/2)
@@ -775,6 +798,7 @@ myPromise.then(
 );
 // Promise.all
 const myPromises = Promise.all([promise1, promise2, ..., promiseN]);
+
 // async + await
 async function () { // return Promise<?>
     let result = await myPromises;
