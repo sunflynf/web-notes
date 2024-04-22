@@ -55,23 +55,24 @@ $(document).ready(function(){ // Required
       <li>li (direct parent)
         <span>span</span>
       </li>
-    </ul>   
+    </ul>
+    <p>Some text 1</p>
+    <p>Some text 2</p>
   </div>
 </body>
 ```
 ```js
 // --- PARENT ---
-$("span").parent() // -> 
-$("span").parents() // -> 
-$("span").parents("ul") // -> 
-$("span").parentsUntil("ul") // -> 
+$("span").parent() // -> li
+$("span").parents() // -> [body, div, ul, li]
+$("span").parents("div") // ->  [div]
+$("span").parentsUntil("div") // -> [ul, li]
 // --- CHILDREN ---
-$("div").children(); // ->
-$("div").children("li.first"); // -> only first child (li)
-$("div").find("span"); // ->
-$("div").find("*"); // ->
+$("div").children(); // -> [ul, p, p]
+$("div").children("p:first"); // -> (selector) only first child (p)
+$("div").find("p, span"); // -> [p, p, span]
+$("div").find("*"); // -> all descendants of div [ul, li, span, p, p]
 ```
-
 ```html
 <body>
   <div>div (parent)
@@ -80,14 +81,25 @@ $("div").find("*"); // ->
     <h2>h2</h2>
     <h3>h3</h3>
     <p>p</p>
+    <b>b</b>
   </div>
 </body>
 ```
 ```js
 // --- SIBLINGS ---
+$("h2").siblings(); // -> [p, span, h3, p, b]
+$("h2").next(); // -> h3
+$("h2").nextAll(); // -> [h3, p, b]
+$("h2").nextUntil("b"); // -> [h3, p]
+$("h2").<prev|prevAll|prevUntil>();
 
 // --- FILTER ---
-
+$(selector).first(); // -> first of specific element
+$(selector).last();
+$(selector).last();
+$(selector).eq(index); // -> elements[index]
+$(selector).filter(selector_props); // -> elements match props
+$(selector).not(selector_props); // -> elements not match props
 ```
 
 ### Event handling
@@ -135,6 +147,38 @@ $("button").click(function(){
 > - Exp: `$("#p1").css("color", "red").slideUp(2000).slideDown(2000);`
 
 ### AJAX
+- `$(selector).load(URL, data?, callback?)`
+```js
+$("button").click(function(){
+  $("#div1").load("demo_test.txt", function(responseTxt, statusTxt, xhr){
+    if(statusTxt == "success")
+      alert("External content loaded successfully!");
+    if(statusTxt == "error")
+      alert("Error: " + xhr.status + ": " + xhr.statusText);
+  });
+});
+```
+- `$.get(URL, function(return_data, status){})`
+```js
+$("button").click(function(){
+  $.get("demo_test.asp", function(data, status){
+    alert("Data: " + data + "\nStatus: " + status);
+  });
+});
+```
+- `$.post(URL, data, function(return_data, status){})`
+```js
+$("button").click(function(){
+  $.post("demo_test_post.asp",
+  {
+    name: "Donald Duck",
+    city: "Duckburg"
+  },
+  function(data, status){
+    alert("Data: " + data + "\nStatus: " + status);
+  });
+});
+```
 
 ### Resources
 1. [jQuery Docs](https://jquery.com/)
