@@ -48,7 +48,47 @@ $(document).ready(function(){ // Required
 - `outerWidth()`, `outerHeight()` - includes **padding** + **border** + _**margin** if add (true)_
 
 #### Traversing
-- ``
+```html
+<body class="ancestors"> body (great-great-grandparent)
+  <div style="width:500px;">div (great-grandparent)
+    <ul>ul (grandparent)  
+      <li>li (direct parent)
+        <span>span</span>
+      </li>
+    </ul>   
+  </div>
+</body>
+```
+```js
+// --- PARENT ---
+$("span").parent() // -> 
+$("span").parents() // -> 
+$("span").parents("ul") // -> 
+$("span").parentsUntil("ul") // -> 
+// --- CHILDREN ---
+$("div").children(); // ->
+$("div").children("li.first"); // -> only first child (li)
+$("div").find("span"); // ->
+$("div").find("*"); // ->
+```
+
+```html
+<body>
+  <div>div (parent)
+    <p>p</p>
+    <span>span</span>
+    <h2>h2</h2>
+    <h3>h3</h3>
+    <p>p</p>
+  </div>
+</body>
+```
+```js
+// --- SIBLINGS ---
+
+// --- FILTER ---
+
+```
 
 ### Event handling
 - Mouse: `click`, `dblclick`, `mouseenter`, `mouseleave` 
