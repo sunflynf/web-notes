@@ -1,4 +1,17 @@
 ### Table of contents
+1. [DOM Traversal & Manipulation](#dom-traversal--manipulation)
+  - [Selectors](#selectors)
+  - [Getters](#getters)
+  - [Setters](#setters)
+  - [Element Changes](#element-changes)
+  - [Styles](#styles)
+  - [Dimension](#dimension)
+  - [Traversing](#traversing)
+2. [Event handling](#event-handling)
+3. [Effects](#effects)
+4. [AJAX](#ajax)
+5. [Resources](#resources)
+---
 
 > - **jQuery** is **JavaScript** library
 > - Write less, do more
@@ -112,7 +125,7 @@ $("p").click(function(){
   $(this).hide(); // this -> current element (p)
 });
 ```
-#### Effects
+### Effects
 > Common syntax: `$(selector).<effect>(speed?, callback?)`
 > - Mount: hide, show, toggle
 > - Fade: fadeIn, fadeOut, fadeToggle, `fadeTo(speed, opacity, callback?)`
