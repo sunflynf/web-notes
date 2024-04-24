@@ -11,3 +11,7 @@
 4. **lowerCamelCase**:
     - variable: `firstName`, `lastName`, `address`, ...
     - function: `getProducts`, `setProduct`, `getTotalPrice`, ...
+---
+### Link courses
+- [Learn and Practice](https://exercism.org)
+- [Data Structure](https://refactoring.guru/)
