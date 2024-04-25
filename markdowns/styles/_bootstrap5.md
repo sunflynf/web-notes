@@ -66,49 +66,79 @@
 | Extra large | `xl` | >= 1200px |
 | Extra extra large | `xxl` | >= 1400px |
 
-#### Display
-- Container `<div class="container"></div>`
-  - `container`: max-width changes at each breakpoint
-  - `container-{breakpoint}`: 100% width until the specified breakpoint is reacted
-  - `container-fluid`: full width viewport 
-- Grid: 1 row has max 12 cols (default)
-  - `row`
-    - `align-items-{start|center|end}`
-    - `justify-content-{start|center|end}`
-    - `justify-content-{around|between|evenly}` - space around, space between, space evenly
-    - `g-*`, `gx-*`, `gy-*` - gap, column-gap, row-gap
-    - `g-{breakpoint}-*`
-  - `row-cols-{max_in_row | auto}` - set maximum cols per row
-  - `row-cols-{breakpoint}-{max_in_row | auto}` - set maximum cols per row when reacted breakpoint
-  - `col` - nested in row, auto resize
-    - `align-self-{start|center|end}`
-    - `order-{first|[1, 6]|last}` - reorder col by css
-    - `offset-{n}` - Left margin by spaces of n columns. Exp: `offset-3` - margin-left equals 3 cols
-    - `offset-{breakpoint}-{n}`
-  - `col-{[1, 12]}` - apply max-width (%)
-  - `col-{breakpoint}-{[1, 12]|auto}` - apply max-width (%) when reacted breakpoint
-- Flex: every thing go to the left
-  - `d-flex`: `display: flex`
-  - `d-{breakpoint}-flex`
-- Space:
-  - Size:
-    - 0
-    - 1 (0.25rem)
-    - 2 (0.5rem)
-    - 3 (1rem)
-    - 4 (1.5rem)
-    - 5 (3rem)
-    - auto
-  - Position:
-    - `s`: start | left
-    - `e`: end | right
-    - `t`: top
-    - `b`: bottom
-    - `x`: both left & right 
-    - `y`: both top & bottom
-  - Margin: `m-{size}`, `m{position}-{size}`, `m{position}-{breakpoint}-{size}`
-  - Padding: `p-{size}`, `p{position}-{size}`, `p{position}-{breakpoint}-{size}`
+#### Container 
+> `<div class="container"></div>`
+- `container`: max-width changes at each breakpoint
+- `container-{breakpoint}`: 100% width until the specified breakpoint is reacted
+- `container-fluid`: full width viewport
 
+#### Grid: 1 row has max 12 cols (default)
+- `grid`
+  - `gap-{[0, 5]}`
+  - `row-gap-{[0, 5]}`
+  - `col-gap-{[0, 5]}`
+- `row`
+  - `align-items-{start|center|end}`
+  - `justify-content-{start|center|end}`
+  - `justify-content-{around|between|evenly}` - space around, space between, space evenly
+  - `g-*`, `gx-*`, `gy-*` - gap, column-gap, row-gap
+  - `g-{breakpoint}-*`
+- `row-cols-{max_in_row | auto}` - set maximum cols per row
+- `row-cols-{breakpoint}-{max_in_row | auto}` - set maximum cols per row when reacted breakpoint
+- `col` - nested in row or **stand alone**, auto resize
+  - `align-self-{start|center|end}`
+  - `order-{first|[1, 6]|last}` - reorder col by css
+  - `offset-{n}` - Left margin by spaces of n columns. Exp: `offset-3` - margin-left equals 3 cols
+  - `offset-{breakpoint}-{n}`
+- `col-{[1, 12]}` - apply max-width (%)
+- `col-{breakpoint}-{[1, 12]|auto}` - apply max-width (%) when reacted breakpoint
+
+#### Flex: every thing go to the left
+- `d-flex`
+  - `flex-{row|column}`
+  - `flex-{breakpoint}-{row|column}`
+  - `flex-{row|column}-reverse`
+  - `flex-{breakpoint}-{row|column}-reverse`
+  - `justify-content-{start|center|end|around|between|evenly}`
+  - `justify-content-{breakpoint}-{start|center|end|around|between|evenly}`
+  - `align-items-{start|center|end|baseline|stretch}`
+  - `align-items-{breakpoint}-{start|center|end|baseline|stretch}`
+  - `align-content-{start|center|end|between|around|stretch}`
+  - `align-content-{breakpoint}-{start|center|end|between|around|stretch}`
+  - `flex-{wrap|nowrap|wrap-reverse}`
+  - `flex-{breakpoint}-{wrap|nowrap|wrap-reverse}`
+  - `gap-{[0, 5]}`
+  - `d-{breakpoint}-flex`
+- `d-inline-flex`: `display: inline-flex`
+- `d-{breakpoint}-inline-flex`
+- **child**:
+  - `align-self-{start|center|end|baseline|stretch}` 
+  - `align-self-{breakpoint}-{start|center|end|baseline|stretch}`
+  - `order-{first|[0, 5]|last}`
+  - `order-{breakpoint}-{first|[0, 5]|last}`
+  - `flex-fill`
+  - `flex-{breakpoint}-fill`
+  - `flex-{grow|shrink}-{0|1}`
+  - `flex-{breakpoint}-{grow|shrink}-{0|1}`
+
+#### Space:
+- Size:
+  - 0
+  - 1 (0.25rem)
+  - 2 (0.5rem)
+  - 3 (1rem)
+  - 4 (1.5rem)
+  - 5 (3rem)
+  - auto
+- Position:
+  - `s`: start | left
+  - `e`: end | right
+  - `t`: top
+  - `b`: bottom
+  - `x`: both left & right 
+  - `y`: both top & bottom
+- Margin: `m-{size}`, `m{position}-{size}`, `m{position}-{breakpoint}-{size}`
+- Padding: `p-{size}`, `p{position}-{size}`, `p{position}-{breakpoint}-{size}`
 
 ### Components
 
