@@ -36,11 +36,34 @@
 **With package manager**
 - `npm install bootstrap@version`
 - `yarn add bootstrap@version`
-- _Recommend add-ons in **React**_: `react-bootstrap`
-- _Recommend add-ons in **Vue3**_: `bootstrap-vue-next`
-- _Recommend add-ons in **Angular**_: `@ng-bootstrap/ng-bootstrap`
+- _Recommend add-ons_
+  - **React**: `react-bootstrap`
+  - **Vue3**: `bootstrap-vue-next`
+  - **Angular**: `@ng-bootstrap/ng-bootstrap`
 
-### Systems
+### Customize
+- Change colors
+  - Syntax:
+    - Normal: `--bs-<color_type>-<color|bg>`
+    - RGB: `--bs-<color_type>-<color|bg>-rgb`
+    - Color mode: `--bs-<theme_mode>`, `--bs-<theme_mode>-<rgb|bg-subtle|text-emphasis>` 
+  - Type:
+    - color: `body`, `secondary`, `teriary`, `emphasis`, `border`  
+    - bg: `body`, `secondary`, `teriary`
+    - theme_mode: `primary`, `success`, `danger`, `warning`, `info`, `light`, `dark`
+- Setting Theme mode: `data-bs-theme="light|dark"`
+  - Apply all pages - add to html tag
+  - Apply to component - add to component tag
+
+### Layout
+#### Breakpoint
+| Marked | Class | Dimensions |
+| --- | --- | --- |
+| Small | `sm` | >= 576px |
+| Medium | `md` | >= 768px |
+| Large | `lg` | >= 992px |
+| Extra large | `xl` | >= 1200px |
+| Extra extra large | `xxl` | >= 1400px |
 
 ### Components
 
