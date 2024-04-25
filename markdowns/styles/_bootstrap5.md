@@ -44,9 +44,9 @@
 ### Customize
 - Change colors
   - Syntax:
-    - Normal: `--bs-<color_type>-<color|bg>`
-    - RGB: `--bs-<color_type>-<color|bg>-rgb`
-    - Color mode: `--bs-<theme_mode>`, `--bs-<theme_mode>-<rgb|bg-subtle|text-emphasis>` 
+    - Normal: `--bs-{color_type}-{color|bg}`
+    - RGB: `--bs-{color_type}-{color|bg}-rgb`
+    - Color mode: `--bs-{theme_mode}`, `--bs-{theme_mode}-{rgb|bg-subtle|text-emphasis}` 
   - Type:
     - color: `body`, `secondary`, `teriary`, `emphasis`, `border`  
     - bg: `body`, `secondary`, `teriary`
@@ -56,6 +56,7 @@
   - Apply to component - add to component tag
 
 ### Layout
+
 #### Breakpoint
 | Marked | Class | Dimensions |
 | --- | --- | --- |
@@ -64,6 +65,50 @@
 | Large | `lg` | >= 992px |
 | Extra large | `xl` | >= 1200px |
 | Extra extra large | `xxl` | >= 1400px |
+
+#### Display
+- Container `<div class="container"></div>`
+  - `container`: max-width changes at each breakpoint
+  - `container-{breakpoint}`: 100% width until the specified breakpoint is reacted
+  - `container-fluid`: full width viewport 
+- Grid: 1 row has max 12 cols (default)
+  - `row`
+    - `align-items-{start|center|end}`
+    - `justify-content-{start|center|end}`
+    - `justify-content-{around|between|evenly}` - space around, space between, space evenly
+    - `g-*`, `gx-*`, `gy-*` - gap, column-gap, row-gap
+    - `g-{breakpoint}-*`
+  - `row-cols-{max_in_row | auto}` - set maximum cols per row
+  - `row-cols-{breakpoint}-{max_in_row | auto}` - set maximum cols per row when reacted breakpoint
+  - `col` - nested in row, auto resize
+    - `align-self-{start|center|end}`
+    - `order-{first|[1, 6]|last}` - reorder col by css
+    - `offset-{n}` - Left margin by spaces of n columns. Exp: `offset-3` - margin-left equals 3 cols
+    - `offset-{breakpoint}-{n}`
+  - `col-{[1, 12]}` - apply max-width (%)
+  - `col-{breakpoint}-{[1, 12]|auto}` - apply max-width (%) when reacted breakpoint
+- Flex: every thing go to the left
+  - `d-flex`: `display: flex`
+  - `d-{breakpoint}-flex`
+- Space:
+  - Size:
+    - 0
+    - 1 (0.25rem)
+    - 2 (0.5rem)
+    - 3 (1rem)
+    - 4 (1.5rem)
+    - 5 (3rem)
+    - auto
+  - Position:
+    - `s`: start | left
+    - `e`: end | right
+    - `t`: top
+    - `b`: bottom
+    - `x`: both left & right 
+    - `y`: both top & bottom
+  - Margin: `m-{size}`, `m{position}-{size}`, `m{position}-{breakpoint}-{size}`
+  - Padding: `p-{size}`, `p{position}-{size}`, `p{position}-{breakpoint}-{size}`
+
 
 ### Components
 
