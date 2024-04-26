@@ -3,6 +3,14 @@
 ---
 > - Bootstrap is a free front-end framework
 > - Mobile-first
+> - Bootstrap has 7 variants (color):
+>   - `primary`
+>   - `success`
+>   - `danger`
+>   - `warning`
+>   - `info`
+>   - `light`
+>   - `dark`
 > - This note for Bootstrap version 5.3 (04-2024)
 
 ### How to use?
@@ -46,11 +54,10 @@
   - Syntax:
     - Normal: `--bs-{color_type}-{color|bg}`
     - RGB: `--bs-{color_type}-{color|bg}-rgb`
-    - Color mode: `--bs-{theme_mode}`, `--bs-{theme_mode}-{rgb|bg-subtle|text-emphasis}` 
+    - Color mode: `--bs-{color_variant}`, `--bs-{color_variant}-{rgb|bg-subtle|text-emphasis}` 
   - Type:
     - color: `body`, `secondary`, `teriary`, `emphasis`, `border`  
     - bg: `body`, `secondary`, `teriary`
-    - theme_mode: `primary`, `success`, `danger`, `warning`, `info`, `light`, `dark`
 - Setting Theme mode: `data-bs-theme="light|dark"`
   - Apply all pages - add to html tag
   - Apply to component - add to component tag
@@ -154,6 +161,7 @@
 ### Components
 #### Content
 > Bootstrap has default font based on platform
+
 | Font | Using |
 | --- | --- |
 | system-ui | Cross-platform (default user interface font) |
@@ -165,6 +173,59 @@
 | "Segoe UI" | Windows |
 | "Noto Sans"<br>"Liberation Sans" | Linux |
 | "Apple Color Emoji"<br>"Segoe UI Emoji"<br>"Segoe UI Symbol", "Noto Color Emoji" | Emoji |
+
+```html
+<figure>
+  <blockquote class="blockquote">
+    <p>A well-known quote, contained in a blockquote element.</p>
+  </blockquote>
+  <figcaption class="blockquote-footer">
+    Someone famous in <cite title="Source Title">Source Title</cite>
+  </figcaption>
+</figure>
+```
+
+#### Text
+- header(h1-h6): `display-{[1, 6]}`
+- abbr: `initialism` (smaller dots)
+- `text-body-secondary` - faded text
+- `lead` - stand out text
+- `mark` - `<mark>`
+- `small` - `<small>`
+- `text-decoration-underline` - `<u>`
+- `text-decoration-line-through` - `<s>`
+- `text-truncate` - Some longgggg te...
+- Align:
+  - `text-{start|center|end}`
+- List:
+  - `list-unstyled` - remove marked
+  - `list-inline` + `list-inline-item`
+#### Image
+- `img-fluid` - width: 100%, height: "auto"
+- `img-thumbnail` - make border
+#### Table
+- table
+  - `table` - default based on current `data-bs-theme`
+  - `table-{color_variant}` - can apply to `<thead>` or `<tr>` or `<td>` (special case)
+  - `table-striped` - even & odd rows
+  - `table-striped-columns`
+  - `table-hover`
+  - `table-bordered` - can mix with `border-{color_variant}`
+  - `table-borderless`
+  - `table-responsive`
+  - `table-responsive-{breakpoint}`
+  - `table-sm`
+  - `caption-top`
+- tbody
+  - `table-group-divider` - thick top border
+- tr
+  - `table-active` - can apply to `<td>`
+  - `align-{top|middle|bottom}` - vertical
+#### Block
+- `rounded` - border-radius
+- `rounded-{[0, 5]}`
+- `border`
+- `border-{color_variant}`
 
 ### Resources
 
