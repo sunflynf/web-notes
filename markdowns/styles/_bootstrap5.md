@@ -45,9 +45,9 @@
 - `npm install bootstrap@version`
 - `yarn add bootstrap@version`
 - _Recommend add-ons_
-  - **React**: `react-bootstrap`
-  - **Vue3**: `bootstrap-vue-next`
-  - **Angular**: `@ng-bootstrap/ng-bootstrap`
+  - **React**: [react-bootstrap](https://react-bootstrap.github.io/)
+  - **Vue3**: [bootstrap-vue-next](https://bootstrap-vue-next.github.io/bootstrap-vue-next/)
+  - **Angular**: [@ng-bootstrap/ng-bootstrap](https://ng-bootstrap.github.io)
 
 ### Customize
 - Change colors
