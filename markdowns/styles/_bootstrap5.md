@@ -72,19 +72,29 @@
 - `container-{breakpoint}`: 100% width until the specified breakpoint is reacted
 - `container-fluid`: full width viewport
 
-#### Grid: 1 row has max 12 cols (default)
+#### Grid 
+> - 1 row has max 12 cols (default)
+> - `row` & `col` class built with flex system
+> - `grid` & `g-col-*` class built with grid system
+
 - `grid`
   - `gap-{[0, 5]}`
   - `row-gap-{[0, 5]}`
   - `col-gap-{[0, 5]}`
+  - `g-col-*`
+  - `g-start-{n > 1}`
+  - style options: `style=""`
+    - `--bs-columns`
+    - `--bs-rows` -> child: `grid-row`
+    - `--bs-gap: horizontal vertical`
 - `row`
   - `align-items-{start|center|end}`
   - `justify-content-{start|center|end}`
   - `justify-content-{around|between|evenly}` - space around, space between, space evenly
   - `g-*`, `gx-*`, `gy-*` - gap, column-gap, row-gap
   - `g-{breakpoint}-*`
-- `row-cols-{max_in_row | auto}` - set maximum cols per row
-- `row-cols-{breakpoint}-{max_in_row | auto}` - set maximum cols per row when reacted breakpoint
+  - `row-cols-{max_in_row | auto}` - set maximum cols per row
+  - `row-cols-{breakpoint}-{max_in_row | auto}` - set maximum cols per row when reacted breakpoint
 - `col` - nested in row or **stand alone**, auto resize
   - `align-self-{start|center|end}`
   - `order-{first|[1, 6]|last}` - reorder col by css
@@ -93,7 +103,8 @@
 - `col-{[1, 12]}` - apply max-width (%)
 - `col-{breakpoint}-{[1, 12]|auto}` - apply max-width (%) when reacted breakpoint
 
-#### Flex: every thing go to the left
+#### Flex
+> Every thing go to the left
 - `d-flex`
   - `flex-{row|column}`
   - `flex-{breakpoint}-{row|column}`
@@ -121,7 +132,7 @@
   - `flex-{grow|shrink}-{0|1}`
   - `flex-{breakpoint}-{grow|shrink}-{0|1}`
 
-#### Space:
+#### Space
 - Size:
   - 0
   - 1 (0.25rem)
@@ -141,6 +152,19 @@
 - Padding: `p-{size}`, `p{position}-{size}`, `p{position}-{breakpoint}-{size}`
 
 ### Components
+#### Content
+> Bootstrap has default font based on platform
+| Font | Using |
+| --- | --- |
+| system-ui | Cross-platform (default user interface font) |
+| san-serif | fallback |
+| Arial | Basic web fallback |
+| -apple-system | Safari for macOS & iOS |
+| "Helvetica Neue" | older macOS & iOS |
+| Roboto | Android |
+| "Segoe UI" | Windows |
+| "Noto Sans"<br>"Liberation Sans" | Linux |
+| "Apple Color Emoji"<br>"Segoe UI Emoji"<br>"Segoe UI Symbol", "Noto Color Emoji" | Emoji |
 
 ### Resources
 
