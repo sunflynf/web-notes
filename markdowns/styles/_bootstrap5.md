@@ -79,6 +79,23 @@
 - `container-{breakpoint}`: 100% width until the specified breakpoint is reacted
 - `container-fluid`: full width viewport
 
+#### Display
+> **Block display**
+> - none
+> - inline
+> - inline-block
+> - block
+> - grid
+> - inline-grid
+> - flex
+> - inline-flex
+> - table
+> - table-cell
+> - table-row
+- `d-{block_display}`
+- `d-{breakpoint}-{block_display}`
+- `d-print-{block_display}` - Print mode
+
 #### Grid 
 > - 1 row has max 12 cols (default)
 > - `row` & `col` class built with flex system
@@ -205,9 +222,11 @@
 - List:
   - `list-unstyled` - remove marked
   - `list-inline` + `list-inline-item`
+
 #### Image
 - `img-fluid` - width: 100%, height: "auto"
 - `img-thumbnail` - make border
+
 #### Table
 - table
   - `table` - default based on current `data-bs-theme`
@@ -226,24 +245,33 @@
 - tr
   - `table-active` - can apply to `<td>`
   - `align-{top|middle|bottom}` - vertical
+ 
 #### Block
 - `rounded` - border-radius
 - `rounded-{[0, 5]}`
 - `border`
 - `border-{color_variant}`
+- `visually-hidden` - hidden in UI (not remove element as `display: none`)
+
 #### Form
+- `form-text` - extra text in form (can use as hint)
+- `invalid-feedback`
 - label
   - `form-label`
+  - `col-form-label` - apply in horizontal form (auto align center vertical)
+  - `col-form-label-{sm|lg}`
 - input
   - `form-control` - can apply to `<textarea>`
   - `form-control-{sm|lg}` - add to change size
   - `form-control-plaintext` - remove border + using with `readonly`
   - `form-control-color` - input[type="color"]
   - `form-range`
-- `form-text` - extra text in form (can use as feedback or hint)
+  - `is-{valid|invalid}` - style for input after vadidate
 - select
   - `form-select`
   - `form-select-{sm|lg}`
+- form floating (wrap by `<div>`) - label auto change
+  - `form-floating`
 - form check (wrap by `<div>`) apply both checkbox and radio
   - `form-check` - can add `form-switch` to change type of checkbox (not radio)
   - `form-check-reverse`
@@ -253,13 +281,20 @@
 - form check (style: button)
   - input: `btn-check`
   - label: `btn btn-{color_variants}` + extra class of Button
+- tooltip feedback (`<div>`)
+  - Add class `position-relative` to wrapper **div**
+  - Add class `{valid|invalid}-tooltip` to div show after validate  
 - input group (wrap by `<div class="input-group">`)
-  - child: `<span class="input-group-text">` + `<input class="form-control" />`
+  - `input-group-{sm|lg}`
+  - `has-validation` - fixed border radius issue after add valid class
+  - childs:
+    - `<span class="input-group-text">`
+    - `<input class="form-control" />`
+    - button
+    - dropdown
+
 ![image](https://github.com/sunflynf/web-notes/assets/75079929/aad40b5a-b938-427b-bf65-ff960f9feac2)
 
-
 ### Resources
-
-### Versions
 - [Bootstrap 5.2](https://getbootstrap.com/docs/5.2)
 - [Bootstrap 5.3](https://getbootstrap.com/docs/5.3)
