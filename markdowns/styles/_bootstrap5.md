@@ -175,6 +175,7 @@
 | "Apple Color Emoji"<br>"Segoe UI Emoji"<br>"Segoe UI Symbol", "Noto Color Emoji" | Emoji |
 
 ```html
+<!-- Example using Figure display -->
 <figure>
   <blockquote class="blockquote">
     <p>A well-known quote, contained in a blockquote element.</p>
@@ -182,6 +183,10 @@
   <figcaption class="blockquote-footer">
     Someone famous in <cite title="Source Title">Source Title</cite>
   </figcaption>
+</figure>
+<figure class="figure">
+  <img src="..." class="figure-img img-fluid rounded" alt="...">
+  <figcaption class="figure-caption">A caption for the above image.</figcaption>
 </figure>
 ```
 
@@ -226,6 +231,32 @@
 - `rounded-{[0, 5]}`
 - `border`
 - `border-{color_variant}`
+#### Form
+- label
+  - `form-label`
+- input
+  - `form-control` - can apply to `<textarea>`
+  - `form-control-{sm|lg}` - add to change size
+  - `form-control-plaintext` - remove border + using with `readonly`
+  - `form-control-color` - input[type="color"]
+  - `form-range`
+- `form-text` - extra text in form (can use as feedback or hint)
+- select
+  - `form-select`
+  - `form-select-{sm|lg}`
+- form check (wrap by `<div>`) apply both checkbox and radio
+  - `form-check` - can add `form-switch` to change type of checkbox (not radio)
+  - `form-check-reverse`
+  - `form-check-inline` - multiple inline check
+  - input: `form-check-input`
+  - label: `form-check-label`
+- form check (style: button)
+  - input: `btn-check`
+  - label: `btn btn-{color_variants}` + extra class of Button
+- input group (wrap by `<div class="input-group">`)
+  - child: `<span class="input-group-text">` + `<input class="form-control" />`
+![image](https://github.com/sunflynf/web-notes/assets/75079929/aad40b5a-b938-427b-bf65-ff960f9feac2)
+
 
 ### Resources
 
