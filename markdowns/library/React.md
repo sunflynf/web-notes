@@ -34,7 +34,7 @@ root.render(<p>Hello</p>);
 ### JSX
 > - JavaScript XML
 > - Write HTML in JS
-> - <> | <Fragment> | <React.Fragment>
+> - `<>` | `<Fragment>` | `<React.Fragment>`
 ```jsx
 const secretText = 'Daniel';
 const age = 17;
@@ -61,8 +61,18 @@ const users = (
   - `componentDidUpdate() {}` - Call after component update
   - `componentWillUnmount() {}` - Call before component is about to be removed
 - function <Name>(props?) { return <JSX> }
-  - Props: { attr1: value1, attr2: value2, ..., attrN: valueN }
-  - Using with props `<Component attr1={value1} {...otherAttr} />`
+  - Props: `{ children: null|JSX.Element, attr1: value1, attr2: value2, ..., attrN: valueN }`
+  - Using with props: `<Component attr1={value1} {...otherAttr} />`
+  - Using with children: `<Parent {...attrs}><Children /></Parent>`
+  - Event
+    - Based on HTML Events
+    - `on<EventName>={(event?) => {}}`
+  - Conditionals
+    - `conditions ? <CompIfTrue /> : <CompIfFalse />`
+    - `conditions && <CompIfTrue />`
+  - List:
+    - Using: `{listRender.map((item, index) => { return (<JSX key={index} {...item} />); } )}`
+    - Each children should have a unique key
 
 ```jsx
 class Car1 extends React.Component {
@@ -88,8 +98,9 @@ class Car1 extends React.Component {
 function Car2() {
   return <h2>Hi, I am a Car!</h2>;
 }
-// Arrow function
-const Garage = () => {
+// Arrow function (with default props)
+const Garage = ({ showGarage = true }) => {
+  if (!showGarage) return <Fragment />;
   return (
     <>
       <h1>Who lives in my Garage?</h1>
