@@ -34,8 +34,8 @@ root.render(<p>Hello</p>);
 ### JSX
 > - JavaScript XML
 > - Write HTML in JS
+> - <> | <Fragment> | <React.Fragment>
 ```jsx
-// <> is React.Fragment
 const secretText = 'Daniel';
 const age = 17;
 const users = (
@@ -50,8 +50,21 @@ const users = (
 ```
 
 ### Components
+- Lifecycle: Mounting (add + 1st render), Updating (re-render), Unmounting (remove)
+- **Class** <Name> extends **React.Component**
+  - `contructor(props?) { super(props?); // state configs } `
+  - `static getDerivedStateFormProps(props, state) { return {} }` - Call before render (create & update)
+  - `render() { return <JSX/> }`
+  - `componentDidMount() {}` - Call after 1st render
+  - `shouldComponentUpdate() { return true|false; }` - Set up 1 time
+  - `getSnapshotBeforeUpdate(props, state) {}` - access props & state _before_ update
+  - `componentDidUpdate() {}` - Call after component update
+  - `componentWillUnmount() {}` - Call before component is about to be removed
+- function <Name>(props?) { return <JSX> }
+  - Props: { attr1: value1, attr2: value2, ..., attrN: valueN }
+  - Using with props `<Component attr1={value1} {...otherAttr} />`
+
 ```jsx
-// Lifecycle: Mounting (add + render), Updating (re-render), Unmounting (remove)
 class Car1 extends React.Component {
   constructor(props) {
     super(props);
