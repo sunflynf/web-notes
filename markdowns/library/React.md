@@ -50,30 +50,18 @@ const users = (
 ```
 
 ### Components
-- Lifecycle: Mounting (add + 1st render), Updating (re-render), Unmounting (remove)
-- **Class** <Name> extends **React.Component**
-  - `contructor(props?) { super(props?); // state configs } `
-  - `static getDerivedStateFormProps(props, state) { return {} }` - Call before render (create & update)
-  - `render() { return <JSX/> }`
-  - `componentDidMount() {}` - Call after 1st render
-  - `shouldComponentUpdate() { return true|false; }` - Set up 1 time
-  - `getSnapshotBeforeUpdate(props, state) {}` - access props & state _before_ update
-  - `componentDidUpdate() {}` - Call after component update
-  - `componentWillUnmount() {}` - Call before component is about to be removed
-- function <Name>(props?) { return <JSX> }
-  - Props: `{ children: null|JSX.Element, attr1: value1, attr2: value2, ..., attrN: valueN }`
-  - Using with props: `<Component attr1={value1} {...otherAttr} />`
-  - Using with children: `<Parent {...attrs}><Children /></Parent>`
-  - Event
-    - Based on HTML Events
-    - `on<EventName>={(event?) => {}}`
-  - Conditionals
-    - `conditions ? <CompIfTrue /> : <CompIfFalse />`
-    - `conditions && <CompIfTrue />`
-  - List:
-    - Using: `{listRender.map((item, index) => { return (<JSX key={index} {...item} />); } )}`
-    - Each children should have a unique key
+> **Lifecycle**: Mounting (add + 1st render), Updating (re-render), Unmounting (remove)
 
+#### Class Component
+**Class** <Name> extends **React.Component**
+- `contructor(props?) { super(props?); // state configs } `
+- `static getDerivedStateFormProps(props, state) { return {} }` - Call before render (create & update)
+- `render() { return <JSX/> }`
+- `componentDidMount() {}` - Call after 1st render
+- `shouldComponentUpdate() { return true|false; }` - Set up 1 time
+- `getSnapshotBeforeUpdate(props, state) {}` - access props & state _before_ update
+- `componentDidUpdate() {}` - Call after component update
+- `componentWillUnmount() {}` - Call before component is about to be removed
 ```jsx
 class Car1 extends React.Component {
   constructor(props) {
@@ -93,8 +81,22 @@ class Car1 extends React.Component {
 // Use with props: <Car1 model="Mustang" />
 ```
 
+#### Function Component
+function <Name>(props?) { return <JSX> }
+- Props: `{ children: null|JSX.Element, attr1: value1, attr2: value2, ..., attrN: valueN }`
+- Using with props: `<Component attr1={value1} {...otherAttr} />`
+- Using with children: `<Parent {...attrs}><Children /></Parent>`
+- Event
+  - Based on HTML Events
+  - `on<EventName>={(event?) => {}}`
+- Conditionals
+  - `conditions ? <CompIfTrue /> : <CompIfFalse />`
+  - `conditions && <CompIfTrue />`
+- List:
+  - Using: `{listRender.map((item, index) => { return (<JSX key={index} {...item} />); } )}`
+  - Each children should have a unique key
+
 ```jsx
-// Function
 function Car2() {
   return <h2>Hi, I am a Car!</h2>;
 }
