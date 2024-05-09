@@ -82,7 +82,7 @@ class Car1 extends React.Component {
 ```
 
 #### Function Component
-function <Name>(props?) { return <JSX> }
+function <Name>(props?) { return `<JSX/>` }
 - Props: `{ children: null|JSX.Element, attr1: value1, attr2: value2, ..., attrN: valueN }`
 - Using with props: `<Component attr1={value1} {...otherAttr} />`
 - Using with children: `<Parent {...attrs}><Children /></Parent>`
@@ -150,3 +150,216 @@ const Custom = ({ name }) => {
 
 
 ### Hooks
+- Hooks can only be called inside **React function components**.
+- Hooks can only be called at the top level of a component.
+- Hooks cannot be conditional
+- `import { use<HookName> } from <'react'|'address-of-custom-hooks'>`
+
+#### useState
+- Structure `const [state, setState] = useState(initState);`
+- `state` change after setState call -> component re-render
+- `setState(newState)` | `setState(prevState => { return newState })` (use with callback)
+
+```jsx
+import { useState } from "react";
+
+function Car() {
+  const [car, setCar] = useState({
+    brand: "Ford",
+    model: "Mustang",
+    year: "1964",
+    color: "red"
+  });
+
+  const toggleColor = () => {
+    setCar(previousState => {
+      const color = previousState.color === "red" ? "blue" : "red";
+      return { ...previousState, color }
+    });
+  }
+
+  return (
+    <>
+      <h1>My {car.brand}</h1>
+      <p>
+        It is a {car.color} {car.model} from {car.year}.
+      </p>
+      <button
+        type="button"
+        onClick={toggleColor}
+      >Toggle color</button>
+    </>
+  )
+}
+```
+
+#### useReducer
+- Tracking complex state (like object) -> Same tech like [Redux](https://redux.js.org/)
+- Custom handle state
+- Syntax: `const [state, dispatch] = useReducer(reducer, initialState);`
+- **reducer**: `const reducer = (currentState, action: { type, [any]?: value }) => { return newState }`
+- **Update**: `dispatch({ type, [any]?: value })`
+
+```jsx
+import { useReducer } from 'react';
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'incremented_age': {
+      return {
+        name: state.name,
+        age: state.age + 1
+      };
+    }
+    case 'changed_name': {
+      return {
+        name: action.nextName,
+        age: state.age
+      };
+    }
+  }
+  throw Error('Unknown action: ' + action.type);
+}
+
+const initialState = { name: 'Taylor', age: 42 };
+
+export default function Form() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  function handleButtonClick() {
+    dispatch({ type: 'incremented_age' });
+  }
+
+  function handleInputChange(e) {
+    dispatch({
+      type: 'changed_name',
+      nextName: e.target.value
+    }); 
+  }
+
+  return (
+    <>
+      <input
+        value={state.name}
+        onChange={handleInputChange}
+      />
+      <button onClick={handleButtonClick}>
+        Increment age
+      </button>
+      <p>Hello, {state.name}. You are {state.age}.</p>
+    </>
+  );
+}
+```
+
+#### useRef
+- Persist value of component (not affect if component re-render)
+- Used to access a DOM element directly
+- Declare: `const elRef = useRef(initValue || undefined);` // Recommend using initValue if ref not element
+- Add to element: `<element ref={elRef} />`
+- Value of ref
+  - Get: `elRef.current`
+  - Set: `elRef.current = any;` 
+
+#### useEffect & useLayoutEffect
+- Perform side effect in component
+  - fetching data
+  - directly update DOM
+  - timers
+- Syntax: `useEffect(<function>, [...dependencies]?)`
+  - Effect run 1st after component render
+  - Effect recall if dependencies has change, none if dependencies is []
+- `useLayoutEffect`
+  - A version of `useEffect` that fires before the browser repaints the screen.
+  - Only use in case need to calculate layout before show UI (tooltips, popover, ...)
+
+```jsx
+import { useState, useEffect } from "react";
+
+function Timer() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let timer = setTimeout(() => {
+      setCount((count) => count + 1);
+    }, 1000);
+    // clean up function
+    return () => clearTimeout(timer)
+  }, [count]); // render when count change
+
+  return <h1>I've rendered {count} times!</h1>;
+}
+```
+
+#### useCallback & useMemo
+- **Problem**: Component re-render
+  - -> function & value inside (not state) re-render
+  - -> children use props includes that function & value re-render
+  - => Need to control re-render when it need with dependencies
+- `useCallback`
+  - Using: `const memorizeFunction = useCallback(() => {}, [...dependencies])`
+  - Avoid child component re-render if function of parent re-render
+- `useMemo`
+  - Using: `const memorizeValue = useMemo(() => any, [...dependencies])`
+
+#### useContext
+- Manage state globally
+- State use in component that need it, avoid put parent props -> child props -> ... -> n-child props ("prop drilling")
+- Using
+  - Create: `const Context = createContext(defaultValue?);` - This is API?
+    - Context now is High Order Component
+    - defaultValue can put inside to get recommend for state (IDE Support)
+  - Wrap: `<Context.Provider value={{ state1, setState1, state2, sampleArr, ..., any }}>{children}</Context.Provider>`
+    - All children inside <Context.Provider> can use all props in value
+    - value should be an object
+  - Get value `const { state1, state2 } = useContext(Context);`
+    - Put Context to `useContext` to get correct value holder
+    - Get only props need to using 
+
+```jsx
+import { useState, createContext, useContext } from "react";
+
+const UserContext = createContext();
+
+function Component1() {
+  const [user, setUser] = useState("Jesse Hall");
+
+  return (
+    <UserContext.Provider value={user}>
+      <h1>{`Hello ${user}!`}</h1>
+      <Component2 />
+    </UserContext.Provider>
+  );
+}
+
+function Component2() {
+  return (
+    <>
+      <h1>Component 2</h1>
+      <Component3 />
+    </>
+  );
+}
+
+function Component3() {
+  return (
+    <>
+      <h1>Component 3</h1>
+      <Component4 />
+    </>
+  );
+}
+
+function Component4() {
+  const user = useContext(UserContext);
+
+  return (
+    <>
+      <h1>Component 4</h1>
+      <h2>{`Hello ${user} again!`}</h2>
+    </>
+  );
+}
+```
+
+### APIs
