@@ -436,7 +436,9 @@ export default function App() {
 
 #### useSyncExternalStore
 
-#### useTransition
+#### useTransition & startTransition
 
 ### APIs
+#### lazy
 
+#### forwardRef
