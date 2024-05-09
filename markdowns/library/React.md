@@ -116,4 +116,37 @@ export default Garage;
 // Using: import Garage from 'components/Garage';
 ```
 
+### Styles component
+- Using sass/scss: `npm i sass`
+- Both **CSS** & **SASS** can using as file or module
+
+```css
+// custom.css
+.custom-font-weight {
+  font-weight: bold;
+}
+.bg-red {
+  background: #FF0000;
+}
+```
+```jsx
+import React from 'react'; // To use JSX
+import styleModule from 'custom.module.css'; // import as module
+import 'custom.css'; // using css file
+
+const Custom = ({ name }) => {
+  const customStyle = {
+    fontSize: '2rem',
+    color: '#333333'
+  };
+  // css module class will display like [filename]_[classname]__[hash]
+  return (
+    <div className='custom-font-weight' style={styleModule['bg-red']}>
+      <span style={customStyle}>{'Hello ' + name}</span>
+    </div>
+  );
+}
+```
+
+
 ### Hooks
