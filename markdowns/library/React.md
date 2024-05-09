@@ -116,6 +116,18 @@ export default Garage;
 // Using: import Garage from 'components/Garage';
 ```
 
+#### Feature Component
+- `<Fragment> | <>` - Wrap all Elements and render in UI without unexpected element
+- `<Suspense fallback={<Spinner />}>{children}</Suspense>`
+  - Only Suspense-enabled data sources will activate the Suspense component.
+    - Data fetching with Suspense-enabled frameworks like **Relay** and **Next.js**
+    - Lazy-loading component code with `lazy`
+    - Reading the value of a **Promise** with `use`
+- `<StrictMode><App/></StrictMode>` - find common bugs in your components early during development
+- `<Profiler id='Component' onRender={onRender}><Component /></Profiler>`
+  - `const onRender = (id, phase, actualDuration, baseDuration, startTime, commitTime) => {}`
+  - [View params explains](https://react.dev/reference/react/Profiler#onrender-parameters)
+
 ### Styles component
 - Using sass/scss: `npm i sass`
 - Both **CSS** & **SASS** can using as file or module
@@ -193,6 +205,34 @@ function Car() {
 }
 ```
 
+#### useDeferredValue
+> - **Debouncing** - wait for the user to stop typing (e.g. for a second) before updating the list.
+> - **Throttling** - update the list every once in a while (e.g. at most once a second).
+- `useDeferredValue` is better suited to optimizing rendering because it is **deeply integrated with React itself** and **adapts to the user’s device**.
+- Usage
+  - Showing stale content while fresh content is loading
+  - Deferring re-rendering for a part of the UI
+```jsx
+import { useDeferredValue } from 'react';
+
+export default function App() {
+  const [filter, setFilter] = useState('');
+  const deferredFitler = useDeferredValue(filter);
+
+  return (
+    <div className="container mt-3">
+      <input
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+        type="text"
+        className="w-100"
+      />
+      <ListAnimalMap filter={deferredFitler} />
+    </div>
+  );
+}
+```
+
 #### useReducer
 - Tracking complex state (like object) -> Same tech like [Redux](https://redux.js.org/)
 - Custom handle state
@@ -259,7 +299,10 @@ export default function Form() {
 - Add to element: `<element ref={elRef} />`
 - Value of ref
   - Get: `elRef.current`
-  - Set: `elRef.current = any;` 
+  - Set: `elRef.current = any;`
+ 
+#### useImperativeHandle
+
 
 #### useEffect & useLayoutEffect
 - Perform side effect in component
@@ -384,11 +427,16 @@ export default function App() {
     <>
       <h2>Choose password</h2>
       <PasswordField />
-      <h2>Confirm password</h2>
+      <h2>Confirm password</h2>s
       <PasswordField />
     </>
   );
 }
 ```
 
+#### useSyncExternalStore
+
+#### useTransition
+
 ### APIs
+
