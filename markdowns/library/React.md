@@ -362,4 +362,33 @@ function Component4() {
 }
 ```
 
+#### useId
+- `const uniqueId = useId();`
+- UniqueId will create 1 time for Component when it render 
+- Use in case common Component (like Input) reuse more than 2 in parent component -> Avoid dupplicate Id when using 
+```jsx
+import { useId } from 'react';
+
+function PasswordField() {
+  const passwordHintId = useId();
+  return (
+    <>
+      <label htmlFor={passwordHintId}>Password</label>
+      <input type="password" id={passwordHintId} />
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <>
+      <h2>Choose password</h2>
+      <PasswordField />
+      <h2>Confirm password</h2>
+      <PasswordField />
+    </>
+  );
+}
+```
+
 ### APIs
