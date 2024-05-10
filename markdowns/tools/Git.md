@@ -13,3 +13,5 @@
 | --- | --- |
 | `git --version` | Check version |
 | `git config --global user.name "exp"` <br> `git config --global user.gmail "exp@email.com"` | Setting |
+| `git init` | Initialize Git on current folder |
+| `git status` | Checking status of repo |
