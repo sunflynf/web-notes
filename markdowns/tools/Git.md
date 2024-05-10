@@ -20,8 +20,8 @@
 | `git add --all` <br> `git add -A` | Staged all files |
 | `git commit -m "Updated"` | Commit with message <br> Add `-a` for automatically stage every changed |
 
-`*`
-- ?? - Untracked files
-- A - Files added to stage
-- M - Modified files
-- D - Deleted files
+- Status short ver
+  - ?? - Untracked files
+  - A - Files added to stage
+  - M - Modified files
+  - D - Deleted files
