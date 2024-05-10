@@ -121,7 +121,7 @@ export default Garage;
 - `<Suspense fallback={<Spinner />}>{children}</Suspense>`
   - Only Suspense-enabled data sources will activate the Suspense component.
     - Data fetching with Suspense-enabled frameworks like **Relay** and **Next.js**
-    - Lazy-loading component code with `lazy`
+    - Lazy-loading component code with `lazy`: `const LazyReviewCar = lazy(() => import('./components/cars/ReviewCar.js'));')`
     - Reading the value of a **Promise** with `use`
 - `<StrictMode><App/></StrictMode>` - find common bugs in your components early during development
 - `<Profiler id='Component' onRender={onRender}><Component /></Profiler>`
@@ -162,8 +162,17 @@ const Custom = ({ name }) => {
 
 
 ### Hooks
-- Hooks can only be called inside **React function components**.
-- Hooks can only be called at the top level of a component.
+- Rules of Hooks
+  - Call them at the top level in the body of
+    - function component
+    - custom Hook 
+  - Do not call Hooks
+    - inside conditions or loops.
+    - after a conditional return statement. **NOTE HERE FOR NEXT PROJECT**
+    - in event handlers.
+    - in class components.
+    - inside functions passed to useMemo, useReducer, or useEffect.
+    - inside try/catch/finally blocks.
 - Hooks cannot be conditional
 - `import { use<HookName> } from <'react'|'address-of-custom-hooks'>`
 
@@ -302,7 +311,39 @@ export default function Form() {
   - Set: `elRef.current = any;`
  
 #### useImperativeHandle
+- Customize the handle exposed as a `ref`
+- Combine with `forwardRef`
+- `useImperativeHandle(ref, createHandle, dependencies?)`
+- NOTE: **If you can express something as a prop, you should not use a ref.**
+```jsx
+import React, { forwardRef, useRef, useImperativeHandle } from 'react';
 
+const ValidInput = forwardRef((props, ref) => {
+  const inputRef = useRef();
+
+  useImperativeHandle(ref,
+    () => ({
+      addRandomNumber: (max = Number.MAX_SAFE_INTEGER) => {
+        inputRef.current.value = (Math.random() * max).toFixed(0);
+      },
+    }), []);
+
+  return <input type="text" ref={inputRef} {...props} />;
+});
+
+export default function App() {
+  const pointingRef = useRef();
+  const onBtnClick = () => pointingRef.current && pointingRef.current.addRandomNumber();
+
+  return (
+    <div>
+      <ValidInput ref={pointingRef} />
+      <button type="button" onClick={onBtnClick}>Random number</button>
+    </div>
+  );
+}
+
+```
 
 #### useEffect & useLayoutEffect
 - Perform side effect in component
@@ -434,11 +475,13 @@ export default function App() {
 }
 ```
 
-#### useSyncExternalStore
+---
+- **Suspense** + `lazy`
+- `createContext` -> Context (Context.Provider value={}) -> `useContext`(Context)
+- `useRef` -> `forwardRef` -> `useImperativeHandle`
+---
 
-#### useTransition & startTransition
+### ReactDOM.createPortal
+- Render some children into a different part of the DOM
+- `createPortal(children, domNode, key?)`
 
-### APIs
-#### lazy
-
-#### forwardRef
