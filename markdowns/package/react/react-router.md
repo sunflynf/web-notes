@@ -139,29 +139,6 @@ function Team() {
   console.log(params.teamId); // "hotspur"
 }
 ```
-```jsx
-// --- Optional Segments (:thing?) ---
-<Route
-  // this path will match URLs like
-  // - /categories
-  // - /en/categories
-  // - /fr/categories
-  path="/:lang?/categories"
-  // the matching param might be available to the loader
-  loader={({ params }) => {
-    console.log(params["lang"]); // "en"
-  }}
-  // and the action
-  action={({ params }) => {}}
-  element={<Categories />}
-/>;
-
-// and the element through `useParams`
-function Categories() {
-  let params = useParams();
-  console.log(params.lang);
-}
-```
 
 ### Components
 
