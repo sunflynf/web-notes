@@ -1,4 +1,5 @@
 | Command | Use for |
 | --- | --- |
 | `mkdir <folder-name>` | Create new folder |
-| `cd <folder-name>` | Move to folder |
+| `cd <folder-path>` | Move to folder |
+| `cd ..` | Move to previous folder |
