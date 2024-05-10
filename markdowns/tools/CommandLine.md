@@ -1,2 +1,4 @@
-`mkdir` <folder-name> - Create new folder
-`cd` <folder-name> - Move to folder
+| Command | Use for |
+| --- | --- |
+| `mkdir` <folder-name> | Create new folder |
+| `cd` <folder-name> | Move to folder |
