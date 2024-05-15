@@ -234,14 +234,28 @@ console.log(createPair<string, number>('hello', 42)); // ['hello', 42]
 - `Record<K, V>`
 - `Excludes<TypeUnion, TypeRemove>`
 - `Readonly<T>` - Apply TS features only
-- `Patial<I>`
-- `Required<I>`
-- `Omit<I, 'key1' | 'key2'>`
-- `Pick<I, 'key1' | 'key2'>`
+- `Patial<I>` - All props are **OPTIONAL**
+- `Required<I>` - All props are **REQUIRED**
+- `Omit<I, 'key1' | 'key2'>` - Remove props of interface
+- `Pick<I, 'key1' | 'key2'>` - Choose props of interface
 - function
   - `ReturnType<FT>`
   - `Parameters<FT>[paramIndex]`
 
 ```ts
+const nameAgeMap: Record<string, number> = { 'Alice': 21, 'Bob': 25 };
+
+interface Car {
+  make: string;
+  model: string;
+  mileage?: number;
+}
+
+const nothingCar: Partial<Car> = {};
+let myCar: Required<Car> = {
+  make: 'Ford',
+  model: 'Focus',
+  mileage: 12000 // `Required` forces mileage to be defined
+};
 
 ```
