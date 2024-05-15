@@ -234,10 +234,10 @@ console.log(createPair<string, number>('hello', 42)); // ['hello', 42]
 - `Record<K, V>`
 - `Excludes<TypeUnion, TypeRemove>`
 - `Readonly<T>` - Apply TS features only
-- `Patial<I>` - All props are **OPTIONAL**
-- `Required<I>` - All props are **REQUIRED**
-- `Omit<I, 'key1' | 'key2'>` - Remove props of interface
-- `Pick<I, 'key1' | 'key2'>` - Choose props of interface
+- `Patial<I>` - All keys are **OPTIONAL**
+- `Required<I>` - All keys are **REQUIRED**
+- `Omit<I, 'key1' | 'key2'>` - Remove keys of interface
+- `Pick<I, 'key1' | 'key2'>` - Choose keys of interface
 - function
   - `ReturnType<FT>`
   - `Parameters<FT>[paramIndex]`
@@ -252,10 +252,22 @@ interface Car {
 }
 
 const nothingCar: Partial<Car> = {};
-let myCar: Required<Car> = {
+const myCar: Required<Car> = {
   make: 'Ford',
   model: 'Focus',
   mileage: 12000 // `Required` forces mileage to be defined
 };
 
+type Primitive = string | number | boolean
+const value: Exclude<Primitive, string> = "Hello"; // Error
+
+type PointGenerator = () => { x: number; y: number; };
+// { x: number, y: number }
+const point: ReturnType<PointGenerator> = { x: 10, y: 20 };
+
+type PointPrinter = (p: { x: number; y: number; }, ss?: boolean) => void;
+// 0: { x: number, y: number }
+// 1: boolean
+// 2: undefined
+const point: Parameters<PointPrinter>[0] = { x: 10, y: 20 };
 ```
