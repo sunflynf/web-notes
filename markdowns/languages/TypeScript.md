@@ -17,6 +17,7 @@
   - `any`
   - `unknown` - safe `any`, add type later with casting (use "as" keyword)
   - `never`, `undefined`, `null` - maybe useless
+  - `void` - for **function** return `undefined`
   - Array
     - `const arr: number[] = [];` | `string[]` | `Something[]`
     - `const PAGE_MODE: readonly string[] = ['view', 'create', 'edit']`
@@ -46,3 +47,190 @@ enum StatusCodes {
 ```
 
 ### Interfaces & Type Aliases
+#### interface
+- `interface` only apply to **object**
+- `interface` can `extend` each other's definition.
+```ts
+interface Rectangle {
+  height: number,
+  width: number
+}
+const rectangle: Rectangle = {
+  height: 20,
+  width: 10
+};
+
+interface ColoredRectangle extends Rectangle {
+  color: string
+}
+const coloredRectangle: ColoredRectangle = {
+  height: 20,
+  width: 10,
+  color: "red"
+};
+```
+#### type
+> **NOTE**: Recommend using `type` instead of `interface` if not use `class` 
+```ts
+type CarYear = number | string; // Union types - value can be 1 of 2 types
+type CarType = string;
+type CarModel = string;
+type Car = {
+  year: CarYear,
+  type: CarType,
+  model: CarModel
+}
+
+const carYear: CarYear = 2001; // or "2001"
+const carType: CarType = "Toyota"
+const carModel: CarModel = "Corolla"
+const car: Car = {
+  year: carYear,
+  type: carType,
+  model: carModel
+};
+```
+```ts
+// Type Alias
+type Negate = (value: number) => number;
+
+// in this function, the parameter `value` automatically gets assigned the type `number` from the type `Negate`
+const negateFunction: Negate = (value) => value * -1;
+```
+
+### Casting
+> Casting doesn't actually change the type of the data within the variable => Force casting
+
+1. `variable as type`. Exp: `x as string`
+2. `<type>variable`. Exp: `<string>x`
+3. **Force casting**: `(variable as unknown) as type`. Exp: `(x as unknown) as number`
+
+### Class
+- Review: [JavaScript Class](./JavaScript)
+- **JavaScript Class with clear OOP**
+- Visibility modifiers
+  - `private` - Class member only
+  - `protected` - Class member, Classes inherit it
+  - `public` - anywhere
+- `implements` multiple `interface`
+- `extends` 1 `class`
+- `override` function
+- `abstract` class - not use to create Object
+
+```ts
+class Person {
+  private name: string;
+  // private readonly name: string; // now name can't change
+
+  // Use private with params
+  // public constructor(private name: string) {}
+  public constructor(name: string) {
+    this.name = name;
+  }
+
+  public getName(): string {
+    return this.name;
+  }
+}
+
+const person = new Person("Jane");
+console.log(person.getName()); // person.name isn't accessible from outside the class since it's private
+```
+```ts
+interface Shape {
+  getArea: () => number;
+}
+
+class Rectangle implements Shape {
+  // using protected for these members allows access from classes that extend from this class, such as Square
+  public constructor(protected readonly width: number, protected readonly height: number) {}
+
+  public getArea(): number {
+    return this.width * this.height;
+  }
+
+  public toString(): string {
+    return `Rectangle[width=${this.width}, height=${this.height}]`;
+  }
+}
+
+class Square extends Rectangle {
+  public constructor(width: number) {
+    super(width, width);
+  }
+
+  // this toString replaces the toString from Rectangle
+  public override toString(): string {
+    return `Square[width=${this.width}]`;
+  }
+}
+```
+```ts
+abstract class Polygon {
+  public abstract getArea(): number;
+
+  public toString(): string {
+    return `Polygon[area=${this.getArea()}]`;
+  }
+}
+
+class Rectangle extends Polygon {
+  public constructor(protected readonly width: number, protected readonly height: number) {
+    super();
+  }
+
+  public getArea(): number {
+    return this.width * this.height;
+  }
+}
+```
+
+### Generic
+```ts
+// string is default type if it not provide
+class NamedValue<T = string> {
+  private _value: T | undefined;
+
+  constructor(private name: string) {}
+
+  public setValue(value: T) {
+    this._value = value;
+  }
+
+  public getValue(): T | undefined {
+    return this._value;
+  }
+
+  public toString(): string {
+    return `${this.name}: ${this._value}`;
+  }
+}
+
+const value = new NamedValue('myNumber');
+value.setValue('myValue');
+console.log(value.toString()); // myNumber: myValue
+
+const value2 = new NamedValue<number>('myNumber');
+value2.setValue(10);
+console.log(value2.toString()); // myNumber: 10
+```
+```ts
+interface Nested<T> {
+  something: T
+}
+type Wrapped<T> = { value: T };
+const wrappedValue: Wrapped<number> = { value: 10 };
+```
+```ts
+// extends limit types
+function createLoggedPair<S extends string | number, T extends string | number>(v1: S, v2: T): [S, T] {
+  console.log(`creating pair: v1='${v1}', v2='${v2}'`);
+  return [v1, v2];
+}
+console.log(createPair<string, number>('hello', 42)); // ['hello', 42]
+```
+
+### Utility Types
+```ts
+
+```
