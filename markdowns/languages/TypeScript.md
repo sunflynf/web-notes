@@ -231,6 +231,17 @@ console.log(createPair<string, number>('hello', 42)); // ['hello', 42]
 ```
 
 ### Utility Types
+- `Record<K, V>`
+- `Excludes<TypeUnion, TypeRemove>`
+- `Readonly<T>` - Apply TS features only
+- `Patial<I>`
+- `Required<I>`
+- `Omit<I, 'key1' | 'key2'>`
+- `Pick<I, 'key1' | 'key2'>`
+- function
+  - `ReturnType<FT>`
+  - `Parameters<FT>[paramIndex]`
+
 ```ts
 
 ```
