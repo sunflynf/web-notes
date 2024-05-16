@@ -72,7 +72,8 @@ const coloredRectangle: ColoredRectangle = {
 };
 ```
 #### type
-> **NOTE**: Recommend using `type` instead of `interface` if not use `class` 
+> **NOTE**: Recommend using `type` instead of `interface` if not use `class`
+> [Interface vs Type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#differences-between-type-aliases-and-interfaces)
 ```ts
 type CarYear = number | string; // Union types - value can be 1 of 2 types
 type CarType = string;
@@ -98,14 +99,14 @@ type Negate = (value: number) => number;
 
 // in this function, the parameter `value` automatically gets assigned the type `number` from the type `Negate`
 const negateFunction: Negate = (value) => value * -1;
-```
+``` 
 
 ### Casting
 > Casting doesn't actually change the type of the data within the variable => Force casting
 
 1. `variable as type`. Exp: `x as string`
 2. `<type>variable`. Exp: `<string>x`
-3. **Force casting**: `(variable as unknown) as type`. Exp: `(x as unknown) as number`
+3. **Force casting**: `(variable as unknown|any) as type`. Exp: `(x as unknown) as number`
 
 ### Class
 - Review: [JavaScript Class](./JavaScript)
@@ -273,3 +274,24 @@ type PointPrinter = (p: { x: number; y: number; }, ss?: boolean) => void;
 // 2: undefined
 const point: Parameters<PointPrinter>[0] = { x: 10, y: 20 };
 ```
+
+### TypeScript 5.x+
+#### Template Literal Types
+```ts
+type Color = "red" | "green" | "blue";
+type HexColor<T extends Color> = `#${string}`;
+
+// Usage:
+let myColor: HexColor<"blue"> = "#0000FF";
+```
+#### Index Signature Labels
+```ts
+type DynamicObject = { [key: string as `dynamic_${string}`]: string };
+
+// Usage:
+let obj: DynamicObject = { dynamic_key: "value" };
+```
+
+### Resources
+1. [TypeScript docs](https://www.typescriptlang.org/docs/)
+2. [w3schools - TypeScript](https://www.w3schools.com/typescript/index.php)
