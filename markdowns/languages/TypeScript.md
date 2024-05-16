@@ -109,7 +109,7 @@ const negateFunction: Negate = (value) => value * -1;
 3. **Force casting**: `(variable as unknown|any) as type`. Exp: `(x as unknown) as number`
 
 ### Class
-- Review: [JavaScript Class](./JavaScript)
+- Review: [JavaScript Class](./JavaScript.md)
 - **JavaScript Class with clear OOP**
 - Visibility modifiers
   - `private` - Class member only
