@@ -63,6 +63,8 @@ const rectangle: Rectangle = {
 interface ColoredRectangle extends Rectangle {
   color: string
 }
+// keyof ColoredRectangle -> 'height' | 'width' | 'color'
+// variable: keyof Interface (or ObjectType)
 const coloredRectangle: ColoredRectangle = {
   height: 20,
   width: 10,
