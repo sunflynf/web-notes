@@ -88,6 +88,59 @@ http.createServer(function (req, res) {
 
 // http://localhost:8080/?year=2017&month=July -> "2017 July"
 ```
+#### Testing
+```mjs
+import assert from 'node:assert';
+import test from 'node:test';
+
+test('that 1 is equal 1', () => {
+  assert.strictEqual(1, 1);
+});
+test('that throws as 1 is not equal 2', () => {
+  // throws an exception because 1 != 2
+  assert.strictEqual(1, 2);
+});
+```
+#### Read & Hash a file
+```mjs
+import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
+
+const hasher = createHash('sha1');
+hasher.setEncoding('hex');
+// ensure you have a `package.json` file for this test!
+hasher.write(await readFile('package.json'));
+hasher.end();
+const fileHash = hasher.read();
+```
+#### Stream pipeline
+```mjs
+import { pipeline } from 'node:stream/promises';
+import { createReadStream, createWriteStream } from 'node:fs';
+import { createGzip } from 'node:zlib';
+
+// ensure you have a `package.json` file for this test!
+await pipeline // 🤔
+(
+  createReadStream('package.json'),
+  createGzip(),
+  createWriteStream('package.json.gz')
+);
+```
+#### Threads
+```mjs
+import { Worker, isMainThread,
+  workerData, parentPort } from 'node:worker_threads';
+
+if (isMainThread) {
+  const data = 'some data';
+  const worker = new Worker(import.meta.filename, { workerData: data });
+  worker.on('message', msg => console.log('Reply from Thread:', msg));
+} else {
+  const source = workerData;
+  parentPort.postMessage(btoa(source.toUpperCase()));
+}
+```
 
 ### Resources
 1. [Node.js Documents (20.x)](https://nodejs.org/docs/latest-v20.x/api/index.html)
