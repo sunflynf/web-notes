@@ -481,11 +481,10 @@ export default function App() {
 - `useRef` -> `forwardRef` -> `useImperativeHandle`
 ---
 
-### Resources
-1. [React official page](https://react.dev/)
-2. [React - w3schools](https://www.w3schools.com/react/default.asp)
-
 ### ReactDOM.createPortal
 - Render some children into a different part of the DOM
 - `createPortal(children, domNode, key?)`
 
+### Resources
+1. [React official page](https://react.dev/)
+2. [React - w3schools](https://www.w3schools.com/react/default.asp)
