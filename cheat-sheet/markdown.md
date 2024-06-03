@@ -59,3 +59,10 @@ Github diff files
 +const firstName = "Phi";
 // some comment here
 ```
+
+<details>
+  <summary>Click to expand!</summary>
+
+  ### This is content inside
+  Yes, docs can **expand**
+</details>
