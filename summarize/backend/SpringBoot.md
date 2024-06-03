@@ -1,6 +1,9 @@
-### Project Setup
+# Spring boot
 
-**Maven Dependencies (pom.xml)**
+## Project Setup
+
+### Maven Dependencies (pom.xml)
+
 ```xml
 <parent>
     <groupId>org.springframework.boot</groupId>
@@ -47,7 +50,8 @@
 </dependencies>
 ```
 
-### Application Properties (application.properties)
+## Application Properties (application.properties)
+
 ```properties
 # Server Configuration
 server.port=8080
@@ -64,7 +68,8 @@ spring.h2.console.enabled=true
 logging.level.org.springframework=INFO
 ```
 
-### Main Application Class
+## Main Application Class
+
 ```java
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -77,7 +82,8 @@ public class MyApp {
 }
 ```
 
-### Creating REST Controllers
+## Creating REST Controllers
+
 ```java
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -94,8 +100,10 @@ public class MyController {
 }
 ```
 
-### Spring Data JPA Example
-**Entity Class**
+## Spring Data JPA Example
+
+### Entity Class
+
 ```java
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -115,7 +123,8 @@ public class Product {
 }
 ```
 
-**Repository Interface**
+### Repository Interface
+
 ```java
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -123,7 +132,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 }
 ```
 
-**Service Class**
+### Service Class
+
 ```java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -142,8 +152,10 @@ public class ProductService {
 }
 ```
 
-### Spring Security Configuration
-**Security Configuration Class**
+## Spring Security Configuration
+
+### Security Configuration Class
+
 ```java
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -180,8 +192,10 @@ public class SecurityConfig {
 }
 ```
 
-### Testing with Spring Boot
-**Simple Test Example**
+## Testing with Spring Boot
+
+### Simple Test
+
 ```java
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -195,7 +209,8 @@ class MyAppTests {
 }
 ```
 
-**Controller Test Example**
+### Controller Test
+
 ```java
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -223,8 +238,10 @@ class MyControllerTest {
 }
 ```
 
-### Actuator Endpoints
+## Actuator Endpoints
+
 Add the actuator dependency:
+
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -233,13 +250,15 @@ Add the actuator dependency:
 ```
 
 Enable endpoints in `application.properties`:
+
 ```properties
 management.endpoints.web.exposure.include=*
 ```
 
 Access endpoints at `http://localhost:8080/actuator`.
 
-### Tips and Best Practices
+## Tips and Best Practices
+
 - **Profiles**: Use `@Profile` annotations and `application-{profile}.properties` for different environments.
 - **Validation**: Use `javax.validation` annotations like `@NotNull` and `@Size` for request validation.
 - **Exception Handling**: Use `@ControllerAdvice` and `@ExceptionHandler` for global exception handling.

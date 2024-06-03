@@ -1,8 +1,12 @@
-### Overview
+# React - Redux
+
+## Overview
+
 React-Redux is the official binding library for integrating Redux with React. It provides a `Provider` component to pass the Redux store down to your React components, `connect` and `useSelector`/`useDispatch` hooks to connect your components to the store.
 
-### Project Structure
-```
+## Project Structure
+
+```txt
 my-app/
 ├── public/
 │   ├── index.html
@@ -24,9 +28,10 @@ my-app/
 └── ...
 ```
 
-### Setting Up Redux
+## Setting Up Redux
 
 1. **Install necessary packages:**
+
    ```bash
    npm install redux react-redux @reduxjs/toolkit
    ```
@@ -98,8 +103,6 @@ my-app/
    );
    ```
 
-### Connecting React Components to Redux
-
 4. **Create a component that interacts with the store:**
 
    ```tsx
@@ -151,7 +154,8 @@ my-app/
    export default App;
    ```
 
-### TypeScript Types
+## TypeScript Types
+
 For better TypeScript support, you should define types for your store and dispatch.
 
 ```tsx
@@ -171,7 +175,8 @@ export type AppDispatch = typeof store.dispatch;
 export default store;
 ```
 
-### Summary
+## Summary
+
 - **Setup Redux Store:** Configure a Redux store using `@reduxjs/toolkit`.
 - **Provide Store:** Wrap your app with the `Provider` component from `react-redux`.
 - **Connect Components:** Use `useSelector` to access state and `useDispatch` to dispatch actions within your components.

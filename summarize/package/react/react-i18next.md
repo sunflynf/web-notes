@@ -1,5 +1,8 @@
-### Project Structure
-```
+# React i18 next
+
+## Project Structure
+
+```txt
 my-app/
 ├── public/
 │   ├── index.html
@@ -20,9 +23,10 @@ my-app/
 └── ...
 ```
 
-### Step-by-Step Setup
+## Step-by-Step Setup
 
 1. **Install the necessary packages:**
+
    ```bash
    npm install i18next react-i18next i18next-http-backend i18next-browser-languagedetector
    ```
@@ -30,6 +34,7 @@ my-app/
 2. **Create the translation files:**
 
    public/locales/en/translation.json
+
    ```json
    {
      "welcome": "Welcome",
@@ -38,6 +43,7 @@ my-app/
    ```
 
    public/locales/de/translation.json
+
    ```json
    {
      "welcome": "Willkommen",
@@ -46,6 +52,7 @@ my-app/
    ```
 
 3. **Initialize i18next:**
+
    ```tsx
    // src/i18n.ts
    import i18n from 'i18next';
@@ -72,6 +79,7 @@ my-app/
    ```
 
 4. **Provide i18next to your React app:**
+
    ```tsx
    // src/index.tsx
    import React from 'react';
@@ -89,6 +97,7 @@ my-app/
    ```
 
 5. **Use the `useTranslation` hook in your components:**
+
    ```tsx
    // src/components/ExampleComponent.tsx
    import React from 'react';
@@ -115,6 +124,7 @@ my-app/
    ```
 
 6. **Use the component in your app:**
+
    ```tsx
    // src/App.tsx
    import React from 'react';
@@ -131,7 +141,7 @@ my-app/
    export default App;
    ```
 
-### Summary
+## Summary
 
 1. **Install `react-i18next` and dependencies.**
 2. **Create translation JSON files** in `public/locales`.

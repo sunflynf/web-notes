@@ -1,5 +1,8 @@
-### Project Structure
-```
+# @redux-toolkits/query
+
+## Project Structure
+
+```txt
 my-app/
 ├── public/
 │   ├── index.html
@@ -23,9 +26,10 @@ my-app/
 └── ...
 ```
 
-### Setting Up RTK Query
+## Setting Up RTK Query
 
 1. **Install necessary packages:**
+
    ```bash
    npm install @reduxjs/toolkit react-redux
    ```
@@ -83,6 +87,7 @@ my-app/
    ```
 
 3. **Provide the store to your React app:**
+
    ```tsx
    // src/index.tsx
    import React from 'react';
@@ -99,9 +104,8 @@ my-app/
    );
    ```
 
-### Using RTK Query in Components
-
 4. **Create a component that fetches data using RTK Query:**
+
    ```tsx
    // src/features/posts/Posts.tsx
    import React from 'react';
@@ -132,6 +136,7 @@ my-app/
    ```
 
 5. **Use the connected component in your app:**
+
    ```tsx
    // src/App.tsx
    import React from 'react';
@@ -151,7 +156,7 @@ my-app/
    export default App;
    ```
 
-### Summary
+## Summary
 
 - **Setup RTK Query Service:** Define an API service using `createApi` and `fetchBaseQuery`.
 - **Configure the Store:** Add the API reducer and middleware to the Redux store.

@@ -1,10 +1,15 @@
-#### Setup
+# Express
+
+## Setup
+
 1. **Install Express:**
+
    ```bash
    npm install express
    ```
 
 2. **Basic Server:**
+
    ```javascript
    const express = require('express');
    const app = express();
@@ -19,8 +24,10 @@
    });
    ```
 
-#### Middleware
+## Middleware
+
 1. **Using Middleware:**
+
    ```javascript
    const express = require('express');
    const app = express();
@@ -36,12 +43,15 @@
    ```
 
 2. **Serving Static Files:**
+
    ```javascript
    app.use(express.static('public'));
    ```
 
-#### Routing
+## Routing
+
 1. **Basic Routing:**
+
    ```javascript
    app.get('/', (req, res) => {
      res.send('GET request to the homepage');
@@ -61,6 +71,7 @@
    ```
 
 2. **Route Parameters:**
+
    ```javascript
    app.get('/users/:userId/books/:bookId', (req, res) => {
      res.send(req.params);
@@ -68,14 +79,17 @@
    ```
 
 3. **Query Strings:**
+
    ```javascript
    app.get('/search', (req, res) => {
      res.send(req.query);
    });
    ```
 
-#### Handling Requests
+## Handling Requests
+
 1. **Request Object:**
+
    ```javascript
    app.get('/user/:id', (req, res) => {
      console.log(req.params.id);  // Route parameters
@@ -85,6 +99,7 @@
    ```
 
 2. **Response Object:**
+
    ```javascript
    app.get('/json', (req, res) => {
      res.json({ name: 'Express' });
@@ -95,8 +110,10 @@
    });
    ```
 
-#### Advanced Topics
+## Advanced Topics
+
 1. **Router:**
+
    ```javascript
    const router = express.Router();
 
@@ -112,6 +129,7 @@
    ```
 
 2. **Error Handling:**
+
    ```javascript
    app.use((err, req, res, next) => {
      console.error(err.stack);
@@ -120,11 +138,13 @@
    ```
 
 3. **Environment Variables:**
+
    ```javascript
    const port = process.env.PORT || 3000;
    ```
 
 4. **Using Template Engines:**
+
    ```javascript
    app.set('view engine', 'pug');
    app.set('views', './views');
@@ -135,25 +155,30 @@
    ```
 
 5. **CORS:**
+
    ```javascript
    const cors = require('cors');
    app.use(cors());
    ```
 
-#### Best Practices
+## Best Practices
+
 1. **Environment Configuration:**
+
    ```javascript
    require('dotenv').config();
    const port = process.env.PORT || 3000;
    ```
 
 2. **Security:**
+
    ```javascript
    const helmet = require('helmet');
    app.use(helmet());
    ```
 
 3. **Logging:**
+
    ```javascript
    const morgan = require('morgan');
    app.use(morgan('combined'));

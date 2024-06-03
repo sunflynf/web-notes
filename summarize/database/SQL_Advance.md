@@ -1,9 +1,11 @@
-### Advanced SQL Code Structure
+# Advanced SQL Code Structure
 
-### 1. **Advanced Data Definition Language (DDL)**
+## Advanced Data Definition Language (DDL)
+
 DDL commands not only define and manage database structures but also include sophisticated features like constraints, indexes, and more.
 
 - **Creating Tables with Constraints**: Constraints enforce rules at the column level.
+
   ```sql
   CREATE TABLE Employees (
       EmployeeID INT PRIMARY KEY,
@@ -16,11 +18,13 @@ DDL commands not only define and manage database structures but also include sop
   ```
 
 - **Creating Indexes**: Indexes improve query performance.
+
   ```sql
   CREATE INDEX idx_lastname ON Employees (LastName);
   ```
 
 - **Partitioning Tables**: Partition large tables to manage and query data more efficiently.
+
   ```sql
   CREATE TABLE Sales (
       SaleID INT,
@@ -32,10 +36,12 @@ DDL commands not only define and manage database structures but also include sop
   );
   ```
 
-### 2. **Advanced Data Manipulation Language (DML)**
+## Advanced Data Manipulation Language (DML)
+
 DML commands include complex queries, subqueries, common table expressions (CTEs), and window functions.
 
 - **Subqueries and Correlated Subqueries**: Subqueries that reference columns from the outer query.
+
   ```sql
   SELECT FirstName, LastName
   FROM Employees e
@@ -48,6 +54,7 @@ DML commands include complex queries, subqueries, common table expressions (CTEs
   ```
 
 - **Common Table Expressions (CTEs)**: CTEs provide a way to create temporary result sets.
+
   ```sql
   WITH DepartmentSales AS (
       SELECT DepartmentID, SUM(Amount) AS TotalSales
@@ -60,26 +67,31 @@ DML commands include complex queries, subqueries, common table expressions (CTEs
   ```
 
 - **Window Functions**: Perform calculations across a set of table rows related to the current row.
+
   ```sql
   SELECT EmployeeID, LastName, FirstName,
          SUM(Salary) OVER (PARTITION BY DepartmentID ORDER BY Salary) AS RunningTotal
   FROM Employees;
   ```
 
-### 3. **Advanced Data Control Language (DCL)**
+## Advanced Data Control Language (DCL)
+
 Advanced DCL involves fine-grained permissions and roles.
 
 - **Managing Roles and Permissions**: Create roles for better access control.
+
   ```sql
   CREATE ROLE Manager;
   GRANT SELECT, INSERT, UPDATE ON Employees TO Manager;
   GRANT Manager TO 'username';
   ```
 
-### 4. **Advanced Transaction Control Language (TCL)**
+## Advanced Transaction Control Language (TCL)
+
 TCL commands in advanced SQL manage complex transactions and concurrency control.
 
 - **Transaction Isolation Levels**: Control the visibility of transactions.
+
   ```sql
   SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
   BEGIN TRANSACTION;
@@ -88,6 +100,7 @@ TCL commands in advanced SQL manage complex transactions and concurrency control
   ```
 
 - **Two-Phase Commit**: Ensure transactions are committed across multiple databases.
+
   ```sql
   BEGIN;
   -- Phase 1: Prepare
@@ -96,9 +109,10 @@ TCL commands in advanced SQL manage complex transactions and concurrency control
   COMMIT PREPARED 'tx1';
   ```
 
-### Additional Advanced Elements
+## Additional Advanced Elements
 
 - **Recursive CTEs**: Useful for hierarchical data.
+
   ```sql
   WITH RECURSIVE EmployeeHierarchy AS (
       SELECT EmployeeID, ManagerID, FirstName, LastName
@@ -113,6 +127,7 @@ TCL commands in advanced SQL manage complex transactions and concurrency control
   ```
 
 - **Advanced Joins**: Complex joins involving multiple tables.
+
   ```sql
   SELECT e.FirstName, e.LastName, p.ProjectName
   FROM Employees e
@@ -121,6 +136,7 @@ TCL commands in advanced SQL manage complex transactions and concurrency control
   ```
 
 - **Pivoting and Unpivoting Data**: Transform rows into columns and vice versa.
+
   ```sql
   SELECT *
   FROM (
@@ -134,6 +150,7 @@ TCL commands in advanced SQL manage complex transactions and concurrency control
   ```
 
 - **Dynamic SQL**: Build and execute SQL queries dynamically.
+
   ```sql
   DECLARE @sql NVARCHAR(MAX);
   SET @sql = 'SELECT * FROM ' + @tableName;
@@ -141,6 +158,7 @@ TCL commands in advanced SQL manage complex transactions and concurrency control
   ```
 
 - **Stored Procedures and Triggers**: Encapsulate SQL logic in reusable components.
+
   ```sql
   CREATE PROCEDURE AddEmployee
       @FirstName NVARCHAR(50),
