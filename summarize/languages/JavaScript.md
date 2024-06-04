@@ -647,7 +647,7 @@ else {  }
 
 // Switch Case (use ===)
 switch(value) {
-    case type1:
+    case type1: // or case type1, type2:
     case type2:
         // handle
         break; // or return
