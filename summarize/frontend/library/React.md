@@ -1,11 +1,14 @@
+# React
+
 > - Building User Interface
 > - Single-page Application
 > - Create Reuseable UI Components (Virtual DOM)
-> - To use React in production, you need **npm** which is included with [Node.js]().
+> - To use React in production, you need **npm** which is included with [Node.js](https://www.w3schools.com/nodejs/nodejs_get_started.asp).
 
-### Table of contents
+## Table of contents
 
-### Builder Tools
+## Builder Tools
+
 - [Create React App](https://create-react-app.dev/)
   - Includes built tools such as **webpack**, **Babel**, and **ESLint**.
   - `npx create-react-app app-name`
@@ -15,13 +18,15 @@
   - `npm create vite app-name --template react-ts`
   - `npm run dev`
 
-### Render
+## Render
+
 ```html
 <body>
   <!-- Your code will put inside root (or any id) div -->
   <div id="root"></div>
 </body>
 ```
+
 ```js
 // index.js
 import ReactDOM from 'react-dom/client';
@@ -31,10 +36,12 @@ const root = ReactDOM.createRoot(container);
 root.render(<p>Hello</p>);
 ```
 
-### JSX
+## JSX
+>
 > - JavaScript XML
 > - Write HTML in JS
 > - `<>` | `<Fragment>` | `<React.Fragment>`
+>
 ```jsx
 const secretText = 'Daniel';
 const age = 17;
@@ -49,12 +56,15 @@ const users = (
 )
 ```
 
-### Components
+## Components
+>
 > **Lifecycle**: Mounting (add + 1st render), Updating (re-render), Unmounting (remove)
 
-#### Class Component
-**Class** <Name> extends **React.Component**
-- `contructor(props?) { super(props?); // state configs } `
+### Class Component
+
+**Class** `Name` extends **React.Component**
+
+- `contructor(props?) { super(props?); // state configs }`
 - `static getDerivedStateFormProps(props, state) { return {} }` - Call before render (create & update)
 - `render() { return <JSX/> }`
 - `componentDidMount() {}` - Call after 1st render
@@ -62,6 +72,7 @@ const users = (
 - `getSnapshotBeforeUpdate(props, state) {}` - access props & state _before_ update
 - `componentDidUpdate() {}` - Call after component update
 - `componentWillUnmount() {}` - Call before component is about to be removed
+
 ```jsx
 class Car1 extends React.Component {
   constructor(props) {
@@ -81,8 +92,10 @@ class Car1 extends React.Component {
 // Use with props: <Car1 model="Mustang" />
 ```
 
-#### Function Component
-function <Name>(props?) { return `<JSX/>` }
+### Function Component
+
+function `Name`(props?) { return `<JSX/>` }
+
 - Props: `{ children: null|JSX.Element, attr1: value1, attr2: value2, ..., attrN: valueN }`
 - Using with props: `<Component attr1={value1} {...otherAttr} />`
 - Using with children: `<Parent {...attrs}><Children /></Parent>`
@@ -116,7 +129,8 @@ export default Garage;
 // Using: import Garage from 'components/Garage';
 ```
 
-#### Feature Component
+### Feature Component
+
 - `<Fragment> | <>` - Wrap all Elements and render in UI without unexpected element
 - `<Suspense fallback={<Spinner />}>{children}</Suspense>`
   - Only Suspense-enabled data sources will activate the Suspense component.
@@ -128,12 +142,13 @@ export default Garage;
   - `const onRender = (id, phase, actualDuration, baseDuration, startTime, commitTime) => {}`
   - [View params explains](https://react.dev/reference/react/Profiler#onrender-parameters)
 
-### Styles component
+## Styles component
+
 - Using sass/scss: `npm i sass`
 - Both **CSS** & **SASS** can using as file or module
 
 ```css
-// custom.css
+/* custom.css */
 .custom-font-weight {
   font-weight: bold;
 }
@@ -141,6 +156,7 @@ export default Garage;
   background: #FF0000;
 }
 ```
+
 ```jsx
 import React from 'react'; // To use JSX
 import styleModule from 'custom.module.css'; // import as module
@@ -160,12 +176,12 @@ const Custom = ({ name }) => {
 }
 ```
 
+## Hooks
 
-### Hooks
 - Rules of Hooks
   - Call them at the top level in the body of
     - function component
-    - custom Hook 
+    - custom Hook
   - Do not call Hooks
     - inside conditions or loops.
     - after a conditional return statement. **NOTE HERE FOR NEXT PROJECT**
@@ -176,7 +192,8 @@ const Custom = ({ name }) => {
 - Hooks cannot be conditional
 - `import { use<HookName> } from <'react'|'address-of-custom-hooks'>`
 
-#### useState
+### useState
+
 - Structure `const [state, setState] = useState(initState);`
 - `state` change after setState call -> component re-render
 - `setState(newState)` | `setState(prevState => { return newState })` (use with callback)
@@ -214,13 +231,16 @@ function Car() {
 }
 ```
 
-#### useDeferredValue
+### useDeferredValue
+>
 > - **Debouncing** - wait for the user to stop typing (e.g. for a second) before updating the list.
 > - **Throttling** - update the list every once in a while (e.g. at most once a second).
+>
 - `useDeferredValue` is better suited to optimizing rendering because it is **deeply integrated with React itself** and **adapts to the user’s device**.
 - Usage
   - Showing stale content while fresh content is loading
   - Deferring re-rendering for a part of the UI
+
 ```jsx
 import { useDeferredValue } from 'react';
 
@@ -242,7 +262,8 @@ export default function App() {
 }
 ```
 
-#### useReducer
+### useReducer
+
 - Tracking complex state (like object) -> Same tech like [Redux](https://redux.js.org/)
 - Custom handle state
 - Syntax: `const [state, dispatch] = useReducer(reducer, initialState);`
@@ -301,7 +322,8 @@ export default function Form() {
 }
 ```
 
-#### useRef
+### useRef
+
 - Persist value of component (not affect if component re-render)
 - Used to access a DOM element directly
 - Declare: `const elRef = useRef(initValue || undefined);` // Recommend using initValue if ref not element
@@ -309,12 +331,14 @@ export default function Form() {
 - Value of ref
   - Get: `elRef.current`
   - Set: `elRef.current = any;`
- 
-#### useImperativeHandle
+
+### useImperativeHandle
+
 - Customize the handle exposed as a `ref`
 - Combine with `forwardRef`
 - `useImperativeHandle(ref, createHandle, dependencies?)`
 - NOTE: **If you can express something as a prop, you should not use a ref.**
+
 ```jsx
 import React, { forwardRef, useRef, useImperativeHandle } from 'react';
 
@@ -345,7 +369,8 @@ export default function App() {
 
 ```
 
-#### useEffect & useLayoutEffect
+### useEffect & useLayoutEffect
+
 - Perform side effect in component
   - fetching data
   - directly update DOM
@@ -375,7 +400,8 @@ function Timer() {
 }
 ```
 
-#### useCallback & useMemo
+### useCallback & useMemo
+
 - **Problem**: Component re-render
   - -> function & value inside (not state) re-render
   - -> children use props includes that function & value re-render
@@ -386,7 +412,8 @@ function Timer() {
 - `useMemo`
   - Using: `const memorizeValue = useMemo(() => any, [...dependencies])`
 
-#### useContext
+### useContext
+
 - Manage state globally
 - State use in component that need it, avoid put parent props -> child props -> ... -> n-child props ("prop drilling")
 - Using
@@ -398,7 +425,7 @@ function Timer() {
     - value should be an object
   - Get value `const { state1, state2 } = useContext(Context);`
     - Put Context to `useContext` to get correct value holder
-    - Get only props need to using 
+    - Get only props need to using
 
 ```jsx
 import { useState, createContext, useContext } from "react";
@@ -446,10 +473,12 @@ function Component4() {
 }
 ```
 
-#### useId
+### useId
+
 - `const uniqueId = useId();`
-- UniqueId will create 1 time for Component when it render 
-- Use in case common Component (like Input) reuse more than 2 in parent component -> Avoid dupplicate Id when using 
+- UniqueId will create 1 time for Component when it render
+- Use in case common Component (like Input) reuse more than 2 in parent component -> Avoid dupplicate Id when using
+
 ```jsx
 import { useId } from 'react';
 
@@ -476,15 +505,92 @@ export default function App() {
 ```
 
 ---
+
 - **Suspense** + `lazy`
 - `createContext` -> Context (Context.Provider value={}) -> `useContext`(Context)
 - `useRef` -> `forwardRef` -> `useImperativeHandle`
+
 ---
 
-### ReactDOM.createPortal
+## ReactDOM.createPortal
+
 - Render some children into a different part of the DOM
 - `createPortal(children, domNode, key?)`
 
-### Resources
+## React Compiler (React v19)
+
+[Documents](https://19.react.dev/learn/react-compiler#getting-started)
+
+### Configs
+
+#### Existing project
+
+```jsx
+const ReactCompilerConfig = {
+  // specific directory
+  sources: (filename) => {
+    return filename.indexOf('src/path/to/dir') !== -1;
+  },
+  compilationMode: "annotation",
+};
+
+// src/app.jsx
+export default function App() {
+  "use memo";
+  // ...
+}
+```
+
+#### New project
+
+```jsx
+// babel.config.js
+const ReactCompilerConfig = { /* ... */ };
+
+module.exports = function () {
+  return {
+    plugins: [
+      ['babel-plugin-react-compiler', ReactCompilerConfig], // must run first!
+      // ...
+    ],
+  };
+};
+```
+
+```jsx
+// vite.config.js
+const ReactCompilerConfig = { /* ... */ };
+
+export default defineConfig(() => {
+  return {
+    plugins: [
+      react({
+        babel: {
+          plugins: [
+            ["babel-plugin-react-compiler", ReactCompilerConfig],
+          ],
+        },
+      }),
+    ],
+    // ...
+  };
+});
+```
+
+```jsx
+// npm install next@canary babel-plugin-react-compiler
+// next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    reactCompiler: true,
+  },
+};
+
+module.exports = nextConfig;
+```
+
+## Resources
+
 1. [React official page](https://react.dev/)
 2. [React - w3schools](https://www.w3schools.com/react/default.asp)

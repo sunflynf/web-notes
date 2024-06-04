@@ -1,6 +1,9 @@
-### Table of contents
+# JAVA
 
-### Introduce
+## Table of contents
+
+## Introduce
+
 - **Java** works on different platforms (Windows, Mac, Linux, Raspberry Pi, etc.)
 - It is open-source and free
 - It is secure, fast and powerful
@@ -10,12 +13,14 @@
 > [**Set up Java** in computer](https://www.w3schools.com/java/java_getstarted.asp)
 
 - Compile & running in cmd | Terminal
+
 ```cmd
 > javac Main.java
 > java Main
 ```
 
-### Syntax
+## Syntax
+
 ```java
 public class Main {
   public static void main(String[] args) {
@@ -27,13 +32,17 @@ public class Main {
   }
 }
 ```
-#### Variables
+
+### Variables
+
 - `type variableName = value;`
 - `final type variableName = value;` - Unchange value
 - variable's name are case-sensitive
 
-### Data Types
-#### Primitive
+## Data Types
+
+### Primitive
+
 | Type | Describe | Range |
 |--|--|--|
 | byte | 8-bit integer | -128 to 127 |
@@ -45,7 +54,8 @@ public class Main {
 | char | 16-bit Unicode character |  |
 | boolean | true / false |  |
 
-#### Reference
+### Reference
+
 ```java
 // The root class of the Java hierarchy. All classes inherit this
 Object obj = new Object();
@@ -54,12 +64,14 @@ String str = "Hello world!";
 int[] numbers = {1, 2, 3, 4, 5};
 ```
 
-### Collection Framework
+## Collection Framework
+
 ![java-collections-cheat-sheet](https://github.com/sunflynf/web-notes/assets/75079929/6f945578-cb29-452d-b22e-1bbac827898e)
 
 - **Collection**: root interface for all collection classes
 
-### Control Flow
+## Control Flow
+
 ```java
 // if else
 if (condition) {
@@ -70,6 +82,7 @@ if (condition) {
     // default code block
 }
 ```
+
 ```java
 // switch
 int day = 3;
@@ -79,6 +92,7 @@ String dayType = switch (day) {
     default -> "Invalid day";
 };
 ```
+
 ```java
 // for loop
 int[] numbers = {1, 2, 3, 4, 5};
@@ -93,7 +107,10 @@ for (int number : numbers) {
 // there also has do-while & while
 ```
 
+## OOP
+
 ### Classes
+
 ```java
 public class Car {
     String color;
@@ -109,20 +126,24 @@ public class Car {
     }
 }
 ```
+
 ```java
 // Using
 Car myCar = new Car("Red", 2020);
 myCar.display();
 ```
+
 ### Interfaces
+
 ```java
 public interface IAnimal {
     void eat();
     void sleep();
 }
 ```
-### OOP
-#### Inheritance
+
+### Inheritance
+
 ```java
 public interface IControl {
   default void jump() {

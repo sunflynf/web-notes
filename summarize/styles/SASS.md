@@ -1,17 +1,20 @@
-### Table of contents
+# SASS (SCSS)
+
+## Table of contents
+
 1. [Variables](#variables)
 2. [Nesting](#nesting)
 3. [Modules](#modules)
 4. [Mixins](#mixins)
 5. [Extend/Inheritance](#extendinheritance)
 6. [Operators](#operators)
-  - [Build in modules](#build-in-modules)
-  - [Loops](#loops)
+    - [Build in modules](#build-in-modules)
+    - [Loops](#loops)
 7. [Features](#features)
-  - [Lists](#lists)
-  - [Maps](#maps)
-  - [Conditional](#conditionals)
-  - [Interpolation](#interpolation)
+    - [Lists](#lists)
+    - [Maps](#maps)
+    - [Conditional](#conditionals)
+    - [Interpolation](#interpolation)
 8. [Resources](#resources)
 
 ---
@@ -19,8 +22,10 @@
 **SASS** is a stylesheet language that’s compiled to **[[CSS]]**
 > **Preprocessing**: `sass --watch input.scss output.css`
 
-### Variables
+## Variables
+>
 > Code styles: `.sass` & `.scss` (use semicolon and curly brackets)
+
 ```sass
 $font-stack: Helvetica, sans-serif
 $primary-color: #333
@@ -29,6 +34,7 @@ body
   font: 100% $font-stack
   color: $primary-color
 ```
+
 ```scss
 $font-stack: Helvetica, sans-serif;
 $primary-color: #333;
@@ -39,7 +45,8 @@ body {
 }
 ```
 
-### Nesting
+## Nesting
+
 ```scss
 .markdown-body {
   a {
@@ -50,6 +57,7 @@ body {
   }
 }
 ```
+
 ```css
 .markdown-body a {
   color: blue;
@@ -59,7 +67,8 @@ body {
 }
 ```
 
-### Modules
+## Modules
+
 ```scss
 // _base.scss
 $font-stack: Helvetica, sans-serif;
@@ -79,7 +88,8 @@ body {
 }
 ```
 
-### Mixins
+## Mixins
+
 ```scss
 @mixin heading-font {
   font-family: sans-serif;
@@ -104,6 +114,7 @@ h1 {
   @include theme($theme: DarkGreen);
 }
 ```
+
 ```css
 .info {
   background: DarkGray;
@@ -124,7 +135,8 @@ h1 {
 }
 ```
 
-### Extend/Inheritance
+## Extend/Inheritance
+
 ```scss
 /* This CSS will print because %message-shared is extended. */
 %message-shared {
@@ -155,6 +167,7 @@ h1 {
   border-color: yellow;
 }
 ```
+
 ```css
 /* This CSS will print because %message-shared is extended. */
 .warning, .error, .success, .message {
@@ -176,8 +189,10 @@ h1 {
 }
 ```
 
-### Operators
-#### Build-In Modules
+## Operators
+
+### Build-In Modules
+
 - `sass:math` provides functions that operate on numbers.
 - `sass:string` makes it easy to combine, search, or split apart strings.
 - `sass:color` generates new colors based on existing ones, making it easy to build color themes.
@@ -185,7 +200,9 @@ h1 {
 - `sass:map` makes it possible to look up the value associated with a key in a map, and much more.
 - `sass:selector` provides access to Sass’s powerful selector engine.
 - `sass:meta` exposes the details of Sass’s inner workings.
-#### Loops
+
+### Loops
+
 ```scss
 @for $i from 1 through 4 {
   .item-#{$i} { left: 20px * $i; }
@@ -197,6 +214,7 @@ $i: 6;
   $i: $i - 2;
 }
 ```
+
 ```scss
 $menu-items: home about services contact;
 
@@ -206,6 +224,7 @@ $menu-items: home about services contact;
   }
 }
 ```
+
 ```scss
 $backgrounds: (home, 'home.jpg'), (about, 'about.jpg');
 
@@ -216,19 +235,25 @@ $backgrounds: (home, 'home.jpg'), (about, 'about.jpg');
 }
 ```
 
-### Features
-#### Lists
+## Features
+
+### Lists
+
 ```scss
 $list: (a b c);
 nth($list, 1)  // starts with 1
 length($list) // 3
 ```
-#### Maps
+
+### Maps
+
 ```scss
 $map: (key1: value1, key2: value2, key3: value3);
 map-get($map, key1)
 ```
-#### Conditionals
+
+### Conditionals
+
 ```scss
 @if $position == 'left' {
    position: absolute;
@@ -242,7 +267,9 @@ map-get($map, key1)
    position: static;
 }
 ```
-#### Interpolation
+
+### Interpolation
+
 ```scss
 .#{$klass} { ... }      // Class
 call($function-name)    // Functions
@@ -251,9 +278,11 @@ call($function-name)    // Functions
 font: #{$size}/#{$line-height}
 url("#{$background}.jpg")
 ```
+
 ---
 
-### Resources:
+## Resources
+
 1. [sass-lang](https://sass-lang.com/)
 2. [devhints](https://devhints.io/sass)
 3. [w3schools](https://www.w3schools.com/sass)

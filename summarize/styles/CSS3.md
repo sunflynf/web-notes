@@ -1,6 +1,8 @@
-### Elements
+# CSS3
 
-#### Text
+## Elements
+
+### Text
 
 | Attribute          | Value                                                  | Note                                                                                                         |
 | ------------------ | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
@@ -20,25 +22,25 @@
 | `white-space`      | nowrap, wrap, pre, pre-line, pre-wrap                  | Specifies how white-space inside an element is handled                                                       |
 | `text-shadow`      | **Example**: 2px 2px 5px blue, 2px -2px 5px red;       | Order: horizontal-shadow vertical-shadow blur(optional) color.<br/>**FEATURE**: use "," and add more shadow; |
 
-#### Fonts
+### Fonts
 
 ![CSS Font Family](./assets/css_font_family.png)
 
 Safe font for HTML & CSS
 
--   Arial (sans-serif)
--   Verdana (sans-serif)
--   Tahoma (sans-serif)
--   Trebuchet MS (sans-serif)
--   Times New Roman (serif)
--   Georgia (serif)
--   Garamond (serif)
--   Courier New (monospace)
--   Brush Script MT (cursive)
+- Arial (sans-serif)
+- Verdana (sans-serif)
+- Tahoma (sans-serif)
+- Trebuchet MS (sans-serif)
+- Times New Roman (serif)
+- Georgia (serif)
+- Garamond (serif)
+- Courier New (monospace)
+- Brush Script MT (cursive)
 
 > Using Google font: `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=FontName">`
 >
-> Add above tag to <head> tag
+> Add above tag to `<head>` tag
 
 | Attribute      | Value                                      | Note                                                                  |
 | -------------- | ------------------------------------------ | --------------------------------------------------------------------- |
@@ -49,7 +51,7 @@ Safe font for HTML & CSS
 | `font-variant` | normal, small-caps                         |                                                                       |
 | `font-size`    | **Example**: 0.8rem                        | **Recommend**: use `em`, `rem` instead of `px`                        |
 
-#### Link
+### Link
 
 ```css
 /* unvisited link */
@@ -70,7 +72,7 @@ a:active {
 }
 ```
 
-#### List
+### List
 
 | Attribute             | Value                                                                                                                                                  | Note                   |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------- |
@@ -79,7 +81,7 @@ a:active {
 | `list-style-position` | `outside`, `inside` (indent first line)                                                                                                                |                        |
 | `list-style-image`    | url("image.type")                                                                                                                                      | Change mark icon       |
 
-#### Table
+### Table
 
 > **Recommend setup**
 >
@@ -98,7 +100,7 @@ a:active {
 | `empty-cell`      | show (default), hide                         | use in case `border-collapse: separate;`                     |
 | `table-layout`    | auto (default), fixed                        | **Tip**: `fixed` make table render faster (same size column) |
 
-### Display
+## Display
 
 > Toggle element: `visibility: visible|hidden;`
 
@@ -114,7 +116,7 @@ a:active {
 | inline-grid     | a inline-level grid **container**                |
 | contents        | only show contents                               |
 
-#### Position
+### Position
 
 | `position` value | Description                                               |
 | ---------------- | --------------------------------------------------------- |
@@ -126,10 +128,10 @@ a:active {
 
 > POSITION not `static`:
 >
-> -   Combine with `left`, `top`, `right`, `bottom` (not includes 4)
-> -   Can use `z-index` to specifies the stack order
+> - Combine with `left`, `top`, `right`, `bottom` (not includes 4)
+> - Can use `z-index` to specifies the stack order
 
-#### Overflow
+### Overflow
 
 | `overflow[-x/-y]` value | description                       |
 | ----------------------- | --------------------------------- |
@@ -140,14 +142,14 @@ a:active {
 
 > Special: `overflow-break: normal|break-word;` -> handle overflow words
 
-#### Layout: `float` and `clear`
+### Layout: `float` and `clear`
 
--   `float: none|left|right|inherit` specifies how an element should float.
--   `clear: none|left|right|both|inherit` specifies what elements can float beside the cleared element and on which side.
+- `float: none|left|right|inherit` specifies how an element should float.
+- `clear: none|left|right|both|inherit` specifies what elements can float beside the cleared element and on which side.
 
 ---
 
-#### Combinators
+## Combinators
 
 ```css
 /* Child */
@@ -161,26 +163,26 @@ a:active {
 }
 ```
 
-#### Pseudo
+## Pseudo
 
 > Structure
 >
-> -   Pseudo Classes `selector:pseudo-class`
-> -   Pseudo Elements `selector::pseudo-element`
+> - Pseudo Classes `selector:pseudo-class`
+> - Pseudo Elements `selector::pseudo-element`
 
-https://www.w3schools.com/css/css_pseudo_classes.asp
+<https://www.w3schools.com/css/css_pseudo_classes.asp>
 
-#### Attributes
+## Attributes
 
 > Structure:
 >
-> -   Has attribute `selector[attribute]`
-> -   Has attribute with exact value `selector[attribute="value"]`
-> -   Has attribute with exact value or like "value-" `selector[attribute|="value"]`
-> -   Has attribute containing word like "value" `selector[attribute~="value"]`
-> -   Has attribute start with value `selector[attribute^="value"]`
-> -   Has attribute end with value `selector[attribute$="value"]`
-> -   Has attribute includes word: value `selector[attribute*="value"]`
+> - Has attribute `selector[attribute]`
+> - Has attribute with exact value `selector[attribute="value"]`
+> - Has attribute with exact value or like "value-" `selector[attribute|="value"]`
+> - Has attribute containing word like "value" `selector[attribute~="value"]`
+> - Has attribute start with value `selector[attribute^="value"]`
+> - Has attribute end with value `selector[attribute$="value"]`
+> - Has attribute includes word: value `selector[attribute*="value"]`
 
 | Using                          | Description                                     | Example                |
 | ------------------------------ | ----------------------------------------------- | ---------------------- |
@@ -192,9 +194,9 @@ https://www.w3schools.com/css/css_pseudo_classes.asp
 | `selector[attribute$="value"]` | Has attribute end with value                    | `a[href$=".pdf"]`      |
 | `selector[attribute*="value"]` | Has attribute includes word: value              | `img[title*="dog"]`    |
 
-### Special
+## Special
 
-#### Specificity
+### Specificity
 
 1. `*` - 0
 2. element - 1
@@ -205,10 +207,10 @@ https://www.w3schools.com/css/css_pseudo_classes.asp
 
 **NOTE**:
 
--   Combination will sum all points. Example: `div#first-name.text-center` -> 1 + 100 + 10 = 111
--   Selector with same point will apply latest rule
+- Combination will sum all points. Example: `div#first-name.text-center` -> 1 + 100 + 10 = 111
+- Selector with same point will apply latest rule
 
-#### Math function
+### Math function
 
 | Method   | Note                       | Example                     |
 | -------- | -------------------------- | --------------------------- |
@@ -216,7 +218,7 @@ https://www.w3schools.com/css/css_pseudo_classes.asp
 | `min()`  | Use smaller value          | `height: min(50%, 200px);`  |
 | `max()`  | Use larger value           | `height: max(400px, 60%);`  |
 
-#### Counter
+### Counter
 
 ```css
 body {
@@ -238,7 +240,7 @@ h2::before {
 }
 ```
 
-#### `@font-face`: use your font
+### `@font-face`: use your font
 
 ```css
 @font-face {
@@ -253,19 +255,19 @@ div {
 }
 ```
 
-### TODO
+## TODO
 
--   [ ] `border-radius`
--   [ ] `border-image`
--   [ ] `special-color`: transparent, currentcolor
--   [ ] `box-shadow`
--   [ ] `transforms` + Animation
--   [ ] Image properties
--   [ ] Multiple Columns
--   [ ] `resize`
--   [ ] `var(--variable)`
--   [ ] `box-sizing`
--   [ ] Media Query
--   [ ] Flex system
--   [ ] Grid system
--   [ ] Responsive Web Design
+- [ ] `border-radius`
+- [ ] `border-image`
+- [ ] `special-color`: transparent, currentcolor
+- [ ] `box-shadow`
+- [ ] `transforms` + Animation
+- [ ] Image properties
+- [ ] Multiple Columns
+- [ ] `resize`
+- [ ] `var(--variable)`
+- [ ] `box-sizing`
+- [ ] Media Query
+- [ ] Flex system
+- [ ] Grid system
+- [ ] Responsive Web Design

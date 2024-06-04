@@ -1,4 +1,7 @@
-### Table of contents
+# JavaScript
+
+## Table of contents
+
 1. [Position in HTML](#position-in-html)
 2. [Syntax](#syntax)
 3. [Data Types](#data-types)
@@ -11,9 +14,7 @@
 10. [Math](#math)
 11. [Conditions](#conditions)
 12. [Loop](#loop)
-13. [Features](#features)
-  - [Set](#set)
-  - [Map](#map)
+13. [Features](#features): [Set](#set) + [Map](#map)
 14. [Events](#events)
 15. [`this`](#this)
 16. [Module](#module)
@@ -27,7 +28,8 @@
 24. [Fetch API](#fetch-api)
 25. [Resources](#resources)
 
-### Position in HTML
+## Position in HTML
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -55,7 +57,8 @@
 </html>
 ```
 
-### Syntax
+## Syntax
+
 ```js
 var a = 'a'; // for old browser like IE
 let b = 1; // flexiable value
@@ -64,64 +67,69 @@ const C = Math.PI; // constant - can not change
 // Literals (fixed value): 1, 2.5, -10, "some text"
 // Variables: a, b, C
 ```
+
 | |Scope|Redeclare|Reassign|Hoisted|Binds this|
 |--|--|--|--|--|--|
-|`var`|	|x|x|x|x|
+|`var`| |x|x|x|x|
 |`let`|x| |x| | |
 |`const`|x| | | | |
 > ![NOTE] `Array` and `Object` assign with `const` **can update**, but can't reassign
 
-#### Variable's name
+### Variable's name
+>
 > Start with (A-Z) (a-z) $ _
+>
 > - **Allowed**: `abc`, `student1`, `$prevDOM`, `_current`, `compare_2Arrays`
 > - **Not allowed**: `1student`, `?person`
 
-#### Operators
+### Operators
+
 - Math:
-    - Number: `+` `-` `*` `/` `%` `**`
-    - Assignment: `=` `++` `+=` `--` `-=` `*=` `/=` `%=`
-    - String: `+` `+=`
-    - Bitwise: (can assign like `<operator>=`)
-        - And `&`
-        - Or `|`
-        - Not `~`
-        - Xor `^`
-        - shift: `<<` `<<<` `>>` `>>>`
-- Compare: 
-    - value: `==` `!=` `>` `>=` `<` `<=`
-    - type & value: `===` `!==`
-    - logical: `!` (not) `&&` (and) `||` (or)
-    - ternary: `(condition) ? (value if true) : (value if false)`
-    - type: `typeof` -> type; `instanceof` -> true | false
+  - Number: `+` `-` `*` `/` `%` `**`
+  - Assignment: `=` `++` `+=` `--` `-=` `*=` `/=` `%=`
+  - String: `+` `+=`
+  - Bitwise: (can assign like `<operator>=`)
+    - And `&`
+    - Or `|`
+    - Not `~`
+    - Xor `^`
+    - shift: `<<` `<<<` `>>` `>>>`
+- Compare:
+  - value: `==` `!=` `>` `>=` `<` `<=`
+  - type & value: `===` `!==`
+  - logical: `!` (not) `&&` (and) `||` (or)
+  - ternary: `(condition) ? (value if true) : (value if false)`
+  - type: `typeof` -> type; `instanceof` -> true | false
 - **Coalescing (ES2020)**: `??`.
-    - _Exp_: `let val = pi ?? 3.14;`
-    - Explain: `let val = (pi !== null && pi !== undefined) ? pi : 3.14;`
+  - _Exp_: `let val = pi ?? 3.14;`
+  - Explain: `let val = (pi !== null && pi !== undefined) ? pi : 3.14;`
 - **Optional Chaining (ES2020)**:
-    - _Exp_: `let currentAge = user?.age;`
-    - Explain: `let currentAge = (user !== null && user !== undefined) ? user.age : undefined`
-    - Note: this operators avoid error when object user is null or undefined
+  - _Exp_: `let currentAge = user?.age;`
+  - Explain: `let currentAge = (user !== null && user !== undefined) ? user.age : undefined`
+  - Note: this operators avoid error when object user is null or undefined
 
 > - `!""`, `!0`, `!null`, `!undefined` -> true
 > - `![]`, `!{}` -> false
 > - `condition && value` -> `condition === true ? value : undefined`
 > - `value || defaultValue` -> `!!value ? value : defaultValue`
 
-### Data Types
+## Data Types
+
 - `undefined`
 - `boolean`: `true`, `false`
 - `number`
 - `string`:
-    - `'single quote'`
-    - `"double quote"`
-    - Template Strings (ES6): `` ` `` `some ${value} here!` `` ` ``-> dynamic value
-    - **String** as **Object**: `let strObj = new String("hi!");`
+  - `'single quote'`
+  - `"double quote"`
+  - Template Strings (ES6): `` ` `` `some ${value} here!` `` ` ``-> dynamic value
+  - **String** as **Object**: `let strObj = new String("hi!");`
 - `object`
-    - `null` - ???
-    - `{}`
-    - `[]` - `['value 1', 'value 2']` -> `{ 0: 'value 1', 1: 'value 2' }`
-    - `Date`
-    - `Set`
-    - `Map`
+  - `null` - ???
+  - `{}`
+  - `[]` - `['value 1', 'value 2']` -> `{ 0: 'value 1', 1: 'value 2' }`
+  - `Date`
+  - `Set`
+  - `Map`
 - `function`
 - `Bigint` (ES2020)
 
@@ -135,7 +143,8 @@ new Date().constructor            // Returns function Date()    {[native code]}
 function () {}.constructor        // Returns function Function(){[native code]}
 ```
 
-### String
+## String
+
 ```js
 let text = "Hello    World!";
 text.length; // 15
@@ -159,6 +168,7 @@ text.slice(start, end?); // allowed negative
 text.substring(start, end?);
 text.substr(start, len?);
 ```
+
 ```js
 let text = "Please locate where 'locate' occurs!";
 // Search
@@ -172,6 +182,7 @@ text.includes('locate', 15); // true - ES6 + case sensitive (15 is optional)
 text.startsWith('locate'); // false - ES6 + case sensitive 
 text.endsWith('locate'); // false - ES6 + case sensitive 
 ```
+
 ```js
 // Other rarely use features
 text.trimStart(); // ES2019 
@@ -183,7 +194,8 @@ text.replaceAll(/WORLD/ig, "My Fen"); // ES2021
 text.matchAll(/ate/ig); // ES2020
 ```
 
-### Number & BigInt
+## Number & BigInt
+
 ```js
 const a1 = 10;
 const a2 = 10.23;
@@ -211,6 +223,7 @@ Number(val); // Note: Number(new Date('1970-01-01')) -> 0; parse date will calcu
 parseFloat(val);
 parseInt(val);
 ```
+
 ```js
 let x = 1234567890123456789012345n; // n mark for BigInt
 let y = BigInt(1234567890123456789012345);
@@ -224,6 +237,7 @@ Number.isSafeInteger(num); // safe in range (note)
 ```
 
 > ![NOTE]
+>
 > - Range of number: `-(2^53 - 1)` to `+(2^53 - 1)`
 > - Numbers are **Always 64-bit Floating Point** (the international IEEE 754 standard)
 > - This format stores numbers in 64 bits, where the number (the fraction) is stored in bits 0 to 51, the exponent in bits 52 to 62, and the sign in bit 63
@@ -232,7 +246,8 @@ Number.isSafeInteger(num); // safe in range (note)
 > - Unsigned right shift (>>>) can not be done on a `BigInt` (it does not have a fixed width).
 > - A `BigInt` can not have decimals.
 
-### Functions
+## Functions
+
 ```js
 function funcNoParams() {}
 
@@ -261,6 +276,7 @@ arrowFuncWithParams(); // log "ok"
 const iCanAdd2Nums = add2Nums; // now iCanAdd2Nums -> function
 console.log(iCanAdd2Nums(1, 3)) // log "4"
 ```
+
 ```js
 // Hoisted - function push on top when program start
 sum(1, 1); // run normally
@@ -298,7 +314,9 @@ const add = (function() {
 // After run self-invoking (only 1 time) -> add = function() { counter += 1; return counter; };
 // counter start with 0, call add() will increase
 ```
+
 > ![Arrow function] (ES6)
+>
 > - Not have own `this`
 > - Arrow function not hoisted -> Define before call
 
@@ -344,7 +362,8 @@ const display = person.display.bind(person); // point current "this" is person
 setTimeout(display, 3000); // John Doe 
 ```
 
-### Object
+## Object
+
 ```js
 const person = {
   firstName: "John",
@@ -371,6 +390,7 @@ person.action = function() {
 // check
 "id" in person; // true
 ```
+
 ```js
 const user1 = { name: 'A', age: 20 };
 const user2 = user1; // user1 === user2
@@ -400,6 +420,7 @@ const myObj = {
     }
 }
 ```
+
 ```js
 Object.create(); // {} - new Object, better use literals object like: const newObj = {}
 Object.keys(myObj); // ['firstName', 'lastName', 'age', 'cars', 'getInformation', 'fullname', 'exactAge']
@@ -437,16 +458,21 @@ Object.isFrozen(object); // Returns true if object is frozen
 ```
 
 > ![Why using Getters & Setters?]
+>
 > - It gives simpler syntax
 > - It allows equal syntax for properties and methods
 > - It can secure better data quality
 > - It is useful for doing things behind-the-scenes
 
+---
+
 > ![Tips & tricks]
+>
 > - Clone object: `const newObj = { ...oldObj };`
 > - Check object has props: `prop_name in {} -> boolean`
 
-### Arrays
+## Arrays
+
 ```js
 const cars = ["Saab", "Volvo", "BMW"];
 
@@ -464,6 +490,7 @@ cars.sort(); // ["BMW", "Saab", "Volvo"]
 Array.isArray(cars); // true
 typeof cars; // "object"
 ```
+
 ```js
 const animals = ["dog", "cat", "duck", "chicken"];
 
@@ -489,6 +516,7 @@ animals.unshift("snake"); // Add new animals at the start + return new length of
     - Return new array
 */
 ```
+
 ```js
 const computer = ["monitor", "mouse", "keyboard", "speaker"];
 // Search
@@ -527,6 +555,7 @@ computer.findIndex(i => i === 'mouse'); // 1 - structure like above feature (ES6
 // Return true if any item pass conditions.
 // Exp: ["Anna", "Daniel", "Keth"].some(i => i.includes('a')) -> true
 ```
+
 ```js
 // Array Spread (ES6)
 const q1 = ["Jan", "Feb", "Mar"];
@@ -536,6 +565,7 @@ const q4 = ["Oct", "Nov", "Dec"];
 const year = [...q1, ...q2, ...q3, ...q4];
 // ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 ```
+
 ```js
 // Rarely use
 [].copyWithin(indexOverwrite, indexStartCopy?, indexEndCopy?); // arr copy same length (can have diff values)
@@ -552,10 +582,12 @@ Array.from("text"); // ["t", "e", "x", "t"] (ES6)
 ```
 
 > ![Note]:
+>
 > - Arrays are a special kind of objects, with **numbered indexes**.
 > - Array random order: [].sort(() => 0.5 - Math.random());
 
-### Date
+## Date
+
 ```js
 // Using
 new Date() // current time
@@ -576,9 +608,11 @@ d.toDateString(); // Fri Apr 12 2024
 d.toUTCString();  // Fri, 12 Apr 2024 00:00:00 GMT
 d.toISOString();  // 2024-04-12T00:00:00.000Z
 ```
+
 > [Date methods](https://www.w3schools.com/jsref/jsref_obj_date.asp)
 
-### Math
+## Math
+
 ```js
 Math.round(4.4); // 4 - rounded to nearest integer
 Math.round(4.5); // 5
@@ -596,9 +630,11 @@ Math.min(...numbers); // min in list
 Math.max(...numbers); // max in list
 Math.random(); // value from 0 -> 1. Exp: 0.026311254760328362
 ```
+
 > [Number methods]('https://www.w3schools.com/jsref/jsref_obj_math.asp')
 
-### Conditions
+## Conditions
+
 ```js
 // Ternary
 const variable = condition ? value_if_true : value_if_false;
@@ -633,7 +669,8 @@ try {
 }
 ```
 
-### Loop
+## Loop
+
 ```js
 // Exp: for(let i = 0; i <= 5; i++) {}
 // Loop with count, arr length, can use break | continue inside
@@ -664,8 +701,10 @@ do {
 } while(condition);
 ```
 
-### Features
-#### Set
+## Features
+
+### Set
+
 ```js
 const s = new Set([12, 23, 34, 23, 25]); // Set(4) { 12, 23, 34, 25 }
 s.size; // 4
@@ -675,7 +714,9 @@ s.has(23); // false
 s.forEach(i => {})
 s.values(); // use in loop for of
 ```
-#### Map
+
+### Map
+
 ```js
 const fruits = new Map([
   ["apples", 500],
@@ -690,11 +731,14 @@ fruits.has("apples"); // false
 fruits.forEach((key, value) => {});
 fruits.entries(); // use in loop for of, item is [key, value]
 ```
+
 > **WeakMap** (garbage-collection)
+>
 > - A collection of key/value
 > - Key is "object" type
 > - Just `get`, `set`, `has` & `delete`
 > - When a key is deleted, its gone!
+>
 ```js
 const wm1 = new WeakMap();
 const wm2 = new WeakMap();
@@ -725,12 +769,15 @@ wm1.delete(o1);
 wm1.has(o1); // false
 ```
 
-### Events
+## Events
+>
 > **HTML** 'thing' need **JS** react
+>
 > - Common: `onchange` `onclick` `onmouseover` `onmouseout` `onkeydown` `onload`
 > - [List DOM events](https://www.w3schools.com/jsref/dom_obj_event.asp)
 
-### `this`
+## `this`
+
 - Alone -> **global object**.
 - In an object method -> **object**.
 - In a function -> **global object**.
@@ -738,7 +785,8 @@ wm1.has(o1); // false
 - In an event -> the element that received the event.
 - Methods like `call()`, `apply()`, and `bind()` can refer this to any object.
 
-### Module
+## Module
+
 ```js
 // EXPORT
 export const season = "Summer";
@@ -756,7 +804,8 @@ import { season, year } from './somefiles';
 import getMyAge from './somefiles2'; // default
 ```
 
-### JSON
+## JSON
+
 ```json
 {
     "employees":[
@@ -766,14 +815,17 @@ import getMyAge from './somefiles2'; // default
     ]
 }
 ```
+
 ```js
 const listEmployee_string = JSON.stringify(employees);
 const listEmployee_object = JSON.parse(employees);
 ```
 
-### Class (ES6)
+## Class (ES6)
+>
 > - A JavaScript class is not an object.
 > - It is a template for JavaScript objects.
+>
 ```js
 class Car {
   constructor(brand, year) {
@@ -798,6 +850,7 @@ class Model extends Car {
 const car1 = new Car("Ford", 2014);
 const car2 = new Model("Ford", 2014, "Mustand");
 ```
+
 ```js
 // Class with getter & setter
 class Car {
@@ -818,7 +871,8 @@ class Car {
 }
 ```
 
-### Promise & Async
+## Promise & Async
+
 ```js
 // Promise
 const myPromise = new Promise(function(resolve, reject) {
@@ -840,12 +894,13 @@ async function () { // return Promise<?>
 };
 ```
 
-### Versions
+## Versions
+
 | Version (year) | Features |
 | --- | --- |
-| ES1 (1997) | 1st edition|
-| ES2 (1998) | 2nd edition|
-| ES3 (1999) | RegEx <br> try/catch/finally <br> switch + case <br> do + while | 
+| ES1 (1997) | 1st edition |
+| ES2 (1998) | 2nd edition |
+| ES3 (1999) | RegEx <br> try/catch/finally <br> switch + case <br> do + while |
 | ES5 (2009) | `"strict mode"` <br> JSON Support <br> `String.trim()` <br> `Array.isArray()` <br> Array iteration methods |
 | ES6 (2015) | `let` & `const` <br> default param's values <br> `Array.find()` <br> `Array.findIndex()` |
 | ECMAScript 2016 | Exponential operator `**` <br> `Array.includes()` |
@@ -854,74 +909,78 @@ async function () { // return Promise<?>
 | ECMAScript 2019 | `String.trimStart()` <br> `String.trimEnd()` <br> `Array.flat()` <br> `Object.formEntries()` |
 | ECMAScript 2020 | Nullish Coalescing Operator `??` |
 
-### Document Object Model
+## Document Object Model
+
 - [DOM Document](https://www.w3schools.com/js/js_htmldom_document.asp)
 - Event Listener
-    - `element.addEventListener(eventName, callback, useCapture?)`
-    - `element.removeEventListener(eventName, callback)`
+  - `element.addEventListener(eventName, callback, useCapture?)`
+  - `element.removeEventListener(eventName, callback)`
 - Property:
-    - `element.<nodeName|nodeValue|nodeType>`
-    - [Node Properties](https://www.w3schools.com/js/js_htmldom_navigation.asp)
+  - `element.<nodeName|nodeValue|nodeType>`
+  - [Node Properties](https://www.w3schools.com/js/js_htmldom_navigation.asp)
 - Navigation `element.<navigate>`
-    - `parentNode` - li -> ul; li.parentNode
-    - `childNodes[index]` ul -> li(2); ul.childNodes[1]
-    - `firstChild`
-    - `lastChild`
-    - `nextSibling` div -> div (same order)
-    - `previousSibling`
+  - `parentNode` - li -> ul; li.parentNode
+  - `childNodes[index]` ul -> li(2); ul.childNodes[1]
+  - `firstChild`
+  - `lastChild`
+  - `nextSibling` div -> div (same order)
+  - `previousSibling`
 - Nodes
-    - Root Nodes: `document.body`, `document.documentElement`
-    - `document.createElement(tagName)`
-    - `document.createTextNode(text)` - put this inside element
-    - `element.appendChild(node|elementChild)`
-    - `element.insertBefore(markChild, newChild)`
-    - `element.removeChild(node|elementChild)`
-    - `element.replaceChild(markChild, replaceChild)`
-- HTMLCollection (live) - collection of **elements**: `getElementsByTagName()`, `getElementsByClass()` 
+  - Root Nodes: `document.body`, `document.documentElement`
+  - `document.createElement(tagName)`
+  - `document.createTextNode(text)` - put this inside element
+  - `element.appendChild(node|elementChild)`
+  - `element.insertBefore(markChild, newChild)`
+  - `element.removeChild(node|elementChild)`
+  - `element.replaceChild(markChild, replaceChild)`
+- HTMLCollection (live) - collection of **elements**: `getElementsByTagName()`, `getElementsByClass()`
 - Node Lists (static) - collection of **nodes**: `querySelectorAll()`
 
-### Browser Object Model
+## Browser Object Model
+
 - Windows size: `window.innerHeight`, `window.innerWidth`
 - Windows Methods:
-    - `window.open()`
-    - `window.close()`
-    - `window.moveTo()`
-    - `window.resizeTo()`
+  - `window.open()`
+  - `window.close()`
+  - `window.moveTo()`
+  - `window.resizeTo()`
 - Screen: `window.screen.<?>` - `width | height | availWidth | availHeight | colorDepth | pixelDepth`
 - Location: `window.location.<?>` (Exp: `https://www.w3schools.com/js/js_window_location.asp`)
-    - `href` - `https://www.w3schools.com/js/js_window_location.asp`
-    - `hostname` - `https://www.w3schools.com`
-    - `pathname` - js/js_window_location.asp
-    - `protocol` - https:
-    - `assign(url)` - navigate to url
+  - `href` - `https://www.w3schools.com/js/js_window_location.asp`
+  - `hostname` - `https://www.w3schools.com`
+  - `pathname` - js/js_window_location.asp
+  - `protocol` - https:
+  - `assign(url)` - navigate to url
 - History: `window.history.<back()|forward()|go(count)>` - count can negative, base on history stack
 - Navigator: `window.navigator.<?>`
-    - Contains **information** about the visitor's browser.
-    - Some useful keys: `cookieEnabled`, `platform`, `appVersion`, `language`, `onLine`
-    - [API Geolocation](https://www.w3schools.com/js/js_api_geolocation.asp)
+  - Contains **information** about the visitor's browser.
+  - Some useful keys: `cookieEnabled`, `platform`, `appVersion`, `language`, `onLine`
+  - [API Geolocation](https://www.w3schools.com/js/js_api_geolocation.asp)
 - Popup:
-    - `window.alert(text)` -> void
-    - `window.confirm(text)` -> boolean
-    - `window.prompt(text, defaultValue)` -> string | null
+  - `window.alert(text)` -> void
+  - `window.confirm(text)` -> boolean
+  - `window.prompt(text, defaultValue)` -> string | null
 - Time:
-    - `setTimeout(function, miliseconds)` - Execute 1 time after waiting
-    - `clearTimeout(var_setTimeout)`
-    - `setInterval(function, miliseconds)` - Loop execute after `miliseconds`
-    - `clearInterval(var_setInterval)`
+  - `setTimeout(function, miliseconds)` - Execute 1 time after waiting
+  - `clearTimeout(var_setTimeout)`
+  - `setInterval(function, miliseconds)` - Loop execute after `miliseconds`
+  - `clearInterval(var_setInterval)`
 - Cookies: `window.cookie` - Cookie exp: `'firstname="John";lastname="Doe";age:30'`
 - API Storage:
-    - `sessionStorage` - clear after close brower tab
-    - `localStorage`
-    - **Methods**: `<storage>.<?>`
-        - `length`
-        - `key(n)` - name of key _n_th
-        - `getItem(key)`
-        - `setItem(key, val)`
-        - `removeItem(key)`
-        - `clear()`
+  - `sessionStorage` - clear after close brower tab
+  - `localStorage`
+  - **Methods**: `<storage>.<?>`
+    - `length`
+    - `key(n)` - name of key _n_th
+    - `getItem(key)`
+    - `setItem(key, val)`
+    - `removeItem(key)`
+    - `clear()`
 
-### Web Workers
+## Web Workers
+>
 > independent JavaScript works behind the sences
+
 ```js
 let wwk;
 function startWorker() {
@@ -937,8 +996,10 @@ function stopWorker() {
 }
 ```
 
-### Fetch API 
+## Fetch API
+>
 > Why? Cause JSON better than AJAX
+
 ```js
 // normal fetch return Promise<status>
 fetch(url, options?)
@@ -968,7 +1029,7 @@ async function getData() {
 }
 ```
 
+## Resources
 
-### Resources
 1. [w3schools](https://www.w3schools.com/js)
 2. [Asynchronous JavaScript And XML | AJAX](https://www.w3schools.com/js/js_ajax_intro.asp)

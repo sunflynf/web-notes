@@ -1,12 +1,16 @@
+# TypeScript
+
 > **TypeScript** is **JavaScript** with _added syntax for types_.
+>
 > - TypeScript being converted into JavaScript means it runs anywhere that JavaScript runs!
 > - Add to project with **npm**: `npm install typescript --save-dev`
 > - Check: `npx tsc`
 > - Config compiler: `npx tsc --init` -> `tsconfig.json`
 
-### Table of contents
+## Table of contents
 
-### Basic Types
+## Basic Types
+
 - Type Assignment:
   - Explicit: `let firstName: string = "Dylan";`
   - Implicit (guess): `let firstName = "Dylan";` -> string
@@ -28,8 +32,9 @@
     - `let car: { model: string, year: number, mileage?: number, [x: string]: any }`
     - `?` use for optional
     - This type can replace by `type` or `interface`
-   
-### Enums
+
+## Enums
+
 ```ts
 enum CardinalDirections {
   North, // 1
@@ -46,10 +51,13 @@ enum StatusCodes {
 // Exp: StatusCode.NotFound
 ```
 
-### Interfaces & Type Aliases
-#### interface
+## Interfaces & Type Aliases
+
+### interface
+
 - `interface` only apply to **object**
 - `interface` can `extend` each other's definition.
+
 ```ts
 interface Rectangle {
   height: number,
@@ -71,9 +79,13 @@ const coloredRectangle: ColoredRectangle = {
   color: "red"
 };
 ```
-#### type
+
+### type
+
+>
 > **NOTE**: Recommend using `type` instead of `interface` if not use `class`
 > [Interface vs Type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#differences-between-type-aliases-and-interfaces)
+
 ```ts
 type CarYear = number | string; // Union types - value can be 1 of 2 types
 type CarType = string;
@@ -93,22 +105,25 @@ const car: Car = {
   model: carModel
 };
 ```
+
 ```ts
 // Type Alias
 type Negate = (value: number) => number;
 
 // in this function, the parameter `value` automatically gets assigned the type `number` from the type `Negate`
 const negateFunction: Negate = (value) => value * -1;
-``` 
+```
 
-### Casting
+## Casting
+>
 > Casting doesn't actually change the type of the data within the variable => Force casting
 
 1. `variable as type`. Exp: `x as string`
 2. `<type>variable`. Exp: `<string>x`
 3. **Force casting**: `(variable as unknown|any) as type`. Exp: `(x as unknown) as number`
 
-### Class
+## Class
+
 - Review: [JavaScript Class](./JavaScript.md)
 - **JavaScript Class with clear OOP**
 - Visibility modifiers
@@ -139,6 +154,7 @@ class Person {
 const person = new Person("Jane");
 console.log(person.getName()); // person.name isn't accessible from outside the class since it's private
 ```
+
 ```ts
 interface Shape {
   getArea: () => number;
@@ -168,6 +184,7 @@ class Square extends Rectangle {
   }
 }
 ```
+
 ```ts
 abstract class Polygon {
   public abstract getArea(): number;
@@ -188,7 +205,8 @@ class Rectangle extends Polygon {
 }
 ```
 
-### Generic
+## Generic
+
 ```ts
 // string is default type if it not provide
 class NamedValue<T = string> {
@@ -217,6 +235,7 @@ const value2 = new NamedValue<number>('myNumber');
 value2.setValue(10);
 console.log(value2.toString()); // myNumber: 10
 ```
+
 ```ts
 interface Nested<T> {
   something: T
@@ -224,6 +243,7 @@ interface Nested<T> {
 type Wrapped<T> = { value: T };
 const wrappedValue: Wrapped<number> = { value: 10 };
 ```
+
 ```ts
 // extends limit types
 function createLoggedPair<S extends string | number, T extends string | number>(v1: S, v2: T): [S, T] {
@@ -233,7 +253,8 @@ function createLoggedPair<S extends string | number, T extends string | number>(
 console.log(createPair<string, number>('hello', 42)); // ['hello', 42]
 ```
 
-### Utility Types
+## Utility Types
+
 - `Record<K, V>`
 - `Excludes<TypeUnion, TypeRemove>`
 - `Readonly<T>` - Apply TS features only
@@ -275,8 +296,10 @@ type PointPrinter = (p: { x: number; y: number; }, ss?: boolean) => void;
 const point: Parameters<PointPrinter>[0] = { x: 10, y: 20 };
 ```
 
-### TypeScript 5.x+
-#### Template Literal Types
+## TypeScript 5.x+
+
+### Template Literal Types
+
 ```ts
 type Color = "red" | "green" | "blue";
 type HexColor<T extends Color> = `#${string}`;
@@ -284,7 +307,9 @@ type HexColor<T extends Color> = `#${string}`;
 // Usage:
 let myColor: HexColor<"blue"> = "#0000FF";
 ```
-#### Index Signature Labels
+
+### Index Signature Labels
+
 ```ts
 type DynamicObject = { [key: string as `dynamic_${string}`]: string };
 
@@ -292,6 +317,7 @@ type DynamicObject = { [key: string as `dynamic_${string}`]: string };
 let obj: DynamicObject = { dynamic_key: "value" };
 ```
 
-### Resources
+## Resources
+
 1. [TypeScript docs](https://www.typescriptlang.org/docs/)
 2. [w3schools - TypeScript](https://www.w3schools.com/typescript/index.php)

@@ -1,6 +1,9 @@
-### Table of contents
+# Less.js
+
+## Table of contents
+
 1. [Introduction](#introduction)
-2. [Setting](#setting) 
+2. [Setting](#setting)
 3. [Using](#using)
     - [Variables](#variables)
     - [Operations](#operations)
@@ -14,13 +17,13 @@
 
 ---
 
-### Introduction
+## Introduction
 
 > Leaner Style Sheets is a backwards-compatible language extension for CSS.
 >
-> Link: https://lesscss.org/
+> Link: <https://lesscss.org/>
 
-### Setting
+## Setting
 
 Add to `devDependencies` of _package.json_: `npm i less --save-dev`
 
@@ -31,11 +34,11 @@ Add to browser:
 <script src="less.js" type="text/javascript"></script>
 ```
 
-See more config: https://lesscss.org/usage/#less-options
+See more config: <https://lesscss.org/usage/#less-options>
 
-### Using
+## Using
 
-#### Variables
+### Variables
 
 ```less
 @width: 10px;
@@ -50,7 +53,7 @@ See more config: https://lesscss.org/usage/#less-options
 @min768: (min-width: 768px); // Escaping - Less 3.5+
 ```
 
-#### Operations
+### Operations
 
 ```less
 // numbers are converted into the same units
@@ -66,7 +69,7 @@ See more config: https://lesscss.org/usage/#less-options
 @other: @base + @filler; // result is 15%
 ```
 
-#### Mixins
+### Mixins
 
 > [!Note]: both `id` & `class` can be a mixins
 
@@ -137,7 +140,7 @@ See more config: https://lesscss.org/usage/#less-options
 > }
 > ```
 
-#### Nesting
+### Nesting
 
 ```less
 .component {
@@ -164,7 +167,7 @@ See more config: https://lesscss.org/usage/#less-options
 
 ![less parent selectors](./assets/less_parent_selectors.png)
 
-#### Function
+### Function
 
 ```less
 @base: #f04615;
@@ -177,18 +180,18 @@ See more config: https://lesscss.org/usage/#less-options
 }
 ```
 
--   Logical:
-    -   if: `attribute: if(condition, T_return, F_return);`
-    -   boolean: `@variable: boolean(compare)` - support for if
--   String
-    -   escape | e: `@variable: escape(string_to_escape)` - return content without quotes | undefined
-    -   %format: ![%format](./assets/less_func_string_format.png)
-    -   replace: ![replace](./assets/less_func_string_replace.png)
--   List - Example: `@list: "banana", "tomato", "potato", "peach";`
-    -   length: `n: length(@list);` -> 4
-    -   extract: `value: extract(@list, 3);` -> potato
-    -   range: `value: range(10px, 30px, 10);` -> 10px 20px 30px
-    -   each:
+- Logical:
+  - if: `attribute: if(condition, T_return, F_return);`
+  - boolean: `@variable: boolean(compare)` - support for if
+- String
+  - escape | e: `@variable: escape(string_to_escape)` - return content without quotes | undefined
+  - %format: ![%format](./assets/less_func_string_format.png)
+  - replace: ![replace](./assets/less_func_string_replace.png)
+- List - Example: `@list: "banana", "tomato", "potato", "peach";`
+  - length: `n: length(@list);` -> 4
+  - extract: `value: extract(@list, 3);` -> potato
+  - range: `value: range(10px, 30px, 10);` -> 10px 20px 30px
+  - each:
 
 ```less
 @selectors: blue, green, red;
@@ -228,29 +231,29 @@ each(@selectors, {
 }
 ```
 
--   Math
-    -   `ceil(2.4) -> 3`
-    -   `floor(2.6) -> 2`
-    -   `percentage(0.5) -> 50%`
-    -   `round(1.67) -> 2; round(1.67, 1) -> 1.7`
-    -   `sqrt(25cm) -> 5cm` - keep unit
-    -   `abs(-18.25%) -> 18.25%` - keep unit
-    -   sin(theta), cos(theta), tan(theta) - asin(x), acos(x), atan(x)
-    -   pi()
-    -   `pow(a, b) -> a ^ b` - keep first's unit
-    -   `mod(a, b) -> a % b` - keep first's unit
-    -   min(...vals); max(...vals)
--   Type `is[type] - Exp: isnumber`
-    -   number, string, color, keyword, url,
-    -   pixel, em, percentage
-    -   unit, ruleset, defined
--   Misc
-    -   color(color_string) -> parse color
-    -   image-size(url) -> height width - image-height(url); image-width(url);
-    -   convert(value_with_unit, new_unit) - Exp: `convert(9s, "ms") // 9000ms`
-    -   data-uri([mimetype], url) -> url("encoded_img")
+- Math
+  - `ceil(2.4) -> 3`
+  - `floor(2.6) -> 2`
+  - `percentage(0.5) -> 50%`
+  - `round(1.67) -> 2; round(1.67, 1) -> 1.7`
+  - `sqrt(25cm) -> 5cm` - keep unit
+  - `abs(-18.25%) -> 18.25%` - keep unit
+  - sin(theta), cos(theta), tan(theta) - asin(x), acos(x), atan(x)
+  - pi()
+  - `pow(a, b) -> a ^ b` - keep first's unit
+  - `mod(a, b) -> a % b` - keep first's unit
+  - min(...vals); max(...vals)
+- Type `is[type] - Exp: isnumber`
+  - number, string, color, keyword, url,
+  - pixel, em, percentage
+  - unit, ruleset, defined
+- Misc
+  - color(color_string) -> parse color
+  - image-size(url) -> height width - image-height(url); image-width(url);
+  - convert(value_with_unit, new_unit) - Exp: `convert(9s, "ms") // 9000ms`
+  - data-uri([mimetype], url) -> url("encoded_img")
 
-#### **Namespaces** & Accessors
+### **Namespaces** & Accessors
 
 ```less
 #bundle() {
@@ -321,7 +324,7 @@ each(@selectors, {
 > }
 > ```
 
-#### Map
+### Map
 
 > [!Note] Less 3.5+
 
@@ -337,17 +340,17 @@ each(@selectors, {
 }
 ```
 
-#### Import
+### Import
 
 ```less
 @import 'library'; // library.less
 @import 'typo.css';
 ```
 
-#### Extend???
+### Extend???
 
-### Tips & Tricks
+## Tips & Tricks
 
--   `!important` apply for all configs in mixins
--   `@arguments` in mixins
--   `@rest...` get others arguments in `.mixins(@first, @rest...)`
+- `!important` apply for all configs in mixins
+- `@arguments` in mixins
+- `@rest...` get others arguments in `.mixins(@first, @rest...)`

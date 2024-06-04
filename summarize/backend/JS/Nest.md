@@ -1,19 +1,19 @@
 # NestJS
 
-## **Core Concepts**
+## Core Concepts
 
 - **Controller**: Handles incoming requests and returns responses.
 - **Service**: Business logic layer; reusable across the application.
 - **Module**: Groups related controllers and providers.
 - **Provider**: Any class annotated with `@Injectable()` for dependency injection.
 
-## **Basic Commands**
+## Basic Commands
 
 - **Installation**: `npm install -g @nestjs/cli`
 - **Create Project**: `nest new project-name`
 - **Run Application**: `npm run start`
 
-## **Application Structure**
+## Application Structure
 
 ```plaintext
 src/
@@ -24,7 +24,7 @@ src/
   ├── main.ts
 ```
 
-### **Controller**
+### Controller
 
 ```typescript
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
@@ -48,7 +48,7 @@ export class ItemsController {
 }
 ```
 
-### **Service**
+### Service
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -69,7 +69,7 @@ export class ItemsService {
 }
 ```
 
-### **Module**
+### Module
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -83,7 +83,7 @@ import { ItemsService } from './items.service';
 export class ItemsModule {}
 ```
 
-### **Main Entry File**
+### Main Entry File
 
 ```typescript
 import { NestFactory } from '@nestjs/core';
@@ -96,7 +96,7 @@ async function bootstrap() {
 bootstrap();
 ```
 
-### **DTO (Data Transfer Object)**
+### DTO (Data Transfer Object)
 
 ```typescript
 export class CreateItemDto {
@@ -106,7 +106,7 @@ export class CreateItemDto {
 }
 ```
 
-### **Pipes**
+### Pipes
 
 ```typescript
 import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
@@ -123,7 +123,7 @@ export class ParseIntPipe implements PipeTransform<string, number> {
 }
 ```
 
-### **Middleware**
+### Middleware
 
 ```typescript
 import { Injectable, NestMiddleware } from '@nestjs/common';
@@ -138,7 +138,7 @@ export class LoggerMiddleware implements NestMiddleware {
 }
 ```
 
-### **Interceptors**
+### Interceptors
 
 ```typescript
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
@@ -153,7 +153,7 @@ export class TransformInterceptor<T> implements NestInterceptor<T, any> {
 }
 ```
 
-### **Guards**
+### Guards
 
 ```typescript
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
@@ -170,7 +170,7 @@ export class AuthGuard implements CanActivate {
 }
 ```
 
-### **Decorators**
+### Decorators
 
 - **Custom Decorator**
 
@@ -185,7 +185,7 @@ export const User = createParamDecorator(
 );
 ```
 
-### **Testing**
+### Testing
 
 - **Unit Test**
 

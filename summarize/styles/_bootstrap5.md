@@ -1,6 +1,9 @@
-### Table of contents
+# Bootstrap 5
+
+## Table of contents
 
 ---
+>
 > - Bootstrap is a free front-end framework
 > - Mobile-first
 > - Bootstrap has 7 variants (color):
@@ -13,8 +16,10 @@
 >   - `dark`
 > - This note for Bootstrap version 5.3 (04-2024)
 
-### How to use?
-**In HTML + CDN**
+## How to use?
+
+### HTML + CDN
+
 ```html
 <!doctype html>
 <html lang="en">
@@ -36,12 +41,14 @@
 </html>
 ```
 
-**Stable**
+### Stable
+
 - [Download source from bootstrap](https://github.com/twbs/bootstrap/archive/v5.3.3.zip)
 - Extract all and put it to project
 - Import in to HTML index file
 
-**With package manager**
+### With package manager
+
 - `npm install bootstrap@version`
 - `yarn add bootstrap@version`
 - _Recommend add-ons_
@@ -49,12 +56,13 @@
   - **Vue3**: [bootstrap-vue-next](https://bootstrap-vue-next.github.io/bootstrap-vue-next/)
   - **Angular**: [@ng-bootstrap/ng-bootstrap](https://ng-bootstrap.github.io)
 
-### Customize
+## Customize
+
 - Change colors
   - Syntax:
     - Normal: `--bs-{color_type}-{color|bg}`
     - RGB: `--bs-{color_type}-{color|bg}-rgb`
-    - Color mode: `--bs-{color_variant}`, `--bs-{color_variant}-{rgb|bg-subtle|text-emphasis}` 
+    - Color mode: `--bs-{color_variant}`, `--bs-{color_variant}-{rgb|bg-subtle|text-emphasis}`
   - Type:
     - color: `body`, `secondary`, `teriary`, `emphasis`, `border`  
     - bg: `body`, `secondary`, `teriary`
@@ -62,9 +70,10 @@
   - Apply all pages - add to html tag
   - Apply to component - add to component tag
 
-### Layout
+## Layout
 
-#### Breakpoint
+### Breakpoint
+
 | Marked | Class | Dimensions |
 | --- | --- | --- |
 | Small | `sm` | >= 576px |
@@ -73,14 +82,18 @@
 | Extra large | `xl` | >= 1200px |
 | Extra extra large | `xxl` | >= 1400px |
 
-#### Container 
+### Container
+>
 > `<div class="container"></div>`
+
 - `container`: max-width changes at each breakpoint
 - `container-{breakpoint}`: 100% width until the specified breakpoint is reacted
 - `container-fluid`: full width viewport
 
-#### Display
+### Display
+>
 > **Block display**
+>
 > - none
 > - inline
 > - inline-block
@@ -92,11 +105,13 @@
 > - table
 > - table-cell
 > - table-row
+>
 - `d-{block_display}`
 - `d-{breakpoint}-{block_display}`
 - `d-print-{block_display}` - Print mode
 
-#### Grid 
+### Grid
+>
 > - 1 row has max 12 cols (default)
 > - `row` & `col` class built with flex system
 > - `grid` & `g-col-*` class built with grid system
@@ -127,8 +142,10 @@
 - `col-{[1, 12]}` - apply max-width (%)
 - `col-{breakpoint}-{[1, 12]|auto}` - apply max-width (%) when reacted breakpoint
 
-#### Flex
+### Flex
+>
 > Every thing go to the left
+
 - `d-flex`
   - `flex-{row|column}`
   - `flex-{breakpoint}-{row|column}`
@@ -147,7 +164,7 @@
 - `d-inline-flex`: `display: inline-flex`
 - `d-{breakpoint}-inline-flex`
 - **child**:
-  - `align-self-{start|center|end|baseline|stretch}` 
+  - `align-self-{start|center|end|baseline|stretch}`
   - `align-self-{breakpoint}-{start|center|end|baseline|stretch}`
   - `order-{first|[0, 5]|last}`
   - `order-{breakpoint}-{first|[0, 5]|last}`
@@ -156,7 +173,8 @@
   - `flex-{grow|shrink}-{0|1}`
   - `flex-{breakpoint}-{grow|shrink}-{0|1}`
 
-#### Space
+### Space
+
 - Size:
   - 0
   - 1 (0.25rem)
@@ -170,13 +188,15 @@
   - `e`: end | right
   - `t`: top
   - `b`: bottom
-  - `x`: both left & right 
+  - `x`: both left & right
   - `y`: both top & bottom
 - Margin: `m-{size}`, `m{position}-{size}`, `m{position}-{breakpoint}-{size}`
 - Padding: `p-{size}`, `p{position}-{size}`, `p{position}-{breakpoint}-{size}`
 
-### Components
-#### Content
+## Components
+
+### Content
+>
 > Bootstrap has default font based on platform
 
 | Font | Using |
@@ -207,7 +227,8 @@
 </figure>
 ```
 
-#### Text
+### Text
+
 - header(h1-h6): `display-{[1, 6]}`
 - abbr: `initialism` (smaller dots)
 - `text-body-secondary` - faded text
@@ -223,11 +244,13 @@
   - `list-unstyled` - remove marked
   - `list-inline` + `list-inline-item`
 
-#### Image
+### Image
+
 - `img-fluid` - width: 100%, height: "auto"
 - `img-thumbnail` - make border
 
-#### Table
+### Table
+
 - table
   - `table` - default based on current `data-bs-theme`
   - `table-{color_variant}` - can apply to `<thead>` or `<tr>` or `<td>` (special case)
@@ -245,15 +268,17 @@
 - tr
   - `table-active` - can apply to `<td>`
   - `align-{top|middle|bottom}` - vertical
- 
-#### Block
+
+### Block
+
 - `rounded` - border-radius
 - `rounded-{[0, 5]}`
 - `border`
 - `border-{color_variant}`
 - `visually-hidden` - hidden in UI (not remove element as `display: none`)
 
-#### Form
+### Form
+
 - `form-text` - extra text in form (can use as hint)
 - `invalid-feedback`
 - label
@@ -295,6 +320,7 @@
 
 ![image](https://github.com/sunflynf/web-notes/assets/75079929/aad40b5a-b938-427b-bf65-ff960f9feac2)
 
-### Resources
+## Resources
+
 - [Bootstrap 5.2](https://getbootstrap.com/docs/5.2)
 - [Bootstrap 5.3](https://getbootstrap.com/docs/5.3)

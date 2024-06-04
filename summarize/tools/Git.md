@@ -1,4 +1,7 @@
+# Git
+
 **Git** is version control system
+
 - Tracking code changes + who made changes
 - Coding collaboration
 - Actions:
@@ -12,7 +15,8 @@
   - `git <command> -help`
   - `git help --all`
 
- ### Basic command
+## Basic command
+
 | Command | Use for |
 | --- | --- |
 | `git --version` | Check version |
@@ -39,14 +43,15 @@
   - M - Modified files
   - D - Deleted files
 
-### Advance command
+## Advance command
+
 | Command | Use for |
 | --- | --- |
 
-
-### .gitignore
+## .gitignore
 
 ---
+
 - [ ] git revert
 - [ ] git reset
 - [ ] git amend

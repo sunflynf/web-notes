@@ -1,6 +1,9 @@
-### Table of contents
+# Node.js
 
-### Introduce
+## Table of contents
+
+## Introduce
+
 - Node.js is an open source server environment
 - Node.js uses JavaScript on the server
 - Node.js runs single-threaded, non-blocking, asynchronous programming
@@ -10,7 +13,7 @@
   - Collect form data
   - Add, delete, modify data in database
 - **npm** is the standard package manager for Node.js
- 
+
 ```cmd
 > node --version
 > node file.js
@@ -25,6 +28,7 @@
 > npm run <task-name>
 > npm run start-dev
 ```
+
 ```json
 {
   "scripts": {
@@ -34,7 +38,8 @@
 }
 ```
 
-### Modules
+## Modules
+
 ```js
 // myFirstModule.js
 exports.myDateTime = function () {
@@ -47,7 +52,8 @@ const dt = require('./myFirstModule');
 console.log(dt.myDateTime());
 ```
 
-### Built-in modules
+## Built-in modules
+
 | Modules | For |
 | --- | --- |
 | **assert** | test |
@@ -74,7 +80,8 @@ console.log(dt.myDateTime());
 | vm | compile js code in a virtual machine - like `eval()` in js |
 | zlib | compress or decompress files |
 
-#### HTTP
+### HTTP
+
 ```js
 var http = require('http');
 var url = require('url');
@@ -88,7 +95,9 @@ http.createServer(function (req, res) {
 
 // http://localhost:8080/?year=2017&month=July -> "2017 July"
 ```
-#### Testing
+
+### Testing
+
 ```mjs
 import assert from 'node:assert';
 import test from 'node:test';
@@ -101,7 +110,9 @@ test('that throws as 1 is not equal 2', () => {
   assert.strictEqual(1, 2);
 });
 ```
-#### Read & Hash a file
+
+### Read & Hash a file
+
 ```mjs
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
@@ -113,7 +124,9 @@ hasher.write(await readFile('package.json'));
 hasher.end();
 const fileHash = hasher.read();
 ```
-#### Stream pipeline
+
+### Stream pipeline
+
 ```mjs
 import { pipeline } from 'node:stream/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
@@ -127,7 +140,9 @@ await pipeline // 🤔
   createWriteStream('package.json.gz')
 );
 ```
-#### Threads
+
+### Threads
+
 ```mjs
 import { Worker, isMainThread,
   workerData, parentPort } from 'node:worker_threads';
@@ -143,5 +158,6 @@ if (isMainThread) {
 ```
 
 ### Resources
+
 1. [Node.js Documents (20.x)](https://nodejs.org/docs/latest-v20.x/api/index.html)
-2. [w3schools - Node.js]()
+2. [w3schools - Node.js](https://www.w3schools.com/nodejs/nodejs_get_started.asp)
