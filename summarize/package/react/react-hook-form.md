@@ -214,12 +214,70 @@ const {
 ## useFieldArray
 
 ```jsx
+// + focusOptions: { shouldFocus, focusIndex, focusName }
 const {
-
+    fields, 
+    // object & { id: string }
+    prepend, 
+    // prepend(obj: object | object[], focusOptions?)
+    append, 
+    // append(obj: object | object[], focusOptions?)
+    insert, 
+    // insert(index, value: object | object[], focusOption?)
+    update,
+    // update(index, value: object)
+    replace,
+    // replace(values: object[])
+    remove, 
+    // remove(index?: number | number[])
+    swap, 
+    // swap(firstIndex, secondIndex)
+    move, 
+    // move(currentIndex, toIndex)
 } = useFieldArray({
     name, // string
     control, // optional if use FormProvider
     shouldUnregister,
     rules
 });
+```
+
+```tsx
+import React from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+
+function App() {
+  const { register, control, handleSubmit, reset, trigger, setError } = useForm({
+    defaultValues: { test: [] } 
+  });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "test"
+  });
+  
+  return (
+    <form onSubmit={handleSubmit(data => console.log(data))}>
+      <ul>
+        {fields.map((item, index) => (
+          <li key={item.id}>
+            <input {...register(`test.${index}.firstName`)} />
+            <Controller
+              render={({ field }) => <input {...field} />}
+              name={`test.${index}.lastName`}
+              control={control}
+            />
+            <button type="button" onClick={() => remove(index)}>Delete</button>
+          </li>
+        ))}
+      </ul>
+      <button
+        type="button"
+        onClick={() => append({ firstName: "bill", lastName: "luo" })}
+      >
+        append
+      </button>
+      <input type="submit" />
+    </form>
+  );
+}
 ```
