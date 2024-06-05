@@ -14,50 +14,53 @@
    import 'bootstrap/dist/css/bootstrap.min.css';
    ```
 
+3. Review [**Bootstrap**](../../styles/bootstrap5.md)
+4. Review [React-Bootstrap documentation](https://react-bootstrap.github.io/)
+5. Should using  [React-bootstrap icons](https://github.com/ismamz/react-bootstrap-icons)
+
+### Color modes
+
+- Add attribute below to html (apply all) or highest level element of component
+  - `data-bs-theme="light"`
+  - `data-bs-theme="dark"`
+
+## Layout
+
+### Grid
+
+```jsx
+// fluid for fit all horizontal
+<Container fluid>
+  <Row>
+    {/* Auto fit */}
+    <Col></Col>
+    <Col></Col>
+  </Row>
+  {/* In breakpoint xs, Row contains only 2 cols */}
+  <Row xs={2}>
+    {/* In breakpoint xs, Col width is 3/12 */}
+    <Col sm={3}></Col>
+    <Col></Col>
+  </Row>
+</Container>
+```
+
+### Stack
+
+```jsx
+// default is vertical
+<Stack direction="horizontal" gap={3}>
+  <div className="p-2">First item</div>
+  <div className="p-2">Second item</div>
+  <div className="p-2">Third item</div>
+</Stack>
+```
+
 ## Components
-
-### Alerts
-
-```jsx
-import { Alert } from 'react-bootstrap';
-
-<Alert variant="primary">This is a primary alert—check it out!</Alert>
-<Alert variant="danger">This is a danger alert—check it out!</Alert>
-```
-
-### Buttons
-
-```jsx
-import { Button } from 'react-bootstrap';
-
-<Button variant="primary">Primary</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="success">Success</Button>
-<Button variant="danger">Danger</Button>
-<Button variant="warning">Warning</Button>
-<Button variant="info">Info</Button>
-<Button variant="light">Light</Button>
-<Button variant="dark">Dark</Button>
-<Button variant="link">Link</Button>
-```
-
-### Button Groups
-
-```jsx
-import { ButtonGroup } from 'react-bootstrap';
-
-<ButtonGroup>
-  <Button>Left</Button>
-  <Button>Middle</Button>
-  <Button>Right</Button>
-</ButtonGroup>
-```
 
 ### Forms
 
 ```jsx
-import { Form, Button } from 'react-bootstrap';
-
 <Form>
   <Form.Group controlId="formBasicEmail">
     <Form.Label>Email address</Form.Label>
@@ -82,23 +85,91 @@ import { Form, Button } from 'react-bootstrap';
 </Form>
 ```
 
-### Grid System
+- Form
+  - Group: group small pieces of form
+    - `controlId`: auto set to label `htmlFor` & input `id`
+    - `as`: use for grid system `as={Row}`
+  - Text: static
+    - `muted`: add `text-muted` class
+  - Label
+    - `column`: apply grid system, use with breakpoint like `xs={3}`
+  - Control: `<input {...formControlProps} />`
+    - `plaintext`: render as text (use with `readOnly`)
+    - `as='textarea'`
+    - `isValid` | `isInvalid`
+    - Feedback
+      - `type`: valid, invalid
+      - `tooltip`
+  - Select: `<select></select>`
+  - Checked: checkbox | radio buttons
+    - `type`: checkbox, radio, switch (same as check)
+    - `id`: auto setup label's `htmlFor`
+    - `label`: display text
+    - `inline`: display same row
+    - `feedback`: text show after validate
+    - `feedbackType`: valid | invalid
+    - `feedbackTooltip`
+    - Input, Label
+  - Switch
+  - Range: line drag control
+  - Floating
+
+### InputGroup
 
 ```jsx
-import { Container, Row, Col } from 'react-bootstrap';
-
-<Container>
-  <Row>
-    <Col>1 of 2</Col>
-    <Col>2 of 2</Col>
-  </Row>
-  <Row>
-    <Col>1 of 3</Col>
-    <Col>2 of 3</Col>
-    <Col>3 of 3</Col>
-  </Row>
-</Container>
+<InputGroup className="mb-3">
+  <SplitButton
+    variant="outline-secondary"
+    title="Action"
+    id="segmented-button-dropdown-1"
+  >
+    <Dropdown.Item href="#">Action</Dropdown.Item>
+    <Dropdown.Item href="#">Another action</Dropdown.Item>
+    <Dropdown.Item href="#">Something else here</Dropdown.Item>
+    <Dropdown.Divider />
+    <Dropdown.Item href="#">Separated link</Dropdown.Item>
+  </SplitButton>
+  <Form.Control aria-label="Text input with dropdown button" />
+</InputGroup>
 ```
+
+- InputGroup
+  - `hasValidation`
+  - Text, Checkbox, Radio
+
+### Accordion
+
+```jsx
+<Accordion defaultActiveKey={['0']} alwaysOpen>
+  <Accordion.Item eventKey="0">
+    <Accordion.Header>Accordion Item #1</Accordion.Header>
+    <Accordion.Body>
+      Content 1
+    </Accordion.Body>
+  </Accordion.Item>
+  <Accordion.Item eventKey="1">
+    <Accordion.Header>Accordion Item #2</Accordion.Header>
+    <Accordion.Body>
+      Content 2
+    </Accordion.Body>
+  </Accordion.Item>
+</Accordion>
+```
+
+- Accordion
+  - `flush`: square corner
+  - `activeKey`: string | string[]
+  - `defaultActiveKey`: string | string[]
+  - `onSelect`: (currentEventKey, event) => void
+  - `alwaysOpen`: open multiple
+  - Item
+    - `eventKey`
+    - Header: `onClick`
+    - Body: `onEnter | onEntering | onEntered`, `onExit | onExiting | onExited`
+  - Button
+  - Collapse
+- AccordionContext: { activeEventKey }
+- `useAccordionButton(currentEventKey, onClick)`: custom header
 
 ### Modals
 
@@ -218,27 +289,11 @@ import { Table } from 'react-bootstrap';
 </Table>
 ```
 
-## Additional Tips
+## React bootstrap icons
 
-1. **Customizing Themes:**
-   You can customize the Bootstrap theme by overriding the default CSS or using Bootstrap’s Sass variables.
-
-2. **Using Icons:**
-   For Bootstrap icons, you can install `react-bootstrap-icons`:
-
-   ```bash
-   npm install react-bootstrap-icons
-   ```
-
-   Then import and use them:
-
-   ```jsx
-   import { ArrowRight } from 'react-bootstrap-icons';
-
-   <ArrowRight />
-   ```
-
-3. **Using Utilities:**
-   Utilize Bootstrap utility classes (e.g., `text-center`, `mb-3`) for quick styling.
-
-More detailed information and advanced use cases: [React-Bootstrap documentation](https://react-bootstrap.github.io/)
+| Name         | Type             | Description                                    |
+| ------------ | ---------------- | ---------------------------------------------- |
+| `color?`     | string           | color of the icon                              |
+| `size?`      | string \| number | size of the icon (`width` and `height`)        |
+| `title?`     | string           | provides an accessible, short-text description |
+| `className?` | string           | `bi bi-{icon-name}` and add your own classes   |
