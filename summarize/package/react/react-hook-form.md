@@ -121,7 +121,7 @@ export default function App() {
 
   return (
     <FormProvider {...formCtx}>
-      // pass all methods into the context
+      {/* pass all methods into the context */}
       <form onSubmit={formCtx.handleSubmit(onSubmit)}>
         <NestedInput />
         <input type="submit" />
