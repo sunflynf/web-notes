@@ -104,11 +104,7 @@ my-app/
    import { useTranslation } from 'react-i18next';
 
    const ExampleComponent: React.FC = () => {
-     const { t, i18n } = useTranslation();
-
-     const changeLanguage = (lng: string) => {
-       i18n.changeLanguage(lng);
-     };
+     const { t, i18n: { changeLanguage } } = useTranslation();
 
      return (
        <div>
