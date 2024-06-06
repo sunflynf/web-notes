@@ -85,19 +85,19 @@
 </Form>
 ```
 
-- Form
-  - Group: group small pieces of form
+- **Form**
+  - **Group**: group small pieces of form
     - `controlId`: auto set to label `htmlFor` & input `id`
     - `as`: use for grid system `as={Row}`
-  - Text: static
+  - **Text**: static
     - `muted`: add `text-muted` class
-  - Label
+  - **Label**
     - `column`: apply grid system, use with breakpoint like `xs={3}`
-  - Control: `<input {...formControlProps} />`
+  - **Control**: `<input {...formControlProps} />`
     - `plaintext`: render as text (use with `readOnly`)
     - `as='textarea'`
     - `isValid` | `isInvalid`
-    - Feedback
+    - **Feedback**
       - `type`: valid, invalid
       - `tooltip`
   - Select: `<select></select>`
