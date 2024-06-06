@@ -100,8 +100,8 @@
     - **Feedback**
       - `type`: valid, invalid
       - `tooltip`
-  - Select: `<select></select>`
-  - Checked: checkbox | radio buttons
+  - **Select**: `<select></select>`
+  - **Checked**: checkbox | radio buttons
     - `type`: checkbox, radio, switch (same as check)
     - `id`: auto setup label's `htmlFor`
     - `label`: display text
@@ -109,10 +109,10 @@
     - `feedback`: text show after validate
     - `feedbackType`: valid | invalid
     - `feedbackTooltip`
-    - Input, Label
-  - Switch
-  - Range: line drag control
-  - Floating
+    - **Input**, **Label**
+  - **Switch**
+  - **Range**: line drag control
+  - **Floating**
 
 ### InputGroup
 
@@ -133,9 +133,9 @@
 </InputGroup>
 ```
 
-- InputGroup
+- **InputGroup**
   - `hasValidation`
-  - Text, Checkbox, Radio
+  - **Text**, **Checkbox**, **Radio**
 
 ### Accordion
 
@@ -156,20 +156,42 @@
 </Accordion>
 ```
 
-- Accordion
+- **Accordion**
   - `flush`: square corner
   - `activeKey`: string | string[]
   - `defaultActiveKey`: string | string[]
   - `onSelect`: (currentEventKey, event) => void
   - `alwaysOpen`: open multiple
-  - Item
+  - **Item**
     - `eventKey`
-    - Header: `onClick`
-    - Body: `onEnter | onEntering | onEntered`, `onExit | onExiting | onExited`
-  - Button
-  - Collapse
-- AccordionContext: { activeEventKey }
+    - **Header**: `onClick`
+    - **Body**: `onEnter | onEntering | onEntered`, `onExit | onExiting | onExited`
+  - **Button**
+  - **Collapse**
+- **_AccordionContext_**: { activeEventKey }
 - `useAccordionButton(currentEventKey, onClick)`: custom header
+
+### Alert
+
+### Badges
+
+### Breadcrumbs
+
+### Buttons
+
+#### ButtonGroup
+
+### Cards
+
+### Carousels
+
+### Dropdowns
+
+### Image
+
+#### Figures
+
+### ListGroup
 
 ### Modals
 
@@ -236,58 +258,31 @@ import { Navbar, Nav, NavDropdown, Form, FormControl, Button } from 'react-boots
 </Navbar>
 ```
 
-### Cards
+### Nav & Tabs
 
-```jsx
-import { Card, Button } from 'react-bootstrap';
-
-<Card style={{ width: '18rem' }}>
-  <Card.Img variant="top" src="holder.js/100px180" />
-  <Card.Body>
-    <Card.Title>Card Title</Card.Title>
-    <Card.Text>
-      Some quick example text to build on the card title and make up the bulk of the card's content.
-    </Card.Text>
-    <Button variant="primary">Go somewhere</Button>
-  </Card.Body>
-</Card>
-```
+#### Tabs
 
 ### Tables
 
-```jsx
-import { Table } from 'react-bootstrap';
+### Offcanvas
 
-<Table striped bordered hover>
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Username</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td colSpan="2">Larry the Bird</td>
-      <td>@twitter</td>
-    </tr>
-  </tbody>
-</Table>
-```
+### Overlay
+
+### Table
+
+#### Pagination
+
+### Placeholder
+
+#### Progress bars
+
+#### Spinners
+
+### Toast
+
+### Transitions
+
+### Ratio
 
 ## React bootstrap icons
 
