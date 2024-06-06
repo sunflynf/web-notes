@@ -37,7 +37,7 @@ const {
   watch, 
   // watch(name?: string | string[] | (data, options?) => any)) => any
   getValues, 
-  // getValues(string | string[]) => any
+  // getValues(name?: string | string[]) => any
   // - NOTE: getValues not trigger re-renders or subcribe to input changes
   setValue, 
   // setValue(name, value, configs?) 
