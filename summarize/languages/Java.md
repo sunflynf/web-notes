@@ -358,6 +358,10 @@ class ElectricCar extends Car {
 }
 ```
 
+- [ ] static method
+- [ ] final & static final
+- [ ] default method in interface
+
 ## Record
 
 ## Optional
