@@ -321,3 +321,21 @@ type Cell = {
     } // flexRender(cell.column.columnDef.cell, cell.getContext())
 }
 ```
+
+## Features
+
+### Sorting
+
+### Filtering
+
+### Pagination
+
+### Visibility
+
+### Ordering
+
+### Pinning
+
+### Expanding
+
+### Infinite Scrolling
