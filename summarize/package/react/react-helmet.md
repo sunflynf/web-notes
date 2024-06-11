@@ -1,6 +1,6 @@
 # React Helmet
 
-`react-helmet` is a reusable React component that helps manage changes to the document head, like updating the page title, adding meta tags, or linking external stylesheets. 
+`react-helmet` is a reusable React component that helps manage changes to the document head, like updating the page title, adding meta tags, or linking external stylesheets.
 
 ## Features
 

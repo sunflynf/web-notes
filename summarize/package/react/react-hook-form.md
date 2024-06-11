@@ -1,14 +1,34 @@
 # React Hook Forms
 
+## Table of contents
+
+- [Quick start](#quick-start)
+- [useForm](#useform)
+- [FormProvider & useFormContext](#formprovider--useformcontext)
+- [useWatch](#usewatch)
+- [useFormState](#useformstate)
+- [Controller & useController](#controller--usecontroller)
+- [useFieldArray](#usefieldarray)
+- [Resolvers](#resolvers)
+  - [Joi](#joi)
+  - [Zod](#zod)
+  - [Yup](#yup)
+  - [class-validator](#class-validator)
+  - [io-ts](#io-ts)
+  - [superstruct](#superstruct)
+  - [**Compare**](#compare)
+
 ## Quick start
 
 ```bash
 npm i react-hook-form
+npm i -D @hookform/devtools
 ```
 
 ```tsx
-import React from "react"
-import { useForm, SubmitHandler } from "react-hook-form"
+import React from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { DevTool } from "@hookform/devtools"; // OPTIONAL
 
 type FormValues = {
   firstName: string
@@ -21,11 +41,14 @@ export default function App() {
   const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data)
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register("name")} />
-      <input type="email" {...register("email")} />
-      <input type="submit" />
-    </form>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input {...register("name")} />
+        <input type="email" {...register("email")} />
+        <input type="submit" />
+      </form>
+      <DevTool control={control} />
+    </>
   )
 }
 ```
@@ -281,3 +304,132 @@ function App() {
   );
 }
 ```
+
+## Resolvers
+
+```bash
+npm install @hookform/resolvers
+```
+
+### Joi
+
+> [Joi](https://www.npmjs.com/package/joi) - The most powerful data validation library for JS.
+
+```tsx
+import { joiResolver } from '@hookform/resolvers/joi';
+import Joi from 'joi';
+
+const schema = Joi.object({
+  name: Joi.string().required(),
+  age: Joi.number().required(),
+});
+
+const resolver = joiResolver(schema);
+```
+
+### Zod
+
+> [Zod](https://www.npmjs.com/package/zod) - TypeScript-first schema validation with static type inference
+
+```tsx
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const schema = z.object({
+  name: z.string().min(1, { message: 'Required' }),
+  age: z.number().min(10),
+});
+
+const resolver = zodResolver(schema);
+```
+
+### Yup
+
+> [Yup](https://www.npmjs.com/package/yup) - Dead simple Object schema validation.
+
+```tsx
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+const schema = yup
+  .object()
+  .shape({
+    name: yup.string().required(),
+    age: yup.number().required(),
+  })
+  .required();
+
+const resolver = yupResolver(schema);
+```
+
+### class-validator
+
+> [class-validator](https://www.npmjs.com/package/class-validator) - Decorator-based property validation for classes.
+
+Add this code to `tsconfig.json`
+
+```json
+"strictPropertyInitialization": false,
+"experimentalDecorators": true
+```
+
+```tsx
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
+import { Length, Min, IsEmail } from 'class-validator';
+
+class User {
+  @Length(2, 30)
+  username: string;
+
+  @IsEmail()
+  email: string;
+}
+
+const resolver = classValidatorResolver(User);
+```
+
+### io-ts
+
+> [io-ts](https://www.npmjs.com/package/io-ts) - Validate your data with powerful decoders.
+
+```tsx
+import { ioTsResolver } from '@hookform/resolvers/io-ts';
+import t from 'io-ts';
+// you don't have to use io-ts-types, but it's very useful
+import tt from 'io-ts-types';
+
+const schema = t.type({
+  username: t.string,
+  age: tt.NumberFromString,
+});
+
+const resolver = ioTsResolver(schema);
+```
+
+### superstruct
+
+> [superstruct](https://www.npmjs.com/package/superstruct) - A simple and composable way to validate data in JavaScript (or TypeScript).
+
+```tsx
+import { superstructResolver } from '@hookform/resolvers/superstruct';
+import { object, string, number } from 'superstruct';
+
+const schema = object({
+  name: string(),
+  age: number(),
+});
+
+const resolver = superstructResolver(schema);
+```
+
+### Compare
+
+| Feature               | Yup         | Zod         | Joi         | class-validator | io-ts       | Superstruct  |
+|-----------------------|-------------|-------------|-------------|-----------------|-------------|--------------|
+| **TypeScript Support**| Good        | **Excellent**   | Limited     | **Excellent**       | **Excellent**   | Good         |
+| **API Style**         | Fluent      | Fluent      | Fluent      | Declarative     | *Functional*  | Fluent       |
+| **Popularity**        | High        | **Growing**     | High        | Popular in **NestJS** | Niche      | Moderate     |
+| **Validation Type**   | Sync/Async  | Sync        | Sync/Async  | Sync/Async      | Sync        | Sync         |
+| **Use Case**          | Forms, general validation | Type-safe validation | Node.js services, general validation | Class-based validation | Functional programming | General validation |
