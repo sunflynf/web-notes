@@ -6,6 +6,6 @@ tags:
     - React
 ---
 
-# Tanstack React Form
+# Tanstack - React Form
 
 ## Quick start

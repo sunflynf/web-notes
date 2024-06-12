@@ -6,6 +6,6 @@ tags:
     - React
 ---
 
-# Tanstack React Router
+# Tanstack - React Router
 
 ## Quick start

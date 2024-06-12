@@ -174,11 +174,11 @@ tags:
   - `alwaysOpen`: open multiple
   - **Item**
     - `eventKey`
-    - **Header**: `onClick`
-    - **Body**: `onEnter | onEntering | onEntered`, `onExit | onExiting | onExited`
+    - **Header** - `onClick`
+    - **Body** - `onEnter | onEntering | onEntered`, `onExit | onExiting | onExited`
   - **Button**
   - **Collapse**
-- **_AccordionContext_**: { activeEventKey }
+- **_AccordionContext_** - `{ activeEventKey }`
 - `useAccordionButton(currentEventKey, onClick)`: custom header
 
 ### Alert
