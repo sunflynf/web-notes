@@ -638,7 +638,7 @@ Math.max(...numbers); // max in list
 Math.random(); // value from 0 -> 1. Exp: 0.026311254760328362
 ```
 
-> [Number methods]('https://www.w3schools.com/jsref/jsref_obj_math.asp')
+> [Number methods](https://www.w3schools.com/jsref/jsref_obj_math.asp)
 
 ## Conditions
 
