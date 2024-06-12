@@ -1,0 +1,22 @@
+{
+  "id": "guide/hello",
+  "title": "hello",
+  "description": "lorem ipsum",
+  "source": "@site/docs/guide/hello.md",
+  "sourceDirName": "guide",
+  "slug": "/bonjour",
+  "permalink": "/docs/bonjour",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/guide/hello.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "slug": "/bonjour"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Hello from Docusaurus",
+    "permalink": "/docs/greeting"
+  }
+}

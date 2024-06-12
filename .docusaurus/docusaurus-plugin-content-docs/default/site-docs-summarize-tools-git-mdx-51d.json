@@ -1,0 +1,24 @@
+{
+  "id": "summarize/tools/Git",
+  "title": "Git",
+  "description": "Git is version control system",
+  "source": "@site/docs/summarize/tools/Git.mdx",
+  "sourceDirName": "summarize/tools",
+  "slug": "/summarize/tools/Git",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/tools/Git",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/tools/Git.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "tag": [
+      "Tool"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Command Line",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/tools/CommandLine"
+  }
+}

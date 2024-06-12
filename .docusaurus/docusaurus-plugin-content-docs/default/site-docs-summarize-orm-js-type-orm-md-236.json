@@ -1,0 +1,41 @@
+{
+  "id": "summarize/ORM/JS/TypeORM",
+  "title": "TypeORM",
+  "description": "ORM Tech",
+  "source": "@site/docs/summarize/ORM/JS/TypeORM.md",
+  "sourceDirName": "summarize/ORM/JS",
+  "slug": "/summarize/ORM/JS/TypeORM",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/ORM/JS/TypeORM",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/ORM/JS/TypeORM.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "JavaScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+    },
+    {
+      "inline": true,
+      "label": "TypeScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "description": "ORM Tech",
+    "tags": [
+      "JavaScript",
+      "TypeScript"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Prisma",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/ORM/JS/Prisma"
+  },
+  "next": {
+    "title": "JPA",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/ORM/Java/JPA"
+  }
+}

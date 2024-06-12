@@ -1,0 +1,28 @@
+{
+  "id": "summarize/tools/CommandLine",
+  "title": "Command Line",
+  "description": "| Command | Use for |",
+  "source": "@site/docs/summarize/tools/CommandLine.md",
+  "sourceDirName": "summarize/tools",
+  "slug": "/summarize/tools/CommandLine",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/tools/CommandLine",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/tools/CommandLine.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "tag": [
+      "Tool"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "tailwindcss",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/styles/tailwindcss"
+  },
+  "next": {
+    "title": "Git",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/tools/Git"
+  }
+}

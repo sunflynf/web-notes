@@ -1,0 +1,47 @@
+{
+  "id": "summarize/styles/bootstrap5",
+  "title": "Bootstrap 5",
+  "description": "Fully CSS Frameworks",
+  "source": "@site/docs/summarize/styles/bootstrap5.md",
+  "sourceDirName": "summarize/styles",
+  "slug": "/summarize/styles/bootstrap5",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/styles/bootstrap5",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/styles/bootstrap5.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "CSS",
+      "permalink": "/web-notes/my-web-notes/docs/tags/css"
+    },
+    {
+      "inline": true,
+      "label": "Frontend",
+      "permalink": "/web-notes/my-web-notes/docs/tags/frontend"
+    },
+    {
+      "inline": true,
+      "label": "UI Framework",
+      "permalink": "/web-notes/my-web-notes/docs/tags/ui-framework"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "description": "Fully CSS Frameworks",
+    "tags": [
+      "CSS",
+      "Frontend",
+      "UI Framework"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Tanstack - React Virtual",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/tanstack/react-virtual"
+  },
+  "next": {
+    "title": "CSS3",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/styles/cores/CSS3"
+  }
+}

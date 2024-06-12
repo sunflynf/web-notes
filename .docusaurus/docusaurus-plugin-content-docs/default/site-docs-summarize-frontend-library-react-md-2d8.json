@@ -1,0 +1,52 @@
+{
+  "id": "summarize/frontend/library/React",
+  "title": "React",
+  "description": "- Building User Interface",
+  "source": "@site/docs/summarize/frontend/library/React.md",
+  "sourceDirName": "summarize/frontend/library",
+  "slug": "/summarize/frontend/library/React",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/frontend/library/React",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/frontend/library/React.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "Frontend",
+      "permalink": "/web-notes/my-web-notes/docs/tags/frontend"
+    },
+    {
+      "inline": true,
+      "label": "JavaScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+    },
+    {
+      "inline": true,
+      "label": "TypeScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+    },
+    {
+      "inline": true,
+      "label": "Library",
+      "permalink": "/web-notes/my-web-notes/docs/tags/library"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "tags": [
+      "Frontend",
+      "JavaScript",
+      "TypeScript",
+      "Library"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Angular",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/frontend/framework/Angular"
+  },
+  "next": {
+    "title": "jQuery",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/frontend/library/jQuery"
+  }
+}

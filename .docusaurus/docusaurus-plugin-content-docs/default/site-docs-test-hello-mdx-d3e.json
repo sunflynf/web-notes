@@ -1,0 +1,22 @@
+{
+  "id": "test/hello",
+  "title": "Guide for Hello",
+  "description": "This is an apple 🍎",
+  "source": "@site/docs/test/hello.mdx",
+  "sourceDirName": "test",
+  "slug": "/bonjour",
+  "permalink": "/web-notes/my-web-notes/docs/bonjour",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/test/hello.mdx",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "slug": "/bonjour"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Git",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/tools/Git"
+  }
+}

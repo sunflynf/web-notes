@@ -1,0 +1,353 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/web-notes/my-web-notes/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/web-notes/my-web-notes/docs",
+          "mainDocId": "intro",
+          "docs": [
+            {
+              "id": "cheat-sheet/markdown",
+              "path": "/web-notes/my-web-notes/docs/cheat-sheet/markdown",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "cheat-sheet/naming",
+              "path": "/web-notes/my-web-notes/docs/cheat-sheet/naming",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "greeting",
+              "path": "/web-notes/my-web-notes/docs/greeting",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "intro",
+              "path": "/web-notes/my-web-notes/docs/intro",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/api/JDBC",
+              "path": "/web-notes/my-web-notes/docs/summarize/api/JDBC",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/backend/Java/SpringBoot",
+              "path": "/web-notes/my-web-notes/docs/summarize/backend/Java/SpringBoot",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/backend/JS/Express",
+              "path": "/web-notes/my-web-notes/docs/summarize/backend/JS/Express",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/backend/JS/Hono",
+              "path": "/web-notes/my-web-notes/docs/summarize/backend/JS/Hono",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/backend/JS/Koa",
+              "path": "/web-notes/my-web-notes/docs/summarize/backend/JS/Koa",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/backend/JS/Nest",
+              "path": "/web-notes/my-web-notes/docs/summarize/backend/JS/Nest",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/database/DBMS/MySQL",
+              "path": "/web-notes/my-web-notes/docs/summarize/database/DBMS/MySQL",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/database/NoSQL/MongoDB",
+              "path": "/web-notes/my-web-notes/docs/summarize/database/NoSQL/MongoDB",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/database/SQL",
+              "path": "/web-notes/my-web-notes/docs/summarize/database/SQL",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/database/SQL_Advance",
+              "path": "/web-notes/my-web-notes/docs/summarize/database/SQL_Advance",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/env/bun",
+              "path": "/web-notes/my-web-notes/docs/summarize/env/bun",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/env/nodejs",
+              "path": "/web-notes/my-web-notes/docs/summarize/env/nodejs",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/frontend/framework/Angular",
+              "path": "/web-notes/my-web-notes/docs/summarize/frontend/framework/Angular",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/frontend/library/jQuery",
+              "path": "/web-notes/my-web-notes/docs/summarize/frontend/library/jQuery",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/frontend/library/React",
+              "path": "/web-notes/my-web-notes/docs/summarize/frontend/library/React",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/languages/Java",
+              "path": "/web-notes/my-web-notes/docs/summarize/languages/Java",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/languages/JavaScript",
+              "path": "/web-notes/my-web-notes/docs/summarize/languages/JavaScript",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/languages/TypeScript",
+              "path": "/web-notes/my-web-notes/docs/summarize/languages/TypeScript",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/mobile/ReactNative",
+              "path": "/web-notes/my-web-notes/docs/summarize/mobile/ReactNative",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/orm/Java/JPA",
+              "path": "/web-notes/my-web-notes/docs/summarize/orm/Java/JPA",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/orm/JS/Drizzle",
+              "path": "/web-notes/my-web-notes/docs/summarize/orm/JS/Drizzle",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/orm/JS/Prisma",
+              "path": "/web-notes/my-web-notes/docs/summarize/orm/JS/Prisma",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/orm/JS/TypeORM",
+              "path": "/web-notes/my-web-notes/docs/summarize/orm/JS/TypeORM",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/lodash",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/lodash",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/notistack",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/notistack",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/react-admin",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/react-admin",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/react-bootstrap",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/react-bootstrap",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/react-helmet",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/react-helmet",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/react-hook-form",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/react-hook-form",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/react-i18next",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/react-i18next",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/react-number-format",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/react-number-format",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/react-redux",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/react-redux",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/react-router",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/react-router",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/react-select",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/react-select",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/react-toastify",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/react-toastify",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/react-window",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/react-window",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/RTK-query",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/RTK-query",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/styled-component",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/styled-component",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/tanstack/react-form",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/tanstack/react-form",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/tanstack/react-query",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/tanstack/react-query",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/tanstack/react-router",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/tanstack/react-router",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/tanstack/react-table",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/tanstack/react-table",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/package/react/tanstack/react-virtual",
+              "path": "/web-notes/my-web-notes/docs/summarize/package/react/tanstack/react-virtual",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/styles/bootstrap5",
+              "path": "/web-notes/my-web-notes/docs/summarize/styles/bootstrap5",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/styles/cores/CSS3",
+              "path": "/web-notes/my-web-notes/docs/summarize/styles/cores/CSS3",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/styles/cores/Lessjs",
+              "path": "/web-notes/my-web-notes/docs/summarize/styles/cores/Lessjs",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/styles/cores/SASS",
+              "path": "/web-notes/my-web-notes/docs/summarize/styles/cores/SASS",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/styles/tailwindcss",
+              "path": "/web-notes/my-web-notes/docs/summarize/styles/tailwindcss",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/tools/CommandLine",
+              "path": "/web-notes/my-web-notes/docs/summarize/tools/CommandLine",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "summarize/tools/Git",
+              "path": "/web-notes/my-web-notes/docs/summarize/tools/Git",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "test/hello",
+              "path": "/web-notes/my-web-notes/docs/bonjour",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial-basics/congratulations",
+              "path": "/web-notes/my-web-notes/docs/tutorial-basics/congratulations",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial-basics/create-a-blog-post",
+              "path": "/web-notes/my-web-notes/docs/tutorial-basics/create-a-blog-post",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial-basics/create-a-document",
+              "path": "/web-notes/my-web-notes/docs/tutorial-basics/create-a-document",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial-basics/create-a-page",
+              "path": "/web-notes/my-web-notes/docs/tutorial-basics/create-a-page",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial-basics/deploy-your-site",
+              "path": "/web-notes/my-web-notes/docs/tutorial-basics/deploy-your-site",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial-basics/markdown-features",
+              "path": "/web-notes/my-web-notes/docs/tutorial-basics/markdown-features",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial-extras/manage-docs-versions",
+              "path": "/web-notes/my-web-notes/docs/tutorial-extras/manage-docs-versions",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial-extras/translate-your-site",
+              "path": "/web-notes/my-web-notes/docs/tutorial-extras/translate-your-site",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "/category/tutorial---basics",
+              "path": "/web-notes/my-web-notes/docs/category/tutorial---basics",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "/category/tutorial---extras",
+              "path": "/web-notes/my-web-notes/docs/category/tutorial---extras",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/web-notes/my-web-notes/docs/intro",
+                "label": "intro"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

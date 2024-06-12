@@ -1,0 +1,47 @@
+{
+  "id": "summarize/database/NoSQL/MongoDB",
+  "title": "MongoDB",
+  "description": "Database Management System.",
+  "source": "@site/docs/summarize/database/NoSQL/MongoDB.md",
+  "sourceDirName": "summarize/database/NoSQL",
+  "slug": "/summarize/database/NoSQL/MongoDB",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/database/NoSQL/MongoDB",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/database/NoSQL/MongoDB.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "NoSQL",
+      "permalink": "/web-notes/my-web-notes/docs/tags/no-sql"
+    },
+    {
+      "inline": true,
+      "label": "JSON",
+      "permalink": "/web-notes/my-web-notes/docs/tags/json"
+    },
+    {
+      "inline": true,
+      "label": "DBMS",
+      "permalink": "/web-notes/my-web-notes/docs/tags/dbms"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "description": "Database Management System.",
+    "tags": [
+      "NoSQL",
+      "JSON",
+      "DBMS"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "MySQL",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/database/DBMS/MySQL"
+  },
+  "next": {
+    "title": "Structured Query Language",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/database/SQL"
+  }
+}

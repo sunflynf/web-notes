@@ -1,0 +1,59 @@
+{
+  "id": "summarize/package/react/react-admin",
+  "title": "React-admin",
+  "description": "System Admin fast as ****",
+  "source": "@site/docs/summarize/package/react/react-admin.md",
+  "sourceDirName": "summarize/package/react",
+  "slug": "/summarize/package/react/react-admin",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-admin",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/package/react/react-admin.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "JavaScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+    },
+    {
+      "inline": true,
+      "label": "TypeScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+    },
+    {
+      "inline": true,
+      "label": "React",
+      "permalink": "/web-notes/my-web-notes/docs/tags/react"
+    },
+    {
+      "inline": true,
+      "label": "Frontend",
+      "permalink": "/web-notes/my-web-notes/docs/tags/frontend"
+    },
+    {
+      "inline": true,
+      "label": "System",
+      "permalink": "/web-notes/my-web-notes/docs/tags/system"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "description": "System Admin fast as ****",
+    "tags": [
+      "JavaScript",
+      "TypeScript",
+      "React",
+      "Frontend",
+      "System"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Notistack",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/notistack"
+  },
+  "next": {
+    "title": "React-Bootstrap",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-bootstrap"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "summarize/styles/cores/SASS",
+  "title": "SASS (SCSS)",
+  "description": "CSS Frameworks",
+  "source": "@site/docs/summarize/styles/cores/SASS.md",
+  "sourceDirName": "summarize/styles/cores",
+  "slug": "/summarize/styles/cores/SASS",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/styles/cores/SASS",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/styles/cores/SASS.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "CSS",
+      "permalink": "/web-notes/my-web-notes/docs/tags/css"
+    },
+    {
+      "inline": true,
+      "label": "Frontend",
+      "permalink": "/web-notes/my-web-notes/docs/tags/frontend"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "description": "CSS Frameworks",
+    "tags": [
+      "CSS",
+      "Frontend"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Less.js",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/styles/cores/Lessjs"
+  },
+  "next": {
+    "title": "tailwindcss",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/styles/tailwindcss"
+  }
+}

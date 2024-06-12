@@ -1,0 +1,59 @@
+{
+  "id": "summarize/package/react/RTK-query",
+  "title": "@redux-toolkits/query",
+  "description": "Redux add-ons",
+  "source": "@site/docs/summarize/package/react/RTK-query.md",
+  "sourceDirName": "summarize/package/react",
+  "slug": "/summarize/package/react/RTK-query",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/RTK-query",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/package/react/RTK-query.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "JavaScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+    },
+    {
+      "inline": true,
+      "label": "TypeScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+    },
+    {
+      "inline": true,
+      "label": "React",
+      "permalink": "/web-notes/my-web-notes/docs/tags/react"
+    },
+    {
+      "inline": true,
+      "label": "Redux",
+      "permalink": "/web-notes/my-web-notes/docs/tags/redux"
+    },
+    {
+      "inline": true,
+      "label": "Extension",
+      "permalink": "/web-notes/my-web-notes/docs/tags/extension"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "description": "Redux add-ons",
+    "tags": [
+      "JavaScript",
+      "TypeScript",
+      "React",
+      "Redux",
+      "Extension"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "lodash",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/package/lodash"
+  },
+  "next": {
+    "title": "Notistack",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/notistack"
+  }
+}

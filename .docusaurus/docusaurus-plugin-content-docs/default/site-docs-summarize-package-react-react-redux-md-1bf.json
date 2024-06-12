@@ -1,0 +1,53 @@
+{
+  "id": "summarize/package/react/react-redux",
+  "title": "React - Redux",
+  "description": "Complex state control in React",
+  "source": "@site/docs/summarize/package/react/react-redux.md",
+  "sourceDirName": "summarize/package/react",
+  "slug": "/summarize/package/react/react-redux",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-redux",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/package/react/react-redux.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "JavaScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+    },
+    {
+      "inline": true,
+      "label": "TypeScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+    },
+    {
+      "inline": true,
+      "label": "React",
+      "permalink": "/web-notes/my-web-notes/docs/tags/react"
+    },
+    {
+      "inline": true,
+      "label": "Extension",
+      "permalink": "/web-notes/my-web-notes/docs/tags/extension"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "description": "Complex state control in React",
+    "tags": [
+      "JavaScript",
+      "TypeScript",
+      "React",
+      "Extension"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "React Number Format",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-number-format"
+  },
+  "next": {
+    "title": "React Router",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-router"
+  }
+}

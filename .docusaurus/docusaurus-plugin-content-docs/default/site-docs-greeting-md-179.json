@@ -1,0 +1,35 @@
+{
+  "id": "greeting",
+  "title": "Hello from Docusaurus",
+  "description": "Create a doc page with rich content.",
+  "source": "@site/docs/greeting.md",
+  "sourceDirName": ".",
+  "slug": "/greeting",
+  "permalink": "/web-notes/my-web-notes/docs/greeting",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/greeting.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "docusaurus",
+      "permalink": "/web-notes/my-web-notes/docs/tags/docusaurus"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "description": "Create a doc page with rich content.",
+    "tags": [
+      "docusaurus"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Naming styles",
+    "permalink": "/web-notes/my-web-notes/docs/cheat-sheet/naming"
+  },
+  "next": {
+    "title": "JDBC",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/api/JDBC"
+  }
+}

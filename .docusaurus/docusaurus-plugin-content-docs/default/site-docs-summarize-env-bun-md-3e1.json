@@ -1,0 +1,52 @@
+{
+  "id": "summarize/env/bun",
+  "title": "Bun",
+  "description": "",
+  "source": "@site/docs/summarize/env/bun.md",
+  "sourceDirName": "summarize/env",
+  "slug": "/summarize/env/bun",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/env/bun",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/env/bun.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "Environment",
+      "permalink": "/web-notes/my-web-notes/docs/tags/environment"
+    },
+    {
+      "inline": true,
+      "label": "JavaScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+    },
+    {
+      "inline": true,
+      "label": "TypeScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+    },
+    {
+      "inline": true,
+      "label": "WebSocket",
+      "permalink": "/web-notes/my-web-notes/docs/tags/web-socket"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "tags": [
+      "Environment",
+      "JavaScript",
+      "TypeScript",
+      "WebSocket"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Advanced SQL Code Structure",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/database/SQL_Advance"
+  },
+  "next": {
+    "title": "Node.js",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/env/nodejs"
+  }
+}

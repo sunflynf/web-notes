@@ -1,0 +1,53 @@
+{
+  "id": "summarize/package/react/react-router",
+  "title": "React Router",
+  "description": "Set up routing",
+  "source": "@site/docs/summarize/package/react/react-router.md",
+  "sourceDirName": "summarize/package/react",
+  "slug": "/summarize/package/react/react-router",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-router",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/package/react/react-router.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "JavaScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+    },
+    {
+      "inline": true,
+      "label": "TypeScript",
+      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+    },
+    {
+      "inline": true,
+      "label": "React",
+      "permalink": "/web-notes/my-web-notes/docs/tags/react"
+    },
+    {
+      "inline": true,
+      "label": "Extension",
+      "permalink": "/web-notes/my-web-notes/docs/tags/extension"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "description": "Set up routing",
+    "tags": [
+      "JavaScript",
+      "TypeScript",
+      "React",
+      "Extension"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "React - Redux",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-redux"
+  },
+  "next": {
+    "title": "React Select",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-select"
+  }
+}

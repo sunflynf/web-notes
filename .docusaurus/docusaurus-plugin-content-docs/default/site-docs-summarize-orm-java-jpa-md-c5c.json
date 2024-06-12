@@ -1,0 +1,41 @@
+{
+  "id": "summarize/orm/Java/JPA",
+  "title": "JPA",
+  "description": "ORM Tech",
+  "source": "@site/docs/summarize/orm/Java/JPA.md",
+  "sourceDirName": "summarize/orm/Java",
+  "slug": "/summarize/orm/Java/JPA",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/orm/Java/JPA",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/orm/Java/JPA.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "Java",
+      "permalink": "/web-notes/my-web-notes/docs/tags/java"
+    },
+    {
+      "inline": true,
+      "label": "Spring boot",
+      "permalink": "/web-notes/my-web-notes/docs/tags/spring-boot"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "description": "ORM Tech",
+    "tags": [
+      "Java",
+      "Spring boot"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "TypeORM",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/orm/JS/TypeORM"
+  },
+  "next": {
+    "title": "lodash",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/package/lodash"
+  }
+}

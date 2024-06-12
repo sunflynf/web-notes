@@ -1,0 +1,41 @@
+{
+  "id": "summarize/api/JDBC",
+  "title": "JDBC",
+  "description": "JDBC API - Support for Java connection with DBMS.",
+  "source": "@site/docs/summarize/api/JDBC.md",
+  "sourceDirName": "summarize/api",
+  "slug": "/summarize/api/JDBC",
+  "permalink": "/web-notes/my-web-notes/docs/summarize/api/JDBC",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/api/JDBC.md",
+  "tags": [
+    {
+      "inline": true,
+      "label": "Java",
+      "permalink": "/web-notes/my-web-notes/docs/tags/java"
+    },
+    {
+      "inline": true,
+      "label": "Database",
+      "permalink": "/web-notes/my-web-notes/docs/tags/database"
+    }
+  ],
+  "version": "current",
+  "frontMatter": {
+    "description": "JDBC API - Support for Java connection with DBMS.",
+    "tags": [
+      "Java",
+      "Database"
+    ]
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Hello from Docusaurus",
+    "permalink": "/web-notes/my-web-notes/docs/greeting"
+  },
+  "next": {
+    "title": "Express",
+    "permalink": "/web-notes/my-web-notes/docs/summarize/backend/JS/Express"
+  }
+}
