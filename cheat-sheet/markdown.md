@@ -52,6 +52,21 @@ Here is a footnote[^1]
 Example for footnote, maybe show lastest of this page![^1]
 [^1]: Footnote here!
 
+> [!Note]
+>
+> This is note 
+
+> [!Tip]
+>
+> Tips for nothing 
+
+> [!Warning]
+>
+> Bananaaaaaaaaaaaaaaaaa 
+
+> [!Caution]
+>
+> Just don't 
 
 Github diff files
 ```diff
