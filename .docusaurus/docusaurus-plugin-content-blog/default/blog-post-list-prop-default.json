@@ -1,4 +1,25 @@
 {
   "title": "Recent posts",
-  "items": []
+  "items": [
+    {
+      "title": "Welcome",
+      "permalink": "/web-notes/blog/welcome",
+      "unlisted": false
+    },
+    {
+      "title": "MDX Blog Post",
+      "permalink": "/web-notes/blog/mdx-blog-post",
+      "unlisted": false
+    },
+    {
+      "title": "Long Blog Post",
+      "permalink": "/web-notes/blog/long-blog-post",
+      "unlisted": false
+    },
+    {
+      "title": "First Blog Post",
+      "permalink": "/web-notes/blog/first-blog-post",
+      "unlisted": false
+    }
+  ]
 }

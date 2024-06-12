@@ -5,20 +5,20 @@
   "source": "@site/docs/summarize/languages/TypeScript.md",
   "sourceDirName": "summarize/languages",
   "slug": "/summarize/languages/TypeScript",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/languages/TypeScript",
+  "permalink": "/web-notes/docs/summarize/languages/TypeScript",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/languages/TypeScript.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/languages/TypeScript.md",
   "tags": [
     {
       "inline": true,
       "label": "Programming lang",
-      "permalink": "/web-notes/my-web-notes/docs/tags/programming-lang"
+      "permalink": "/web-notes/docs/tags/programming-lang"
     },
     {
       "inline": true,
       "label": "JavaScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+      "permalink": "/web-notes/docs/tags/java-script"
     }
   ],
   "version": "current",
@@ -32,10 +32,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "JavaScript",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/languages/JavaScript"
+    "permalink": "/web-notes/docs/summarize/languages/JavaScript"
   },
   "next": {
     "title": "React Native",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/mobile/ReactNative"
+    "permalink": "/web-notes/docs/summarize/mobile/ReactNative"
   }
 }

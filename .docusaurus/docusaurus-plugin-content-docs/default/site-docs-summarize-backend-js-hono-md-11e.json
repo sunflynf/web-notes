@@ -5,35 +5,35 @@
   "source": "@site/docs/summarize/backend/JS/Hono.md",
   "sourceDirName": "summarize/backend/JS",
   "slug": "/summarize/backend/JS/Hono",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/backend/JS/Hono",
+  "permalink": "/web-notes/docs/summarize/backend/JS/Hono",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/backend/JS/Hono.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/backend/JS/Hono.md",
   "tags": [
     {
       "inline": true,
       "label": "Backend",
-      "permalink": "/web-notes/my-web-notes/docs/tags/backend"
+      "permalink": "/web-notes/docs/tags/backend"
     },
     {
       "inline": true,
       "label": "JavaScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+      "permalink": "/web-notes/docs/tags/java-script"
     },
     {
       "inline": true,
       "label": "TypeScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+      "permalink": "/web-notes/docs/tags/type-script"
     },
     {
       "inline": true,
       "label": "MVC",
-      "permalink": "/web-notes/my-web-notes/docs/tags/mvc"
+      "permalink": "/web-notes/docs/tags/mvc"
     },
     {
       "inline": true,
       "label": "RESTapis",
-      "permalink": "/web-notes/my-web-notes/docs/tags/res-tapis"
+      "permalink": "/web-notes/docs/tags/res-tapis"
     }
   ],
   "version": "current",
@@ -50,10 +50,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Express",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/backend/JS/Express"
+    "permalink": "/web-notes/docs/summarize/backend/JS/Express"
   },
   "next": {
     "title": "Koa.js",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/backend/JS/Koa"
+    "permalink": "/web-notes/docs/summarize/backend/JS/Koa"
   }
 }

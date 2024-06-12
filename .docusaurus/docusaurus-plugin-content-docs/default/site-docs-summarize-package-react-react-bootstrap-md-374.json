@@ -5,35 +5,35 @@
   "source": "@site/docs/summarize/package/react/react-bootstrap.md",
   "sourceDirName": "summarize/package/react",
   "slug": "/summarize/package/react/react-bootstrap",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-bootstrap",
+  "permalink": "/web-notes/docs/summarize/package/react/react-bootstrap",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/package/react/react-bootstrap.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/package/react/react-bootstrap.md",
   "tags": [
     {
       "inline": true,
       "label": "JavaScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+      "permalink": "/web-notes/docs/tags/java-script"
     },
     {
       "inline": true,
       "label": "TypeScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+      "permalink": "/web-notes/docs/tags/type-script"
     },
     {
       "inline": true,
       "label": "Bootstrap",
-      "permalink": "/web-notes/my-web-notes/docs/tags/bootstrap"
+      "permalink": "/web-notes/docs/tags/bootstrap"
     },
     {
       "inline": true,
       "label": "React",
-      "permalink": "/web-notes/my-web-notes/docs/tags/react"
+      "permalink": "/web-notes/docs/tags/react"
     },
     {
       "inline": true,
       "label": "UI Framework",
-      "permalink": "/web-notes/my-web-notes/docs/tags/ui-framework"
+      "permalink": "/web-notes/docs/tags/ui-framework"
     }
   ],
   "version": "current",
@@ -50,10 +50,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "React-admin",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-admin"
+    "permalink": "/web-notes/docs/summarize/package/react/react-admin"
   },
   "next": {
     "title": "React Helmet",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-helmet"
+    "permalink": "/web-notes/docs/summarize/package/react/react-helmet"
   }
 }

@@ -5,25 +5,25 @@
   "source": "@site/docs/summarize/mobile/ReactNative.md",
   "sourceDirName": "summarize/mobile",
   "slug": "/summarize/mobile/ReactNative",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/mobile/ReactNative",
+  "permalink": "/web-notes/docs/summarize/mobile/ReactNative",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/mobile/ReactNative.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/mobile/ReactNative.md",
   "tags": [
     {
       "inline": true,
       "label": "Library",
-      "permalink": "/web-notes/my-web-notes/docs/tags/library"
+      "permalink": "/web-notes/docs/tags/library"
     },
     {
       "inline": true,
       "label": "Frontend",
-      "permalink": "/web-notes/my-web-notes/docs/tags/frontend"
+      "permalink": "/web-notes/docs/tags/frontend"
     },
     {
       "inline": true,
       "label": "Mobile",
-      "permalink": "/web-notes/my-web-notes/docs/tags/mobile"
+      "permalink": "/web-notes/docs/tags/mobile"
     }
   ],
   "version": "current",
@@ -38,10 +38,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "TypeScript",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/languages/TypeScript"
+    "permalink": "/web-notes/docs/summarize/languages/TypeScript"
   },
   "next": {
     "title": "Drizzle",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/orm/JS/Drizzle"
+    "permalink": "/web-notes/docs/summarize/orm/JS/Drizzle"
   }
 }

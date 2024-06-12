@@ -5,10 +5,10 @@
   "source": "@site/docs/tutorial-basics/create-a-blog-post.md",
   "sourceDirName": "tutorial-basics",
   "slug": "/tutorial-basics/create-a-blog-post",
-  "permalink": "/web-notes/my-web-notes/docs/tutorial-basics/create-a-blog-post",
+  "permalink": "/web-notes/docs/tutorial-basics/create-a-blog-post",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/tutorial-basics/create-a-blog-post.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/tutorial-basics/create-a-blog-post.md",
   "tags": [],
   "version": "current",
   "sidebarPosition": 3,
@@ -18,10 +18,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Create a Document",
-    "permalink": "/web-notes/my-web-notes/docs/tutorial-basics/create-a-document"
+    "permalink": "/web-notes/docs/tutorial-basics/create-a-document"
   },
   "next": {
     "title": "Markdown Features",
-    "permalink": "/web-notes/my-web-notes/docs/tutorial-basics/markdown-features"
+    "permalink": "/web-notes/docs/tutorial-basics/markdown-features"
   }
 }

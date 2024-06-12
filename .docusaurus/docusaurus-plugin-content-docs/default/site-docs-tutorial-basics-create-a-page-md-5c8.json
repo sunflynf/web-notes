@@ -5,10 +5,10 @@
   "source": "@site/docs/tutorial-basics/create-a-page.md",
   "sourceDirName": "tutorial-basics",
   "slug": "/tutorial-basics/create-a-page",
-  "permalink": "/web-notes/my-web-notes/docs/tutorial-basics/create-a-page",
+  "permalink": "/web-notes/docs/tutorial-basics/create-a-page",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/tutorial-basics/create-a-page.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/tutorial-basics/create-a-page.md",
   "tags": [],
   "version": "current",
   "sidebarPosition": 1,
@@ -18,10 +18,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Tutorial - Basics",
-    "permalink": "/web-notes/my-web-notes/docs/category/tutorial---basics"
+    "permalink": "/web-notes/docs/category/tutorial---basics"
   },
   "next": {
     "title": "Create a Document",
-    "permalink": "/web-notes/my-web-notes/docs/tutorial-basics/create-a-document"
+    "permalink": "/web-notes/docs/tutorial-basics/create-a-document"
   }
 }

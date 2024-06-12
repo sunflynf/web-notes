@@ -5,15 +5,15 @@
   "source": "@site/docs/cheat-sheet/naming.md",
   "sourceDirName": "cheat-sheet",
   "slug": "/cheat-sheet/naming",
-  "permalink": "/web-notes/my-web-notes/docs/cheat-sheet/naming",
+  "permalink": "/web-notes/docs/cheat-sheet/naming",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/cheat-sheet/naming.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/cheat-sheet/naming.md",
   "tags": [
     {
       "inline": true,
       "label": "Clean code",
-      "permalink": "/web-notes/my-web-notes/docs/tags/clean-code"
+      "permalink": "/web-notes/docs/tags/clean-code"
     }
   ],
   "version": "current",
@@ -26,10 +26,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Markdown note",
-    "permalink": "/web-notes/my-web-notes/docs/cheat-sheet/markdown"
+    "permalink": "/web-notes/docs/cheat-sheet/markdown"
   },
   "next": {
     "title": "Hello from Docusaurus",
-    "permalink": "/web-notes/my-web-notes/docs/greeting"
+    "permalink": "/web-notes/docs/greeting"
   }
 }

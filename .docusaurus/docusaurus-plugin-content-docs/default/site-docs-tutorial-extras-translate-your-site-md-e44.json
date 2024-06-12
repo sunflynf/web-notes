@@ -5,10 +5,10 @@
   "source": "@site/docs/tutorial-extras/translate-your-site.md",
   "sourceDirName": "tutorial-extras",
   "slug": "/tutorial-extras/translate-your-site",
-  "permalink": "/web-notes/my-web-notes/docs/tutorial-extras/translate-your-site",
+  "permalink": "/web-notes/docs/tutorial-extras/translate-your-site",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/tutorial-extras/translate-your-site.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/tutorial-extras/translate-your-site.md",
   "tags": [],
   "version": "current",
   "sidebarPosition": 2,
@@ -18,10 +18,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Manage Docs Versions",
-    "permalink": "/web-notes/my-web-notes/docs/tutorial-extras/manage-docs-versions"
+    "permalink": "/web-notes/docs/tutorial-extras/manage-docs-versions"
   },
   "next": {
     "title": "Markdown note",
-    "permalink": "/web-notes/my-web-notes/docs/cheat-sheet/markdown"
+    "permalink": "/web-notes/docs/cheat-sheet/markdown"
   }
 }

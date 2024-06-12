@@ -5,10 +5,10 @@
   "source": "@site/docs/tutorial-basics/markdown-features.mdx",
   "sourceDirName": "tutorial-basics",
   "slug": "/tutorial-basics/markdown-features",
-  "permalink": "/web-notes/my-web-notes/docs/tutorial-basics/markdown-features",
+  "permalink": "/web-notes/docs/tutorial-basics/markdown-features",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/tutorial-basics/markdown-features.mdx",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/tutorial-basics/markdown-features.mdx",
   "tags": [],
   "version": "current",
   "sidebarPosition": 4,
@@ -18,10 +18,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Create a Blog Post",
-    "permalink": "/web-notes/my-web-notes/docs/tutorial-basics/create-a-blog-post"
+    "permalink": "/web-notes/docs/tutorial-basics/create-a-blog-post"
   },
   "next": {
     "title": "Deploy your site",
-    "permalink": "/web-notes/my-web-notes/docs/tutorial-basics/deploy-your-site"
+    "permalink": "/web-notes/docs/tutorial-basics/deploy-your-site"
   }
 }

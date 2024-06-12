@@ -5,10 +5,10 @@
   "source": "@site/docs/tutorial-basics/create-a-document.md",
   "sourceDirName": "tutorial-basics",
   "slug": "/tutorial-basics/create-a-document",
-  "permalink": "/web-notes/my-web-notes/docs/tutorial-basics/create-a-document",
+  "permalink": "/web-notes/docs/tutorial-basics/create-a-document",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/tutorial-basics/create-a-document.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/tutorial-basics/create-a-document.md",
   "tags": [],
   "version": "current",
   "sidebarPosition": 2,
@@ -18,10 +18,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Create a Page",
-    "permalink": "/web-notes/my-web-notes/docs/tutorial-basics/create-a-page"
+    "permalink": "/web-notes/docs/tutorial-basics/create-a-page"
   },
   "next": {
     "title": "Create a Blog Post",
-    "permalink": "/web-notes/my-web-notes/docs/tutorial-basics/create-a-blog-post"
+    "permalink": "/web-notes/docs/tutorial-basics/create-a-blog-post"
   }
 }

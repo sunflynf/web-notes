@@ -5,20 +5,20 @@
   "source": "@site/docs/summarize/orm/JS/Drizzle.md",
   "sourceDirName": "summarize/orm/JS",
   "slug": "/summarize/orm/JS/Drizzle",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/orm/JS/Drizzle",
+  "permalink": "/web-notes/docs/summarize/orm/JS/Drizzle",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/orm/JS/Drizzle.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/orm/JS/Drizzle.md",
   "tags": [
     {
       "inline": true,
       "label": "JavaScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+      "permalink": "/web-notes/docs/tags/java-script"
     },
     {
       "inline": true,
       "label": "TypeScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+      "permalink": "/web-notes/docs/tags/type-script"
     }
   ],
   "version": "current",
@@ -32,10 +32,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "React Native",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/mobile/ReactNative"
+    "permalink": "/web-notes/docs/summarize/mobile/ReactNative"
   },
   "next": {
     "title": "Prisma",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/orm/JS/Prisma"
+    "permalink": "/web-notes/docs/summarize/orm/JS/Prisma"
   }
 }

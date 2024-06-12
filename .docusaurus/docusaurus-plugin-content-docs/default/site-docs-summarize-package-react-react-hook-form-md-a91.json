@@ -5,30 +5,30 @@
   "source": "@site/docs/summarize/package/react/react-hook-form.md",
   "sourceDirName": "summarize/package/react",
   "slug": "/summarize/package/react/react-hook-form",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-hook-form",
+  "permalink": "/web-notes/docs/summarize/package/react/react-hook-form",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/package/react/react-hook-form.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/package/react/react-hook-form.md",
   "tags": [
     {
       "inline": true,
       "label": "JavaScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+      "permalink": "/web-notes/docs/tags/java-script"
     },
     {
       "inline": true,
       "label": "TypeScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+      "permalink": "/web-notes/docs/tags/type-script"
     },
     {
       "inline": true,
       "label": "React",
-      "permalink": "/web-notes/my-web-notes/docs/tags/react"
+      "permalink": "/web-notes/docs/tags/react"
     },
     {
       "inline": true,
       "label": "Extension",
-      "permalink": "/web-notes/my-web-notes/docs/tags/extension"
+      "permalink": "/web-notes/docs/tags/extension"
     }
   ],
   "version": "current",
@@ -44,10 +44,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "React Helmet",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-helmet"
+    "permalink": "/web-notes/docs/summarize/package/react/react-helmet"
   },
   "next": {
     "title": "React i18 next",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-i18next"
+    "permalink": "/web-notes/docs/summarize/package/react/react-i18next"
   }
 }

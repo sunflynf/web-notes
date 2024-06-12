@@ -5,30 +5,30 @@
   "source": "@site/docs/summarize/env/nodejs.md",
   "sourceDirName": "summarize/env",
   "slug": "/summarize/env/nodejs",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/env/nodejs",
+  "permalink": "/web-notes/docs/summarize/env/nodejs",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/env/nodejs.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/env/nodejs.md",
   "tags": [
     {
       "inline": true,
       "label": "Environment",
-      "permalink": "/web-notes/my-web-notes/docs/tags/environment"
+      "permalink": "/web-notes/docs/tags/environment"
     },
     {
       "inline": true,
       "label": "JavaScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+      "permalink": "/web-notes/docs/tags/java-script"
     },
     {
       "inline": true,
       "label": "TypeScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+      "permalink": "/web-notes/docs/tags/type-script"
     },
     {
       "inline": true,
       "label": "WebSocket",
-      "permalink": "/web-notes/my-web-notes/docs/tags/web-socket"
+      "permalink": "/web-notes/docs/tags/web-socket"
     }
   ],
   "version": "current",
@@ -43,10 +43,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Bun",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/env/bun"
+    "permalink": "/web-notes/docs/summarize/env/bun"
   },
   "next": {
     "title": "Angular",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/frontend/framework/Angular"
+    "permalink": "/web-notes/docs/summarize/frontend/framework/Angular"
   }
 }

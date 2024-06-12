@@ -5,15 +5,15 @@
   "source": "@site/docs/summarize/database/SQL.md",
   "sourceDirName": "summarize/database",
   "slug": "/summarize/database/SQL",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/database/SQL",
+  "permalink": "/web-notes/docs/summarize/database/SQL",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/database/SQL.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/database/SQL.md",
   "tags": [
     {
       "inline": true,
       "label": "SQL",
-      "permalink": "/web-notes/my-web-notes/docs/tags/sql"
+      "permalink": "/web-notes/docs/tags/sql"
     }
   ],
   "version": "current",
@@ -25,10 +25,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "MongoDB",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/database/NoSQL/MongoDB"
+    "permalink": "/web-notes/docs/summarize/database/NoSQL/MongoDB"
   },
   "next": {
     "title": "Advanced SQL Code Structure",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/database/SQL_Advance"
+    "permalink": "/web-notes/docs/summarize/database/SQL_Advance"
   }
 }

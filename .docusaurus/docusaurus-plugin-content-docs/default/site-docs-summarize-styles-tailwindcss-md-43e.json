@@ -5,25 +5,25 @@
   "source": "@site/docs/summarize/styles/tailwindcss.md",
   "sourceDirName": "summarize/styles",
   "slug": "/summarize/styles/tailwindcss",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/styles/tailwindcss",
+  "permalink": "/web-notes/docs/summarize/styles/tailwindcss",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/styles/tailwindcss.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/styles/tailwindcss.md",
   "tags": [
     {
       "inline": true,
       "label": "CSS",
-      "permalink": "/web-notes/my-web-notes/docs/tags/css"
+      "permalink": "/web-notes/docs/tags/css"
     },
     {
       "inline": true,
       "label": "Frontend",
-      "permalink": "/web-notes/my-web-notes/docs/tags/frontend"
+      "permalink": "/web-notes/docs/tags/frontend"
     },
     {
       "inline": true,
       "label": "UI Framework",
-      "permalink": "/web-notes/my-web-notes/docs/tags/ui-framework"
+      "permalink": "/web-notes/docs/tags/ui-framework"
     }
   ],
   "version": "current",
@@ -38,10 +38,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "SASS (SCSS)",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/styles/cores/SASS"
+    "permalink": "/web-notes/docs/summarize/styles/cores/SASS"
   },
   "next": {
     "title": "Command Line",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/tools/CommandLine"
+    "permalink": "/web-notes/docs/summarize/tools/CommandLine"
   }
 }

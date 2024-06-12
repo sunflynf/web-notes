@@ -5,25 +5,25 @@
   "source": "@site/docs/summarize/package/lodash.md",
   "sourceDirName": "summarize/package",
   "slug": "/summarize/package/lodash",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/package/lodash",
+  "permalink": "/web-notes/docs/summarize/package/lodash",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/package/lodash.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/package/lodash.md",
   "tags": [
     {
       "inline": true,
       "label": "Library",
-      "permalink": "/web-notes/my-web-notes/docs/tags/library"
+      "permalink": "/web-notes/docs/tags/library"
     },
     {
       "inline": true,
       "label": "Extensions",
-      "permalink": "/web-notes/my-web-notes/docs/tags/extensions"
+      "permalink": "/web-notes/docs/tags/extensions"
     },
     {
       "inline": true,
       "label": "JavaScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+      "permalink": "/web-notes/docs/tags/java-script"
     }
   ],
   "version": "current",
@@ -38,10 +38,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "JPA",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/orm/Java/JPA"
+    "permalink": "/web-notes/docs/summarize/orm/Java/JPA"
   },
   "next": {
     "title": "@redux-toolkits/query",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/RTK-query"
+    "permalink": "/web-notes/docs/summarize/package/react/RTK-query"
   }
 }

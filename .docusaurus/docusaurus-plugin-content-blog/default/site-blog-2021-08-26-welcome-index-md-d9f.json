@@ -1,6 +1,6 @@
 {
-  "permalink": "/web-notes/my-web-notes/blog/welcome",
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/blog/2021-08-26-welcome/index.md",
+  "permalink": "/web-notes/blog/welcome",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/blog/2021-08-26-welcome/index.md",
   "source": "@site/blog/2021-08-26-welcome/index.md",
   "title": "Welcome",
   "description": "Docusaurus blogging features are powered by the blog plugin.",
@@ -9,19 +9,19 @@
     {
       "inline": false,
       "label": "Facebook",
-      "permalink": "/web-notes/my-web-notes/blog/tags/facebook",
+      "permalink": "/web-notes/blog/tags/facebook",
       "description": "Facebook tag description"
     },
     {
       "inline": false,
       "label": "Hello",
-      "permalink": "/web-notes/my-web-notes/blog/tags/hello",
+      "permalink": "/web-notes/blog/tags/hello",
       "description": "Hello tag description"
     },
     {
       "inline": false,
       "label": "Docusaurus",
-      "permalink": "/web-notes/my-web-notes/blog/tags/docusaurus",
+      "permalink": "/web-notes/blog/tags/docusaurus",
       "description": "Docusaurus tag description"
     }
   ],
@@ -59,6 +59,6 @@
   "unlisted": false,
   "nextItem": {
     "title": "MDX Blog Post",
-    "permalink": "/web-notes/my-web-notes/blog/mdx-blog-post"
+    "permalink": "/web-notes/blog/mdx-blog-post"
   }
 }

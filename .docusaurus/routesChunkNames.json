@@ -1,488 +1,633 @@
 {
-  "/web-notes/my-web-notes/__docusaurus/debug-52c": {
+  "/web-notes/__docusaurus/debug-01d": {
     "__comp": "__comp---theme-debug-config-23-a-2ff",
     "__context": {
-      "plugin": "plugin---web-notes-my-web-notes-docusaurus-debugb-38-482"
+      "plugin": "plugin---web-notes-docusaurus-debugb-38-bf0"
     }
   },
-  "/web-notes/my-web-notes/__docusaurus/debug/config-520": {
+  "/web-notes/__docusaurus/debug/config-24d": {
     "__comp": "__comp---theme-debug-config-23-a-2ff",
     "__context": {
-      "plugin": "plugin---web-notes-my-web-notes-docusaurus-debugb-38-482"
+      "plugin": "plugin---web-notes-docusaurus-debugb-38-bf0"
     }
   },
-  "/web-notes/my-web-notes/__docusaurus/debug/content-84c": {
+  "/web-notes/__docusaurus/debug/content-8f4": {
     "__comp": "__comp---theme-debug-contentba-8-ce7",
     "__context": {
-      "plugin": "plugin---web-notes-my-web-notes-docusaurus-debugb-38-482"
+      "plugin": "plugin---web-notes-docusaurus-debugb-38-bf0"
     },
-    "__props": "__props---web-notes-my-web-notes-docusaurus-debug-content-21-b-b1f"
+    "__props": "__props---web-notes-docusaurus-debug-contentb-50-4fe"
   },
-  "/web-notes/my-web-notes/__docusaurus/debug/globalData-1fb": {
+  "/web-notes/__docusaurus/debug/globalData-61f": {
     "__comp": "__comp---theme-debug-global-dataede-0fa",
     "__context": {
-      "plugin": "plugin---web-notes-my-web-notes-docusaurus-debugb-38-482"
+      "plugin": "plugin---web-notes-docusaurus-debugb-38-bf0"
     }
   },
-  "/web-notes/my-web-notes/__docusaurus/debug/metadata-9dc": {
+  "/web-notes/__docusaurus/debug/metadata-a58": {
     "__comp": "__comp---theme-debug-site-metadata-68-e-3d4",
     "__context": {
-      "plugin": "plugin---web-notes-my-web-notes-docusaurus-debugb-38-482"
+      "plugin": "plugin---web-notes-docusaurus-debugb-38-bf0"
     }
   },
-  "/web-notes/my-web-notes/__docusaurus/debug/registry-f68": {
+  "/web-notes/__docusaurus/debug/registry-4f7": {
     "__comp": "__comp---theme-debug-registry-679-501",
     "__context": {
-      "plugin": "plugin---web-notes-my-web-notes-docusaurus-debugb-38-482"
+      "plugin": "plugin---web-notes-docusaurus-debugb-38-bf0"
     }
   },
-  "/web-notes/my-web-notes/__docusaurus/debug/routes-35a": {
+  "/web-notes/__docusaurus/debug/routes-469": {
     "__comp": "__comp---theme-debug-routes-946-699",
     "__context": {
-      "plugin": "plugin---web-notes-my-web-notes-docusaurus-debugb-38-482"
+      "plugin": "plugin---web-notes-docusaurus-debugb-38-bf0"
     }
   },
-  "/web-notes/my-web-notes/markdown-page-02f": {
+  "/web-notes/blog-8a2": {
+    "__comp": "__comp---theme-blog-list-pagea-6-a-7ba",
+    "__context": {
+      "plugin": "plugin---web-notes-blog-369-fcf"
+    },
+    "sidebar": "sidebar---web-notes-blog-814-3db",
+    "items": [
+      {
+        "content": "content---web-notes-blog-766-09d"
+      },
+      {
+        "content": "content---web-notes-blogf-4-f-0fe"
+      },
+      {
+        "content": "content---web-notes-blog-871-a4b"
+      },
+      {
+        "content": "content---web-notes-blog-925-5c6"
+      }
+    ],
+    "__props": "__props---web-notes-blog-4-cc-632"
+  },
+  "/web-notes/blog/archive-dea": {
+    "__comp": "__comp---theme-blog-archive-page-9-e-4-1d8",
+    "__context": {
+      "plugin": "plugin---web-notes-blog-369-fcf"
+    },
+    "__props": "__props---web-notes-blog-archive-1-ef-d4a"
+  },
+  "/web-notes/blog/first-blog-post-429": {
+    "__comp": "__comp---theme-blog-post-pageccc-cab",
+    "__context": {
+      "data": {
+        "blogMetadata": "blogMetadata---web-notes-blog-first-blog-postace-f5e"
+      },
+      "plugin": "plugin---web-notes-blog-369-fcf"
+    },
+    "sidebar": "sidebar---web-notes-blog-814-3db",
+    "content": "content---web-notes-blog-first-blog-poste-27-e52"
+  },
+  "/web-notes/blog/long-blog-post-309": {
+    "__comp": "__comp---theme-blog-post-pageccc-cab",
+    "__context": {
+      "data": {
+        "blogMetadata": "blogMetadata---web-notes-blog-first-blog-postace-f5e"
+      },
+      "plugin": "plugin---web-notes-blog-369-fcf"
+    },
+    "sidebar": "sidebar---web-notes-blog-814-3db",
+    "content": "content---web-notes-blog-long-blog-post-736-d31"
+  },
+  "/web-notes/blog/mdx-blog-post-2bf": {
+    "__comp": "__comp---theme-blog-post-pageccc-cab",
+    "__context": {
+      "data": {
+        "blogMetadata": "blogMetadata---web-notes-blog-first-blog-postace-f5e"
+      },
+      "plugin": "plugin---web-notes-blog-369-fcf"
+    },
+    "sidebar": "sidebar---web-notes-blog-814-3db",
+    "content": "content---web-notes-blog-mdx-blog-post-593-80a"
+  },
+  "/web-notes/blog/tags-18f": {
+    "__comp": "__comp---theme-blog-tags-list-page-01-a-d0b",
+    "__context": {
+      "plugin": "plugin---web-notes-blog-369-fcf"
+    },
+    "sidebar": "sidebar---web-notes-blog-814-3db",
+    "__props": "__props---web-notes-blog-tags-75-f-42d"
+  },
+  "/web-notes/blog/tags/docusaurus-dfe": {
+    "__comp": "__comp---theme-blog-tags-posts-page-687-b6c",
+    "__context": {
+      "plugin": "plugin---web-notes-blog-369-fcf"
+    },
+    "sidebar": "sidebar---web-notes-blog-814-3db",
+    "items": [
+      {
+        "content": "content---web-notes-blog-766-09d"
+      },
+      {
+        "content": "content---web-notes-blogf-4-f-0fe"
+      },
+      {
+        "content": "content---web-notes-blog-871-a4b"
+      },
+      {
+        "content": "content---web-notes-blog-925-5c6"
+      }
+    ],
+    "__props": "__props---web-notes-blog-tags-docusaurus-6-f-4-7ab"
+  },
+  "/web-notes/blog/tags/facebook-55a": {
+    "__comp": "__comp---theme-blog-tags-posts-page-687-b6c",
+    "__context": {
+      "plugin": "plugin---web-notes-blog-369-fcf"
+    },
+    "sidebar": "sidebar---web-notes-blog-814-3db",
+    "items": [
+      {
+        "content": "content---web-notes-blog-766-09d"
+      }
+    ],
+    "__props": "__props---web-notes-blog-tags-facebookce-2-4a7"
+  },
+  "/web-notes/blog/tags/hello-9e2": {
+    "__comp": "__comp---theme-blog-tags-posts-page-687-b6c",
+    "__context": {
+      "plugin": "plugin---web-notes-blog-369-fcf"
+    },
+    "sidebar": "sidebar---web-notes-blog-814-3db",
+    "items": [
+      {
+        "content": "content---web-notes-blog-766-09d"
+      },
+      {
+        "content": "content---web-notes-blog-871-a4b"
+      }
+    ],
+    "__props": "__props---web-notes-blog-tags-hello-261-b20"
+  },
+  "/web-notes/blog/tags/hola-0a5": {
+    "__comp": "__comp---theme-blog-tags-posts-page-687-b6c",
+    "__context": {
+      "plugin": "plugin---web-notes-blog-369-fcf"
+    },
+    "sidebar": "sidebar---web-notes-blog-814-3db",
+    "items": [
+      {
+        "content": "content---web-notes-blog-925-5c6"
+      }
+    ],
+    "__props": "__props---web-notes-blog-tags-hola-33-a-548"
+  },
+  "/web-notes/blog/welcome-c5a": {
+    "__comp": "__comp---theme-blog-post-pageccc-cab",
+    "__context": {
+      "data": {
+        "blogMetadata": "blogMetadata---web-notes-blog-first-blog-postace-f5e"
+      },
+      "plugin": "plugin---web-notes-blog-369-fcf"
+    },
+    "sidebar": "sidebar---web-notes-blog-814-3db",
+    "content": "content---web-notes-blog-welcomed-9-f-b1e"
+  },
+  "/web-notes/markdown-page-e90": {
     "__comp": "__comp---theme-mdx-page-1-f-3-b90",
     "__context": {
-      "plugin": "plugin---web-notes-my-web-notes-markdown-pagea-74-46a"
+      "plugin": "plugin---web-notes-markdown-pagea-74-a39"
     },
-    "content": "content---web-notes-my-web-notes-markdown-page-393-564"
+    "content": "content---web-notes-markdown-page-393-b2f"
   },
-  "/web-notes/my-web-notes/docs-c73": {
+  "/web-notes/docs-e0d": {
     "__comp": "__comp---theme-docs-root-5-e-9-0b6",
     "__context": {
-      "plugin": "plugin---web-notes-my-web-notes-docsaba-8d1"
+      "plugin": "plugin---web-notes-docsaba-35a"
     }
   },
-  "/web-notes/my-web-notes/docs-7a2": {
+  "/web-notes/docs-684": {
     "__comp": "__comp---theme-doc-version-roota-7-b-5de",
-    "__props": "__props---web-notes-my-web-notes-docsc-65-c32"
+    "__props": "__props---web-notes-docs-5-f-3-5ed"
   },
-  "/web-notes/my-web-notes/docs/tags-f7c": {
+  "/web-notes/docs/tags-cc8": {
     "__comp": "__comp---theme-doc-tags-list-page-372-89e",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-8-f-4-5a7"
+    "__props": "__props---web-notes-docs-tagsa-1-e-17c"
   },
-  "/web-notes/my-web-notes/docs/tags/backend-a3a": {
+  "/web-notes/docs/tags/backend-5f0": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-backend-2-db-30c"
+    "__props": "__props---web-notes-docs-tags-backend-2-be-81e"
   },
-  "/web-notes/my-web-notes/docs/tags/bootstrap-305": {
+  "/web-notes/docs/tags/bootstrap-ffc": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-bootstrap-353-977"
+    "__props": "__props---web-notes-docs-tags-bootstrap-0-e-8-557"
   },
-  "/web-notes/my-web-notes/docs/tags/clean-code-b46": {
+  "/web-notes/docs/tags/clean-code-c80": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-clean-codee-03-b07"
+    "__props": "__props---web-notes-docs-tags-clean-codeceb-f09"
   },
-  "/web-notes/my-web-notes/docs/tags/css-de0": {
+  "/web-notes/docs/tags/css-2b8": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-css-8-ce-020"
+    "__props": "__props---web-notes-docs-tags-css-9-bd-463"
   },
-  "/web-notes/my-web-notes/docs/tags/database-767": {
+  "/web-notes/docs/tags/database-858": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-databasea-69-20e"
+    "__props": "__props---web-notes-docs-tags-databasead-3-176"
   },
-  "/web-notes/my-web-notes/docs/tags/dbms-793": {
+  "/web-notes/docs/tags/dbms-5eb": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-dbms-405-68c"
+    "__props": "__props---web-notes-docs-tags-dbms-11-d-972"
   },
-  "/web-notes/my-web-notes/docs/tags/docusaurus-763": {
+  "/web-notes/docs/tags/docusaurus-0f5": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-docusaurus-41-d-e93"
+    "__props": "__props---web-notes-docs-tags-docusaurus-021-845"
   },
-  "/web-notes/my-web-notes/docs/tags/environment-1ac": {
+  "/web-notes/docs/tags/environment-8ad": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-environment-07-d-268"
+    "__props": "__props---web-notes-docs-tags-environment-7-b-0-bd7"
   },
-  "/web-notes/my-web-notes/docs/tags/extension-ca7": {
+  "/web-notes/docs/tags/extension-943": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-extensionccd-f18"
+    "__props": "__props---web-notes-docs-tags-extensionfa-1-ec4"
   },
-  "/web-notes/my-web-notes/docs/tags/extensions-d80": {
+  "/web-notes/docs/tags/extensions-534": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-extensionse-1-f-7f6"
+    "__props": "__props---web-notes-docs-tags-extensionsdb-5-b1b"
   },
-  "/web-notes/my-web-notes/docs/tags/frontend-82c": {
+  "/web-notes/docs/tags/frontend-62c": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-frontend-2-e-4-ac0"
+    "__props": "__props---web-notes-docs-tags-frontendae-5-3da"
   },
-  "/web-notes/my-web-notes/docs/tags/git-33b": {
+  "/web-notes/docs/tags/git-303": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-git-8-a-6-71d"
+    "__props": "__props---web-notes-docs-tags-gite-4-d-cf8"
   },
-  "/web-notes/my-web-notes/docs/tags/github-d04": {
+  "/web-notes/docs/tags/github-c0a": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-githubbea-9d2"
+    "__props": "__props---web-notes-docs-tags-github-766-cf5"
   },
-  "/web-notes/my-web-notes/docs/tags/java-ca0": {
+  "/web-notes/docs/tags/java-2ed": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-javafe-4-bd3"
+    "__props": "__props---web-notes-docs-tags-java-87-a-586"
   },
-  "/web-notes/my-web-notes/docs/tags/java-script-cf8": {
+  "/web-notes/docs/tags/java-script-619": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-java-script-1-bf-fc3"
+    "__props": "__props---web-notes-docs-tags-java-script-0-ea-a7f"
   },
-  "/web-notes/my-web-notes/docs/tags/json-6a1": {
+  "/web-notes/docs/tags/json-57a": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-json-805-0ea"
+    "__props": "__props---web-notes-docs-tags-json-0-c-7-8eb"
   },
-  "/web-notes/my-web-notes/docs/tags/kotlin-5f7": {
+  "/web-notes/docs/tags/kotlin-c43": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-kotlin-1-cc-2b3"
+    "__props": "__props---web-notes-docs-tags-kotlin-7-db-558"
   },
-  "/web-notes/my-web-notes/docs/tags/less-js-b85": {
+  "/web-notes/docs/tags/less-js-5fd": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-less-js-155-a65"
+    "__props": "__props---web-notes-docs-tags-less-js-35-d-212"
   },
-  "/web-notes/my-web-notes/docs/tags/library-5b3": {
+  "/web-notes/docs/tags/library-fa2": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-libraryace-477"
+    "__props": "__props---web-notes-docs-tags-library-403-31b"
   },
-  "/web-notes/my-web-notes/docs/tags/mobile-312": {
+  "/web-notes/docs/tags/mobile-ec1": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-mobileb-3-f-d58"
+    "__props": "__props---web-notes-docs-tags-mobile-853-475"
   },
-  "/web-notes/my-web-notes/docs/tags/mvc-c1f": {
+  "/web-notes/docs/tags/mvc-1a2": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-mvce-5-e-74c"
+    "__props": "__props---web-notes-docs-tags-mvc-1-f-5-c7b"
   },
-  "/web-notes/my-web-notes/docs/tags/no-sql-6ae": {
+  "/web-notes/docs/tags/no-sql-3d2": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-no-sql-183-cd1"
+    "__props": "__props---web-notes-docs-tags-no-sql-32-e-0c7"
   },
-  "/web-notes/my-web-notes/docs/tags/oop-f90": {
+  "/web-notes/docs/tags/oop-f51": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-oop-283-5f8"
+    "__props": "__props---web-notes-docs-tags-oopb-73-fa2"
   },
-  "/web-notes/my-web-notes/docs/tags/programming-lang-c58": {
+  "/web-notes/docs/tags/programming-lang-593": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-programming-lang-7-ab-d88"
+    "__props": "__props---web-notes-docs-tags-programming-lang-4-ca-db9"
   },
-  "/web-notes/my-web-notes/docs/tags/react-ff9": {
+  "/web-notes/docs/tags/react-420": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-react-22-a-27e"
+    "__props": "__props---web-notes-docs-tags-react-530-611"
   },
-  "/web-notes/my-web-notes/docs/tags/redux-04c": {
+  "/web-notes/docs/tags/redux-5de": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-redux-5-c-8-28a"
+    "__props": "__props---web-notes-docs-tags-redux-298-307"
   },
-  "/web-notes/my-web-notes/docs/tags/res-tapis-1df": {
+  "/web-notes/docs/tags/res-tapis-31a": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-res-tapis-9-c-4-055"
+    "__props": "__props---web-notes-docs-tags-res-tapis-542-1a2"
   },
-  "/web-notes/my-web-notes/docs/tags/sass-29d": {
+  "/web-notes/docs/tags/sass-8d1": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-sass-6-f-6-e2d"
+    "__props": "__props---web-notes-docs-tags-sassb-94-d00"
   },
-  "/web-notes/my-web-notes/docs/tags/spring-dd9": {
+  "/web-notes/docs/tags/spring-d09": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-spring-214-2c0"
+    "__props": "__props---web-notes-docs-tags-spring-5-c-0-c65"
   },
-  "/web-notes/my-web-notes/docs/tags/spring-boot-dbb": {
+  "/web-notes/docs/tags/spring-boot-706": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-spring-boot-9-f-0-bf9"
+    "__props": "__props---web-notes-docs-tags-spring-boot-9-a-6-f3f"
   },
-  "/web-notes/my-web-notes/docs/tags/sql-0a9": {
+  "/web-notes/docs/tags/sql-3da": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-sql-173-253"
+    "__props": "__props---web-notes-docs-tags-sql-43-a-c1e"
   },
-  "/web-notes/my-web-notes/docs/tags/system-ef7": {
+  "/web-notes/docs/tags/system-7bf": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-system-9-a-3-610"
+    "__props": "__props---web-notes-docs-tags-systemff-8-b1d"
   },
-  "/web-notes/my-web-notes/docs/tags/type-script-a9e": {
+  "/web-notes/docs/tags/type-script-5ab": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-type-scriptbc-9-be7"
+    "__props": "__props---web-notes-docs-tags-type-script-8-f-7-179"
   },
-  "/web-notes/my-web-notes/docs/tags/ui-framework-09a": {
+  "/web-notes/docs/tags/ui-framework-9e4": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-ui-framework-89-e-235"
+    "__props": "__props---web-notes-docs-tags-ui-frameworkc-34-32f"
   },
-  "/web-notes/my-web-notes/docs/tags/ui-libraries-8ea": {
+  "/web-notes/docs/tags/ui-libraries-376": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-ui-libraries-33-d-755"
+    "__props": "__props---web-notes-docs-tags-ui-librariesbf-0-3e5"
   },
-  "/web-notes/my-web-notes/docs/tags/ui-library-baf": {
+  "/web-notes/docs/tags/ui-library-d4b": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-ui-library-64-c-e90"
+    "__props": "__props---web-notes-docs-tags-ui-library-4-e-9-f2d"
   },
-  "/web-notes/my-web-notes/docs/tags/web-socket-263": {
+  "/web-notes/docs/tags/web-socket-fc3": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-web-socket-153-613"
+    "__props": "__props---web-notes-docs-tags-web-socket-9-a-1-320"
   },
-  "/web-notes/my-web-notes/docs/tags/xml-5b9": {
+  "/web-notes/docs/tags/xml-a6a": {
     "__comp": "__comp---theme-doc-tag-doc-list-pagedf-2-9f0",
-    "__props": "__props---web-notes-my-web-notes-docs-tags-xml-151-178"
+    "__props": "__props---web-notes-docs-tags-xml-050-ac6"
   },
-  "/web-notes/my-web-notes/docs-2b9": {
+  "/web-notes/docs-367": {
     "__comp": "__comp---theme-doc-roota-94-67a"
   },
-  "/web-notes/my-web-notes/docs/bonjour-72a": {
+  "/web-notes/docs/bonjour-d3d": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-bonjourd-3-e-0a1"
+    "content": "content---web-notes-docs-bonjourd-3-e-7a8"
   },
-  "/web-notes/my-web-notes/docs/category/tutorial---basics-53a": {
+  "/web-notes/docs/category/tutorial---basics-d8c": {
     "__comp": "__comp---theme-doc-category-generated-index-page-14-e-640",
-    "__props": "__props---web-notes-my-web-notes-docs-category-tutorial-basicsa-97-524"
+    "__props": "__props---web-notes-docs-category-tutorial-basics-157-cc2"
   },
-  "/web-notes/my-web-notes/docs/category/tutorial---extras-ec6": {
+  "/web-notes/docs/category/tutorial---extras-f34": {
     "__comp": "__comp---theme-doc-category-generated-index-page-14-e-640",
-    "__props": "__props---web-notes-my-web-notes-docs-category-tutorial-extras-49-e-5b0"
+    "__props": "__props---web-notes-docs-category-tutorial-extras-746-f43"
   },
-  "/web-notes/my-web-notes/docs/cheat-sheet/markdown-e2b": {
+  "/web-notes/docs/cheat-sheet/markdown-5b2": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-cheat-sheet-markdownd-10-9c1"
+    "content": "content---web-notes-docs-cheat-sheet-markdownd-10-fdd"
   },
-  "/web-notes/my-web-notes/docs/cheat-sheet/naming-508": {
+  "/web-notes/docs/cheat-sheet/naming-cdc": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-cheat-sheet-naming-9-f-9-667"
+    "content": "content---web-notes-docs-cheat-sheet-naming-9-f-9-0a6"
   },
-  "/web-notes/my-web-notes/docs/greeting-2aa": {
+  "/web-notes/docs/greeting-4a2": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-greeting-179-b37"
+    "content": "content---web-notes-docs-greeting-179-5a5"
   },
-  "/web-notes/my-web-notes/docs/intro-767": {
+  "/web-notes/docs/intro-42c": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-intro-0-e-3-d48"
+    "content": "content---web-notes-docs-intro-0-e-3-77f"
   },
-  "/web-notes/my-web-notes/docs/summarize/api/JDBC-1ed": {
+  "/web-notes/docs/summarize/api/JDBC-aba": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-api-jdbc-046-e42"
+    "content": "content---web-notes-docs-summarize-api-jdbc-046-54d"
   },
-  "/web-notes/my-web-notes/docs/summarize/backend/Java/SpringBoot-27e": {
+  "/web-notes/docs/summarize/backend/Java/SpringBoot-5b9": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-backend-java-spring-boot-24-c-5cf"
+    "content": "content---web-notes-docs-summarize-backend-java-spring-boot-24-c-f6b"
   },
-  "/web-notes/my-web-notes/docs/summarize/backend/JS/Express-6b7": {
+  "/web-notes/docs/summarize/backend/JS/Express-010": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-backend-js-expressc-86-6ed"
+    "content": "content---web-notes-docs-summarize-backend-js-expressc-86-3a5"
   },
-  "/web-notes/my-web-notes/docs/summarize/backend/JS/Hono-ac2": {
+  "/web-notes/docs/summarize/backend/JS/Hono-6da": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-backend-js-hono-11-e-2db"
+    "content": "content---web-notes-docs-summarize-backend-js-hono-11-e-8ff"
   },
-  "/web-notes/my-web-notes/docs/summarize/backend/JS/Koa-495": {
+  "/web-notes/docs/summarize/backend/JS/Koa-164": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-backend-js-koa-503-d34"
+    "content": "content---web-notes-docs-summarize-backend-js-koa-503-0f2"
   },
-  "/web-notes/my-web-notes/docs/summarize/backend/JS/Nest-967": {
+  "/web-notes/docs/summarize/backend/JS/Nest-8bb": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-backend-js-nest-5-bf-1d1"
+    "content": "content---web-notes-docs-summarize-backend-js-nest-5-bf-d0e"
   },
-  "/web-notes/my-web-notes/docs/summarize/database/DBMS/MySQL-e23": {
+  "/web-notes/docs/summarize/database/DBMS/MySQL-053": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-database-dbms-my-sql-8-e-2-609"
+    "content": "content---web-notes-docs-summarize-database-dbms-my-sql-8-e-2-dcc"
   },
-  "/web-notes/my-web-notes/docs/summarize/database/NoSQL/MongoDB-2b5": {
+  "/web-notes/docs/summarize/database/NoSQL/MongoDB-75b": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-database-no-sql-mongo-d-ba-00-5ae"
+    "content": "content---web-notes-docs-summarize-database-no-sql-mongo-d-ba-00-c08"
   },
-  "/web-notes/my-web-notes/docs/summarize/database/SQL-476": {
+  "/web-notes/docs/summarize/database/SQL-7cf": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-database-sql-809-100"
+    "content": "content---web-notes-docs-summarize-database-sql-809-928"
   },
-  "/web-notes/my-web-notes/docs/summarize/database/SQL_Advance-d4d": {
+  "/web-notes/docs/summarize/database/SQL_Advance-b30": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-database-sql-advance-7-a-2-1ca"
+    "content": "content---web-notes-docs-summarize-database-sql-advance-7-a-2-84d"
   },
-  "/web-notes/my-web-notes/docs/summarize/env/bun-f04": {
+  "/web-notes/docs/summarize/env/bun-e5f": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-env-bun-3-e-1-a8d"
+    "content": "content---web-notes-docs-summarize-env-bun-3-e-1-eb0"
   },
-  "/web-notes/my-web-notes/docs/summarize/env/nodejs-10f": {
+  "/web-notes/docs/summarize/env/nodejs-8e5": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-env-nodejs-150-7ca"
+    "content": "content---web-notes-docs-summarize-env-nodejs-150-9e8"
   },
-  "/web-notes/my-web-notes/docs/summarize/frontend/framework/Angular-fec": {
+  "/web-notes/docs/summarize/frontend/framework/Angular-733": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-frontend-framework-angular-362-337"
+    "content": "content---web-notes-docs-summarize-frontend-framework-angular-362-eb7"
   },
-  "/web-notes/my-web-notes/docs/summarize/frontend/library/jQuery-ff7": {
+  "/web-notes/docs/summarize/frontend/library/jQuery-ba9": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-frontend-library-j-querye-00-f20"
+    "content": "content---web-notes-docs-summarize-frontend-library-j-querye-00-137"
   },
-  "/web-notes/my-web-notes/docs/summarize/frontend/library/React-fae": {
+  "/web-notes/docs/summarize/frontend/library/React-735": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-frontend-library-react-2-d-8-6c4"
+    "content": "content---web-notes-docs-summarize-frontend-library-react-2-d-8-a08"
   },
-  "/web-notes/my-web-notes/docs/summarize/languages/Java-b82": {
+  "/web-notes/docs/summarize/languages/Java-f53": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-languages-java-8-ec-0f6"
+    "content": "content---web-notes-docs-summarize-languages-java-8-ec-b36"
   },
-  "/web-notes/my-web-notes/docs/summarize/languages/JavaScript-77a": {
+  "/web-notes/docs/summarize/languages/JavaScript-62e": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-languages-java-script-1-a-5-6d4"
+    "content": "content---web-notes-docs-summarize-languages-java-script-1-a-5-051"
   },
-  "/web-notes/my-web-notes/docs/summarize/languages/TypeScript-e6d": {
+  "/web-notes/docs/summarize/languages/TypeScript-970": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-languages-type-scriptf-6-a-d74"
+    "content": "content---web-notes-docs-summarize-languages-type-scriptf-6-a-975"
   },
-  "/web-notes/my-web-notes/docs/summarize/mobile/ReactNative-81a": {
+  "/web-notes/docs/summarize/mobile/ReactNative-b71": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-mobile-react-native-28-b-1b6"
+    "content": "content---web-notes-docs-summarize-mobile-react-native-28-b-875"
   },
-  "/web-notes/my-web-notes/docs/summarize/orm/Java/JPA-d32": {
+  "/web-notes/docs/summarize/orm/Java/JPA-b19": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-orm-java-jp-ac-5-c-6bb"
+    "content": "content---web-notes-docs-summarize-orm-java-jp-ac-5-c-7f8"
   },
-  "/web-notes/my-web-notes/docs/summarize/orm/JS/Drizzle-d2a": {
+  "/web-notes/docs/summarize/orm/JS/Drizzle-361": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-orm-js-drizzledbc-b85"
+    "content": "content---web-notes-docs-summarize-orm-js-drizzledbc-d41"
   },
-  "/web-notes/my-web-notes/docs/summarize/orm/JS/Prisma-56d": {
+  "/web-notes/docs/summarize/orm/JS/Prisma-4ef": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-orm-js-prisma-7-ae-1b3"
+    "content": "content---web-notes-docs-summarize-orm-js-prisma-7-ae-afa"
   },
-  "/web-notes/my-web-notes/docs/summarize/orm/JS/TypeORM-424": {
+  "/web-notes/docs/summarize/orm/JS/TypeORM-d17": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-orm-js-type-orm-954-ab4"
+    "content": "content---web-notes-docs-summarize-orm-js-type-orm-954-ae4"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/lodash-93d": {
+  "/web-notes/docs/summarize/package/lodash-753": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-lodashc-6-a-520"
+    "content": "content---web-notes-docs-summarize-package-lodashc-6-a-483"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/notistack-602": {
+  "/web-notes/docs/summarize/package/react/notistack-77e": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-notistackf-12-574"
+    "content": "content---web-notes-docs-summarize-package-react-notistackf-12-bd9"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/react-admin-e17": {
+  "/web-notes/docs/summarize/package/react/react-admin-47c": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-react-admin-12-e-839"
+    "content": "content---web-notes-docs-summarize-package-react-react-admin-12-e-c7a"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/react-bootstrap-598": {
+  "/web-notes/docs/summarize/package/react/react-bootstrap-4dd": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-react-bootstrap-374-184"
+    "content": "content---web-notes-docs-summarize-package-react-react-bootstrap-374-e8d"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/react-helmet-eb4": {
+  "/web-notes/docs/summarize/package/react/react-helmet-896": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-react-helmet-135-6e5"
+    "content": "content---web-notes-docs-summarize-package-react-react-helmet-135-f1b"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/react-hook-form-ada": {
+  "/web-notes/docs/summarize/package/react/react-hook-form-315": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-react-hook-forma-91-741"
+    "content": "content---web-notes-docs-summarize-package-react-react-hook-forma-91-cf6"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/react-i18next-894": {
+  "/web-notes/docs/summarize/package/react/react-i18next-6dc": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-react-i-18-next-6-c-0-fe5"
+    "content": "content---web-notes-docs-summarize-package-react-react-i-18-next-6-c-0-710"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/react-number-format-3cd": {
+  "/web-notes/docs/summarize/package/react/react-number-format-412": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-react-number-format-684-4c9"
+    "content": "content---web-notes-docs-summarize-package-react-react-number-format-684-abc"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/react-redux-723": {
+  "/web-notes/docs/summarize/package/react/react-redux-896": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-react-redux-1-bf-c97"
+    "content": "content---web-notes-docs-summarize-package-react-react-redux-1-bf-dfb"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/react-router-b1f": {
+  "/web-notes/docs/summarize/package/react/react-router-30f": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-react-router-350-181"
+    "content": "content---web-notes-docs-summarize-package-react-react-router-350-373"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/react-select-e9e": {
+  "/web-notes/docs/summarize/package/react/react-select-f4c": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-react-select-7-f-2-8a0"
+    "content": "content---web-notes-docs-summarize-package-react-react-select-7-f-2-bee"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/react-toastify-3fa": {
+  "/web-notes/docs/summarize/package/react/react-toastify-a97": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-react-toastify-444-94a"
+    "content": "content---web-notes-docs-summarize-package-react-react-toastify-444-31b"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/react-window-d55": {
+  "/web-notes/docs/summarize/package/react/react-window-8fe": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-react-window-4-f-6-3bf"
+    "content": "content---web-notes-docs-summarize-package-react-react-window-4-f-6-dcb"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/RTK-query-ea6": {
+  "/web-notes/docs/summarize/package/react/RTK-query-906": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-rtk-queryf-16-08b"
+    "content": "content---web-notes-docs-summarize-package-react-rtk-queryf-16-057"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/styled-component-fd1": {
+  "/web-notes/docs/summarize/package/react/styled-component-049": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-styled-component-45-a-c8f"
+    "content": "content---web-notes-docs-summarize-package-react-styled-component-45-a-0aa"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/tanstack/react-form-d75": {
+  "/web-notes/docs/summarize/package/react/tanstack/react-form-0af": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-tanstack-react-formd-9-e-837"
+    "content": "content---web-notes-docs-summarize-package-react-tanstack-react-formd-9-e-99c"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/tanstack/react-query-d36": {
+  "/web-notes/docs/summarize/package/react/tanstack/react-query-cf2": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-tanstack-react-queryaaf-ece"
+    "content": "content---web-notes-docs-summarize-package-react-tanstack-react-queryaaf-1c0"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/tanstack/react-router-e03": {
+  "/web-notes/docs/summarize/package/react/tanstack/react-router-9ca": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-tanstack-react-router-0-e-5-07e"
+    "content": "content---web-notes-docs-summarize-package-react-tanstack-react-router-0-e-5-b0a"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/tanstack/react-table-29a": {
+  "/web-notes/docs/summarize/package/react/tanstack/react-table-784": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-tanstack-react-table-974-1d8"
+    "content": "content---web-notes-docs-summarize-package-react-tanstack-react-table-974-89e"
   },
-  "/web-notes/my-web-notes/docs/summarize/package/react/tanstack/react-virtual-897": {
+  "/web-notes/docs/summarize/package/react/tanstack/react-virtual-baa": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-package-react-tanstack-react-virtualaa-7-362"
+    "content": "content---web-notes-docs-summarize-package-react-tanstack-react-virtualaa-7-828"
   },
-  "/web-notes/my-web-notes/docs/summarize/styles/bootstrap5-94e": {
+  "/web-notes/docs/summarize/styles/bootstrap5-076": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-styles-bootstrap-570-c-b06"
+    "content": "content---web-notes-docs-summarize-styles-bootstrap-570-c-621"
   },
-  "/web-notes/my-web-notes/docs/summarize/styles/cores/CSS3-adc": {
+  "/web-notes/docs/summarize/styles/cores/CSS3-772": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-styles-cores-css-3-a-6-a-3b7"
+    "content": "content---web-notes-docs-summarize-styles-cores-css-3-a-6-a-f9b"
   },
-  "/web-notes/my-web-notes/docs/summarize/styles/cores/Lessjs-c23": {
+  "/web-notes/docs/summarize/styles/cores/Lessjs-ffc": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-styles-cores-lessjs-89-f-936"
+    "content": "content---web-notes-docs-summarize-styles-cores-lessjs-89-f-403"
   },
-  "/web-notes/my-web-notes/docs/summarize/styles/cores/SASS-ddd": {
+  "/web-notes/docs/summarize/styles/cores/SASS-c37": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-styles-cores-sas-sd-4-b-d66"
+    "content": "content---web-notes-docs-summarize-styles-cores-sas-sd-4-b-184"
   },
-  "/web-notes/my-web-notes/docs/summarize/styles/tailwindcss-6a8": {
+  "/web-notes/docs/summarize/styles/tailwindcss-59e": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-styles-tailwindcss-43-e-6d3"
+    "content": "content---web-notes-docs-summarize-styles-tailwindcss-43-e-cb7"
   },
-  "/web-notes/my-web-notes/docs/summarize/tools/CommandLine-d60": {
+  "/web-notes/docs/summarize/tools/CommandLine-d83": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-tools-command-linedd-5-597"
+    "content": "content---web-notes-docs-summarize-tools-command-linedd-5-24d"
   },
-  "/web-notes/my-web-notes/docs/summarize/tools/Git-b06": {
+  "/web-notes/docs/summarize/tools/Git-3c2": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-summarize-tools-git-89-f-2bf"
+    "content": "content---web-notes-docs-summarize-tools-git-89-f-56f"
   },
-  "/web-notes/my-web-notes/docs/tutorial-basics/congratulations-f7b": {
+  "/web-notes/docs/tutorial-basics/congratulations-e87": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-tutorial-basics-congratulations-822-08f"
+    "content": "content---web-notes-docs-tutorial-basics-congratulations-822-bc5"
   },
-  "/web-notes/my-web-notes/docs/tutorial-basics/create-a-blog-post-3f1": {
+  "/web-notes/docs/tutorial-basics/create-a-blog-post-ba5": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-tutorial-basics-create-a-blog-post-533-39e"
+    "content": "content---web-notes-docs-tutorial-basics-create-a-blog-post-533-d61"
   },
-  "/web-notes/my-web-notes/docs/tutorial-basics/create-a-document-890": {
+  "/web-notes/docs/tutorial-basics/create-a-document-a7a": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-tutorial-basics-create-a-document-1-e-4-a77"
+    "content": "content---web-notes-docs-tutorial-basics-create-a-document-1-e-4-952"
   },
-  "/web-notes/my-web-notes/docs/tutorial-basics/create-a-page-097": {
+  "/web-notes/docs/tutorial-basics/create-a-page-b89": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-tutorial-basics-create-a-page-5-c-8-0a8"
+    "content": "content---web-notes-docs-tutorial-basics-create-a-page-5-c-8-703"
   },
-  "/web-notes/my-web-notes/docs/tutorial-basics/deploy-your-site-156": {
+  "/web-notes/docs/tutorial-basics/deploy-your-site-844": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-tutorial-basics-deploy-your-sitef-55-0c6"
+    "content": "content---web-notes-docs-tutorial-basics-deploy-your-sitef-55-e6d"
   },
-  "/web-notes/my-web-notes/docs/tutorial-basics/markdown-features-ba3": {
+  "/web-notes/docs/tutorial-basics/markdown-features-dfd": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-tutorial-basics-markdown-features-18-c-7e2"
+    "content": "content---web-notes-docs-tutorial-basics-markdown-features-18-c-407"
   },
-  "/web-notes/my-web-notes/docs/tutorial-extras/manage-docs-versions-725": {
+  "/web-notes/docs/tutorial-extras/manage-docs-versions-f08": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-tutorial-extras-manage-docs-versionsdff-3ca"
+    "content": "content---web-notes-docs-tutorial-extras-manage-docs-versionsdff-fba"
   },
-  "/web-notes/my-web-notes/docs/tutorial-extras/translate-your-site-03d": {
+  "/web-notes/docs/tutorial-extras/translate-your-site-70c": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---web-notes-my-web-notes-docs-tutorial-extras-translate-your-sitee-44-231"
+    "content": "content---web-notes-docs-tutorial-extras-translate-your-sitee-44-bde"
   },
-  "/web-notes/my-web-notes/-8b5": {
+  "/web-notes/-506": {
     "__comp": "__comp---site-src-pages-index-tsx-1-df-d3e",
     "__context": {
-      "plugin": "plugin---web-notes-my-web-notes-markdown-pagea-74-46a"
+      "plugin": "plugin---web-notes-markdown-pagea-74-a39"
     },
-    "config": "config---web-notes-my-web-notes-5-e-9-108"
+    "config": "config---web-notes-5-e-9-640"
   }
 }

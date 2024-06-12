@@ -1,6 +1,6 @@
 {
-  "permalink": "/web-notes/my-web-notes/blog/long-blog-post",
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/blog/2019-05-29-long-blog-post.md",
+  "permalink": "/web-notes/blog/long-blog-post",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/blog/2019-05-29-long-blog-post.md",
   "source": "@site/blog/2019-05-29-long-blog-post.md",
   "title": "Long Blog Post",
   "description": "This is the summary of a very long blog post,",
@@ -9,13 +9,13 @@
     {
       "inline": false,
       "label": "Hello",
-      "permalink": "/web-notes/my-web-notes/blog/tags/hello",
+      "permalink": "/web-notes/blog/tags/hello",
       "description": "Hello tag description"
     },
     {
       "inline": false,
       "label": "Docusaurus",
-      "permalink": "/web-notes/my-web-notes/blog/tags/docusaurus",
+      "permalink": "/web-notes/blog/tags/docusaurus",
       "description": "Docusaurus tag description"
     }
   ],
@@ -42,10 +42,10 @@
   "unlisted": false,
   "prevItem": {
     "title": "MDX Blog Post",
-    "permalink": "/web-notes/my-web-notes/blog/mdx-blog-post"
+    "permalink": "/web-notes/blog/mdx-blog-post"
   },
   "nextItem": {
     "title": "First Blog Post",
-    "permalink": "/web-notes/my-web-notes/blog/first-blog-post"
+    "permalink": "/web-notes/blog/first-blog-post"
   }
 }

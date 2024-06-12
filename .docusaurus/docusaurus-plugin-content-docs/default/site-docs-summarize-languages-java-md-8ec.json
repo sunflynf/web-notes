@@ -5,20 +5,20 @@
   "source": "@site/docs/summarize/languages/Java.md",
   "sourceDirName": "summarize/languages",
   "slug": "/summarize/languages/Java",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/languages/Java",
+  "permalink": "/web-notes/docs/summarize/languages/Java",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/languages/Java.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/languages/Java.md",
   "tags": [
     {
       "inline": true,
       "label": "Programming lang",
-      "permalink": "/web-notes/my-web-notes/docs/tags/programming-lang"
+      "permalink": "/web-notes/docs/tags/programming-lang"
     },
     {
       "inline": true,
       "label": "OOP",
-      "permalink": "/web-notes/my-web-notes/docs/tags/oop"
+      "permalink": "/web-notes/docs/tags/oop"
     }
   ],
   "version": "current",
@@ -32,10 +32,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "jQuery",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/frontend/library/jQuery"
+    "permalink": "/web-notes/docs/summarize/frontend/library/jQuery"
   },
   "next": {
     "title": "JavaScript",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/languages/JavaScript"
+    "permalink": "/web-notes/docs/summarize/languages/JavaScript"
   }
 }

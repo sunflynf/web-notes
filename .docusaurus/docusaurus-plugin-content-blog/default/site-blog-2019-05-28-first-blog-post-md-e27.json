@@ -1,6 +1,6 @@
 {
-  "permalink": "/web-notes/my-web-notes/blog/first-blog-post",
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/blog/2019-05-28-first-blog-post.md",
+  "permalink": "/web-notes/blog/first-blog-post",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/blog/2019-05-28-first-blog-post.md",
   "source": "@site/blog/2019-05-28-first-blog-post.md",
   "title": "First Blog Post",
   "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet",
@@ -9,13 +9,13 @@
     {
       "inline": false,
       "label": "Hola",
-      "permalink": "/web-notes/my-web-notes/blog/tags/hola",
+      "permalink": "/web-notes/blog/tags/hola",
       "description": "Hola tag description"
     },
     {
       "inline": false,
       "label": "Docusaurus",
-      "permalink": "/web-notes/my-web-notes/blog/tags/docusaurus",
+      "permalink": "/web-notes/blog/tags/docusaurus",
       "description": "Docusaurus tag description"
     }
   ],
@@ -48,6 +48,6 @@
   "unlisted": false,
   "prevItem": {
     "title": "Long Blog Post",
-    "permalink": "/web-notes/my-web-notes/blog/long-blog-post"
+    "permalink": "/web-notes/blog/long-blog-post"
   }
 }

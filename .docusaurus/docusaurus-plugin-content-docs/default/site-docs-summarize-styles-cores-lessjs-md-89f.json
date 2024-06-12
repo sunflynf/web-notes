@@ -5,20 +5,20 @@
   "source": "@site/docs/summarize/styles/cores/Lessjs.md",
   "sourceDirName": "summarize/styles/cores",
   "slug": "/summarize/styles/cores/Lessjs",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/styles/cores/Lessjs",
+  "permalink": "/web-notes/docs/summarize/styles/cores/Lessjs",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/styles/cores/Lessjs.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/styles/cores/Lessjs.md",
   "tags": [
     {
       "inline": true,
       "label": "CSS",
-      "permalink": "/web-notes/my-web-notes/docs/tags/css"
+      "permalink": "/web-notes/docs/tags/css"
     },
     {
       "inline": true,
       "label": "Frontend",
-      "permalink": "/web-notes/my-web-notes/docs/tags/frontend"
+      "permalink": "/web-notes/docs/tags/frontend"
     }
   ],
   "version": "current",
@@ -32,10 +32,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "CSS3",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/styles/cores/CSS3"
+    "permalink": "/web-notes/docs/summarize/styles/cores/CSS3"
   },
   "next": {
     "title": "SASS (SCSS)",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/styles/cores/SASS"
+    "permalink": "/web-notes/docs/summarize/styles/cores/SASS"
   }
 }

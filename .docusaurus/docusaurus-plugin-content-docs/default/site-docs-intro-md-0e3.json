@@ -5,10 +5,10 @@
   "source": "@site/docs/intro.md",
   "sourceDirName": ".",
   "slug": "/intro",
-  "permalink": "/web-notes/my-web-notes/docs/intro",
+  "permalink": "/web-notes/docs/intro",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/intro.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/intro.md",
   "tags": [],
   "version": "current",
   "sidebarPosition": 1,
@@ -18,6 +18,6 @@
   "sidebar": "tutorialSidebar",
   "next": {
     "title": "Tutorial - Basics",
-    "permalink": "/web-notes/my-web-notes/docs/category/tutorial---basics"
+    "permalink": "/web-notes/docs/category/tutorial---basics"
   }
 }

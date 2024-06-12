@@ -5,20 +5,20 @@
   "source": "@site/docs/summarize/languages/JavaScript.md",
   "sourceDirName": "summarize/languages",
   "slug": "/summarize/languages/JavaScript",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/languages/JavaScript",
+  "permalink": "/web-notes/docs/summarize/languages/JavaScript",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/languages/JavaScript.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/languages/JavaScript.md",
   "tags": [
     {
       "inline": true,
       "label": "Programming lang",
-      "permalink": "/web-notes/my-web-notes/docs/tags/programming-lang"
+      "permalink": "/web-notes/docs/tags/programming-lang"
     },
     {
       "inline": true,
       "label": "TypeScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+      "permalink": "/web-notes/docs/tags/type-script"
     }
   ],
   "version": "current",
@@ -32,10 +32,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "JAVA",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/languages/Java"
+    "permalink": "/web-notes/docs/summarize/languages/Java"
   },
   "next": {
     "title": "TypeScript",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/languages/TypeScript"
+    "permalink": "/web-notes/docs/summarize/languages/TypeScript"
   }
 }

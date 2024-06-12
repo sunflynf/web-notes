@@ -5,35 +5,35 @@
   "source": "@site/docs/summarize/package/react/styled-component.md",
   "sourceDirName": "summarize/package/react",
   "slug": "/summarize/package/react/styled-component",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/styled-component",
+  "permalink": "/web-notes/docs/summarize/package/react/styled-component",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/package/react/styled-component.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/package/react/styled-component.md",
   "tags": [
     {
       "inline": true,
       "label": "JavaScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+      "permalink": "/web-notes/docs/tags/java-script"
     },
     {
       "inline": true,
       "label": "TypeScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+      "permalink": "/web-notes/docs/tags/type-script"
     },
     {
       "inline": true,
       "label": "React",
-      "permalink": "/web-notes/my-web-notes/docs/tags/react"
+      "permalink": "/web-notes/docs/tags/react"
     },
     {
       "inline": true,
       "label": "UI Library",
-      "permalink": "/web-notes/my-web-notes/docs/tags/ui-library"
+      "permalink": "/web-notes/docs/tags/ui-library"
     },
     {
       "inline": true,
       "label": "Extension",
-      "permalink": "/web-notes/my-web-notes/docs/tags/extension"
+      "permalink": "/web-notes/docs/tags/extension"
     }
   ],
   "version": "current",
@@ -50,10 +50,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "React Window",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/react-window"
+    "permalink": "/web-notes/docs/summarize/package/react/react-window"
   },
   "next": {
     "title": "Tanstack - React Form",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/package/react/tanstack/react-form"
+    "permalink": "/web-notes/docs/summarize/package/react/tanstack/react-form"
   }
 }

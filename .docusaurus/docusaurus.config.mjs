@@ -8,9 +8,10 @@ export default {
   "tagline": "Dinosaurs are cool",
   "favicon": "img/favicon.ico",
   "url": "https://github.com",
-  "baseUrl": "/web-notes/my-web-notes/",
+  "baseUrl": "/web-notes/",
   "organizationName": "sunflynf",
   "projectName": "web-notes",
+  "deploymentBranch": "gh-pages",
   "onBrokenLinks": "throw",
   "onBrokenMarkdownLinks": "warn",
   "i18n": {
@@ -28,11 +29,11 @@ export default {
       {
         "docs": {
           "sidebarPath": "./sidebars.ts",
-          "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes"
+          "editUrl": "https://github.com/sunflynf/web-notes/tree/main/"
         },
         "blog": {
           "showReadingTime": true,
-          "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes"
+          "editUrl": "https://github.com/sunflynf/web-notes/tree/main/"
         },
         "theme": {
           "customCss": "./src/css/custom.css"

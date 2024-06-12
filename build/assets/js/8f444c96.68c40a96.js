@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmy_web_notes=self.webpackChunkmy_web_notes||[]).push([[1231],{9151:s=>{s.exports=JSON.parse('{"tags":[{"label":"docusaurus","permalink":"/web-notes/my-web-notes/docs/tags/docusaurus","count":1}]}')}}]);

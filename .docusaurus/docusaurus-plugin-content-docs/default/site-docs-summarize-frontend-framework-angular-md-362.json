@@ -5,25 +5,25 @@
   "source": "@site/docs/summarize/frontend/framework/Angular.md",
   "sourceDirName": "summarize/frontend/framework",
   "slug": "/summarize/frontend/framework/Angular",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/frontend/framework/Angular",
+  "permalink": "/web-notes/docs/summarize/frontend/framework/Angular",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/frontend/framework/Angular.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/frontend/framework/Angular.md",
   "tags": [
     {
       "inline": true,
       "label": "Frontend",
-      "permalink": "/web-notes/my-web-notes/docs/tags/frontend"
+      "permalink": "/web-notes/docs/tags/frontend"
     },
     {
       "inline": true,
       "label": "JavaScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/java-script"
+      "permalink": "/web-notes/docs/tags/java-script"
     },
     {
       "inline": true,
       "label": "TypeScript",
-      "permalink": "/web-notes/my-web-notes/docs/tags/type-script"
+      "permalink": "/web-notes/docs/tags/type-script"
     }
   ],
   "version": "current",
@@ -38,10 +38,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Node.js",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/env/nodejs"
+    "permalink": "/web-notes/docs/summarize/env/nodejs"
   },
   "next": {
     "title": "React",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/frontend/library/React"
+    "permalink": "/web-notes/docs/summarize/frontend/library/React"
   }
 }

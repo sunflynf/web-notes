@@ -5,40 +5,40 @@
   "source": "@site/docs/summarize/backend/Java/SpringBoot.md",
   "sourceDirName": "summarize/backend/Java",
   "slug": "/summarize/backend/Java/SpringBoot",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/backend/Java/SpringBoot",
+  "permalink": "/web-notes/docs/summarize/backend/Java/SpringBoot",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/backend/Java/SpringBoot.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/backend/Java/SpringBoot.md",
   "tags": [
     {
       "inline": true,
       "label": "Backend",
-      "permalink": "/web-notes/my-web-notes/docs/tags/backend"
+      "permalink": "/web-notes/docs/tags/backend"
     },
     {
       "inline": true,
       "label": "Java",
-      "permalink": "/web-notes/my-web-notes/docs/tags/java"
+      "permalink": "/web-notes/docs/tags/java"
     },
     {
       "inline": true,
       "label": "Kotlin",
-      "permalink": "/web-notes/my-web-notes/docs/tags/kotlin"
+      "permalink": "/web-notes/docs/tags/kotlin"
     },
     {
       "inline": true,
       "label": "XML",
-      "permalink": "/web-notes/my-web-notes/docs/tags/xml"
+      "permalink": "/web-notes/docs/tags/xml"
     },
     {
       "inline": true,
       "label": "Spring",
-      "permalink": "/web-notes/my-web-notes/docs/tags/spring"
+      "permalink": "/web-notes/docs/tags/spring"
     },
     {
       "inline": true,
       "label": "RESTapis",
-      "permalink": "/web-notes/my-web-notes/docs/tags/res-tapis"
+      "permalink": "/web-notes/docs/tags/res-tapis"
     }
   ],
   "version": "current",
@@ -56,10 +56,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "NestJS",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/backend/JS/Nest"
+    "permalink": "/web-notes/docs/summarize/backend/JS/Nest"
   },
   "next": {
     "title": "MySQL",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/database/DBMS/MySQL"
+    "permalink": "/web-notes/docs/summarize/database/DBMS/MySQL"
   }
 }

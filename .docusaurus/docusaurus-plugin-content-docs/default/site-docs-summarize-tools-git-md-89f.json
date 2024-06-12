@@ -5,10 +5,10 @@
   "source": "@site/docs/summarize/tools/Git.md",
   "sourceDirName": "summarize/tools",
   "slug": "/summarize/tools/Git",
-  "permalink": "/web-notes/my-web-notes/docs/summarize/tools/Git",
+  "permalink": "/web-notes/docs/summarize/tools/Git",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/sunflynf/web-notes/tree/develop/my-web-notes/docs/summarize/tools/Git.md",
+  "editUrl": "https://github.com/sunflynf/web-notes/tree/main/docs/summarize/tools/Git.md",
   "tags": [],
   "version": "current",
   "frontMatter": {
@@ -19,10 +19,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Command Line",
-    "permalink": "/web-notes/my-web-notes/docs/summarize/tools/CommandLine"
+    "permalink": "/web-notes/docs/summarize/tools/CommandLine"
   },
   "next": {
     "title": "Guide for Hello",
-    "permalink": "/web-notes/my-web-notes/docs/bonjour"
+    "permalink": "/web-notes/docs/bonjour"
   }
 }
