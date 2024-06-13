@@ -3,9 +3,12 @@ description: Systax and special display in Github.
 tags:
     - Git
     - Github
+    - Markdown
 ---
 
 # Markdown note
+
+## Header
 
 ```txt
 # Header 1
@@ -14,13 +17,21 @@ tags:
 #### Header 4
 ##### Header 5
 ###### Header 6
+```
 
+## Plaintext
+
+```txt
 *italic* | _italic_
 **bold** | __bold__
 __*bold and italic*__
 ~~strikethrough~~
 :smile: <- Emoji
+```
 
+## List
+
+```txt
 - item 1
   - item 1.1
   - item 1.2
@@ -31,28 +42,44 @@ __*bold and italic*__
 
 - [ ] Task 1
 - [x] Task 2
+```
 
+## Link
+
+```txt
 Inline link: [Link Text](http://www.example.com)
 Reference link: [Link Text][1]` and then `[1]: http://www.example.com
 Image: ![Alt Text](http://www.example.com/image.jpg)
+```
 
-___
+## Blockquote
 
+```txt
 > This is a quote
+>
+```
 
----
+## Codeblocks
 
+```txt
 Code inline: `code`
 Code block: (replace ' to `)
 '''file-type
 // code
 '''
+```
 
+## Table
+
+```txt
 | Header 1 | Header 2 |
 | --- | --- |
 | Cell 1 | Cell 2 |
+```
 
+## Footnote
 
+```txt
 Here is a footnote[^1]
 ---
 [^1]: This is the footnote.
@@ -61,13 +88,15 @@ Here is a footnote[^1]
 Example for footnote, maybe show lastest of this page![^1]
 [^1]: Footnote here!
 
-Github diff files
+## Diff file
 
 ```diff
 -const firstName = "Fi";
 +const firstName = "Phi";
 // some comment here
 ```
+
+## Block information
 
 ```md title="README.md"
 <!-- Works on Github only -->
@@ -126,10 +155,12 @@ Just don't
 
 :::
 
+## Expanding
+
 <details>
   <summary>Click to expand!</summary>
 
-### This is content inside
+  ~This is content inside~
 
   Yes, docs can **expand**
 </details>

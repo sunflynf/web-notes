@@ -17,6 +17,7 @@ const config: Config = {
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'sunflynf', // Usually your GitHub org/user name.
   projectName: 'web-notes', // Usually your repo name.
+  trailingSlash: true,
   deploymentBranch: 'gh-pages',
 
   onBrokenLinks: 'throw',
@@ -130,6 +131,7 @@ const config: Config = {
       ],
       copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
     },
+    // plugins: [require.resolve('docusaurus-lunr-search')],
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,

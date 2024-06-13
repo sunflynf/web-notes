@@ -6,22 +6,59 @@ tags:
 
 # Naming styles
 
-1. **hy-phens**:
-    - **HTML**'s attributes - id, class: `form-group`, `form-check`, `form-label`, ...
-    - folder name: `partial-fields`, `<field-name>-<features>`, ...
-2. **under_score**:
-    - Database variables: `user_id`, `user_name`, `total_price`, ...
-    - _[Optional]_: use for variables in Code (languages allow)
-3. **UpperCamelCase (PascalCase)**:
-    - `class` in OOP languages: `Account`, `Product`, `User`, ...
-    - **React**'s components: `Modal`, `Button`, `ButtonGroup`, `Sidebar`, ...
-4. **lowerCamelCase**:
-    - variable: `firstName`, `lastName`, `address`, ...
-    - function: `getProducts`, `setProduct`, `getTotalPrice`, ...
+## **hy-phens**
 
----
+:::info
 
-## Link courses
+- **HTML**'s attributes - id, class
+  - `form-group`
+  - `form-check`
+  - `form-label`
+- folder name
+  - `partial-field`
+  - `<field-name>-<features>`
 
-- [Learn and Practice](https://exercism.org)
-- [Data Structure](https://refactoring.guru/)
+:::
+
+## **under_score**
+
+:::note
+
+- Database variables
+  - `user_id`
+  - `user_name`
+  - `total_price`
+- _Optional_: use for variables in Code (languages allow)
+
+:::
+
+## **UpperCamelCase (PascalCase)**
+
+:::info
+
+- `class` in OOP languages
+  - `Account`
+  - `Product`
+  - `User`
+- **React**'s components
+  - `Modal`
+  - `Button`
+  - `ButtonGroup`
+  - `Sidebar`
+
+:::
+
+## **lowerCamelCase**
+
+:::note
+
+- variable
+  - `firstName`
+  - `lastName`
+  - `address`
+- function:
+  - `getProducts`
+  - `setProduct`
+  - `getTotalPrice`
+
+:::
