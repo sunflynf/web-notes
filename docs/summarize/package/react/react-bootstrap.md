@@ -24,7 +24,7 @@ tags:
    import 'bootstrap/dist/css/bootstrap.min.css';
    ```
 
-3. Review [**Bootstrap**](../../styles/bootstrap5.md)
+3. Review [**Bootstrap**](../../frontend/styles/bootstrap5.md)
 4. Review [React-Bootstrap documentation](https://react-bootstrap.github.io/)
 5. Should using  [React-bootstrap icons](https://github.com/ismamz/react-bootstrap-icons)
 
