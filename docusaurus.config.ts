@@ -59,12 +59,12 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
-    // docs: {
-    //   sidebar: {
-    //     // Open multiple items in time
-    //     autoCollapseCategories: false, 
-    //   },
-    // },
+    docs: {
+      sidebar: {
+        // Open multiple items in time
+        autoCollapseCategories: true, 
+      },
+    },
     navbar: {
       title: 'Nhat Phi Site',
       logo: {

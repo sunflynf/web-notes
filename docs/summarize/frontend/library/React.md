@@ -13,8 +13,6 @@ tags:
 > - Create Reuseable UI Components (Virtual DOM)
 > - To use React in production, you need **npm** which is included with [Node.js](https://www.w3schools.com/nodejs/nodejs_get_started.asp).
 
-## Table of contents
-
 ## Builder Tools
 
 - [Create React App](https://create-react-app.dev/)

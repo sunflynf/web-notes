@@ -7,26 +7,7 @@ tags:
 
 # SASS (SCSS)
 
-## Table of contents
-
-1. [Variables](#variables)
-2. [Nesting](#nesting)
-3. [Modules](#modules)
-4. [Mixins](#mixins)
-5. [Extend/Inheritance](#extendinheritance)
-6. [Operators](#operators)
-    - [Build in modules](#build-in-modules)
-    - [Loops](#loops)
-7. [Features](#features)
-    - [Lists](#lists)
-    - [Maps](#maps)
-    - [Conditional](#conditionals)
-    - [Interpolation](#interpolation)
-8. [Resources](#resources)
-
----
-
-**SASS** is a stylesheet language that’s compiled to **[[CSS]]**
+**SASS** is a stylesheet language that’s compiled to **CSS**
 > **Preprocessing**: `sass --watch input.scss output.css`
 
 ## Variables

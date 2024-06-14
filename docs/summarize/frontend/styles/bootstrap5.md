@@ -8,10 +8,6 @@ tags:
 
 # Bootstrap 5
 
-## Table of contents
-
----
->
 > - Bootstrap is a free front-end framework
 > - Mobile-first
 > - Bootstrap has 7 variants (color):

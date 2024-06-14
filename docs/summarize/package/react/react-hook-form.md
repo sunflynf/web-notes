@@ -9,24 +9,6 @@ tags:
 
 # React Hook Forms
 
-## Table of contents
-
-- [Quick start](#quick-start)
-- [useForm](#useform)
-- [FormProvider & useFormContext](#formprovider--useformcontext)
-- [useWatch](#usewatch)
-- [useFormState](#useformstate)
-- [Controller & useController](#controller--usecontroller)
-- [useFieldArray](#usefieldarray)
-- [Resolvers](#resolvers)
-  - [Joi](#joi)
-  - [Zod](#zod)
-  - [Yup](#yup)
-  - [class-validator](#class-validator)
-  - [io-ts](#io-ts)
-  - [superstruct](#superstruct)
-  - [**Compare**](#compare)
-
 ## Quick start
 
 ```bash

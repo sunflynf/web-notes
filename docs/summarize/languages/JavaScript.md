@@ -2,38 +2,11 @@
 description: Web languages
 tags:
     - Programming lang
+    - JavaScript
     - TypeScript
 ---
 
 # JavaScript
-
-## Table of contents
-
-1. [Position in HTML](#position-in-html)
-2. [Syntax](#syntax)
-3. [Data Types](#data-types)
-4. [String](#string)
-5. [Number & BigInt](#number--bigint)
-6. [Functions](#functions)
-7. [Objects](#object)
-8. [Arrays](#arrays)
-9. [Date](#date)
-10. [Math](#math)
-11. [Conditions](#conditions)
-12. [Loop](#loop)
-13. [Features](#features): [Set](#set) + [Map](#map)
-14. [Events](#events)
-15. [`this`](#this)
-16. [Module](#module)
-17. [JSON](#json)
-18. [Class](#class-es6)
-19. [Promise & Async](#promise--async)
-20. [Versions](#versions)
-21. [DOM](#document-object-model)
-22. [Broswer Object Model](#browser-object-model)
-23. [Web workers](#web-workers)
-24. [Fetch API](#fetch-api)
-25. [Resources](#resources)
 
 ## Position in HTML
 

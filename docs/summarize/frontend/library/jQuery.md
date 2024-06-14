@@ -7,24 +7,6 @@ tags:
 
 # jQuery
 
-## Table of contents
-
-- [DOM Traversal & Manipulation](#dom-traversal--manipulation)
-  - [Selectors](#selectors)
-  - [Getters](#getters)
-  - [Setters](#setters)
-  - [Element Changes](#element-changes)
-  - [Styles](#styles)
-  - [Dimension](#dimension)
-  - [Traversing](#traversing)
-
-- [Event handling](#event-handling)
-- [Effects](#effects)
-- [AJAX](#ajax)
-- [Resources](#resources)
-
----
-
 > - **jQuery** is **JavaScript** library
 > - Write less, do more
 > - Basic syntax: `$(selector).<action>()`

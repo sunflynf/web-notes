@@ -3,6 +3,7 @@ description: Web languages - support type for JavaScript
 tags:
     - Programming lang
     - JavaScript
+    - TypeScripts
 ---
 
 # TypeScript
@@ -13,8 +14,6 @@ tags:
 > - Add to project with **npm**: `npm install typescript --save-dev`
 > - Check: `npx tsc`
 > - Config compiler: `npx tsc --init` -> `tsconfig.json`
-
-## Table of contents
 
 ## Basic Types
 

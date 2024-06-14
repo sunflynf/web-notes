@@ -8,8 +8,6 @@ tags:
 
 # Node.js
 
-## Table of contents
-
 ## Introduce
 
 - Node.js is an open source server environment

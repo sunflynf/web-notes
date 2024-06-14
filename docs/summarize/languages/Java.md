@@ -2,12 +2,11 @@
 description: OOP languages
 tags:
     - Programming lang
+    - Java
     - OOP
 ---
 
 # JAVA
-
-## Table of contents
 
 ## Introduce
 

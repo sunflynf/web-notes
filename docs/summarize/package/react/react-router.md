@@ -13,8 +13,6 @@ tags:
 - **ADD TO PROJECT**: `npm i -D react-router-dom`
 - **React Router** for mobile app write by **React Native**: `react-router-native`
 
-## Table of contents
-
 ## Routers
 
 - Router type 🤔
