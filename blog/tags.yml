@@ -14,3 +14,7 @@ hola:
   label: Hola
   permalink: /hola
   description: Hola tag description
+programming:
+  label: Programming
+  permalink: /programming
+  description: Anything in dev life

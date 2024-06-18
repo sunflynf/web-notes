@@ -32,21 +32,28 @@ tags:
 ```java
 public class Main {
   public static void main(String[] args) {
+    String name;
+    // Manual input in console
+    Scanner sc = new Scanner(System.in);
+
     /* This is comment
        in multiple lines
     */
     // System.out.print(1 + 1); // This print not enter a new line
-    System.out.println("Hello World");
+    System.out.println("Enter name:");
+    name = sc.nextLine();
+    System.out.println("Hello " + name + "!");
+
+    sc.close(); // garbage collector
   }
 }
 ```
 
 ### Variables
 
-- `type variableName = value;`
-- `final type variableName = value;` - Unchange value
-- variable's name are case-sensitive
-- [Java keywords](https://howtodoinjava.com/java/basics/java-keywords/)
+- `[static] [final] type variableName = value;`
+- Variable's name are **case-sensitive**
+- [List Java keywords](https://howtodoinjava.com/java/basics/java-keywords/)
 
 ### Naming
 
@@ -112,6 +119,7 @@ Object obj = new Object();
 
 String str = "Hello world!";
 int[] numbers = {1, 2, 3, 4, 5};
+float[] amounts = new float[5]; // arr with length = 5
 
 // (Integer|Long).MAX_VALUE
 Integer iNumber = Integer.MIN_VALUE; 
@@ -146,16 +154,11 @@ public class Demo {
 }
 ```
 
-## Collection Framework
-
-![java-collections-cheat-sheet](https://github.com/sunflynf/web-notes/assets/75079929/6f945578-cb29-452d-b22e-1bbac827898e)
-
-- **Collection**: root interface for all collection classes
-
 ## Control Flow
 
+### If-else
+
 ```java
-// if else
 if (condition) {
     // code block
 } else if (anotherCondition) {
@@ -163,7 +166,12 @@ if (condition) {
 } else {
     // default code block
 }
+
+// Ternary
+value = condition ? trueExpression : falseExpression;
 ```
+
+### Switch-case-default
 
 ```java
 enum Day { MON, TUE, WED, THUR, FRI, SAT, SUN }
@@ -202,15 +210,15 @@ switch (o)
 }
 ```
 
+### For loop
+
 ```java
-// for loop
 int[] numbers = {1, 2, 3, 4, 5};
-for (int number : numbers) {
+for (int i = 0;  i < numbers.length; i++) {
     System.out.println(number);
 }
 
 // Enhanced for loop
-int[] numbers = {1, 2, 3, 4, 5};
 for (int number : numbers) {
     System.out.println(number);
 }
@@ -218,22 +226,76 @@ for (int number : numbers) {
 // Collection.forEach
 List<Integer> listNumber = List.of(1, 2, 3, 4, 5);
 listNumber.forEach(num -> {}); // use with callback
+```
 
-// there also has do-while & while
+### While, Do-While Loop
+
+```java
 int i = 1, sum = 0;
+
+// while(i <= 5) {
+//     sum += i;
+//     i++;
+// }
+
 do {
     sum += i;
     i++;
 } while(i <= 5)
 ```
 
+### Break loop
+
 ```java
+// Labeled Statements
 outer_loop:
 for (int i = 0; i <= 5; i++) {
     inner_loop:
     for (int j = 0; j <= 5; j++) {
         // break; // breaks inner loop only
         break outer_loop; // same way with "continue"
+    }
+}
+```
+
+### Exception Handling
+
+```java
+try {
+    // do something stuff
+} 
+catch (Exception err) {
+    // It's fire, WATERRRRRRRRRR!
+}
+// OPTIONAL
+finally {
+    // You love me or hate me, I dont kare.
+}
+```
+
+#### Try-with-resources
+
+```java
+try (BufferedReader br = new BufferedReader(new FileReader("C:/temp/test.txt"))) {
+    String sCurrentLine;
+    while ((sCurrentLine = br.readLine()) != null) {
+        System.out.println(sCurrentLine);
+    }
+}
+catch (IOException e) {
+    // handle exception
+}
+```
+
+#### throw
+
+```java
+static void allowedAlcohol(int age) {
+    if (age >= 18) {
+        System.out.print("OK!");
+    } else {
+        // catch in class call this function
+        throw new WhyAreYouDrinkItException("This guy is cheater!"); 
     }
 }
 ```
@@ -334,7 +396,7 @@ c.draw(); // Drawing a circle
 interface Battery { void charge(); }
 interface Horn { void horn(); }
 
-// abstract class cannot use to create object
+// abstract class cannot use to create "new" object
 abstract class Car {
     int wheels;
     String name;
@@ -364,15 +426,44 @@ class ElectricCar extends Car {
 }
 ```
 
-- [ ] static method
-- [ ] final & static final
-- [ ] default method in interface
+### OOP Concepts
+
+- `static` method
+- `final` & `static final`
+- `default` method in interface
+
+## Arrays
+
+- `type varName[]` or `type[] varName`
+- `type varName[][]` or `type[][] varName`
+
+```java
+// String status[] = { "Active", "Inactive", "Purged" };
+String status[] = new String[] { "Active", "Inactive", "Purged" };
+
+// Printing
+System.out.println(Arrays.toString( status ));
+System.out.println(Arrays.deepToString( arrayOfArray )); // multi-dimentional
+```
+
+### Arrays Concepts
+
+- Concatenate Arrays
+- Splitting
+- Resize
+- Filter
+- Map
+- Clone
+
+## Collection
+
+![java-collections-cheat-sheet](https://github.com/sunflynf/web-notes/assets/75079929/6f945578-cb29-452d-b22e-1bbac827898e)
+
+- **Collection**: root interface for all collection classes
 
 ## Record
 
 ## Optional
-
-## Collection
 
 ### Functional Interface
 
@@ -383,3 +474,9 @@ class ElectricCar extends Car {
 ## Exception
 
 ## Threads
+
+## Resources
+
+- [How to do in Java](https://howtodoinjava.com/java)
+- [Pass-by-value or Pass-by-reference](https://howtodoinjava.com/java/basics/java-is-pass-by-value-lets-see-how/)
+- [String methods & handling](https://howtodoinjava.com/series/java-string)
