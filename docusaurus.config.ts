@@ -79,6 +79,7 @@ const config: Config = {
           position: 'left',
           label: 'Documents',
         },
+        // {to: '/docs/link', label: 'Links', position: 'left'},
         {to: '/blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/sunflynf',
