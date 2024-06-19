@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_web_notes=self.webpackChunkmy_web_notes||[]).push([[2301],{5731:e=>{e.exports=JSON.parse('{"metadata":{"permalink":"/web-notes/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":3,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
