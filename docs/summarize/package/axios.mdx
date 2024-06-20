@@ -1,0 +1,183 @@
+---
+description: A promise-based HTTP Client for node.js and the browser.
+tags:
+    - Extensions
+    - JavaScript
+---
+
+# Axios
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+- [Axios Documents](https://axios-http.com/docs/intro)
+
+## Quick start
+
+```bash
+npm install axios
+```
+
+<Tabs>
+  <TabItem value="normal" label="Normal" default>
+    ```js
+      // CommonJS styles
+      const axios = require('axios');
+
+      // Make a request for a user with a given ID
+      axios.get('/user?ID=12345')
+        .then((response) => {
+          // handle success
+        })
+        .catch((error) => {
+          // handle error
+        })
+        .finally(() => {
+          // always executed
+        });
+    ```
+  </TabItem>
+  <TabItem value="params-object" label="Params Object">
+    ```js
+      // Module styles
+      import { axios } from 'axios';
+
+      // Make a request for a user with a given ID
+      axios.get('/user', {
+        params: {
+          ID: 12345
+        } 
+      })
+        .then((response) => {
+          // handle success
+        })
+        .catch((error) => {
+          // handle error
+        })
+        .finally(() => {
+          // always executed
+        });
+    ```
+  </TabItem>
+  <TabItem value="async-await" label="Async/Await">
+    ```js
+    async function getUser() {
+      try {
+        const response = await axios.get('/user?ID=12345');
+        // handle success
+      } catch (error) {
+        // handle error
+      }
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## API
+
+### Request
+
+```js
+// Root
+axios(config)
+axios(url, config)
+
+// Build-in
+axios.request(config)
+// get | delete | head | options
+axios[methodQuery](url, config)
+// post | put | patch
+// postForm | putForm | patchForm
+axios[methodUpdate](url, data, config)
+```
+
+```ts
+type config = {
+  // absolute url
+  baseURL: string,
+
+  // partial url
+  url: string,
+
+  // Default: 'get'
+  method: 'get' | 'post' | 'put' | 'patch' | 'delete', 
+
+  // headers: {'X-Requested-With': 'XMLHttpRequest'},
+  headers: any,
+
+  // params: { id: 123 }
+  params: any,
+
+  // `paramsSerializer` is an optional function in charge of serializing `params`
+  // (e.g. https://www.npmjs.com/package/qs, http://api.jquery.com/jquery.param/)
+  paramsSerializer: function (params) {
+    return Qs.stringify(params, {arrayFormat: 'brackets'})
+  },
+
+  // Change request before sent to the server
+  // Apply methods PUT, POST, PATCH, DELETE
+  transformRequest: [(data, headers) => data],
+
+  // Change response data before passed
+  transformResponse: [(data, headers) => data],
+
+  responseType: 'json' | 'stream', // or something
+  
+  // data: { firstName: 'Phi' }
+  // data: 'firstName=Phi&lastName=Vo'
+  data: any,
+
+  // If the request takes longer than `timeout`, the request will be aborted.
+  // Default is 0
+  timeout: number,
+
+  // Indicates whether or not cross-site Access-Control requests
+  // Default: false
+  withCredentials: boolean,
+
+  // Other configs for authen and author...
+}
+```
+- [View Full Options](https://axios-http.com/docs/req_config)
+
+### Response
+
+```js
+{
+  // `data` is the response that was provided by the server
+  data: {},
+
+  // `status` is the HTTP status code from the server response
+  status: 200,
+
+  // `statusText` is the HTTP status message from the server response
+  // As of HTTP/2 status text is blank or unsupported.
+  // (HTTP/2 RFC: https://www.rfc-editor.org/rfc/rfc7540#section-8.1.2.4)
+  statusText: 'OK',
+
+  // `headers` the HTTP headers that the server responded with
+  // All header names are lower cased and can be accessed using the bracket notation.
+  // Example: `response.headers['content-type']`
+  headers: {},
+
+  // `config` is the config that was provided to `axios` for the request
+  config: {},
+
+  // `request` is the request that generated this response
+  // It is the last ClientRequest instance in node.js (in redirects)
+  // and an XMLHttpRequest instance in the browser
+  request: {}
+}
+```
+
+### Instance
+
+```js
+// axios.create(config)
+
+const instance = axios.create({
+  baseURL: 'https://some-domain.com/api/',
+  timeout: 1000,
+  headers: {'X-Custom-Header': 'foobar'}
+});
+```
