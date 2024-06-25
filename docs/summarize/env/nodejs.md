@@ -104,7 +104,7 @@ http.createServer(function (req, res) {
 
 ### Testing
 
-```mjs
+```js
 import assert from 'node:assert';
 import test from 'node:test';
 
@@ -119,7 +119,7 @@ test('that throws as 1 is not equal 2', () => {
 
 ### Read & Hash a file
 
-```mjs
+```js
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 
@@ -133,7 +133,7 @@ const fileHash = hasher.read();
 
 ### Stream pipeline
 
-```mjs
+```js
 import { pipeline } from 'node:stream/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { createGzip } from 'node:zlib';
@@ -149,7 +149,7 @@ await pipeline // 🤔
 
 ### Threads
 
-```mjs
+```js
 import { Worker, isMainThread,
   workerData, parentPort } from 'node:worker_threads';
 
