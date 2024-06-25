@@ -15,7 +15,18 @@ tags:
 1. **Install Express:**
 
    ```bash
-   npm install express
+   npm i express
+   ```
+
+   **For auto reload server**
+
+   ```bash
+   npm i -D nodemon
+   ```
+
+   ```json
+   "start": "node src/index.js",
+   "watch": "nodemon src/index.js --experimental-modules",
    ```
 
 2. **Basic Server:**
