@@ -17,6 +17,7 @@ Basic command in Windows
 | `open <file-name>.<file-type>` | Open with **Notepad** |
 | `code <file-name>.<file-type>` | Open with **Visual Studio Code** |
 | `rm <file-name>.<file-type>` | Remove file |
+| `rm -r <folder-path>` | Remove folder |
 | `cls` | clear screen |
 | `pwd` | Print workplace directory |
 
