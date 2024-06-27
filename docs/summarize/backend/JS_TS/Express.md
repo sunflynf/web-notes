@@ -166,6 +166,10 @@ tags:
 
 4. **Using Template Engines:**
 
+   > - [EJS](../../fullstack/mvc/ejs.md)
+   > - [Mustache](../../fullstack/mvc/mustache.md)
+   > - [Pug (Jade)](../../fullstack/mvc/pug.md)
+
    ```javascript
    app.set('view engine', 'pug');
    app.set('views', './views');
