@@ -1,5 +1,5 @@
 ---
-description: Database Management System.
+description: The world's most popular open source database
 tags:
     - SQL
     - DBMS
