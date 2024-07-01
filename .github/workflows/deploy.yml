@@ -30,7 +30,7 @@ jobs:
         # env:
         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          GIT_USER=${{ secrets.GIT_USER }}
+          GIT_USER=$USER
           git config --global user.email "sunflynf@gmail.com" 
           git config --global user.name "sunflynf" 
           yarn deploy
