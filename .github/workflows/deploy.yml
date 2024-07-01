@@ -29,6 +29,7 @@ jobs:
       - name: Deploy to GitHub Pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_USER: sunflynf
         run: |
           git config --global user.email "sunflynf@gmail.com" 
           git config --global user.name "sunflynf" 
