@@ -30,4 +30,6 @@ jobs:
         run: yarn build
 
       - name: Deploy to GitHub Pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: GIT_USER=sunflynf yarn deploy
