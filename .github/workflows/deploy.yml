@@ -10,27 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4.1.7
-      - uses: actions/setup-node@v4.0.2
-
-      - name: Install dependencies
-        run: |
-          if [ -e yarn.lock ]; then
-          yarn install --frozen-lockfile
-          elif [ -e package-lock.json ]; then
-          npm ci
-          else
-          npm i
-          fi
-
-      - name: Build the project
-        run: yarn build
-
-      - name: Deploy to GitHub Pages
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
-          GIT_USER: sunflynf
-        run: |
-          git config --global user.email "sunflynf@gmail.com" 
-          git config --global user.name "sunflynf" 
-          yarn deploy
+      - uses: actions/checkout@master
+      - uses: redkubes/docusaurus-deploy-action@v1
+        with:
+          source-folder: web-notes
+          git-user: sunflynf
+          git-password: ${{ secrets.GITHUB_TOKEN }}
+          deployment-branch: gh-pages
