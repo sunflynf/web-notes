@@ -30,6 +30,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           GIT_USER: sunflynf
+          GH_PAT: ${{ secrets.PAT }}
         run: |
           git config --global user.email "sunflynf@gmail.com" 
           git config --global user.name "sunflynf" 
