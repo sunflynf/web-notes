@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.7
-  
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.0.2
 
@@ -27,9 +27,7 @@ jobs:
           fi
 
       - name: Build the project
-        run: npm run build
+        run: yarn build
 
       - name: Deploy to GitHub Pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run deploy
+        run: GIT_USER=sunflynf yarn deploy
