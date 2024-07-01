@@ -29,6 +29,11 @@ jobs:
           npm install 
           npm run build
 
+      - name: Config Git
+        run: |
+          git config --global user.email "sunflynf@gmail.com" 
+          git config --global user.name "sunflynf"
+
       - name: Deploy to GitHub Pages
         if: success()
         uses: crazy-max/ghaction-github-pages@v2
