@@ -8,4 +8,4 @@ tags:
 # PostgreSQL
 
 > - [Documents](https://www.postgresql.org/docs/current/)
-> - [Backend package](https://node-postgres.com/)
+> - [Tools](../../package/database/node-postgres.md)
