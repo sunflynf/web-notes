@@ -134,54 +134,65 @@ mapValues(obj, (v, k, obj) => newVal);
 at(obj, path[]) => [];
 has(obj, path) => boolean; // check if path existed
 get(obj, path, defaultValue?) => any; // return value of defaultValue if undefined
-update()
-unset()
+set(obj, path, value);
+update(obj, path, (v) => any); // update current object's value
+unset(obj, path) => boolean; // delete key
 
-merge()
+assign(object, ...object); // based on Object.assign, update root object & override value
+merge(object, ...object); // update root object & add key currently not existed to same position
+// see: https://lodash.com/docs#merge
+mergeWith(object, ...object, (objValue, srcValue, key, object, source, stack) => any);
 
-pick()
-pickBy()
-omit()
-omitBy()
+omit(obj, path[]); // remove key
+omitBy(obj, (v, k) => boolean);
+pick(obj, path[]); // opposite of omit
+pickBy(obj, (v, k) => boolean);
 ```
 
 ## String
 
 ```ts
-camelCase()
-kebabCase()
-snakeCase()
-startCase()
+capitalize(text); // FOOBAR => Foobar
 
-deburr()
-escapse()
-escapseRegExp()
-unescapse()
+camelCase(text); // 'Foo Bar' | '__FOO_BAR__' => fooBar
+kebabCase(text); // 'Foo Bar' | '__FOO_BAR__' => foo-bar
+snakeCase(text); // 'Foo Bar' | '__FOO_BAR__' => foo_bar
+startCase(text); // 'fooBar' | '__FOO_BAR__' => Foo Bar
 
-repeat()
+deburr(text); // déjà vu => deja vu
+escapse(text); // Convert special string to HTML entities
+unescapse(text);
+// third-party library: https://github.com/mathiasbynens/he
+escapseRegExp(text); // Escapes the RegExp special characters
 
-truncate()
+repeat(text, time); // repeat('abc', 3) => 'abcabcabc'
 
-template()
+truncate(string, {
+    length: number,
+    omission: string, // default '...'
+    separator: string|RegExp, // ' ' or /,? +/
+})
+
+template(string, options) => ((obj) => string); // See: https://lodash.com/docs#template
 ```
 
 ### Features
 
 ```ts
-debounce()
-delay()
+debounce(func, wait?: number, option?); // wait miliseconds after user stop interact then call func
+delay(func, wait, args: any[]) // call func after wait miliseconds
 throttle()
 
-defer()
-once()
-wrap()
+defer(func, args: any[]) => string; // call func every 1000 miliseconds, args will put to func. Return timeId 
+once(func) => wrapFunc; // invoked one and only
+wrap(func: (any) => any, (func, any) => any) => wrapFunc
 
-isEmpty();
-isEquals();
-// null or undefined
-isNil();
+isEmpty(any) => boolean; // Should use for check object & array
+isEquals(obj, obj) => boolean; // Deep comparison
 
-toArray()
+isNil(val) => boolean; // null or undefined
+
+toArray(any) => any[]; // values(obj) | string -> string[] | !value -> []
 ```
 
 ## Chain Sequences
@@ -199,13 +210,19 @@ _(value).method1().method2((o) => o.abc).method3().value();
 
 ```ts
 defaultTo(value, defaultValue); // return defaultValue if (!value is true)
-uniqueId()
+uniqueId(prefix?: string); // uniqueId('contact_') -> contact_104
 
-flow()
+flow(func: Function[]) => wrapFunc; 
+// wrapFunc = flow([func1, func2, func3]);
+// wrapFunc(a, b, c) 
+// --> func1(a, b, c) => [a1, b1, c1] 
+// --> func2([a1, b1, c1]) => { ab, bc, ca }
+// --> func3({ ab, bc, ca }) => z
 
 cond()
 iteratee()
 
+// RegExp
 isMatch()
 matches()
 
@@ -213,8 +230,9 @@ range()
 times()
 ```
 
+## Custom
+
 ```ts
 mixin()
-
 runInContext()
 ```
