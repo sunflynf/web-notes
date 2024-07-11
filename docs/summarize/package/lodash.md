@@ -173,7 +173,8 @@ truncate(string, {
     separator: string|RegExp, // ' ' or /,? +/
 })
 
-template(string, options) => ((obj) => string); // See: https://lodash.com/docs#template
+template(string, options) => ((obj) => string); 
+// See: https://lodash.com/docs#template
 ```
 
 ### Features
