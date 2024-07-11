@@ -23,7 +23,8 @@ _.func([], {});
 // TYPE
 type arr<T> = T[];
 type newArr<T> = T[];
-type identity<T> = string | (T) => any;
+type identity<T> = string | (val: T) => any;
+type comparator<T> = (val1: T, val2: T) => boolean;
 ```
 
 ## Math
@@ -66,61 +67,73 @@ Features from **lodash**
 // [0, 1, false, 2, '', 3] -> [1, 2, 3]
 compact(arr) => newArr;
 
-fill();
+fill(arr | Array(len), value, start?, end?); 
 
-flatten();
-flattenDeep();
+flatten(arr) => newArr;
+flattenDeep(arr) => newArr; // destructure all nested arrays
+flattenDepth(arr, depth: number) => newArr;
 
-intersection();
-intersectionBy();
-intersectionWith();
-union();
-xor();
+// union, xor
+intersection(arr1, arr2) => newArr;
+intersectionBy(arr1, arr2, identity) => newArr; // get data [and convert] then compare
+intersectionWith(arr1, arr2, comparator) => newArr; // compare and push to result
 
-uniq();
-uniqBy();
+uniq(arr) => newArr;
+uniqBy(arr, identity) => newArr;
+uniqWith(arr, comparator) => newArr;
 
-pullAll();
-without();
+// use pullAll or pullAllBy of pullAllWith if need
+pull(arr, ...any); 
+remove(arr, identity) => removeItems: any[]; // mutates root array  
+without(arr, value: any[]) => newArr;
 
-sortBy()
+sortBy(arr, ...identity) => newArr; 
 
 // features
-sample()
-sampleSize()
-shuffle()
+sample(arr: T[]) => T
+sampleSize(arr: T[], size: number) => T[]
+shuffle(arr: T[]) => newArr: T[]
 ```
 
 ## Objects - Array
 
 ```ts
-every()
-some()
+every(arr, identity) => boolean; // all true
+some(arr, identity) => boolean; // any true
 
-countBy()
-forEach()
-groupBy()
+forEachRight(arr, identity); // forEach but right to left
+countBy(arr, identity) => object; // _.countBy([6.1, 4.2, 6.3], Math.floor) => { '4': 1, '6': 2 }
+groupBy(arr, identity) => object; // _.countBy([6.1, 4.2, 6.3], Math.floor) => { '4': [4.2], '6': [6.1, 6.3] }
 // filter counter
-reject()
+reject(arr, identity) => newArr; // opposite of filter
 
-clone()
-cloneDeep()
+clone(T) => T; // based on structuredClone, but properties like object or array has same address
+cloneDeep(T) => T; // absolutely difference
 ```
 
 ## Object - Utils
 
 ```ts
-defaults()
+defaults(...T) => object; // assign multiple objects. Condition: if key has value, it not change
+defaultsDeep(...T) => object; // assign deeper to object & array
 
-keys()
-values()
+keys(obj) => k[]
+values(obj) => v[]
 
-mapKeys()
-mapValues()
+mapKeys(obj, (v, k, obj) => newKey); 
+// mapKeys({ a: 1, b: 2 }, (v, k) => k + v) 
+// => { 'a1': 1, 'b2': 2 } 
+mapValues(obj, (v, k, obj) => newVal); 
+// mapValues({ a: 1, b: 2 }, (v, k) => k + v) 
+// => { a: 'a1', b: 'b2' }
 
-at()
-has()
-get()
+// user = { pet: [ { name: { firstName: '', lastName: '' } } ] }
+// path: 
+// - string | 'pet[0].name.firstName'
+// - string[] | ['pet', 0, 'name', 'firstName']
+at(obj, path[]) => [];
+has(obj, path) => boolean; // check if path existed
+get(obj, path, defaultValue?) => any; // return value of defaultValue if undefined
 update()
 unset()
 
@@ -185,7 +198,7 @@ _(value).method1().method2((o) => o.abc).method3().value();
 ## Util
 
 ```ts
-defaultTo()
+defaultTo(value, defaultValue); // return defaultValue if (!value is true)
 uniqueId()
 
 flow()
