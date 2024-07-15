@@ -220,20 +220,32 @@ flow(func: Function[]) => wrapFunc;
 // --> func2([a1, b1, c1]) => { ab, bc, ca }
 // --> func3({ ab, bc, ca }) => z
 
-cond()
+cond(validate[]) => wrapFunc;
+// validate: [boolean, any];
+// const wrapFunc = cond([
+//  [matches({ 'a': 10 }), 'matches A'],
+//  [stubTrue, 'no match'],
+// ])
+// wrapFunc({ 'a': 1, 'b': 2 }) => 'no match';
 iteratee()
 
 // RegExp
 isMatch()
 matches()
 
-range()
-times()
+range(start?: number, end: number, step?: number) => number[];
+// range(4) => [0, 1, 2, 3]
+// range(0, 20, 5) => [0, 5, 10, 15]
+times(n: number, identity) => any[];
+// times(3, String) => ['0', '1', '2']
+// times(4, constant(0)) => [0, 0, 0, 0]
 ```
 
 ## Custom
 
 ```ts
+// If you feel lodash not enough, but still want to use it
+// Use this for give them brick
 mixin()
 runInContext()
 ```
