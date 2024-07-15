@@ -20,45 +20,79 @@ tag:
   - `git <command> -help`
   - `git help --all`
 
-## Basic command
+## Information
 
 | Command | Use for |
 | --- | --- |
 | `git --version` | Check version |
-| `git config --global user.name "exp"` \| `git config --global user.gmail "exp@email.com"` | Setting |
-| `git init` | Initialize Git on current folder |
 | `git status` | Checking status of repo |
 | `git status --short` | Checking status (Short ver)* |
+| `git diff` | Show unstaged changes |
+| `git reflog` | Show a log of all references |
 | `git log` | View the history of commits for repo |
 | `git log --oneline` | (Short ver) |
+| `git brand` | List all branchs |
+| `git show <branch>` | Show last changes in branch |
+| `git blame` | Show what revision and author last modified each line of a file |
+| `git remote -v` | Show the URLs that a remote name corresponds to |
+| `git stash list` | Show all stashes |
+
+:::info Status short marks
+
+- ?? - Untracked files
+- A - Files added to stage
+- M - Modified files
+- D - Deleted files
+
+:::
+
+## Controls
+
+| Command | Use for |
+| --- | --- |
+| `git config --global user.name "exp"` | Setting **username** |
+| `git config --global user.gmail "exp@email.com"` | Setting **email** |
+| `git init` | Initialize Git on current folder |
 | `git add <file-name.type>` | Staged file |
 | `git add --all` \| `git add -A` | Staged all files |
 | `git commit -m "Updated"` | Commit with message |
 | `git commit -a -m "Updated"` | Add `-a` for automatically stage every changed |
-| `git brand` | List all branchs |
 | `git branch develop` | Create branch **develop** from **main/master**. \| Note: `develop` is example name |
 | `git checkout develop` | Move workspace to branch **develop** |
 | `git checkout -b a-123` | Move to branch **a-123**, create before move if it does not existed |
+| `git checkout --` | **Discard changes** in the working directory |
 | `git merge a-123` | Update changes in **a-123** into **main/master** branch|
 | `git branch -d a-123` | Delete branch **a-123** |
+| `git push <branch>` | Update remote refs along with associated objects |
+| `git pull <branch>` | Fetch from and integrate with another repository or local branch |
+| `git rebase <base-branch>` | Reapply commits on top of another base tip |
+| `git cherry-pick <commit-hash>` | Apply the changes introduced by some existing commits |
 
-- Status short ver
-  - ?? - Untracked files
-  - A - Files added to stage
-  - M - Modified files
-  - D - Deleted files
-
-## Advance command
+## Advanced
 
 | Command | Use for |
 | --- | --- |
+| `git reset --hard HEAD~1` | Reset current HEAD to the specified state |
+| `git revert HEAD` | Create a new commit that undoes the changes from a previous commit |
 
-## .gitignore
+## Local works
 
----
+| Command | Use for |
+| --- | --- |
+| `git stash` | Stash the changes in a dirty working directory away |
+| `git stash pop` | Apply the changes recorded in the stash to the working directory |
+| `git stash apply stash@{1}` | Apply a stash to the working directory |
+| `git stash drop stash@{1}` | Remove a single stash entry from the list of stashes |
+| `git clean -fd` | Remove untracked files from the working directory |
+| `git fetch origin` | Download objects and refs from another repository |
 
-- [ ] git revert
-- [ ] git reset
-- [ ] git amend
-- [ ] .gitignore
-- [ ] Security SSH
+## More details
+
+- [Git keywords with examples](https://dev.to/iamcymentho/git-commands-for-software-engineers-51n8)
+- [.gitignore](https://github.com/github/gitignore)
+- [Practice site](https://learngitbranching.js.org/)
+- Using remote to connect with another repos
+
+```bash
+> git remote add origin https://github.com/user/repo.git
+```
