@@ -409,6 +409,71 @@ function Timer() {
 }
 ```
 
+#### Tips: avoid useless fetch when unmount component
+
+> Apply for _Component_ which can fetch data when mount to avoid refetch with **StrictMode** or `useEffect` has `show` dependency
+
+```tsx
+<button type="button" onClick={() => setShow(!show)}>
+    Show modal
+</button>
+{show && <Modal show={show} onHide={() => setShow(false)} />}
+```
+
+```tsx title="Modal.tsx"
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
+
+type ModalProps = {
+  show: boolean;
+  onHide: () => void;
+};
+
+const Modal: React.FC<ModalProps> = ({ show, onHide }) => {
+  useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    (async () => {
+      try {
+        const res = await fetch(
+          "https://my-json-server.typicode.com/typicode/demo/posts",
+          { signal },
+        );
+        if (!signal.aborted) {
+          if (res.ok) {
+            const data = await res.json();
+            console.log(data);
+          } else {
+            console.log("Status: ", res.status);
+          }
+        }
+      } catch (err) {
+        if (!signal.aborted) {
+          console.log(err);
+        }
+      }
+    })();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [show]);
+
+  return createPortal(
+    <div
+      className='custom-modal'
+      onClick={onHide}
+    >
+      Hello
+    </div>,
+    document.body,
+  );
+};
+
+export default Modal;
+```
+
 ### useCallback & useMemo
 
 - **Problem**: Component re-render
