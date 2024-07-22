@@ -55,6 +55,26 @@ body {
 }
 ```
 
+### BEM
+
+```scss
+.block {
+  @at-root #{&}__element {
+  }
+  @at-root #{&}--modifier {
+  }
+}
+```
+
+```css
+.block {
+}
+.block__element {
+}
+.block--modifier {
+}
+```
+
 ## Modules
 
 ```scss

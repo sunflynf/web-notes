@@ -260,7 +260,7 @@ div {
     font-family: myFirstFont;
 }
 ```
-
+<!-- 
 ## TODO
 
 - [ ] `border-radius`
@@ -277,3 +277,7 @@ div {
 - [ ] Flex system
 - [ ] Grid system
 - [ ] Responsive Web Design
+ -->
+## Resources
+
+- [CSS Reference](https://cssreference.io/)
