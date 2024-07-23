@@ -278,6 +278,11 @@ div {
 - [ ] Grid system
 - [ ] Responsive Web Design
  -->
+
 ## Resources
 
 - [CSS Reference](https://cssreference.io/)
+
+## How to
+
+- [Flip card](https://www.w3schools.com/howto/howto_css_flip_card.asp)

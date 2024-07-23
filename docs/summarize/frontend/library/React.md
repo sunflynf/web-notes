@@ -668,3 +668,4 @@ module.exports = nextConfig;
 
 1. [React official page](https://react.dev/)
 2. [React - w3schools](https://www.w3schools.com/react/default.asp)
+3. [React - TypeScript](https://react-typescript-cheatsheet.netlify.app)
