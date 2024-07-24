@@ -801,6 +801,15 @@ const listEmployee_string = JSON.stringify(employees);
 const listEmployee_object = JSON.parse(employees);
 ```
 
+:::warning JSON weird things
+
+```js
+JSON.stringify(null) -> 'null'
+JSON.stringify(undefined) -> undefined
+```
+
+:::
+
 ## Class (ES6)
 >
 > - A JavaScript class is not an object.
