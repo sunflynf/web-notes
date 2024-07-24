@@ -8,6 +8,171 @@ tags:
 
 # CSS3
 
+- Describes how HTML elements are to be displayed on screen, paper, or in other media
+- Control the layout of multiple web pages all at once
+- External stylesheets are stored in CSS files -> CSS removed the style formatting from the HTML page!
+
+## Selectors
+
+:::note CSS Selectors
+
+**Used to "find" (or select) the HTML elements you want to style.**
+
+- Simple selectors (select elements based on [name](../../HTML.md#documents--element), `id`, `class`)
+- [Combinator selectors](https://www.w3schools.com/css/css_combinators.asp) (select elements based on a specific relationship between them)
+- [Pseudo-class selectors](https://www.w3schools.com/css/css_pseudo_classes.asp) (select elements based on a certain state)
+- [Pseudo-elements selectors](https://www.w3schools.com/css/css_pseudo_elements.asp) (select and style a part of an element)
+- [Attribute selectors](https://www.w3schools.com/css/css_attribute_selectors.asp) (select elements based on an attribute or attribute value)
+
+:::
+
+```css
+* {  /* Comment in css: Apply to all */
+ color: blue;
+}
+/* Group selectors*/
+h1, h2, p, 
+.class-text-center, 
+strong.contain-class-center {
+ text-align: center;  
+}
+#id-need-bold, div#id-must-be-bold {
+ font-weight: bold;
+}
+```
+
+### Combination
+
+```css
+/* Child */
+.root > .specified-child {
+}
+/* Adjacent Sibling */
+.root + .first-placed-immediately-below {
+}
+/* General Sibling */
+.root ~ .all-placed-immediately-below {
+}
+```
+
+### Pseudo
+
+:::info Structure
+
+- Pseudo Classes `selector:pseudo-class`
+- Pseudo Elements `selector::pseudo-element`
+- [See more](https://www.w3schools.com/css/css_pseudo_classes.asp)
+
+:::
+
+### Attribute
+
+| Using                          | Description                                     | Example                |
+| ------------------------------ | ----------------------------------------------- | ---------------------- |
+| `selector[attribute]`          | Has attribute                                   | `a[target]`            |
+| `selector[attribute="value"]`  | Has attribute with exact value                  | `a[target="_blank"]`   |
+| `selector[attribute!="value"]` | Has attribute with exact value or like "value-" | `div[class="date"]`    |
+| `selector[attribute~="value"]` | Has attribute containing exact word "value"     | `img[title~='animal']` |
+| `selector[attribute^="value"]` | Has attribute start with value                  | `a[href^='https']`     |
+| `selector[attribute$="value"]` | Has attribute end with value                    | `a[href$=".pdf"]`      |
+| `selector[attribute*="value"]` | Has attribute includes word: value              | `img[title*="dog"]`    |
+
+### Specificity
+
+- `*` - 0
+- element - 1
+- `.class` - 10
+- `#id` - 100
+- inline `style=""` - 1000
+- `!important` - Infinity
+
+:::note
+
+- Combination will sum all points. Example: `div#first-name.text-center` -> 1 + 100 + 10 = 111
+- Selector with same point will apply latest rule
+
+:::
+
+## Colours
+
+- Name: `red`, `black`, `white`, `blue`,... [HTML Color Names](https://www.w3schools.com/colors/colors_names.asp)
+- **RGB** (red, green, blue) & **RGBA** (alpha): `rgb(0, 0, 0)` | `rgba(255, 255, 255, 0.2)`
+- **HEX**: `#rrggbb` - use `00 -> FF (0 -> 255)`
+- **HSL** : `hsl(hue, saturation, lightness)` & **HSLA** - alpha like RGBA
+  - hue: `[0, 360]`
+    - 0 - red
+    - 120 - green
+    - 240 - blue
+  - saturation:
+    - 0% - shade of gray
+    - 100% - full color
+  - lightness:
+    - 0% - black
+    - 50% - neither light or dark
+    - 100% - white
+
+## Backgrounds
+
+**Shorthand:** `background: color image repeat position;`
+
+- `background-color`: [Colour](#colours)
+- `background-image`: `url("image_file.type")`;
+- `background-repeat`: `repeat` | `repeat-x[y]` | `no-repeat`;
+- `background-position`: `left[right]` `top[bottom]`;
+- `background-attachment`: `fixed[scroll]`;
+
+**Other options:**
+
+- `background-clip`
+- `background-origin`
+
+## Units
+
+- **Absolute**
+  - cm - centimeters
+  - mm - milimeters
+  - in - inches
+  - `px` - pixels = 1/96 in
+  - pt - points = 1/72 in
+  - pc - picas = 12 pt
+- **Relative**
+  - `em` - n * *current font size*
+  - `rem` - n * ***root font size***
+  - `%` - base on parent element
+  - ex - base on x-height (rarely)
+  - ch - base on width of "0"
+  - *`vw` - n -> n% width of viewport*
+  - *`vh` - n -> n% height of viewport*
+  - vmin - n -> n% viewport's smaller dimension
+  - vmax - n -> n% viewport's larger dimension
+
+## Borders
+
+**Shorthand**: `border[-position]: width style(required) color`
+
+- `-position`: `top`, `right`, `bottom`, `left`
+- `border[-position]-width`: `top right bottom left`;
+- `border[-position]-style`: `dotted`, `dashed`, `solid`, `double`, `groove`, `ridge`, `inset`, `outset`, `hidden`
+- `border[-position]-color`: [Colour](#colours)
+- `border-radius`: `0 (square) -> 50px (round)`
+
+## Margins & Padding
+
+- **Margin**: space around element
+- **Padding**: space inside element
+- ***Using***
+  - `[type][-position]: width;`
+  - `margin-top: 20px;`
+
+## Size
+
+- `min-height` - `height` - `max-height`
+- `min-width` - `width` - `max-width`
+
+### Box Model
+
+![Box model](box-model-768x480-2391226293.jpg)
+
 ## Elements
 
 ### Text
@@ -32,7 +197,7 @@ tags:
 
 ### Fonts
 
-Safe font for HTML & CSS
+:::info Safe font for HTML & CSS
 
 - Arial (sans-serif)
 - Verdana (sans-serif)
@@ -44,9 +209,14 @@ Safe font for HTML & CSS
 - Courier New (monospace)
 - Brush Script MT (cursive)
 
-> Using Google font: `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=FontName">`
->
-> Add above tag to `<head>` tag
+:::
+
+:::note Using Google font
+
+1. `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=FontName">`
+2. Add above tag to `<head>` tag
+
+:::
 
 | Attribute      | Value                                      | Note                                                                  |
 | -------------- | ------------------------------------------ | --------------------------------------------------------------------- |
@@ -89,14 +259,16 @@ a:active {
 
 ### Table
 
-> **Recommend setup**
->
-> ```css
-> table {
->     width: 100%; /* full width */
->     border-collapse: collapse;
-> }
-> ```
+:::info Recommend setup
+
+```css
+table {
+    width: 100%; /* full width */
+    border-collapse: collapse;
+}
+```
+
+:::
 
 | Attribute         | Value                                        | Note                                                         |
 | ----------------- | -------------------------------------------- | ------------------------------------------------------------ |
@@ -152,69 +324,6 @@ a:active {
 
 - `float: none|left|right|inherit` specifies how an element should float.
 - `clear: none|left|right|both|inherit` specifies what elements can float beside the cleared element and on which side.
-
----
-
-## Combinators
-
-```css
-/* Child */
-.root > .specified-child {
-}
-/* Adjacent Sibling */
-.root + .first-placed-immediately-below {
-}
-/* General Sibling */
-.root ~ .all-placed-immediately-below {
-}
-```
-
-## Pseudo
-
-> Structure
->
-> - Pseudo Classes `selector:pseudo-class`
-> - Pseudo Elements `selector::pseudo-element`
-
-[Details](https://www.w3schools.com/css/css_pseudo_classes.asp)
-
-## Attributes
-
-> Structure:
->
-> - Has attribute `selector[attribute]`
-> - Has attribute with exact value `selector[attribute="value"]`
-> - Has attribute with exact value or like "value-" `selector[attribute|="value"]`
-> - Has attribute containing word like "value" `selector[attribute~="value"]`
-> - Has attribute start with value `selector[attribute^="value"]`
-> - Has attribute end with value `selector[attribute$="value"]`
-> - Has attribute includes word: value `selector[attribute*="value"]`
-
-| Using                          | Description                                     | Example                |
-| ------------------------------ | ----------------------------------------------- | ---------------------- |
-| `selector[attribute]`          | Has attribute                                   | `a[target]`            |
-| `selector[attribute="value"]`  | Has attribute with exact value                  | `a[target="_blank"]`   |
-| `selector[attribute!="value"]` | Has attribute with exact value or like "value-" | `div[class="date"]`    |
-| `selector[attribute~="value"]` | Has attribute containing exact word "value"     | `img[title~='animal']` |
-| `selector[attribute^="value"]` | Has attribute start with value                  | `a[href^='https']`     |
-| `selector[attribute$="value"]` | Has attribute end with value                    | `a[href$=".pdf"]`      |
-| `selector[attribute*="value"]` | Has attribute includes word: value              | `img[title*="dog"]`    |
-
-## Special
-
-### Specificity
-
-1. `*` - 0
-2. element - 1
-3. `.class` - 10
-4. `#id` - 100
-5. inline `style=""` - 1000
-6. `!important` - Infinity
-
-**NOTE**:
-
-- Combination will sum all points. Example: `div#first-name.text-center` -> 1 + 100 + 10 = 111
-- Selector with same point will apply latest rule
 
 ### Math function
 
