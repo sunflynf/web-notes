@@ -8,24 +8,24 @@ tags:
 
 # JAVA
 
-## Introduce
-
 - **Java** works on different platforms (Windows, Mac, Linux, Raspberry Pi, etc.)
 - It is open-source and free
 - It is secure, fast and powerful
 - It has huge community support
 - **Java** is an **object oriented language** which gives a clear structure to programs and allows code to be reused, lowering development costs
+- [**Set up Java** in computer](https://www.w3schools.com/java/java_getstarted.asp)
 
-> [**Set up Java** in computer](https://www.w3schools.com/java/java_getstarted.asp)
-
-- Compile & running in cmd | Terminal
-  - `javac` build `.java` to `.class`
-  - `java` run `.class` file
+:::note Compile & running in cmd | Terminal
+  
+- `javac` build `.java` to `.class`
+- `java` run `.class` file
 
 ```cmd
 > javac Main.java
 > java Main 
 ```
+
+:::
 
 ## Syntax
 
@@ -461,19 +461,121 @@ System.out.println(Arrays.deepToString( arrayOfArray )); // multi-dimentional
 
 - **Collection**: root interface for all collection classes
 
-## Record
+## Records
+
+- **JDK Version**: 14+
+- **Records** are immutable data classes that require only the type and name of fields.
+
+```java
+// Yep, it's done! Now you can create Object like normal class.
+public record Person(String name, String address) {}
+
+// Using
+Person person = new Person('John', 'Americano');
+System.out.print(person.name()); // getters
+```
+
+```java
+// Static variables & methods
+public record Person(String name, String address) {
+    public static String UNKNOWN_ADDRESS = "Unknown";    
+    public static Person unnamed(String address) {
+        return new Person("Unnamed", address);
+    }
+}
+
+Person.UNKNOWN_ADDRESS;
+Person.unnamed("Some where");
+```
 
 ## Optional
 
+- **JDK Version:** 8+
+- `Optional` is meant to be used as a return type
+- Using `Optional` in a **serializable** class will result in a **NotSerializableException**
+
+```java
+// Create empty Object
+Optional<String> empty = Optional.empty(); 
+empty.isPresent(); // Check there is value in object, current is false
+empty.isEmpty(); // Check there is empty, current is true (ver 11+)
+
+// Create Optional with static method
+String name = "baeldung";
+Optional<String> opt1 = Optional.of(name); // Maybe get NullPointerException
+Optional<String> opt2 = Optional
+    .ofNullable(name)
+    .orElse("Default name"); // add-ons
+    //.orElseGet(() -> "Default name"); // same above, but use function
+    //.orElseThrow(IllegalArgumentException::new); // custom handling
+
+    
+```
+
 ### Functional Interface
+
+```java
+@FunctionalInterface
+interface Square {
+  int calculate(int x);
+}
+
+class Test {
+  public static void main(String args[])
+  {
+    // lambda expression to define the calculate method
+    Square s = (int x) -> x * x;
+
+    // parameter passed and return type must be
+    // same as defined in the prototype
+    System.out.println(s.calculate(5));
+  }
+}
+```
+
+:::info Built-in Functional Interfaces
+
+- **Runnable** –> `run()`
+- **Comparable** –> `compareTo(`)
+- **ActionListener** –> `actionPerformed()`
+- **Callable** –> `call()`
+
+:::
+
+#### `Predicate<T>`
+
+#### `Consumer<T>`
+
+#### `Function<T, R>`
+
+#### `Supplier<T>`
 
 ### Lambda
 
+- Use as parameters of type **@FunctionalInterface**
+
+```java
+() -> doWhatEverYouWant();
+(T a) -> a.doSomething();
+(T a, T b) -> a + b;
+(T1 a, T2 b, T2 c) -> {
+    a.doStuff(b -> b.compare(c));
+}
+```
+
 ## Stream
+
+- **Stream API** is used to process collections of objects
+- **Features**
+  - A stream is not a data structure instead it takes input from the Collections, Arrays or I/O channels.
+  - Streams don’t change the original data structure, they only provide the result as per the pipelined methods.
+  - Each intermediate operation is lazily executed and returns a stream as a result, hence various intermediate operations can be pipelined. Terminal operations mark the end of the stream and return the result.
 
 ## Exception
 
 ## Threads
+
+---
 
 ## Resources
 

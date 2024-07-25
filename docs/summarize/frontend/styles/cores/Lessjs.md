@@ -7,13 +7,12 @@ tags:
 
 # Less.js
 
-> Leaner Style Sheets is a backwards-compatible language extension for CSS.
->
-> Link: [Less.js](https://lesscss.org)
+- **Leaner Style Sheets** is a backwards-compatible language extension for CSS.
+- Link: [Less.js](https://lesscss.org)
 
 ## Setting
 
-Add to `devDependencies` of _package.json_: `npm i less --save-dev`
+Add to `devDependencies` of `package.json`: `npm i less --save-dev`
 
 Add to browser:
 
@@ -59,7 +58,10 @@ Add to browser:
 
 ### Mixins
 
-> [!Note]: both `id` & `class` can be a mixins
+:::note
+
+Both `id` & `class` can be a mixins
+:::
 
 ```less
 .bordered {
@@ -95,38 +97,40 @@ Add to browser:
 }
 ```
 
-> **MIXIN GUARDS**
->
-> Structure: `.mixin(params) when [not] (condition 1) [and | ,] (condition n) { ... }`
->
-> ```less
-> .mixin(@a) when (lightness(@a) >= 50%) {
->     background-color: black;
-> }
-> .mixin(@a) when (lightness(@a) < 50%) {
->     background-color: white;
-> }
-> .mixin(@a) {
->     color: @a;
-> }
-> .class1 {
->     .mixin(#ddd);
-> }
-> .class2 {
->     .mixin(#555);
-> }
-> ```
->
-> ```css
-> .class1 {
->     background-color: black;
->     color: #ddd;
-> }
-> .class2 {
->     background-color: white;
->     color: #555;
-> }
-> ```
+:::info **MIXIN GUARDS**
+
+Structure: `.mixin(params) when [not] (condition 1) [and | ,] (condition n) { ... }`
+
+```less
+.mixin(@a) when (lightness(@a) >= 50%) {
+    background-color: black;
+}
+.mixin(@a) when (lightness(@a) < 50%) {
+    background-color: white;
+}
+.mixin(@a) {
+    color: @a;
+}
+.class1 {
+    .mixin(#ddd);
+}
+.class2 {
+    .mixin(#555);
+}
+```
+
+```css
+.class1 {
+    background-color: black;
+    color: #ddd;
+}
+.class2 {
+    background-color: white;
+    color: #555;
+}
+```
+
+:::
 
 ### Nesting
 
@@ -173,8 +177,6 @@ Add to browser:
   - boolean: `@variable: boolean(compare)` - support for if
 - String
   - escape | e: `@variable: escape(string_to_escape)` - return content without quotes | undefined
-  <!-- - %format: ![%format](./assets/less_func_string_format.png) -->
-  <!-- - replace: ![replace](./assets/less_func_string_replace.png) -->
 - List - Example: `@list: "banana", "tomato", "potato", "peach";`
   - length: `n: length(@list);` -> 4
   - extract: `value: extract(@list, 3);` -> potato
@@ -284,37 +286,39 @@ each(@selectors, {
 }
 ```
 
-> **Overloading**
->
-> ```less
-> .mixin(@color) {
->     color-1: @color;
-> }
-> .mixin(@color, @padding: 2) {
->     color-2: @color;
->     padding-2: @padding;
-> }
-> .mixin(@color, @padding, @margin: 2) {
->     color-3: @color;
->     padding-3: @padding;
->     margin: @margin @margin @margin @margin;
-> }
-> .some .selector div {
->     .mixin(#008000);
-> }
-> ```
->
-> ```css
-> .some .selector div {
->     color-1: #008000;
->     color-2: #008000;
->     padding-2: 2;
-> }
-> ```
+:::info Overloading
+
+```less
+.mixin(@color) {
+    color-1: @color;
+}
+.mixin(@color, @padding: 2) {
+    color-2: @color;
+    padding-2: @padding;
+}
+.mixin(@color, @padding, @margin: 2) {
+    color-3: @color;
+    padding-3: @padding;
+    margin: @margin @margin @margin @margin;
+}
+.some .selector div {
+    .mixin(#008000);
+}
+```
+
+```css
+.some .selector div {
+    color-1: #008000;
+    color-2: #008000;
+    padding-2: 2;
+}
+```
+
+:::
 
 ### Map
 
-> [!Note] Less 3.5+
+> **Version**: Less 3.5+
 
 ```less
 #colors() {

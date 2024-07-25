@@ -388,9 +388,13 @@ div {
 - [ ] Responsive Web Design
  -->
 
+---
+
 ## Resources
 
 - [CSS Reference](https://cssreference.io/)
+
+---
 
 ## How to
 

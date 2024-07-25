@@ -63,7 +63,7 @@ tags:
 
 ## Application Properties (application.properties)
 
-```properties
+```properties title="application.properties"
 # Server Configuration
 server.port=8080
 

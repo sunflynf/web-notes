@@ -11,8 +11,8 @@ tags:
 > **Preprocessing**: `sass --watch input.scss output.css`
 
 ## Variables
->
-> Code styles: `.sass` & `.scss` (use semicolon and curly brackets)
+
+Code styles: `.sass` & `.scss` (use semicolon and curly brackets)
 
 ```sass
 $font-stack: Helvetica, sans-serif
