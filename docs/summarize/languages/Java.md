@@ -508,8 +508,6 @@ Optional<String> opt2 = Optional
     .orElse("Default name"); // add-ons
     //.orElseGet(() -> "Default name"); // same above, but use function
     //.orElseThrow(IllegalArgumentException::new); // custom handling
-
-    
 ```
 
 ### Functional Interface
@@ -553,6 +551,7 @@ class Test {
 ### Lambda
 
 - Use as parameters of type **@FunctionalInterface**
+- Usually add to Stream `forEach`, `filter`, `map`
 
 ```java
 () -> doWhatEverYouWant();
@@ -567,8 +566,8 @@ class Test {
 
 - **Stream API** is used to process collections of objects
 - **Features**
-  - A stream is not a data structure instead it takes input from the Collections, Arrays or I/O channels.
-  - Streams don’t change the original data structure, they only provide the result as per the pipelined methods.
+  - A stream is **not a data structure** instead it takes input from the [Collections](#collection), [Arrays](#arrays) or I/O channels.
+  - Streams **don’t change the original data structure**, they only provide the result as per the pipelined methods.
   - Each intermediate operation is lazily executed and returns a stream as a result, hence various intermediate operations can be pipelined. Terminal operations mark the end of the stream and return the result.
 
 ## Exception
