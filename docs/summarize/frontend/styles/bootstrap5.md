@@ -8,17 +8,20 @@ tags:
 
 # Bootstrap 5
 
-> - Bootstrap is a free front-end framework
-> - Mobile-first
-> - Bootstrap has 7 variants (color):
->   - `primary`
->   - `success`
->   - `danger`
->   - `warning`
->   - `info`
->   - `light`
->   - `dark`
-> - This note for Bootstrap version 5.3 (04-2024)
+- Bootstrap is a free front-end framework
+- Mobile-first
+- This note for Bootstrap version 5.3 (04-2024)
+
+:::note 7 variants (color)
+
+- `primary` - blue
+- `success` - green
+- `danger` - red
+- `warning` - yellow
+- `info` - skyblue
+- `light` - white
+- `dark` - black
+:::
 
 ## How to use?
 
@@ -95,30 +98,30 @@ tags:
 - `container-fluid`: full width viewport
 
 ### Display
->
-> **Block display**
->
-> - none
-> - inline
-> - inline-block
-> - block
-> - grid
-> - inline-grid
-> - flex
-> - inline-flex
-> - table
-> - table-cell
-> - table-row
->
+
+:::info Block display
+
+- `none`
+- `inline` | `inline-block` | `block`
+- `grid` | `inline-grid`
+- `flex` | `inline-flex`
+- `table` | `table-cell` | `table-row`
+
+:::
+
 - `d-{block_display}`
 - `d-{breakpoint}-{block_display}`
 - `d-print-{block_display}` - Print mode
 
 ### Grid
->
-> - 1 row has max 12 cols (default)
-> - `row` & `col` class built with flex system
-> - `grid` & `g-col-*` class built with grid system
+
+:::note
+
+- **1 row has max 12 cols** (default)
+- `row` & `col` class built with flex system
+- `grid` & `g-col-*` class built with grid system
+
+:::
 
 - `grid`
   - `gap-{[0, 5]}`
@@ -147,8 +150,8 @@ tags:
 - `col-{breakpoint}-{[1, 12]|auto}` - apply max-width (%) when reacted breakpoint
 
 ### Flex
->
-> Every thing go to the left
+
+> Every thing go to 1 side
 
 - `d-flex`
   - `flex-{row|column}`
@@ -200,8 +203,8 @@ tags:
 ## Components
 
 ### Content
->
-> Bootstrap has default font based on platform
+
+Bootstrap has default font based on platform
 
 | Font | Using |
 | --- | --- |

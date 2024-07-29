@@ -9,10 +9,10 @@ tags:
 
 # React
 
-> - Building User Interface
-> - Single-page Application
-> - Create Reuseable UI Components (Virtual DOM)
-> - To use React in production, you need **npm** which is included with [Node.js](https://www.w3schools.com/nodejs/nodejs_get_started.asp).
+- Building User Interface
+- Single-page Application
+- Create Reuseable UI Components (Virtual DOM)
+- To use React in production, you need **npm** which is included with [Node.js](https://www.w3schools.com/nodejs/nodejs_get_started.asp).
 
 ## Builder Tools
 
@@ -27,15 +27,14 @@ tags:
 
 ## Render
 
-```html
+```html title="public/index.html"
 <body>
   <!-- Your code will put inside root (or any id) div -->
   <div id="root"></div>
 </body>
 ```
 
-```jsx
-// index.js
+```jsx title="src/index.jsx"
 import ReactDOM from 'react-dom/client';
 
 const container = document.getElementById('root');
@@ -44,11 +43,11 @@ root.render(<p>Hello</p>);
 ```
 
 ## JSX
->
-> - JavaScript XML
-> - Write HTML in JS
-> - `<>` | `<Fragment>` | `<React.Fragment>`
->
+
+- JavaScript XML
+- Write HTML in JS
+- `<>` | `<Fragment>` | `<React.Fragment>`
+
 ```jsx
 const secretText = 'Daniel';
 const age = 17;
@@ -64,7 +63,7 @@ const users = (
 ```
 
 ## Components
->
+
 > **Lifecycle**: Mounting (add + 1st render), Updating (re-render), Unmounting (remove)
 
 ### Class Component
@@ -156,8 +155,7 @@ export default Garage;
 - Using sass/scss: `npm i sass`
 - Both **CSS** & **SASS** can using as file or module
 
-```css
-/* custom.css */
+```css title="custom.css"
 .custom-font-weight {
   font-weight: bold;
 }
@@ -166,7 +164,7 @@ export default Garage;
 }
 ```
 
-```jsx
+```jsx title="Custom.jsx"
 import React from 'react'; // To use JSX
 import styleModule from 'custom.module.css'; // import as module
 import 'custom.css'; // using css file
@@ -187,18 +185,22 @@ const Custom = ({ name }) => {
 
 ## Hooks
 
-- Rules of Hooks
-  - Call them at the top level in the body of
-    - function component
-    - custom Hook
-  - Do not call Hooks
-    - inside conditions or loops.
-    - after a conditional return statement. **NOTE HERE FOR NEXT PROJECT**
-    - in event handlers.
-    - in class components.
-    - inside functions passed to useMemo, useReducer, or useEffect.
-    - inside try/catch/finally blocks.
-- Hooks cannot be conditional
+:::info Rules of Hooks
+
+- Call them at the top level in the body of
+  - function component
+  - custom Hook
+- **Do not call Hooks**
+  - inside conditions or loops.
+  - after a conditional return statement. **NOTE HERE FOR NEXT PROJECT**
+  - in event handlers.
+  - in class components.
+  - inside functions passed to useMemo, useReducer, or useEffect.
+  - inside try/catch/finally blocks.
+
+:::
+
+- Hooks **cannot** be conditional
 - `import { use<HookName> } from <'react'|'address-of-custom-hooks'>`
 
 ### useState
@@ -241,10 +243,14 @@ function Car() {
 ```
 
 ### useDeferredValue
->
-> - **Debouncing** - wait for the user to stop typing (e.g. for a second) before updating the list.
-> - **Throttling** - update the list every once in a while (e.g. at most once a second).
->
+
+:::info
+
+- **Debouncing** - wait for the user to stop typing (e.g. for a second) before updating the list.
+- **Throttling** - update the list every once in a while (e.g. at most once a second).
+
+:::
+
 - `useDeferredValue` is better suited to optimizing rendering because it is **deeply integrated with React itself** and **adapts to the user’s device**.
 - Usage
   - Showing stale content while fresh content is loading
@@ -335,7 +341,7 @@ export default function Form() {
 
 - Persist value of component (not affect if component re-render)
 - Used to access a DOM element directly
-- Declare: `const elRef = useRef(initValue || undefined);` // Recommend using initValue if ref not element
+- Declare: `const elRef = useRef(initValue || undefined);` . (**Recommend using `initValue` if ref not element**)
 - Add to element: `<element ref={elRef} />`
 - Value of ref
   - Get: `elRef.current`
@@ -346,7 +352,7 @@ export default function Form() {
 - Customize the handle exposed as a `ref`
 - Combine with `forwardRef`
 - `useImperativeHandle(ref, createHandle, dependencies?)`
-- NOTE: **If you can express something as a prop, you should not use a ref.**
+- **If you can express something as a prop, you should not use a ref.**
 
 ```jsx
 import React, { forwardRef, useRef, useImperativeHandle } from 'react';
@@ -476,10 +482,10 @@ export default Modal;
 
 ### useCallback & useMemo
 
-- **Problem**: Component re-render
-  - -> function & value inside (not state) re-render
-  - -> children use props includes that function & value re-render
-  - => Need to control re-render when it need with dependencies
+- **Problem**: Component re-render when
+  - function & value inside (not state) re-render
+  - children use props includes that function & value re-render
+  - `=> Need to control re-render when it need with dependencies`
 - `useCallback`
   - Using: `const memorizeFunction = useCallback(() => {}, [...dependencies])`
   - Avoid child component re-render if function of parent re-render
@@ -490,16 +496,23 @@ export default Modal;
 
 - Manage state globally
 - State use in component that need it, avoid put parent props -> child props -> ... -> n-child props (prop drilling)
-- Using
-  - Create: `const Context = createContext(defaultValue?);` - This is API?
-    - Context now is High Order Component
-    - defaultValue can put inside to get recommend for state (IDE Support)
-  - Wrap: `<Context.Provider value={{ state1, setState1, state2, sampleArr, ..., any }}>{children}</Context.Provider>`
-    - All children inside `<Context.Provider>` can use all props in value
-    - value should be an object
-  - Get value `const { state1, state2 } = useContext(Context);`
-    - Put Context to `useContext` to get correct value holder
-    - Get only props need to using
+
+:::info How to use
+
+- **Step 1 - Create**
+  - `const Context = createContext(defaultValue?);`
+  - Context now is High Order Component
+  - defaultValue can put inside to get recommend for state (IDE Support)
+- **Step 2 - Wrap**
+  - `<Context.Provider value={{ state1, setState1, state2, sampleArr, ..., any }}>{children}</Context.Provider>`
+  - All children inside `<Context.Provider>` can use all props in value
+  - value should be an object
+- **Step 3 - Get value**
+  - `const { state1, state2 } = useContext(Context);`
+  - Put Context to `useContext` to get correct value holder
+  - Get only props need to using
+
+:::
 
 ```jsx
 import { useState, createContext, useContext } from "react";

@@ -6,7 +6,7 @@ tags:
     - OOP
 ---
 
-# JAVA
+# Java
 
 - **Java** works on different platforms (Windows, Mac, Linux, Raspberry Pi, etc.)
 - It is open-source and free
