@@ -62,6 +62,7 @@ const config: Config = {
       sidebar: {
         // Open multiple items in time
         autoCollapseCategories: true,
+        hideable: true,
       },
     },
     navbar: {

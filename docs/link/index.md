@@ -12,6 +12,7 @@ tags:
 
 - [Visual Studio Code](https://code.visualstudio.com/docs/getstarted/keybindings#_keyboard-shortcuts-reference)
 - [IntelliJ Windows](https://www.jetbrains.com/help/idea/reference-keymap-win-default.html)
+- [Design Tools](https://shortcuts.design/)
 
 ## IDE Online
 
