@@ -20,11 +20,23 @@ tags:
 - [Stackblitz](https://stackblitz.com)
 - [Google - Project IDX](https://idx.dev/)
 
-## Courses
+## Practices
 
-- [Learn and Practice](https://exercism.org)
+- [Learn and Practices](https://exercism.org)
+- [The Odin Project - Fullstack base](https://www.theodinproject.com)
+
+## Data Science
+
 - [Data Structure](https://refactoring.guru/)
+
+### AI, ML & DL
+
+- [Deep Learning Ebook](https://udlbook.github.io/udlbook/)
+
+## Career path
+
+- [DEV Roadmaps](https://roadmap.sh/)
 
 ## Tips & Tricks
 
-- [DEV Roadmaps](https://roadmap.sh/)
+- [JavaScript - Vietnamese](https://anonystick.com/)

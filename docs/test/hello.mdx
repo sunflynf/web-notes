@@ -8,6 +8,8 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import Highlight from "@site/src/components/Highlight";
 
+import DockTabs from "@site/src/components/DockTabs";
+
 <Tabs>
   <TabItem value="apple" label="Apple" default>
     This is an apple 🍎
@@ -19,3 +21,26 @@ import Highlight from "@site/src/components/Highlight";
     This is <Highlight>a banana</Highlight> 🍌
   </TabItem>
 </Tabs>
+
+<DockTabs
+  tabs={[
+    { key: "123", label: "OK Fine", content: <div>Hello</div> },
+    {
+      key: "456",
+      label: "Not gud",
+      content: (
+        <Tabs>
+          <TabItem value="apple" label="Apple" default>
+            This is an apple 🍎
+          </TabItem>
+          <TabItem value="orange" label="Orange">
+            This is an orange 🍊
+          </TabItem>
+          <TabItem value="banana" label="Banana">
+            This is <Highlight>a banana</Highlight> 🍌
+          </TabItem>
+        </Tabs>
+      ),
+    },
+  ]}
+/>
