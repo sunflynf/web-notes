@@ -1,11 +1,11 @@
 ---
-description: Tanstack tech for FORM
+description: Tanstack tech for ROUTER
 tags:
     - JavaScript
     - TypeScript
     - React
 ---
 
-# Tanstack - React Form
+# React Router
 
 ## Quick start

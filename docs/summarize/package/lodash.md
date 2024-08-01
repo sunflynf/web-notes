@@ -1,4 +1,5 @@
 ---
+sidebar_position: 2
 description: Objects & Arrays handler library
 tags:
     - Library

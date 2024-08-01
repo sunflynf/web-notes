@@ -26,7 +26,7 @@ tags:
 
 3. Review [**Bootstrap**](../../frontend/styles/bootstrap5.md)
 4. Review [React-Bootstrap documentation](https://react-bootstrap.github.io/)
-5. Should using  [React-bootstrap icons](https://github.com/ismamz/react-bootstrap-icons)
+5. Recommend using  [React-bootstrap icons](https://github.com/ismamz/react-bootstrap-icons)
 
 ### Color modes
 

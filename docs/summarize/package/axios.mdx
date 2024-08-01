@@ -1,14 +1,15 @@
 ---
+sidebar_position: 1
 description: A promise-based HTTP Client for node.js and the browser.
 tags:
-    - Extensions
-    - JavaScript
+  - Extensions
+  - JavaScript
 ---
 
 # Axios
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 - [Axios Documents](https://axios-http.com/docs/intro)
 
@@ -36,6 +37,7 @@ npm install axios
           // always executed
         });
     ```
+
   </TabItem>
   <TabItem value="params-object" label="Params Object">
     ```js
@@ -46,7 +48,7 @@ npm install axios
       axios.get('/user', {
         params: {
           ID: 12345
-        } 
+        }
       })
         .then((response) => {
           // handle success
@@ -58,6 +60,7 @@ npm install axios
           // always executed
         });
     ```
+
   </TabItem>
   <TabItem value="async-await" label="Async/Await">
     ```js
@@ -79,16 +82,16 @@ npm install axios
 
 ```js
 // Root
-axios(config)
-axios(url, config)
+axios(config);
+axios(url, config);
 
 // Build-in
-axios.request(config)
+axios.request(config);
 // get | delete | head | options
-axios[methodQuery](url, config)
+axios[methodQuery](url, config);
 // post | put | patch
 // postForm | putForm | patchForm
-axios[methodUpdate](url, data, config)
+axios[methodUpdate](url, data, config);
 ```
 
 ```ts
@@ -100,7 +103,7 @@ type config = {
   url: string,
 
   // Default: 'get'
-  method: 'get' | 'post' | 'put' | 'patch' | 'delete', 
+  method: 'get' | 'post' | 'put' | 'patch' | 'delete',
 
   // headers: {'X-Requested-With': 'XMLHttpRequest'},
   headers: any,
@@ -122,7 +125,7 @@ type config = {
   transformResponse: [(data, headers) => data],
 
   responseType: 'json' | 'stream', // or something
-  
+
   // data: { firstName: 'Phi' }
   // data: 'firstName=Phi&lastName=Vo'
   data: any,
@@ -138,6 +141,7 @@ type config = {
   // Other configs for authen and author...
 }
 ```
+
 - [View Full Options](https://axios-http.com/docs/req_config)
 
 ### Response
@@ -176,8 +180,8 @@ type config = {
 // axios.create(config)
 
 const instance = axios.create({
-  baseURL: 'https://some-domain.com/api/',
+  baseURL: "https://some-domain.com/api/",
   timeout: 1000,
-  headers: {'X-Custom-Header': 'foobar'}
+  headers: { "X-Custom-Header": "foobar" },
 });
 ```

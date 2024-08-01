@@ -6,7 +6,7 @@ tags:
     - React
 ---
 
-# Tanstack - React Table
+# React Table
 
 > Current version: v8
 

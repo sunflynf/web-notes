@@ -6,7 +6,7 @@ tags:
     - React
 ---
 
-# Tanstack - React Virtual
+# React Virtual
 
 **Headless** UI for Virtualizing Large Element Lists
 

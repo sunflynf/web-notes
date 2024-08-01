@@ -6,7 +6,7 @@ tags:
     - React
 ---
 
-# Tanstack - React Query
+# React Query
 
 > Current version: v5
 
