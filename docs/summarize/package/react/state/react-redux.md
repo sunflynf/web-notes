@@ -9,8 +9,6 @@ tags:
 
 # React - Redux
 
-## Overview
-
 React-Redux is the official binding library for integrating Redux with React. It provides a `Provider` component to pass the Redux store down to your React components, `connect` and `useSelector`/`useDispatch` hooks to connect your components to the store.
 
 ## Project Structure

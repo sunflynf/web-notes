@@ -8,17 +8,17 @@ tags:
 
 # jQuery
 
-> - **jQuery** is **JavaScript** library
-> - Write less, do more
-> - Basic syntax: `$(selector).<action>()`
+- **jQuery** is **JavaScript** library
+- Write less, do more
+- Basic syntax: `$(selector).<action>()`
 
 ## DOM Traversal & Manipulation
 
 ### Selectors
->
-> - Use css selector inside $() to point element
-> - It can be tag (`p`), id (`#first-name`), className (`.btn.btn-primary`), specific element (`ul:first-child`)
-> - View more: [CSS Selectors](../styles/cores/CSS3.md)
+
+- Use css selector inside $() to point element
+- It can be tag (`p`), id (`#first-name`), className (`.btn.btn-primary`), specific element (`ul:first-child`)
+- View more: [CSS Selectors](../styles/cores/CSS3.md)
 
 ```js
 $(document).ready(function(){ // Required
@@ -30,36 +30,46 @@ $(document).ready(function(){ // Required
 
 ### Getters
 
-- `$(selector).text()` - innerText
-- `$(selector).html()` - innerHTML
-- `$(selector).val()` - value (input)
-- `$(selector).attr(key)` - `$("#wiki-link").attr("href")`
+```js
+$(selector).text(); // innerText
+$(selector).html();  // innerHTML
+$(selector).val();  // value (input)
+$(selector).attr(key);  // $("#wiki-link").attr("href")
+```
 
 ### Setters
 
-- `$(selector).text(string | function(index, currentText){ return string; })`
-- `$(selector).html(htmlStr | function(index, currentHtmlStr){ return htmlString; })`
-- `$(selector).val(any)`
-- `$(selector).attr(key, function(index, currentVal))`
-  - `$("#w3s").attr({ "href" : "https://www.w3schools.com/jquery/", "title" : "W3Schools jQuery Tutorial" });`
-  - `$("#wiki-link").attr("href", "https://www.link-css.com")`
+```js
+$(selector).text(string | function(index, currentText){ return string; });
+$(selector).html(htmlStr | function(index, currentHtmlStr){ return htmlString; });
+$(selector).val(any);
+
+$(selector).attr(key, function(index, currentVal));
+// $("#w3s").attr({ "href" : "https://www.w3schools.com/jquery/", "title" : "W3Schools jQuery Tutorial" });
+// $("#wiki-link").attr("href", "https://www.link-css.com");
+```
 
 ### Element changes
 
-- `$(selector).append(...elements)` - Add at the end of selector element (last child)
-- `$(selector).prepend(...elements)` - Add at the start of seletor element (first child)
-- `$(selector).after(...elements)` - Add AFTER selector element
-- `$(selector).before(...elements)` - Add BEFORE selector element
-- `$(selector).remove()` - Remove selector element (and its child)
-- `$(selector).remove(child_selector)` - Remove child of selector element
-- `$(selector).empty()` - Remove it's child
+```js
+$(selector).append(...elements); // Add at the end of selector element (last child)
+$(selector).prepend(...elements); // Add at the start of seletor element (first child)
+$(selector).after(...elements); // Add AFTER selector element
+$(selector).before(...elements); // Add BEFORE selector element
+
+$(selector).remove(); // Remove selector element (and its child)
+$(selector).remove(child_selector); // Remove child of selector element
+$(selector).empty(); // Remove it's child
+```
 
 ### Styles
 
-- `$(selector).addClass("class-1 class-2 class-n")`
-- `$(selector).removeClass()` - same above but remove class
-- `$(selector).toggleClass()` - same above but add + remove
-- `$(selector).css({ "property": "value", ... })`
+```js
+$(selector).addClass("class-1 class-2 class-n");
+$(selector).removeClass(); // same above but remove class
+$(selector).toggleClass(); // same above but add + remove
+$(selector).css({ "property": "value", ... });
+```
 
 ### Dimension
 
@@ -141,13 +151,13 @@ $("p").click(function(){
 
 ## Effects
 
-> Common syntax: `$(selector).<effect>(speed?, callback?)`
->
-> - Mount: hide, show, toggle
-> - Fade: fadeIn, fadeOut, fadeToggle, `fadeTo(speed, opacity, callback?)`
-> - Slide: slideDown, slideUp, slideToggle
->
-> **Animation**: `$(selector).animation({ params }, speed?, callback?)`
+Common syntax: `$(selector).<effect>(speed?, callback?)`
+
+- **Mount**: hide, show, toggle
+- **Fade**: fadeIn, fadeOut, fadeToggle, `fadeTo(speed, opacity, callback?)`
+- **Slide**: slideDown, slideUp, slideToggle
+
+**Animation**: `$(selector).animation({ params }, speed?, callback?)`
 
 ```js
 $("button").click(function(){
@@ -160,6 +170,7 @@ $("button").click(function(){
   //   width: 'toggle' // Pre-defined values: show, hide, toggle
   // });
 });
+
 // Queues Functionality
 $("button").click(function(){
   var div = $("div");
@@ -168,15 +179,18 @@ $("button").click(function(){
   div.animate({height: '100px', opacity: '0.4'}, "slow");
   div.animate({width: '100px', opacity: '0.8'}, "slow");
 }); 
+
+// stop effect
+$(selector).stop(stopAll?, goToEnd?);
 ```
 
-> **Stop** effect: `$(selector).stop(stopAll?, goToEnd?)`
->
-> **Method Chaining**:
->
-> - Using effect will return this, so it can apply another effect after current effect done
-> - Using: `$(selector).<effect1>().<effect2>()...<effectN>()`
-> - Exp: `$("#p1").css("color", "red").slideUp(2000).slideDown(2000);`
+:::info Method Chaining
+
+- Using effect will return this, so it can apply another effect after current effect done
+- Using: `$(selector).<effect1>().<effect2>()...<effectN>()`
+- Exp: `$("#p1").css("color", "red").slideUp(2000).slideDown(2000);`
+
+:::
 
 ## AJAX
 

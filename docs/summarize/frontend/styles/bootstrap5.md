@@ -12,7 +12,7 @@ tags:
 - Mobile-first
 - This note for Bootstrap version 5.3 (04-2024)
 
-:::note 7 variants (color)
+:::info 7 variants (color)
 
 - `primary` - blue
 - `success` - green
@@ -327,7 +327,14 @@ Bootstrap has default font based on platform
 
 ![image](https://github.com/sunflynf/web-notes/assets/75079929/aad40b5a-b938-427b-bf65-ff960f9feac2)
 
-## Resources
+## Documents
 
 - [Bootstrap 5.2](https://getbootstrap.com/docs/5.2)
 - [Bootstrap 5.3](https://getbootstrap.com/docs/5.3)
+
+## References
+
+- [Icons](https://icons.getbootstrap.com/)
+- [React + bootstrap](https://react-bootstrap.github.io/)
+- [Angular + bootstrap](https://ng-bootstrap.github.io/#/home)
+- [Vue + bootstrap](https://bootstrap-vue-next.github.io/bootstrap-vue-next/)

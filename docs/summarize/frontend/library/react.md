@@ -279,7 +279,7 @@ export default function App() {
 
 ### useReducer
 
-- Tracking complex state (like object) -> Same tech like [Redux](https://redux.js.org/)
+- Tracking complex state (like object) -> Same tech like [React-Redux](../../package/react/state/react-redux.md)
 - Custom handle state
 - Syntax: `const [state, dispatch] = useReducer(reducer, initialState);`
 - **reducer**: `const reducer = (currentState, action: { type, [any]?: value }) => { return newState }`
@@ -415,9 +415,9 @@ function Timer() {
 }
 ```
 
-#### Tips: avoid useless fetch when unmount component
+:::tip Avoid useless fetch when unmount component
 
-> Apply for _Component_ which can fetch data when mount to avoid refetch with **StrictMode** or `useEffect` has `show` dependency
+Apply for _Component_ which can fetch data when mount to avoid refetch with **StrictMode** or `useEffect` has `show` dependency
 
 ```tsx
 <button type="button" onClick={() => setShow(!show)}>
@@ -479,6 +479,8 @@ const Modal: React.FC<ModalProps> = ({ show, onHide }) => {
 
 export default Modal;
 ```
+
+:::
 
 ### useCallback & useMemo
 
@@ -593,15 +595,19 @@ export default function App() {
 
 ---
 
+:::tip combine tech
+
 - **Suspense** + `lazy`
 - `createContext` -> Context (Context.Provider value={}) -> `useContext`(Context)
 - `useRef` -> `forwardRef` -> `useImperativeHandle`
+
+:::
 
 ---
 
 ## ReactDOM.createPortal
 
-- Render some children into a different part of the DOM
+- Render some children into a different part of the DOM (drawer, modal, tooltips, ...)
 - `createPortal(children, domNode, key?)`
 
 ## React Compiler (React v19)
@@ -630,8 +636,7 @@ export default function App() {
 
 #### New project
 
-```jsx
-// babel.config.js
+```js title="babel.config.js"
 const ReactCompilerConfig = { /* ... */ };
 
 module.exports = function () {
@@ -644,8 +649,7 @@ module.exports = function () {
 };
 ```
 
-```jsx
-// vite.config.js
+```js title="vite.config.js"
 const ReactCompilerConfig = { /* ... */ };
 
 export default defineConfig(() => {
@@ -664,9 +668,8 @@ export default defineConfig(() => {
 });
 ```
 
-```jsx
+```js title="next.config.js"
 // npm install next@canary babel-plugin-react-compiler
-// next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {

@@ -6,8 +6,6 @@ tag:
 
 # Gitlab
 
-## Introduce
-
 Open-source manager
 
 ## CI/CD

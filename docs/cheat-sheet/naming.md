@@ -8,7 +8,7 @@ tags:
 
 ## **hy-phens**
 
-:::info
+:::info Examples
 
 - **HTML**'s attributes - id, class
   - `form-group`
@@ -22,19 +22,19 @@ tags:
 
 ## **under_score**
 
-:::note
+:::info Examples
 
 - Database variables
   - `user_id`
   - `user_name`
   - `total_price`
-- _Optional_: use for variables in Code (languages allow)
+- _Optional_: use for **variables** in Code (languages allow)
 
 :::
 
 ## **UpperCamelCase (PascalCase)**
 
-:::info
+:::info Examples
 
 - `class` in OOP languages
   - `Account`
@@ -50,13 +50,13 @@ tags:
 
 ## **lowerCamelCase**
 
-:::note
+:::info Examples
 
-- variable
+- **Variables**
   - `firstName`
   - `lastName`
   - `address`
-- function:
+- **Function**'s name
   - `getProducts`
   - `setProduct`
   - `getTotalPrice`

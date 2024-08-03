@@ -8,24 +8,24 @@ tags:
 
 # TypeScript
 
-> **TypeScript** is **JavaScript** with _added syntax for types_.
->
-> - TypeScript being converted into JavaScript means it runs anywhere that JavaScript runs!
-> - Add to project with **npm**: `npm install typescript --save-dev`
-> - Check: `npx tsc`
-> - Config compiler: `npx tsc --init` -> `tsconfig.json`
+**TypeScript** is **JavaScript** with _added syntax for types_.
+
+- TypeScript being converted into JavaScript means it runs anywhere that JavaScript runs!
+- Add to project with **npm**: `npm install typescript --save-dev`
+- Check: `npx tsc`
+- Config compiler: `npx tsc --init` -> `tsconfig.json`
 
 ## Basic Types
 
 - Type Assignment:
-  - Explicit: `let firstName: string = "Dylan";`
-  - Implicit (guess): `let firstName = "Dylan";` -> string
+  - **Explicit**: `let firstName: string = "Dylan";`
+  - **Implicit** (guess): `let firstName = "Dylan";` -> string
 - Primitives type:
   - main: `boolean`, `number`, `string`
   - other: `bigint`, `symbol`
 - Special type:
   - `any`
-  - `unknown` - safe `any`, add type later with casting (use "as" keyword)
+  - `unknown` - safe `any`, add type later with casting (use `as` keyword)
   - `never`, `undefined`, `null` - maybe useless
   - `void` - for **function** return `undefined`
   - Array
@@ -86,11 +86,14 @@ const coloredRectangle: ColoredRectangle = {
 };
 ```
 
-### type
+### type aliases
 
->
-> **NOTE**: Recommend using `type` instead of `interface` if not use `class`
-> [Interface vs Type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#differences-between-type-aliases-and-interfaces)
+:::info
+
+- Recommend using `type` instead of `interface` if not use `class`
+- [Interface vs Type](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#differences-between-type-aliases-and-interfaces)
+
+:::
 
 ```ts
 type CarYear = number | string; // Union types - value can be 1 of 2 types
@@ -121,8 +124,8 @@ const negateFunction: Negate = (value) => value * -1;
 ```
 
 ## Casting
->
-> Casting doesn't actually change the type of the data within the variable => Force casting
+
+Casting doesn't actually change the type of the data within the variable => Force casting
 
 1. `variable as type`. Exp: `x as string`
 2. `<type>variable`. Exp: `<string>x`

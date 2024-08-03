@@ -207,9 +207,9 @@ Button as a Link - `<button onclick="document.location='index.html'">HTML Tutor
 </table>
 ```
 
-:::note Tabl's tag
+:::info Table's tag
 
-- `thead`, `tbody` and `tfoot` just use for group content. It can remove for special case (like vertical table, group column or row, ...)
+- `thead`, `tbody` and `tfoot` just use for group content. It can remove for special case (like vertical table, ...)
 - `caption` use to name + description table (optional)
 - `th` & `td` can use `colspan` to group **columns** and `rowspan` to group **rows**
 - (2024) `colgroup` and `col` currently not famous, so avoid using them
@@ -223,13 +223,16 @@ Button as a Link - `<button onclick="document.location='index.html'">HTML Tutor
   - Attribute
     - type="1" (default)
     - start="0"
-- Other
-  1. 1 -> 1 2 3
-  2. A -> A B C
-  3. a -> a b c
-  4. I -> I II III IV
-  5. i -> i ii iii iv
 - Description: dl > dt ~ dd
+
+:::tip Ordered Type
+
+- `1 -> 1 2 3`
+- `A -> A B C`
+- `a -> a b c`
+- `I -> I II III IV`
+- `i -> i ii iii iv`
+:::
 
 ### Block & Inline Elements
 
@@ -309,12 +312,19 @@ The HTML `<head>` element is a container for the following elements: `<title>
 - `title` is **required** and it defines **_the title of the document_**.
 - `style` is used to define style information **_for a single document_**.
 - `meta` is typically used to specify the character set, page description, keywords, author of the document, and viewport settings.
-  - `<meta charset="UTF-8">`
-  - `<meta name="keywords" content="HTML, CSS, JavaScript">` - good for search engines
-  - `<meta name="description" content="Free Web tutorials">`
-  - `<meta name="author" content="John Doe">`
-  - `<meta http-equiv="refresh" content="30">` - auto refresh
-  - `<meta name="viewport" content="width=device-width, initial-scale=1.0">` - Setting the viewport (fit size on multiple devices).
+
+  ```html
+  <meta charset="UTF-8">
+  <!-- good for search engines -->
+  <meta name="keywords" content="HTML, CSS, JavaScript">
+  <meta name="description" content="Free Web tutorials">
+  <meta name="author" content="John Doe">
+  <!-- auto refresh -->
+  <meta http-equiv="refresh" content="30"> 
+  <!-- Setting the viewport (fit size on multiple devices). -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  ```
+
 - `link` **tag** is most often used to link to external style sheets.
 - `script` is used to define client-side [[JavaScript]].
 - `base` specifies the base URL and/or target for all relative URLs in a page.
@@ -342,7 +352,6 @@ Collect user input and sent to a server for processing.
 
 ```html
 <form>
-   
   <!-- Other form element here! -->
 </form>
 ```
@@ -351,8 +360,7 @@ Collect user input and sent to a server for processing.
 
 :::info
 
-Default: `<input type="text" />`
-
+- Default: `<input type="text" />`
 - Common attributes: `id`, `class`, `title`, `value`, `name` (add to url params), `hidden`, `disabled`, `required`, `form` - a part of specifies form
 - Input with text (or number) attributes: `autofocus`, `autocomplete`, `readonly`, `size` - width, `maxlength`, `placeholder`, `pattern` - RegEx
 - Input type _submit_ & _image_: `formaction`, `formenctype`, `formmethod`, `formtarget`
@@ -385,7 +393,7 @@ Default: `<input type="text" />`
 | hidden          |                                       |
 | image           | src, height, width                    |
 
-:::note Input Form special attribute
+:::warning Input Form special attribute
 
 - `formaction` - run override current `action`
 - `formenctype` - submit with encode form data
@@ -482,7 +490,7 @@ Default: `<input type="text" />`
 
 ## Media
 
-> **Format** has **bold** is supported by all browser!
+**Format** has **bold** is supported by all browser!
 
 | Video Format               | File         | Developed                         | Description                                                                                               |
 | -------------------------- | ------------ | --------------------------------- | --------------------------------------------------------------------------------------------------------- |

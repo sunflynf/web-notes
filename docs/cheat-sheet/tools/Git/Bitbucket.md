@@ -6,8 +6,6 @@ tag:
 
 # Bitbucket
 
-## Introduce
-
 Open-source manager
 
 ## CI/CD

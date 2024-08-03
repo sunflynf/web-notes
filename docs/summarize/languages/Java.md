@@ -15,7 +15,7 @@ tags:
 - **Java** is an **object oriented language** which gives a clear structure to programs and allows code to be reused, lowering development costs
 - [**Set up Java** in computer](https://www.w3schools.com/java/java_getstarted.asp)
 
-:::note Compile & running in cmd | Terminal
+:::info Compile & running in cmd | Terminal
   
 - `javac` build `.java` to `.class`
 - `java` run `.class` file
@@ -156,7 +156,7 @@ public class Demo {
 
 ## Control Flow
 
-### If-else
+### If - else
 
 ```java
 if (condition) {
@@ -171,7 +171,7 @@ if (condition) {
 value = condition ? trueExpression : falseExpression;
 ```
 
-### Switch-case-default
+### Switch - case - default
 
 ```java
 enum Day { MON, TUE, WED, THUR, FRI, SAT, SUN }
@@ -210,7 +210,9 @@ switch (o)
 }
 ```
 
-### For loop
+### Loop
+
+#### For loop
 
 ```java
 int[] numbers = {1, 2, 3, 4, 5};
@@ -228,7 +230,7 @@ List<Integer> listNumber = List.of(1, 2, 3, 4, 5);
 listNumber.forEach(num -> {}); // use with callback
 ```
 
-### While, Do-While Loop
+#### While, Do - while Loop
 
 ```java
 int i = 1, sum = 0;
@@ -244,7 +246,7 @@ do {
 } while(i <= 5)
 ```
 
-### Break loop
+#### Break | Continue
 
 ```java
 // Labeled Statements
@@ -573,8 +575,6 @@ class Test {
 ## Exception
 
 ## Threads
-
----
 
 ## Resources
 

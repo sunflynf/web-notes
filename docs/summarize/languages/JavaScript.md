@@ -53,14 +53,17 @@ const C = Math.PI; // constant - can not change
 |`var`| |x|x|x|x|
 |`let`|x| |x| | |
 |`const`|x| | | | |
-> ![NOTE] `Array` and `Object` assign with `const` **can update**, but can't reassign
+
+:::note
+`Array` and `Object` assign with `const` **can update**, but can't reassign
+:::
 
 ### Variable's name
->
-> Start with (A-Z) (a-z) $ _
->
-> - **Allowed**: `abc`, `student1`, `$prevDOM`, `_current`, `compare_2Arrays`
-> - **Not allowed**: `1student`, `?person`
+
+Start with `(A-Z) (a-z) $ _`
+
+- **Allowed**: `abc`, `student1`, `$prevDOM`, `_current`, `compare_2Arrays`
+- **Not allowed**: `1student`, `?person`
 
 ### Operators
 
@@ -88,10 +91,13 @@ const C = Math.PI; // constant - can not change
   - Explain: `let currentAge = (user !== null && user !== undefined) ? user.age : undefined`
   - Note: this operators avoid error when object user is null or undefined
 
-> - `!""`, `!0`, `!null`, `!undefined` -> true
-> - `![]`, `!{}` -> false
-> - `condition && value` -> `condition === true ? value : undefined`
-> - `value || defaultValue` -> `!!value ? value : defaultValue`
+:::warning Special zone
+
+- `!""`, `!0`, `!null`, `!undefined` -> `true`
+- `![]`, `!{}` -> `false`
+- `condition && value` -> `condition === true ? value : undefined`
+- `value || defaultValue` -> `!!value ? value : defaultValue`
+:::
 
 ## Data Types
 
@@ -216,15 +222,17 @@ Number.isInteger(num);
 Number.isSafeInteger(num); // safe in range (note)
 ```
 
-> ![NOTE]
->
-> - Range of number: `-(2^53 - 1)` to `+(2^53 - 1)`
-> - Numbers are **Always 64-bit Floating Point** (the international IEEE 754 standard)
-> - This format stores numbers in 64 bits, where the number (the fraction) is stored in bits 0 to 51, the exponent in bits 52 to 62, and the sign in bit 63
-> - Integers (numbers without a period or exponent notation) are accurate **up to 15 digits**.
-> - Arithmetic between a `BigInt` and a `Number` is **not allowed** (type conversion lose information).
-> - Unsigned right shift (>>>) can not be done on a `BigInt` (it does not have a fixed width).
-> - A `BigInt` can not have decimals.
+:::info
+
+- Range of number: `-(2^53 - 1)` to `+(2^53 - 1)`
+- Numbers are **Always 64-bit Floating Point** (the international IEEE 754 standard)
+- This format stores numbers in 64 bits, where the number (the fraction) is stored in bits 0 to 51, the exponent in bits 52 to 62, and the sign in bit 63
+- Integers (numbers without a period or exponent notation) are accurate **up to 15 digits**.
+- Arithmetic between a `BigInt` and a `Number` is **not allowed** (type conversion lose information).
+- Unsigned right shift (>>>) can not be done on a `BigInt` (it does not have a fixed width).
+- A `BigInt` can not have decimals.
+
+:::
 
 ## Functions
 
@@ -295,10 +303,11 @@ const add = (function() {
 // counter start with 0, call add() will increase
 ```
 
-> ![Arrow function] (ES6)
->
-> - Not have own `this`
-> - Arrow function not hoisted -> Define before call
+:::warning Arrow function
+
+- Not have own `this`
+- Arrow function not hoisted -> Define before call
+:::
 
 ```js
 // call, apply
@@ -437,19 +446,19 @@ Object.freeze(object); // Prevents any changes to an object
 Object.isFrozen(object); // Returns true if object is frozen
 ```
 
-> ![Why using Getters & Setters?]
->
-> - It gives simpler syntax
-> - It allows equal syntax for properties and methods
-> - It can secure better data quality
-> - It is useful for doing things behind-the-scenes
+:::info Why using Getters & Setters?
 
----
+- It gives simpler syntax
+- It allows equal syntax for properties and methods
+- It can secure better data quality
+- It is useful for doing things behind-the-scenes
+:::
 
-> ![Tips & tricks]
->
-> - Clone object: `const newObj = { ...oldObj };`
-> - Check object has props: `prop_name in {} -> boolean`
+:::note Tips & tricks
+
+- Clone object: `const newObj = { ...oldObj };`
+- Check object has props: `prop_name in {} -> boolean`
+:::
 
 ## Arrays
 
@@ -561,10 +570,12 @@ Array.from("text"); // ["t", "e", "x", "t"] (ES6)
 ["a", "b", "c"].entries(); // [[0, "a"], [1, "b"], [2, "c"]]
 ```
 
-> ![Note]:
->
-> - Arrays are a special kind of objects, with **numbered indexes**.
-> - Array random order: [].sort(() => 0.5 - Math.random());
+:::note
+
+- Arrays are a special kind of objects, with **numbered indexes**.
+- Array random order: `[].sort(() => 0.5 - Math.random());`
+
+:::
 
 ## Date
 
@@ -649,7 +660,7 @@ try {
 }
 ```
 
-## Loop
+## Loops
 
 ```js
 // Exp: for(let i = 0; i <= 5; i++) {}
@@ -712,13 +723,16 @@ fruits.forEach((key, value) => {});
 fruits.entries(); // use in loop for of, item is [key, value]
 ```
 
-> **WeakMap** (garbage-collection)
->
-> - A collection of key/value
-> - Key is "object" type
-> - Just `get`, `set`, `has` & `delete`
-> - When a key is deleted, its gone!
->
+:::info **WeakMap**
+
+- Has garbage-collection system
+- A collection of key/value
+- Key is `object` type
+- Just `get`, `set`, `has` & `delete`
+- When a key is deleted, its gone!
+
+:::
+
 ```js
 const wm1 = new WeakMap();
 const wm2 = new WeakMap();
@@ -750,11 +764,11 @@ wm1.has(o1); // false
 ```
 
 ## Events
->
-> **HTML** 'thing' need **JS** react
->
-> - Common: `onchange` `onclick` `onmouseover` `onmouseout` `onkeydown` `onload`
-> - [List DOM events](https://www.w3schools.com/jsref/dom_obj_event.asp)
+
+**HTML** 'things' need **JS** react
+  
+- Common: `onchange` `onclick` `onmouseover` `onmouseout` `onkeydown` `onload`
+- [List DOM events](https://www.w3schools.com/jsref/dom_obj_event.asp)
 
 ## `this`
 
@@ -811,10 +825,10 @@ JSON.stringify(undefined) -> undefined
 :::
 
 ## Class (ES6)
->
-> - A JavaScript class is not an object.
-> - It is a template for JavaScript objects.
->
+
+- A JavaScript class is not an object.
+- It is a **template** for JavaScript objects.
+
 ```js
 class Car {
   constructor(brand, year) {
@@ -967,8 +981,8 @@ async function () { // return Promise<?>
     - `clear()`
 
 ## Web Workers
->
-> independent JavaScript works behind the sences
+
+Independent JavaScript works behind the sences
 
 ```js
 let wwk;
@@ -986,8 +1000,8 @@ function stopWorker() {
 ```
 
 ## Fetch API
->
-> Why? Cause JSON better than AJAX
+
+Why? Cause JSON **better** than AJAX
 
 ```js
 // normal fetch return Promise<status>

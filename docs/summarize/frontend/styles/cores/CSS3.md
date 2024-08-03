@@ -14,7 +14,7 @@ tags:
 
 ## Selectors
 
-:::note CSS Selectors
+:::info CSS Selectors
 
 **Used to "find" (or select) the HTML elements you want to style.**
 
@@ -388,14 +388,10 @@ div {
 - [ ] Responsive Web Design
  -->
 
----
-
 ## Resources
 
 - [CSS Reference](https://cssreference.io/)
 
----
+## How to make it
 
-## How to
-
-- [Flip card](https://www.w3schools.com/howto/howto_css_flip_card.asp)
+- [Build like w3schools](https://www.w3schools.com/howto/default.asp)

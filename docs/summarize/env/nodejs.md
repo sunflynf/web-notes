@@ -8,8 +8,6 @@ tags:
 
 # Node.js
 
-## Introduce
-
 - Node.js is an open source server environment
 - Node.js uses JavaScript on the server
 - Node.js runs single-threaded, non-blocking, asynchronous programming
@@ -20,12 +18,14 @@ tags:
   - Add, delete, modify data in database
 - **npm** is the standard package manager for Node.js
 
-```cmd
+## Basic commands
+
+```bash
 > node --version
 > node file.js
 ```
 
-```cmd
+```bash
 > npm install <package-name><@version> <--save-dev>
 > npm i <package-name>@latest <-D>
 
@@ -35,7 +35,7 @@ tags:
 > npm run start-dev
 ```
 
-```json
+```js
 {
   "scripts": {
     "start-dev": "node lib/server-development",

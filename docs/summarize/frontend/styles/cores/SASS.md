@@ -287,10 +287,8 @@ font: #{$size}/#{$line-height}
 url("#{$background}.jpg")
 ```
 
----
-
 ## Resources
 
 1. [sass-lang](https://sass-lang.com/)
-2. [devhints](https://devhints.io/sass)
-3. [w3schools](https://www.w3schools.com/sass)
+2. [w3schools - SASS](https://www.w3schools.com/sass)
+3. [SASS cheatsheet](https://devhints.io/sass)
