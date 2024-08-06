@@ -40,3 +40,11 @@ tags:
 ## Tips & Tricks
 
 - [JavaScript - Vietnamese](https://anonystick.com/)
+
+## Communication Languages
+
+- [English club](https://www.englishclub.com/)
+
+## Certificates
+
+- [How to do in IELTS](https://howtodoielts.com/)
