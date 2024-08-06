@@ -24,6 +24,8 @@ tags:
 
 - [Learn and Practices](https://exercism.org)
 - [The Odin Project - Fullstack base](https://www.theodinproject.com)
+- [English Grammar](https://www.grammarly.com)
+- [English Grammar](https://www.grammarly.com)
 
 ## Data Science
 
@@ -32,6 +34,8 @@ tags:
 ### AI, ML & DL
 
 - [Deep Learning Ebook](https://udlbook.github.io/udlbook/)
+- [Prompt Engineering For Dev](https://dev.to/latitude/prompt-engineering-for-developers-11-concepts-and-examples-in0)
+- [ChatGPT Cheat Sheets](https://blog.enterprisedna.co/chatgpt-cheat-sheet-awesome-tips-tricks-prompts/)
 
 ## Career path
 

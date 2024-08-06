@@ -8,7 +8,9 @@ tags:
     - Extension
 ---
 
-# @redux-toolkits/query
+# Redux Toolkits Query
+
+> `@redux-toolkits/query`
 
 ## Project Structure
 
@@ -36,6 +38,12 @@ my-app/
 └── ...
 ```
 
+## Steps-by-step
+
+1. **Setup RTK Query Service:** Define an API service using `createApi` and `fetchBaseQuery`.
+2. **Configure the Store:** Add the API reducer and middleware to the Redux store.
+3. **Fetch Data in Components:** Use the generated hooks (e.g., `useGetPostsQuery`) to fetch data in your components.
+
 ## Setting Up RTK Query
 
 1. **Install necessary packages:**
@@ -46,8 +54,7 @@ my-app/
 
 2. **Create the Redux store and API service:**
 
-   ```tsx
-   // src/app/store.ts
+   ```ts title="src/app/store.ts"
    import { configureStore } from '@reduxjs/toolkit';
    import { setupListeners } from '@reduxjs/toolkit/query';
    import { postsApi } from '../features/posts/postsApi';
@@ -70,8 +77,7 @@ my-app/
    export default store;
    ```
 
-   ```tsx
-   // src/features/posts/postsApi.ts
+   ```ts title="src/features/posts/postsApi.ts"
    import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
    interface Post {
@@ -98,8 +104,7 @@ my-app/
 
 3. **Provide the store to your React app:**
 
-   ```tsx
-   // src/index.tsx
+   ```tsx title="src/index.tsx"
    import React from 'react';
    import ReactDOM from 'react-dom';
    import { Provider } from 'react-redux';
@@ -116,8 +121,7 @@ my-app/
 
 4. **Create a component that fetches data using RTK Query:**
 
-   ```tsx
-   // src/features/posts/Posts.tsx
+   ```tsx title="src/features/posts/Posts.tsx"
    import React from 'react';
    import { useGetPostsQuery } from './postsApi';
 
@@ -147,8 +151,7 @@ my-app/
 
 5. **Use the connected component in your app:**
 
-   ```tsx
-   // src/App.tsx
+   ```tsx title="src/App.tsx"
    import React from 'react';
    import Counter from './features/counter/Counter';
    import Posts from './features/posts/Posts';
@@ -165,9 +168,3 @@ my-app/
 
    export default App;
    ```
-
-## Summary
-
-- **Setup RTK Query Service:** Define an API service using `createApi` and `fetchBaseQuery`.
-- **Configure the Store:** Add the API reducer and middleware to the Redux store.
-- **Fetch Data in Components:** Use the generated hooks (e.g., `useGetPostsQuery`) to fetch data in your components.

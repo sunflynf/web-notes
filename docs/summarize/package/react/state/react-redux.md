@@ -9,9 +9,13 @@ tags:
 
 # React - Redux
 
-React-Redux is the official binding library for integrating Redux with React. It provides a `Provider` component to pass the Redux store down to your React components, `connect` and `useSelector`/`useDispatch` hooks to connect your components to the store.
+The official binding library for integrating Redux with React.
+
+![How redux works](https://www.scaler.com/topics/images/updation-process-using-redux.gif)
 
 ## Project Structure
+
+> This structure is for reference purposes only
 
 ```txt
 my-app/
@@ -35,6 +39,12 @@ my-app/
 └── ...
 ```
 
+## Steps-by-steps
+
+1. **Setup Redux Store:** Configure a Redux store using `@reduxjs/toolkit`.
+2. **Provide Store:** Wrap your app with the `Provider` component from `react-redux`.
+3. **Connect Components:** Use `useSelector` to access state and `useDispatch` to dispatch actions within your components.
+
 ## Setting Up Redux
 
 1. **Install necessary packages:**
@@ -45,8 +55,7 @@ my-app/
 
 2. **Create Redux store and reducers:**
 
-   ```tsx
-   // src/store/store.ts
+   ```ts  title="src/store/store.ts"
    import { configureStore } from '@reduxjs/toolkit';
    import counterReducer from './reducers';
 
@@ -59,8 +68,7 @@ my-app/
    export default store;
    ```
 
-   ```tsx
-   // src/store/reducers.ts
+   ```ts title="src/store/reducers.ts"
    import { createSlice } from '@reduxjs/toolkit';
 
    export interface CounterState {
@@ -94,8 +102,7 @@ my-app/
 
 3. **Provide the store to your React app:**
 
-   ```tsx
-   // src/index.tsx
+   ```tsx title="src/index.tsx"
    import React from 'react';
    import ReactDOM from 'react-dom';
    import { Provider } from 'react-redux';
@@ -112,8 +119,7 @@ my-app/
 
 4. **Create a component that interacts with the store:**
 
-   ```tsx
-   // src/components/Counter.tsx
+   ```tsx title="src/components/Counter.tsx"
    import React from 'react';
    import { useSelector, useDispatch } from 'react-redux';
    import { RootState } from '../store/store';
@@ -144,8 +150,7 @@ my-app/
 
 5. **Use the connected component in your app:**
 
-   ```tsx
-   // src/App.tsx
+   ```tsx title="src/App.tsx"
    import React from 'react';
    import Counter from './components/Counter';
 
@@ -165,8 +170,7 @@ my-app/
 
 For better TypeScript support, you should define types for your store and dispatch.
 
-```tsx
-// src/store/store.ts
+```ts title="src/store/store.ts"
 import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from './reducers';
 
@@ -181,9 +185,3 @@ export type AppDispatch = typeof store.dispatch;
 
 export default store;
 ```
-
-## Summary
-
-- **Setup Redux Store:** Configure a Redux store using `@reduxjs/toolkit`.
-- **Provide Store:** Wrap your app with the `Provider` component from `react-redux`.
-- **Connect Components:** Use `useSelector` to access state and `useDispatch` to dispatch actions within your components.
