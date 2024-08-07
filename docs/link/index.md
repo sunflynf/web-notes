@@ -31,6 +31,11 @@ tags:
 
 - [Data Structure](https://refactoring.guru/)
 
+## Cloud Computing & DevOps
+
+- [AWS cheat sheets 1](https://intellipaat.com/blog/tutorial/amazon-web-services-aws-tutorial/aws-cheat-sheet/)
+- [AWS cheat sheets 2](https://digitalcloud.training/aws-cheat-sheets/)
+
 ### AI, ML & DL
 
 - [Deep Learning Ebook](https://udlbook.github.io/udlbook/)
