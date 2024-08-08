@@ -1,5 +1,5 @@
 ---
-description: CSS Frameworks
+description: A preprocessor scripting language that is interpreted or compiled into CSS
 tags:
     - CSS
     - Frontend

@@ -1,8 +1,7 @@
 {
-    "label": "Learning notes",
-    "link": {
-      "type": "generated-index",
-      "description": "Summarize anything. Maybe I can't remember all of this."
-    }
+  "label": "Learning notes",
+  "link": {
+    "type": "generated-index",
+    "description": "Summarize anything. Maybe I can't remember all of this."
   }
-  
+}

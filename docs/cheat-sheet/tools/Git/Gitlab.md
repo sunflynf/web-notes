@@ -1,11 +1,10 @@
 ---
+description: The most comprehensive AI-powered DevSecOps Platform.
 tag:
     - Tool
     - Git
 ---
 
 # Gitlab
-
-Open-source manager
 
 ## CI/CD

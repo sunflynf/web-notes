@@ -1,9 +1,9 @@
 ---
-description: Fully CSS Frameworks
+description: A powerful, feature-packed frontend toolkit.
 tags:
     - CSS
+    - SASS
     - Frontend
-    - UI Framework
 ---
 
 # Bootstrap 5
@@ -329,7 +329,6 @@ Bootstrap has default font based on platform
 
 ## Documents
 
-- [Bootstrap 5.2](https://getbootstrap.com/docs/5.2)
 - [Bootstrap 5.3](https://getbootstrap.com/docs/5.3)
 
 ## References

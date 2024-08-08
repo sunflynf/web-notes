@@ -1,5 +1,5 @@
 ---
-description: CSS Frameworks
+description: A dynamic preprocessor style sheet language that can be compiled into CSS
 tags:
     - CSS
     - Frontend
