@@ -88,7 +88,7 @@ my-mern-app/
 ## General Best Practices
 
 - **Version Control:**
-  - Use [Git](../cheat-sheet/tools/Git/index.mdx) for version control. Maintain a clean and meaningful commit history.
+  - Use [Git](../cheat-sheet/tools/git/index.mdx) for version control. Maintain a clean and meaningful commit history.
   - Use branching strategies (e.g., Git Flow).
 
 - **Code Quality:**

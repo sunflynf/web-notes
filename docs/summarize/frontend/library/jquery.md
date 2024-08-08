@@ -18,7 +18,7 @@ tags:
 
 - Use css selector inside $() to point element
 - It can be tag (`p`), id (`#first-name`), className (`.btn.btn-primary`), specific element (`ul:first-child`)
-- View more: [CSS Selectors](../styles/cores/CSS3.md)
+- View more: [CSS Selectors](../styles/css/index.mdx)
 
 ```js
 $(document).ready(function(){ // Required
