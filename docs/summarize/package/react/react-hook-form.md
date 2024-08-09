@@ -302,9 +302,9 @@ function App() {
 npm install @hookform/resolvers
 ```
 
-### Joi
+### [Joi](https://github.com/react-hook-form/resolvers#joi)
 
-> [Joi](https://www.npmjs.com/package/joi) - The most powerful data validation library for JS.
+The **most powerful data validation** library for JS.
 
 ```tsx
 import { joiResolver } from '@hookform/resolvers/joi';
@@ -318,9 +318,9 @@ const schema = Joi.object({
 const resolver = joiResolver(schema);
 ```
 
-### Zod
+### [Zod](https://github.com/react-hook-form/resolvers#zod)
 
-> [Zod](https://www.npmjs.com/package/zod) - TypeScript-first schema validation with static type inference
+**TypeScript-first** schema validation with *static* type inference
 
 ```tsx
 import { useForm } from 'react-hook-form';
@@ -335,9 +335,9 @@ const schema = z.object({
 const resolver = zodResolver(schema);
 ```
 
-### Yup
+### [Yup](https://github.com/react-hook-form/resolvers#yup)
 
-> [Yup](https://www.npmjs.com/package/yup) - Dead simple Object schema validation.
+**Dead simple Object** schema validation.
 
 ```tsx
 import { useForm } from 'react-hook-form';
@@ -355,15 +355,16 @@ const schema = yup
 const resolver = yupResolver(schema);
 ```
 
-### class-validator
+### [class-validator](https://github.com/react-hook-form/resolvers#class-validator)
 
-> [class-validator](https://www.npmjs.com/package/class-validator) - Decorator-based property validation for classes.
+**Decorator-based property** validation for classes.
 
-Add this code to `tsconfig.json`
-
-```json
-"strictPropertyInitialization": false,
-"experimentalDecorators": true
+```json title='tsconfig.json'
+{
+  // add 2 lines below to file
+  "strictPropertyInitialization": false,
+  "experimentalDecorators": true,
+}
 ```
 
 ```tsx
@@ -381,9 +382,9 @@ class User {
 const resolver = classValidatorResolver(User);
 ```
 
-### io-ts
+### [io-ts](https://github.com/react-hook-form/resolvers#io-ts)
 
-> [io-ts](https://www.npmjs.com/package/io-ts) - Validate your data with powerful decoders.
+Validate your data with **powerful decoders**.
 
 ```tsx
 import { ioTsResolver } from '@hookform/resolvers/io-ts';
@@ -399,9 +400,9 @@ const schema = t.type({
 const resolver = ioTsResolver(schema);
 ```
 
-### superstruct
+### [superstruct](https://github.com/react-hook-form/resolvers#superstruct)
 
-> [superstruct](https://www.npmjs.com/package/superstruct) - A simple and composable way to validate data in JavaScript (or TypeScript).
+**A simple and composable way** to validate data in JavaScript (or TypeScript).
 
 ```tsx
 import { superstructResolver } from '@hookform/resolvers/superstruct';
@@ -417,10 +418,10 @@ const resolver = superstructResolver(schema);
 
 ### Compare
 
-| Feature               | Yup         | Zod         | Joi         | class-validator | io-ts       | Superstruct  |
+| Feature               | [Yup](https://yup-docs.vercel.app/)         | [Zod](https://zod.dev/)         | [Joi](https://joi.dev/)         | [class-validator](https://github.com/typestack/class-validator) | [io-ts](https://www.npmjs.com/package/io-ts)       | [Superstruct](https://www.npmjs.com/package/superstruct)  |
 |-----------------------|-------------|-------------|-------------|-----------------|-------------|--------------|
 | **TypeScript Support**| Good        | **Excellent**   | Limited     | **Excellent**       | **Excellent**   | Good         |
 | **API Style**         | Fluent      | Fluent      | Fluent      | Declarative     | *Functional*  | Fluent       |
-| **Popularity**        | High        | **Growing**     | High        | Popular in **NestJS** | Niche      | Moderate     |
-| **Validation Type**   | Sync/Async  | Sync        | Sync/Async  | Sync/Async      | Sync        | Sync         |
+| **Popularity**        | High        | **Growing**     | High        | Popular in [**NestJS**](../../backend/JS_TS/Nest.md) | Niche      | Moderate     |
+| **Validation Type**   | Sync/**Async**  | Sync        | Sync/**Async**  | Sync/**Async**      | Sync        | Sync         |
 | **Use Case**          | Forms, general validation | Type-safe validation | Node.js services, general validation | Class-based validation | Functional programming | General validation |

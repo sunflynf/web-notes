@@ -12,199 +12,211 @@ tags:
 
 ## Setup
 
-1. **Install Express:**
+### 1. Install Express
 
-   ```bash
-   npm i express
-   ```
+```bash
+npm i express
+```
 
-   **For auto reload server**
+:::info Auto reload server
 
-   ```bash
-   npm i -D nodemon
-   ```
+```bash
+npm i -D nodemon
+```
 
-   ```json
-   "start": "node src/index.js",
-   "watch": "nodemon src/index.js --experimental-modules",
-   ```
+```json
+"start": "node src/index.js",
+"watch": "nodemon src/index.js --experimental-modules",
+```
 
-2. **Basic Server:**
+:::
 
-   ```javascript
-   const express = require('express');
-   const app = express();
-   const port = 3000;
+### 2. Basic Server
 
-   app.get('/', (req, res) => {
-     res.send('Hello World!');
-   });
+```js
+const express = require('express');
+const app = express();
+const port = 3000;
 
-   app.listen(port, () => {
-     console.log(`Server is running on http://localhost:${port}`);
-   });
-   ```
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 
-## Middleware
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
+```
 
-1. **Using Middleware:**
+## Middlewares
 
-   ```javascript
-   const express = require('express');
-   const app = express();
+### Using Middleware
 
-   // Built-in middleware for parsing JSON
-   app.use(express.json());
+```js
+const express = require('express');
+const app = express();
 
-   // Custom middleware
-   app.use((req, res, next) => {
-     console.log(`${req.method} request for ${req.url}`);
-     next();
-   });
-   ```
+// Built-in middleware for parsing JSON
+app.use(express.json());
 
-2. **Serving Static Files:**
+// Custom middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} request for ${req.url}`);
+  next();
+});
+```
 
-   ```javascript
-   app.use(express.static('public'));
-   ```
+### Serving Static Files
+
+```js
+app.use(express.static('public'));
+```
 
 ## Routing
 
-1. **Basic Routing:**
+### Basic
 
-   ```javascript
-   app.get('/', (req, res) => {
-     res.send('GET request to the homepage');
-   });
+```js
+app.get('/', (req, res) => {
+  res.send('GET request to the homepage');
+});
 
-   app.post('/', (req, res) => {
-     res.send('POST request to the homepage');
-   });
+app.post('/', (req, res) => {
+  res.send('POST request to the homepage');
+});
 
-   app.put('/user', (req, res) => {
-     res.send('PUT request to /user');
-   });
+app.put('/user', (req, res) => {
+  res.send('PUT request to /user');
+});
 
-   app.delete('/user', (req, res) => {
-     res.send('DELETE request to /user');
-   });
-   ```
+app.delete('/user', (req, res) => {
+  res.send('DELETE request to /user');
+});
+```
 
-2. **Route Parameters:**
+### Route Parameters
 
-   ```javascript
-   app.get('/users/:userId/books/:bookId', (req, res) => {
-     res.send(req.params);
-   });
-   ```
+```js
+app.get('/users/:userId/books/:bookId', (req, res) => {
+  res.send(req.params);
+});
+```
 
-3. **Query Strings:**
+### Query Strings
 
-   ```javascript
-   app.get('/search', (req, res) => {
-     res.send(req.query);
-   });
-   ```
+```js
+app.get('/search', (req, res) => {
+  res.send(req.query);
+});
+```
 
 ## Handling Requests
 
-1. **Request Object:**
+### Request Object
 
-   ```javascript
-   app.get('/user/:id', (req, res) => {
-     console.log(req.params.id);  // Route parameters
-     console.log(req.query.name); // Query parameters
-     console.log(req.body);       // Request body (for POST/PUT requests)
-   });
-   ```
+```js
+app.get('/user/:id', (req, res) => {
+  console.log(req.params.id);  // Route parameters
+  console.log(req.query.name); // Query parameters
+  console.log(req.body);       // Request body (for POST/PUT requests)
+});
+```
 
-2. **Response Object:**
+### Response Object
 
-   ```javascript
-   app.get('/json', (req, res) => {
-     res.json({ name: 'Express' });
-   });
+```js
+app.get('/json', (req, res) => {
+  res.json({ name: 'Express' });
+});
 
-   app.get('/status', (req, res) => {
-     res.status(404).send('Not Found');
-   });
-   ```
+app.get('/status', (req, res) => {
+  res.status(404).send('Not Found');
+});
+```
 
 ## Advanced Topics
 
-1. **Router:**
+### Router
 
-   ```javascript
-   const router = express.Router();
+```js
+const router = express.Router();
 
-   router.get('/', (req, res) => {
-     res.send('Home page');
-   });
+router.get('/', (req, res) => {
+  res.send('Home page');
+});
 
-   router.get('/about', (req, res) => {
-     res.send('About page');
-   });
+router.get('/about', (req, res) => {
+  res.send('About page');
+});
 
-   app.use('/pages', router);
-   ```
+app.use('/pages', router);
+```
 
-2. **Error Handling:**
+### Error Handling
 
-   ```javascript
-   app.use((err, req, res, next) => {
-     console.error(err.stack);
-     res.status(500).send('Something broke!');
-   });
-   ```
+```js
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+```
 
-3. **Environment Variables:**
+### Environment Variables
 
-   ```javascript
-   const port = process.env.PORT || 3000;
-   ```
+```js
+const port = process.env.PORT || 3000;
+```
 
-4. **Using Template Engines:**
+[Best practices](#environment-configuration)
 
-   > - [EJS](../../fullstack/mvc/ejs.md)
-   > - [Mustache](../../fullstack/mvc/mustache.md)
-   > - [Pug (Jade)](../../fullstack/mvc/pug.md)
+### Using Template Engines
 
-   ```javascript
-   app.set('view engine', 'pug');
-   app.set('views', './views');
+:::info Popular templates
 
-   app.get('/template', (req, res) => {
-     res.render('index', { title: 'Hey', message: 'Hello there!' });
-   });
-   ```
+- [EJS](../../fullstack/mvc/ejs.md)
+- [Mustache](../../fullstack/mvc/mustache.md)
+- [Pug (Jade)](../../fullstack/mvc/pug.md)
+:::
 
-5. **CORS:**
+```js
+app.set('view engine', 'pug');
+app.set('views', './views');
 
-   ```javascript
-   const cors = require('cors');
-   app.use(cors());
-   ```
+app.get('/template', (req, res) => {
+  res.render('index', { title: 'Hey', message: 'Hello there!' });
+});
+```
+
+### CORS
+
+```js
+const cors = require('cors');
+app.use(cors());
+```
 
 ## Best Practices
 
-1. **Environment Configuration:**
+### Environment Configuration
 
-   ```javascript
+   ```js
    require('dotenv').config();
+
+   // Note: Module JS using
+   // import dotenv from 'dotenv';
+   // dotenv.config();
+
    const port = process.env.PORT || 3000;
    ```
 
-2. **Security:**
+### Security
 
-   ```javascript
+   ```js
    const helmet = require('helmet');
    app.use(helmet());
    ```
 
-3. **Logging:**
+### Logging
 
-   ```javascript
+   ```js
    const morgan = require('morgan');
    app.use(morgan('combined'));
    ```
