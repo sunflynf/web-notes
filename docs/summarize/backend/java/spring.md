@@ -1,12 +1,12 @@
 ---
-description: Backend Frameworks support RESTapis.
+description: Backend Frameworks support REST APIs.
 tags:
     - Backend
     - Java
     - Kotlin
     - XML
     - Spring
-    - RESTapis
+    - REST APIs
 ---
 
 # Spring boot

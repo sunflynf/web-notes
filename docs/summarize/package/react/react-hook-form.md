@@ -422,6 +422,6 @@ const resolver = superstructResolver(schema);
 |-----------------------|-------------|-------------|-------------|-----------------|-------------|--------------|
 | **TypeScript Support**| Good        | **Excellent**   | Limited     | **Excellent**       | **Excellent**   | Good         |
 | **API Style**         | Fluent      | Fluent      | Fluent      | Declarative     | *Functional*  | Fluent       |
-| **Popularity**        | High        | **Growing**     | High        | Popular in [**NestJS**](../../backend/JS_TS/Nest.md) | Niche      | Moderate     |
+| **Popularity**        | High        | **Growing**     | High        | Popular in [**NestJS**](../../backend/js/nest.md) | Niche      | Moderate     |
 | **Validation Type**   | Sync/**Async**  | Sync        | Sync/**Async**  | Sync/**Async**      | Sync        | Sync         |
 | **Use Case**          | Forms, general validation | Type-safe validation | Node.js services, general validation | Class-based validation | Functional programming | General validation |

@@ -5,7 +5,7 @@ tags: [MongoDB, Express, Node, React]
 
 # MERN
 
-Creating a well-structured MERN ([MongoDB](../summarize/database/NoSQL/MongoDB.md), [Express](../summarize/backend/JS_TS/Express.md), [React](../summarize/frontend/library/react.md), [Node.js](../summarize/env/nodejs.md)) stack project is essential for maintainability, scalability, and ease of collaboration. Here are some best practices for organizing and structuring a MERN stack project:
+Creating a well-structured MERN ([MongoDB](../summarize/database/NoSQL/MongoDB.md), [Express](../summarize/backend/js/express.md), [React](../summarize/frontend/library/react.md), [Node.js](../summarize/env/nodejs.md)) stack project is essential for maintainability, scalability, and ease of collaboration. Here are some best practices for organizing and structuring a MERN stack project:
 
 ## Directory Structure
 

@@ -15,7 +15,7 @@ tags:
 npm i ejs
 ```
 
-:::info Set up with [Express](../../backend/JS_TS/Express.md)
+:::info Set up with [Express](../../backend/js/express.md)
 
 ```js
 const express = require('express');
