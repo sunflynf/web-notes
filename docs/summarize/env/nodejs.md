@@ -163,6 +163,26 @@ if (isMainThread) {
 }
 ```
 
+### How to keep packages up-to-date
+
+Install `npm-check-updates`
+  
+  ```bash
+  npm install -g npm-check-updates
+  ```
+
+Scan packages (You can repeat this step)
+
+  ```bash
+  ncu -u
+  ```
+
+Update packages (use `npm` or `yarn`)
+
+  ```bash
+  npm install
+  ```
+
 ### Resources
 
 1. [Node.js Documents (20.x)](https://nodejs.org/docs/latest-v20.x/api/index.html)
