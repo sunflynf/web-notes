@@ -1,0 +1,59 @@
+---
+description: ""
+---
+
+# Discovery Tech (1)
+
+- `React.useState(() => defaultValue)`
+- Some open-source SaaS (Open source is not **free**)
+
+{/* truncate */}
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+## React
+
+- `useState(initialValue)` can put **callback** for setting default value
+
+<Tabs>
+    <TabItem value='old-way' label="Normal">
+        ```jsx
+        const Modal = ({show, onHide, children, ...rest}) => {
+            const [config, setConfig] = useState({});
+
+            useEffect(() => {
+                const newConfig = buildConfig(rest);
+                setConfig(newConfig);
+            }, []);
+
+            return (
+                <Modal
+                    show={show}
+                    onHide={onHide}
+                    {...config}>
+                    {children}
+                </Modal>
+            );
+        }
+        ```
+    </TabItem>
+    <TabItem value='new-way' label='Callback'>
+        ```jsx
+        const Modal = ({show, onHide, children, ...rest}) => {
+            const [config, setConfig] = useState(() => buildConfig(rest));
+            // Yeap, it's done!
+
+            return (
+                <Modal
+                    show={show}
+                    onHide={onHide}
+                    {...config}>
+                    {children}
+                </Modal>
+            );
+        }
+        ```
+    </TabItem>
+
+</Tabs>
