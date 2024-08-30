@@ -3,33 +3,26 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
-  title: "Phi's Site",
-  tagline: "Just note for anything I see!",
+  title: "Web Notes",
+  tagline: "Phi note everything about Web (anything he see)!",
   favicon: "img/favicon.ico",
-
-  // Set the production url of your site here
   url: "https://github.com",
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/web-notes/",
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: "sunflynf", // Usually your GitHub org/user name.
-  projectName: "web-notes", // Usually your repo name.
-  trailingSlash: true,
+  // FOR DEPLOY
+  baseUrl: "/web-notes/",
+  organizationName: "sunflynf",
+  projectName: "web-notes",
   deploymentBranch: "gh-pages",
 
+  // URL Configs
+  trailingSlash: true,
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
+  // TODO: Add Languages (VI)
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
-    // locales: ['en', 'vi'],
   },
 
   presets: [
@@ -38,14 +31,12 @@ const config: Config = {
       {
         docs: {
           sidebarPath: "./sidebars.ts",
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl: "https://github.com/sunflynf/web-notes/tree/main/",
+          // Remove this if low perf
+          showLastUpdateTime: true,
         },
         blog: {
           showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl: "https://github.com/sunflynf/web-notes/tree/main/",
         },
         theme: {
@@ -56,17 +47,16 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
+    // TODO: replace image
     image: "img/docusaurus-social-card.jpg",
     docs: {
       sidebar: {
-        // Open multiple items in time
         autoCollapseCategories: true,
         hideable: true,
       },
     },
     navbar: {
-      title: "Nhat Phi Site",
+      title: "FI-FINE",
       logo: {
         alt: "Docusaurus Logo",
         src: "img/logo.svg",
@@ -78,7 +68,6 @@ const config: Config = {
           position: "left",
           label: "Documents",
         },
-        // {to: '/docs/link', label: 'Links', position: 'left'},
         { to: "/blog", label: "Blog", position: "left" },
         {
           href: "https://github.com/sunflynf",
@@ -116,23 +105,10 @@ const config: Config = {
             },
           ],
         },
-        {
-          title: "More",
-          items: [
-            {
-              label: "Blog",
-              to: "/blog",
-            },
-            {
-              label: "GitHub",
-              href: "https://github.com/sunflynf",
-            },
-          ],
-        },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} FI-FINE. Built with Docusaurus.`,
     },
-    // plugins: [require.resolve('docusaurus-lunr-search')],
+    // Highlight Code
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
@@ -158,6 +134,7 @@ const config: Config = {
   } satisfies Preset.ThemeConfig,
 
   themes: [
+    "@docusaurus/theme-mermaid",
     [
       require.resolve("@easyops-cn/docusaurus-search-local"),
       {
@@ -165,6 +142,9 @@ const config: Config = {
       },
     ],
   ],
+  markdown: {
+    mermaid: true,
+  },
 };
 
 export default config;

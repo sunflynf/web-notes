@@ -44,6 +44,11 @@ tags:
 }
 ```
 
+```mermaid
+flowchart LR
+  A[install] --> B[start]
+```
+
 ## Modules
 
 ```js
