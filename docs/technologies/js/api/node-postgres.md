@@ -7,5 +7,5 @@ tags:
 
 # Node-postgres
 
-> - Support tool for [Postgre](/docs/technologies/database/relational/PostgreSQL.md)
+> - Support tool for [Postgre](../../../technologies/database/relational/postgre.md)
 > - [Documents](https://node-postgres.com/)

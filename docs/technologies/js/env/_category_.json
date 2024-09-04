@@ -1,8 +1,6 @@
 {
-    "label": "Environment",
-    "position": 3,
-    "link": {
-      "type": "generated-index"
-    }
+  "label": "Environment",
+  "link": {
+    "type": "generated-index"
+  }
 }
-    

@@ -172,9 +172,9 @@ const port = process.env.PORT || 3000;
 
 :::info Popular templates
 
-- [EJS](/docs/technologies/js/templates/ejs.md)
-- [Mustache](/docs/technologies/js/templates/mustache.md)
-- [Pug (Jade)](/docs/technologies/js/templates/pug.md)
+- [EJS](../../../../technologies/js/templates/ejs.md)
+- [Mustache](../../../../technologies/js/templates/mustache.md)
+- [Pug (Jade)](../../../../technologies/js/templates/pug.md)
 :::
 
 ```js

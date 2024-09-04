@@ -8,7 +8,7 @@ tags:
     - System
 ---
 
-# React-admin
+# React Admin
 
 > **The React Framework for B2B Apps**
 

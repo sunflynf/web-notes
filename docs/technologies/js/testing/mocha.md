@@ -8,7 +8,7 @@ tags:
 
 # Mocha
 
-- Version 10+ required **[Node.js](/docs/technologies/js/env/nodejs.md) version 14+**
+- Version 10+ required **[Node.js](../../../technologies/js/env/nodejs.md) version 14+**
 - `describe()`: Defines a test suite.
 - `it()`: Defines a test case.
 - `assert`: Built-in assertion library.

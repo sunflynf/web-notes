@@ -279,7 +279,7 @@ export default function App() {
 
 ### useReducer
 
-- Tracking complex state (like object) -> Same tech like [React-Redux](/docs/technologies/js/libraries/react/state/react-redux.md)
+- Tracking complex state (like object) -> Same tech like [React-Redux](../../../../technologies/js/libraries/react/state/react-redux.md)
 - Custom handle state
 - Syntax: `const [state, dispatch] = useReducer(reducer, initialState);`
 - **reducer**: `const reducer = (currentState, action: { type, [any]?: value }) => { return newState }`

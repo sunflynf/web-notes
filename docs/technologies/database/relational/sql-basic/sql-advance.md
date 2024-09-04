@@ -3,7 +3,7 @@ tags:
     - SQL
 ---
 
-# Advanced SQL Code Structure
+# Advanced SQL
 
 ## Advanced Data Definition Language (DDL)
 

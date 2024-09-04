@@ -5,10 +5,10 @@ tags: [MongoDB, Express, Node, React]
 
 # MERN
 
-- [MongoDB](/docs/technologies/database/no-sql/MongoDB.md)
-- [Express](/docs/technologies/js/frameworks/backend/express.md)
-- [React](/docs/technologies/js/libraries/react/index.md)
-- [Node.js](/docs/technologies/js/env/nodejs.md)
+- [MongoDB](../technologies/database/no-sql/mongodb.md)
+- [Express](../technologies/js/frameworks/backend/express.md)
+- [React](../technologies/js/libraries/react/index.md)
+- [Node.js](../technologies/js/env/nodejs.md)
 
 ## Directory Structure
 
@@ -91,12 +91,12 @@ my-mern-app/
 ## General Best Practices
 
 - **Version Control:**
-  - Use [Git](/docs/tools/version-control/index.mdx) for version control. Maintain a clean and meaningful commit history.
+  - Use [Git](../tools/version-control/index.mdx) for version control. Maintain a clean and meaningful commit history.
   - Use branching strategies (e.g., Git Flow).
 
 - **Code Quality:**
   - Use linters (e.g., [ESLint](https://eslint.org/)) and formatters (e.g., [Prettier](https://prettier.io/)) to maintain code quality.
-  - Write unit tests (e.g., [Jest](/docs/technologies/js/testing/jest.md), [Mocha](/docs/technologies/js/testing/mocha.md)) and integration tests.
+  - Write unit tests (e.g., [Jest](../technologies/js/testing/jest.md), [Mocha](../technologies/js/testing/mocha.md)) and integration tests.
 
 - **Documentation:**
   - Maintain a clear and concise `README.md`.

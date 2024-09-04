@@ -20,10 +20,9 @@ const config: Config = {
   onBrokenMarkdownLinks: "warn",
 
   // TODO: Add Languages (VI)
-  i18n: {
-    defaultLocale: "en",
-    locales: ["en"],
-  },
+  // i18n: {
+  //   defaultLocale: "en",
+  // },
 
   presets: [
     [
@@ -80,15 +79,6 @@ const config: Config = {
       style: "dark",
       links: [
         {
-          title: "Docs",
-          items: [
-            {
-              label: "Tutorial",
-              to: "/docs/intro",
-            },
-          ],
-        },
-        {
           title: "Community",
           items: [
             {
@@ -139,6 +129,7 @@ const config: Config = {
       require.resolve("@easyops-cn/docusaurus-search-local"),
       {
         hashed: true,
+        language: ["en"],
       },
     ],
   ],
