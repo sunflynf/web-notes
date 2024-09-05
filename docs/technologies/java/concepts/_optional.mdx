@@ -1,0 +1,21 @@
+## Optional
+
+- **JDK Version:** 8+
+- `Optional` is meant to be used as a return type
+- Using `Optional` in a **serializable** class will result in a **NotSerializableException**
+
+```java
+// Create empty Object
+Optional<String> empty = Optional.empty();
+empty.isPresent(); // Check there is value in object, current is false
+empty.isEmpty(); // Check there is empty, current is true (ver 11+)
+
+// Create Optional with static method
+String name = "baeldung";
+Optional<String> opt1 = Optional.of(name); // Maybe get NullPointerException
+Optional<String> opt2 = Optional
+    .ofNullable(name)
+    .orElse("Default name"); // add-ons
+    //.orElseGet(() -> "Default name"); // same above, but use function
+    //.orElseThrow(IllegalArgumentException::new); // custom handling
+```

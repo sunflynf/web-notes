@@ -1,0 +1,67 @@
+## Conditions
+
+```js
+// Ternary
+const variable = condition ? value_if_true : value_if_false;
+
+// If else
+if (condition1) {  }
+else if (condition2) {  }
+...
+else {  }
+
+// Switch Case (use ===)
+switch(value) {
+    case type1: // or case type1, type2:
+    case type2:
+        // handle
+        break; // or return
+    case type3:
+        // handle
+        break; // or return
+    default:
+        // handle if value not same any type
+        break; // or return
+}
+
+// try catch
+try {
+    // handle
+} catch(error) {
+    // handle if try has error
+} finally {
+    // always handle, it can skip
+}
+```
+
+## Loops
+
+```js
+// Exp: for(let i = 0; i <= 5; i++) {}
+// Loop with count, arr length, can use break | continue inside
+for (let v = start; v_conditions; v_update) {
+  // handle
+}
+
+for (key in object) {
+  // { firstName: Vo, lastName: Phi, birth: 2001 }
+  // -> loop: firstName >> lastName >> birth
+}
+
+for (value of []) {
+  // for of suit with
+  // - Array
+  // - String
+  // - Set
+  // - Map >> [[k1, v1], [k2, v2], ..., [kn, vn]]
+}
+
+while (condition) {
+  // do it util fail condition
+}
+
+do {
+  // call 1 time before check condition
+  // do it again util fail condition
+} while (condition);
+```

@@ -1,0 +1,51 @@
+## Functional Interface
+
+```java
+@FunctionalInterface
+interface Square {
+  int calculate(int x);
+}
+
+class Test {
+  public static void main(String args[])
+  {
+    // lambda expression to define the calculate method
+    Square s = (int x) -> x * x;
+
+    // parameter passed and return type must be
+    // same as defined in the prototype
+    System.out.println(s.calculate(5));
+  }
+}
+```
+
+:::info Built-in Functional Interfaces
+
+- **Runnable** –> `run()`
+- **Comparable** –> `compareTo(`)
+- **ActionListener** –> `actionPerformed()`
+- **Callable** –> `call()`
+
+:::
+
+### `Predicate<T>`
+
+### `Consumer<T>`
+
+### `Function<T, R>`
+
+### `Supplier<T>`
+
+## Lambda
+
+- Use as parameters of type **@FunctionalInterface**
+- Usually add to Stream `forEach`, `filter`, `map`
+
+```java
+() -> doWhatEverYouWant();
+(T a) -> a.doSomething();
+(T a, T b) -> a + b;
+(T1 a, T2 b, T2 c) -> {
+    a.doStuff(b -> b.compare(c));
+}
+```

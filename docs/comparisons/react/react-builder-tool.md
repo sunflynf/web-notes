@@ -24,7 +24,7 @@ tags: [React]
 
 :::info Note
 
-1. All tools support [JavaScript](../../technologies/js/index.md) and have plugins for additional functionality.
+1. All tools support [JavaScript](../../technologies/js/index.mdx) and have plugins for additional functionality.
 2. The community and ecosystem size can vary over time.
 3. The build time can depend on various factors, such as **project size** and **complexity**.
 4. The comparison is based on the latest stable versions of the tools at the time of writing.

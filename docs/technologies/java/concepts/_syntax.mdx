@@ -1,0 +1,60 @@
+## Syntax
+
+```java
+public class Main {
+  public static void main(String[] args) {
+    String name;
+    // Manual input in console
+    Scanner sc = new Scanner(System.in);
+
+    /* This is comment
+       in multiple lines
+    */
+    // System.out.print(1 + 1); // This print not enter a new line
+    System.out.println("Enter name:");
+    name = sc.nextLine();
+    System.out.println("Hello " + name + "!");
+
+    sc.close(); // garbage collector
+  }
+}
+```
+
+### Variables
+
+- `[static] [final] type variableName = value;`
+- Variable's name are **case-sensitive**
+- [List Java keywords](https://howtodoinjava.com/java/basics/java-keywords/)
+
+### Naming
+
+```java
+package com.company.appname.feature.layer;
+
+enum Direction {NORTH, EAST, SOUTH, WEST}
+
+public interface IControl {};
+public class UserControl implements IControl {
+    private final String SECRET_KEY = "Nothing!";
+    private String username;
+    private Properties properties;
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    public String getUsername() {
+        return this.username;
+    }
+};
+
+// Generic:
+// <K,V> -> key, value
+// <T> -> type
+// <E> -> collection elements
+// <S> -> service loaders
+public interface UserAction<T extends Gender> extends Action<T> {}
+
+// Annotation
+public @interface FunctionalInterface {}
+public @Test Documented {}
+```

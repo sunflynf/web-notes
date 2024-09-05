@@ -1,0 +1,21 @@
+## Blocks
+
+```java
+public class Demo {
+    private Integer number;
+
+    // constructor
+    public Demo() {}
+
+    {
+        // Non-static block statement
+        // Executed every Demo is created
+        System.out.println("Non-static block executed")
+    }
+
+    static {
+        // Executed once when the class is loaded by JVM
+        System.out.println("Static block executed")
+    }
+}
+```

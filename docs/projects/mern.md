@@ -7,7 +7,7 @@ tags: [MongoDB, Express, Node, React]
 
 - [MongoDB](../technologies/database/no-sql/mongodb.md)
 - [Express](../technologies/js/frameworks/backend/express.md)
-- [React](../technologies/js/libraries/react/index.md)
+- [React](../technologies/js/libraries/react/index.mdx)
 - [Node.js](../technologies/js/env/nodejs.md)
 
 ## Directory Structure

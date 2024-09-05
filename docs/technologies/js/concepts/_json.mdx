@@ -1,0 +1,25 @@
+## JSON
+
+```json
+{
+  "employees": [
+    { "firstName": "John", "lastName": "Doe" },
+    { "firstName": "Anna", "lastName": "Smith" },
+    { "firstName": "Peter", "lastName": "Jones" }
+  ]
+}
+```
+
+```js
+const listEmployee_string = JSON.stringify(employees);
+const listEmployee_object = JSON.parse(employees);
+```
+
+:::warning JSON weird things
+
+```js
+JSON.stringify(null) -> 'null'
+JSON.stringify(undefined) -> undefined
+```
+
+:::

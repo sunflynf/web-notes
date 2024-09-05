@@ -1,0 +1,18 @@
+## Module
+
+```js
+// EXPORT
+export const season = "Summer";
+export const year = 2024;
+// or
+const season = "Summer";
+const year = 2024;
+export { season, year };
+// default
+const getMyAge = (birthYear) => currentYear - birthYear;
+export default getMyAge;
+
+// IMPORT
+import { season, year } from "./somefiles";
+import getMyAge from "./somefiles2"; // default
+```

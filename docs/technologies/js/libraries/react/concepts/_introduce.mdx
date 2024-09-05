@@ -1,0 +1,32 @@
+- Building User Interface
+- Single-page Application
+- Create Reuseable UI Components (Virtual DOM)
+- To use React in production, you need **npm** which is included with [Node.js](https://www.w3schools.com/nodejs/nodejs_get_started.asp).
+
+## Builder Tools
+
+- [Create React App](https://create-react-app.dev/)
+  - Includes built tools such as **webpack**, **Babel**, and **ESLint**.
+  - `npx create-react-app app-name`
+  - `npm start` | `yarn start`
+- [React Vite](https://vitejs.dev/guide/)
+  - `npm create vite app-name --template react`
+  - `npm create vite app-name --template react-ts`
+  - `npm run dev`
+
+## Render
+
+```html title="public/index.html"
+<body>
+  <!-- Your code will put inside root (or any id) div -->
+  <div id="root"></div>
+</body>
+```
+
+```jsx title="src/index.jsx"
+import ReactDOM from "react-dom/client";
+
+const container = document.getElementById("root");
+const root = ReactDOM.createRoot(container);
+root.render(<p>Hello</p>);
+```

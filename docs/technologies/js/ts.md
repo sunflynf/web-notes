@@ -133,7 +133,7 @@ Casting doesn't actually change the type of the data within the variable => Forc
 
 ## Class
 
-- Review: [JavaScript Class](./index.md)
+- Review: [JavaScript Class](./index.mdx)
 - **JavaScript Class with clear OOP**
 - Visibility modifiers
   - `private` - Class member only

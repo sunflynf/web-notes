@@ -1,0 +1,71 @@
+## React Compiler (React v19)
+
+[Documents](https://19.react.dev/learn/react-compiler#getting-started)
+
+### Configs
+
+#### Existing project
+
+```jsx
+const ReactCompilerConfig = {
+  // specific directory
+  sources: (filename) => {
+    return filename.indexOf("src/path/to/dir") !== -1;
+  },
+  compilationMode: "annotation",
+};
+
+// src/app.jsx
+export default function App() {
+  "use memo";
+  // ...
+}
+```
+
+#### New project
+
+```js title="babel.config.js"
+const ReactCompilerConfig = {
+  /* ... */
+};
+
+module.exports = function () {
+  return {
+    plugins: [
+      ["babel-plugin-react-compiler", ReactCompilerConfig], // must run first!
+      // ...
+    ],
+  };
+};
+```
+
+```js title="vite.config.js"
+const ReactCompilerConfig = {
+  /* ... */
+};
+
+export default defineConfig(() => {
+  return {
+    plugins: [
+      react({
+        babel: {
+          plugins: [["babel-plugin-react-compiler", ReactCompilerConfig]],
+        },
+      }),
+    ],
+    // ...
+  };
+});
+```
+
+```js title="next.config.js"
+// npm install next@canary babel-plugin-react-compiler
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    reactCompiler: true,
+  },
+};
+
+module.exports = nextConfig;
+```

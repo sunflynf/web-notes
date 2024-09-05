@@ -1,0 +1,147 @@
+## Control Flow
+
+### If - else
+
+```java
+if (condition) {
+    // code block
+} else if (anotherCondition) {
+    // another code block
+} else {
+    // default code block
+}
+
+// Ternary
+value = condition ? trueExpression : falseExpression;
+```
+
+### Switch - case - default
+
+```java
+enum Day { MON, TUE, WED, THUR, FRI, SAT, SUN }
+public static Boolean isWeekDay(Day day)
+{
+    boolean result = false;
+    switch(day) {
+        case MON, TUE, WED, THUR, FRI:
+            result = true;
+            break;
+        case SAT, SUN:
+            result = false;
+            break;
+        default:
+            throw new IllegalArgumentException("Invalid day: " + day.name())
+    }
+    return result;
+}
+
+// switch + arrow break (JDK 13+)
+int day = 3;
+String dayType = switch (day) {
+    case 1, 2, 3, 4, 5 -> "Weekday";
+    case 6, 7 -> "Weekend";
+    default -> "Invalid day";
+};
+
+// instanceof parsing (JDK 17+)
+Object o;
+switch (o)
+{
+    case Integer i -> String.format("int %d", i);
+    case Double d  -> String.format("double %f", d);
+    case String s  -> String.format("String %s", s);
+    default        -> o.toString();
+}
+```
+
+### Loop
+
+#### For loop
+
+```java
+int[] numbers = {1, 2, 3, 4, 5};
+for (int i = 0;  i < numbers.length; i++) {
+    System.out.println(number);
+}
+
+// Enhanced for loop
+for (int number : numbers) {
+    System.out.println(number);
+}
+
+// Collection.forEach
+List<Integer> listNumber = List.of(1, 2, 3, 4, 5);
+listNumber.forEach(num -> {}); // use with callback
+```
+
+#### While, Do - while Loop
+
+```java
+int i = 1, sum = 0;
+
+// while(i <= 5) {
+//     sum += i;
+//     i++;
+// }
+
+do {
+    sum += i;
+    i++;
+} while(i <= 5)
+```
+
+#### Break | Continue
+
+```java
+// Labeled Statements
+outer_loop:
+for (int i = 0; i <= 5; i++) {
+    inner_loop:
+    for (int j = 0; j <= 5; j++) {
+        // break; // breaks inner loop only
+        break outer_loop; // same way with "continue"
+    }
+}
+```
+
+### Exception Handling
+
+```java
+try {
+    // do something stuff
+}
+catch (Exception err) {
+    // It's fire, WATERRRRRRRRRR!
+}
+// OPTIONAL
+finally {
+    // You love me or hate me, I dont kare.
+}
+```
+
+#### Try-with-resources
+
+```java
+try (BufferedReader br = new BufferedReader(new FileReader("C:/temp/test.txt"))) {
+    String sCurrentLine;
+    while ((sCurrentLine = br.readLine()) != null) {
+        System.out.println(sCurrentLine);
+    }
+}
+catch (IOException e) {
+    // handle exception
+}
+```
+
+#### throw
+
+```java
+static void allowedAlcohol(int age) {
+    if (age >= 18) {
+        System.out.print("OK!");
+    } else {
+        // catch in class call this function
+        throw new WhyAreYouDrinkItException("This guy is cheater!");
+    }
+}
+```

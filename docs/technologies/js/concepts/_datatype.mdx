@@ -1,0 +1,29 @@
+## Data Types
+
+- `undefined`
+- `boolean`: `true`, `false`
+- `number`
+- `string`:
+  - `'single quote'`
+  - `"double quote"`
+  - Template Strings (ES6): `` ` `` `some ${value} here!` `` ` ``-> dynamic value
+  - **String** as **Object**: `let strObj = new String("hi!");`
+- `object`
+  - `null` - ???
+  - `{}`
+  - `[]` - `['value 1', 'value 2']` -> `{ 0: 'value 1', 1: 'value 2' }`
+  - `Date`
+  - `Set`
+  - `Map`
+- `function`
+- `Bigint` (ES2020)
+
+```js
+"John".constructor                // Returns function String()  {[native code]}
+(3.14).constructor                // Returns function Number()  {[native code]}
+false.constructor                 // Returns function Boolean() {[native code]}
+[1,2,3,4].constructor             // Returns function Array()   {[native code]}
+{name:'John',age:34}.constructor  // Returns function Object()  {[native code]}
+new Date().constructor            // Returns function Date()    {[native code]}
+function () {}.constructor        // Returns function Function(){[native code]}
+```

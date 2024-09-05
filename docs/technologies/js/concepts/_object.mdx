@@ -1,0 +1,231 @@
+## Object
+
+```js
+const person = {
+  firstName: "John",
+  lastName: "Doe",
+  id: 5566,
+  fullName: function () {
+    // anonymous function
+    return this.firstName + " " + this.lastName;
+  },
+};
+
+// get
+person.firstName; // John
+person["lastName"]; // Doe
+person.fullName(); // John Doe
+person.age; // undefined
+person.action(); // Error
+
+// set
+person.id = 1234;
+person.action = function () {
+  console.log("RUN");
+}; // now you can use persion.action()
+
+// check
+"id" in person; // true
+```
+
+```js
+const user1 = { name: "A", age: 20 };
+const user2 = user1; // user1 === user2
+const user3 = { name: "A", age: 20 }; // user1 !== user3 && user2 !== user3 (diff address)
+
+// Update same object
+user2.age = 21; // -> user1['age'] = 21
+user1.name = "B"; // -> user2['name'] = 'B'
+
+// Nested Objects
+const myObj = {
+  firstName: "John",
+  lastName: "Doe",
+  age: 30,
+  cars: [
+    { name: "Ford", models: ["Fiesta", "Focus", "Mustang"] },
+    { name: "BMW", models: ["320", "X3", "X5"] },
+    { name: "Fiat", models: ["500", "Panda"] },
+  ],
+  getInformation: () => this.firstName + " - " + this.age, // this -> myObj. Using: myObj.getInformation()
+  // ES5 Feature: Accessors (get + set) -> support behind the sences
+  get fullname() {
+    return this.firstName + " " + this.lastName; // using: myObj.fullname
+  },
+  set exactAge(yearBorn) {
+    this.age = new Date().getFullYear() - yearBorn; // this.exactAge = 2001; -> age = 2024 - 2001
+  },
+};
+```
+
+```js
+Object.create(); // {} - new Object, better use literals object like: const newObj = {}
+Object.keys(myObj); // ['firstName', 'lastName', 'age', 'cars', 'getInformation', 'fullname', 'exactAge']
+Object.values(myObj);
+/*
+    [
+      'John',
+      'Doe',
+      30,
+      [
+        { name: 'Ford', models: [Array] },
+        { name: 'BMW', models: [Array] },
+        { name: 'Fiat', models: [Array] }
+      ],
+      [Function: getInformation],
+      'John Doe',
+      undefined // setters
+    ]
+*/
+
+const obj = { counter: 0 };
+Object.defineProperty(obj, "reset", {
+  get: function () {
+    this.counter = 0;
+  },
+}); // object.reset
+
+Object.defineProperty(obj, "add", {
+  set: function (value) {
+    this.counter += value;
+  },
+}); // object.add = x; -> counter += x;
+
+// Protect
+Object.seal(object); // Prevents changes of object properties (not values)
+Object.isSealed(object); // Returns true if object is sealed
+Object.freeze(object); // Prevents any changes to an object
+Object.isFrozen(object); // Returns true if object is frozen
+```
+
+:::info Why using Getters & Setters?
+
+- It gives simpler syntax
+- It allows equal syntax for properties and methods
+- It can secure better data quality
+- It is useful for doing things behind-the-scenes
+  :::
+
+:::note Tips & tricks
+
+- Clone object: `const newObj = { ...oldObj };`
+- Check object has props: `prop_name in {} -> boolean`
+
+:::
+
+## Arrays
+
+```js
+const cars = ["Saab", "Volvo", "BMW"];
+
+// Getter
+cars[1]; // Volvo
+cars.length; // 3
+
+// Setter
+cars[2] = "Toyota"; // ["Saab", "Volvo", "Toyota"]
+cars[4] = "Tesla"; // ["Saab", "Volvo", "Toyota", undefined, "Tesla"]
+
+// Methods
+cars.toString(); // Saab,Volvo,BMW
+cars.sort(); // ["BMW", "Saab", "Volvo"]
+Array.isArray(cars); // true
+typeof cars; // "object"
+```
+
+```js
+const animals = ["dog", "cat", "duck", "chicken"];
+
+animals.at(-1); // chicken - (ES2022) works like animal[index] but allow negative
+animals.join(", "); // "dog, cat, duck, chicken"
+animals.concat(["fish", "renekton", "shark"]); // return ["dog", "cat", "duck", "chicken", "fish", "renekton", "shark"]
+animals.concat("fish", "renekton", "shark"); // same above
+animals.pop(); // Remove + return end animal (chicken)
+animals.push("monkey"); // Add new animals at the end + return new length of array
+animals.shift(); // Remove + return first animal (dog)
+animals.unshift("snake"); // Add new animals at the start + return new length of array
+
+// SPECIALS
+[].slice(start, end?); // Return new Array copy from original array
+[].splice(start, length?, ...items?);
+/* this method can use to insert middle
+    - Exp: animals.splice(2, 0, "bird", "penguin") -> ["dog", "cat", "bird", "penguin", "duck", "chicken"]
+    - Return array includes delete items
+*/
+[].toSpliced(start, length?, ...items?);
+/* this method works like splice but keep original array
+    - ES2023
+    - Return new array
+*/
+```
+
+```js
+const computer = ["monitor", "mouse", "keyboard", "speaker"];
+// Search
+computer.indexOf("mouse"); // 1 - indexOf(item, start?)
+computer.indexOf("paper"); // -1
+computer.lastIndexOf("mouse"); // 1 - same indexOf but reverse search
+computer.includes("speaker"); // true (ES2016)
+
+computer.find(i => i.length > 5);
+/*  Structure: [].find((item, index, currentArray) => boolean)
+    - Result (Exp): "monitor"
+    - Return first item match
+    - ES6
+*/
+computer.findIndex(i => i === 'mouse'); // 1 - structure like above feature (ES6)
+[].findLast();
+[].findLastIndex();
+
+// Sort
+[].sort();
+[].sort((a, b) => {}); // custom sort
+[].reverse();
+
+// Iteration
+[].forEach((item, index, currentArray) => {});
+[].map((item, index, currentArray) => any[]); // return new Array + keep original array
+[].filter((item, index, currentArray) => boolean); // return new Array + keep original array
+[].reduce((preValue, item, index, currentArray) => newValue, initialValue);
+[].reduceRight((preValue, item, index, currentArray) => newValue, initialValue); // right-to-left
+
+[].every((item, index, currentArray) => boolean);
+// Return true if all items pass conditions.
+// Exp: ["Anna", "Daniel", "Keth"].every(i => i.includes('a')) -> false
+
+[].some((item, index, currentArray) => boolean);
+// Return true if any item pass conditions.
+// Exp: ["Anna", "Daniel", "Keth"].some(i => i.includes('a')) -> true
+```
+
+```js
+// Array Spread (ES6)
+const q1 = ["Jan", "Feb", "Mar"];
+const q2 = ["Apr", "May", "Jun"];
+const q3 = ["Jul", "Aug", "Sep"];
+const q4 = ["Oct", "Nov", "Dec"];
+const year = [...q1, ...q2, ...q3, ...q4];
+// ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+```
+
+```js
+// Rarely use
+[].copyWithin(indexOverwrite, indexStartCopy?, indexEndCopy?); // arr copy same length (can have diff values)
+[].toSorted(); // ES2023 - return new Array + keep original array
+[].toReversed(); // ES2023 - return new Array + keep original array
+[[1,2],[3,4],[5,6]].flat(); // [1, 2, 3, 4, 5, 6] (ES2019)
+[].flatMap((item, index, currentArray) => any[]); // [].map().flat() (ES2019)
+[].with(index, replace); // return new Array with replace item + keep original array
+Array.from("text"); // ["t", "e", "x", "t"] (ES6)
+
+// Should use only in object
+["a", "b", "c"].keys(); // [0, 1, 2]
+["a", "b", "c"].entries(); // [[0, "a"], [1, "b"], [2, "c"]]
+```
+
+:::note
+
+- Arrays are a special kind of objects, with **numbered indexes**.
+- Array random order: `[].sort(() => 0.5 - Math.random());`
+
+:::

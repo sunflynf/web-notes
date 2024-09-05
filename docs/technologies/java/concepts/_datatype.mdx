@@ -1,0 +1,43 @@
+## Data Types
+
+### Primitive
+
+| Type    | Describe                 | Range              |
+| ------- | ------------------------ | ------------------ |
+| byte    | 8-bit integer            | -128 to 127        |
+| short   | 16-bit integer           | -32,768 to 32,767. |
+| int     | 32-bit integer           | -2^31 to 2^31-1    |
+| long    | 64-bit integer           | -2^63 to 2^63-1    |
+| float   | 32-bit floating-point    |                    |
+| double  | 64-bit floating-point    |                    |
+| char    | 16-bit Unicode character |                    |
+| boolean | true / false             |                    |
+
+```java
+boolean isValid = false;
+int age = 20;
+long onlineUsers = 3_000_000L; // or 3000000
+float weight = 2.5f;
+double balanceAmount = -2000.277d;
+```
+
+### Reference
+
+```java
+// The root class of the Java hierarchy. All classes inherit this
+Object obj = new Object();
+
+String str = "Hello world!";
+int[] numbers = {1, 2, 3, 4, 5};
+float[] amounts = new float[5]; // arr with length = 5
+
+// (Integer|Long).MAX_VALUE
+Integer iNumber = Integer.MIN_VALUE;
+
+// (Float|Double)
+// - NEGATIVE|POSITIVE_INFINITY
+// - MIN_VALUE: The smallest positive value greater than zero that can be represented in a float|double variable.
+// - MAX_VALUE: The largest positive value that can be represented in a float|double variable.
+// - NaN: not a number of type
+Float fNumber = Float.NEGATIVE_INFINITY;
+```

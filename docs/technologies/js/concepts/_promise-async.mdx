@@ -1,0 +1,55 @@
+## Promise & Async
+
+```js
+// Promise
+const myPromise = new Promise(function(resolve, reject) {
+    // someThing
+    if(ok) resolve();
+    else reject();
+})
+myPromise.then(
+    cb_if_success,
+    cb_if_error
+);
+// Promise.all
+const myPromises = Promise.all([promise1, promise2, ..., promiseN]);
+
+// async + await
+async function () { // return Promise<?>
+    let result = await myPromises;
+    return result;
+};
+```
+
+## Fetch API
+
+Why? Cause JSON **better** than AJAX
+
+```js
+// normal fetch return Promise<status>
+fetch(url, options?)
+    .then(() => Promise<?>)
+    // other middlewares "then"
+    .then(() => {})
+    .catch(err => {})
+// async + await
+async function getData() {
+    const result = await fetch(url);
+    return result
+}
+
+// --- OPTIONS ---
+{
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    mode: "cors", // no-cors, *cors, same-origin
+    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: "same-origin", // include, *same-origin, omit
+    headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: "follow", // manual, *follow, error
+    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+}
+```

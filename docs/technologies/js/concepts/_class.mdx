@@ -1,0 +1,49 @@
+## Class (ES6)
+
+- A JavaScript class is not an object.
+- It is a **template** for JavaScript objects.
+
+```js
+class Car {
+  constructor(brand, year) {
+    this.brand = brand;
+    this.year = year;
+  }
+  present() {
+    return "I have a " + this.brand;
+  }
+}
+
+class Model extends Car {
+  constructor(brand, year, model) {
+    super(brand, year); // Car's contructors
+    this.model = model;
+  }
+  show() {
+    return this.present() + ", it is a " + this.model;
+  }
+}
+
+const car1 = new Car("Ford", 2014);
+const car2 = new Model("Ford", 2014, "Mustand");
+```
+
+```js
+// Class with getter & setter
+class Car {
+  constructor(brand) {
+    this._carname = brand;
+  }
+  get carname() {
+    return this._carname;
+  }
+  set carname(x) {
+    this._carname = x;
+  }
+  // static - using: Car.wheels | Car.welcome('Xiaomi')
+  static wheels = 4;
+  static welcome(text = "Vinfast") {
+    return "Welcome to " + text;
+  }
+}
+```

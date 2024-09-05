@@ -1,0 +1,62 @@
+## Syntax
+
+```js
+var a = "a"; // for old browser like IE
+let b = 1; // flexiable value
+const C = Math.PI; // constant - can not change
+
+// Literals (fixed value): 1, 2.5, -10, "some text"
+// Variables: a, b, C
+```
+
+|         | Scope | Redeclare | Reassign | Hoisted | Binds this |
+| ------- | ----- | --------- | -------- | ------- | ---------- |
+| `var`   |       | x         | x        | x       | x          |
+| `let`   | x     |           | x        |         |            |
+| `const` | x     |           |          |         |            |
+
+:::note
+`Array` and `Object` assign with `const` **can update**, but can't reassign
+:::
+
+### Variable's name
+
+Start with `(A-Z) (a-z) $ _`
+
+- **Allowed**: `abc`, `student1`, `$prevDOM`, `_current`, `compare_2Arrays`
+- **Not allowed**: `1student`, `?person`
+
+### Operators
+
+- Math:
+  - Number: `+` `-` `*` `/` `%` `**`
+  - Assignment: `=` `++` `+=` `--` `-=` `*=` `/=` `%=`
+  - String: `+` `+=`
+  - Bitwise: (can assign like `<operator>=`)
+    - And `&`
+    - Or `|`
+    - Not `~`
+    - Xor `^`
+    - shift: `<<` `<<<` `>>` `>>>`
+- Compare:
+  - value: `==` `!=` `>` `>=` `<` `<=`
+  - type & value: `===` `!==`
+  - logical: `!` (not) `&&` (and) `||` (or)
+  - ternary: `(condition) ? (value if true) : (value if false)`
+  - type: `typeof` -> type; `instanceof` -> true | false
+- **Coalescing (ES2020)**: `??`.
+  - _Exp_: `let val = pi ?? 3.14;`
+  - Explain: `let val = (pi !== null && pi !== undefined) ? pi : 3.14;`
+- **Optional Chaining (ES2020)**:
+  - _Exp_: `let currentAge = user?.age;`
+  - Explain: `let currentAge = (user !== null && user !== undefined) ? user.age : undefined`
+  - Note: this operators avoid error when object user is null or undefined
+
+:::warning Special zone
+
+- `!""`, `!0`, `!null`, `!undefined` -> `true`
+- `![]`, `!{}` -> `false`
+- `condition && value` -> `condition === true ? value : undefined`
+- `value || defaultValue` -> `!!value ? value : defaultValue`
+
+:::

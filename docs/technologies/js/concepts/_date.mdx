@@ -1,0 +1,24 @@
+## Date
+
+```js
+// Using
+new Date() // current time
+new Date(date string) // '2024-04-12T14:00:00'
+new Date(year,month)
+new Date(year,month,day)
+new Date(year,month,day,hours)
+new Date(year,month,day,hours,minutes)
+new Date(year,month,day,hours,minutes,seconds)
+new Date(year,month,day,hours,minutes,seconds,ms)
+new Date(milliseconds)
+
+// Methods
+const dd = new Date('2024-4-32'); // Invalid Date - instanceof Date
+const d = new Date('2024-4-12'); // 2024-04-12T00:00:00.000Z
+d.toString();     // Fri Apr 12 2024 00:00:00 GMT+0000 (Coordinated Universal Time)
+d.toDateString(); // Fri Apr 12 2024
+d.toUTCString();  // Fri, 12 Apr 2024 00:00:00 GMT
+d.toISOString();  // 2024-04-12T00:00:00.000Z
+```
+
+> [Date methods](https://www.w3schools.com/jsref/jsref_obj_date.asp)

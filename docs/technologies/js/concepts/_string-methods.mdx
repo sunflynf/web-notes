@@ -1,0 +1,50 @@
+## String
+
+```js
+let text = "Hello    World!";
+text.length; // 15
+// Getter
+text[0]; // H
+text.charAt(0); // H
+text.charCodeAt(0); // 72 (UTF-16)
+text.at(-2); // text.charAt(text.length - 2) -> d | Introduce ES2022
+// Convert
+text.toUpperCase(); // HELLO    WORLD!;
+text.toLowerCase(); // hello    world!;
+// Features
+text.concat(' How r u?'); // Hello    World! How r u?
+text.trim(); // Hello World!
+text.replace("World", "My Fen"); // Hello    My Fen!
+text.replace(/WORLD/ig, "My Fen"); // Hello    My Fen! (use RegEx - insensitive + global match)
+text.split(); // ["H", "e", "l", "l", "o", ... , "!"]
+text.split("   "); // ["Hello", "World!"]
+// Extracting
+text.slice(start, end?); // allowed negative
+text.substring(start, end?);
+text.substr(start, len?);
+```
+
+```js
+let text = "Please locate where 'locate' occurs!";
+// Search
+text.indexOf("test"); // -1
+text.indexOf("locate"); // 7
+text.indexOf("locate", 15); // 21
+text.search(/LOCALE/gi, 15); // 21 - same indexOf, but it can use RegEx
+text.lastIndexOf("locale"); // 21 - search from last
+text.match(/locale/g); // ['locate', 'locate']
+text.includes("locate", 15); // true - ES6 + case sensitive (15 is optional)
+text.startsWith("locate"); // false - ES6 + case sensitive
+text.endsWith("locate"); // false - ES6 + case sensitive
+```
+
+```js
+// Other rarely use features
+text.trimStart(); // ES2019
+text.trimEnd(); // ES2019
+text.padStart(length, anyText); // ES2017 -> Pad a string with anyText until it reaches the length
+text.padEnd(length, anyText); // ES2017
+text.repeat(count); // ES6
+text.replaceAll(/WORLD/gi, "My Fen"); // ES2021
+text.matchAll(/ate/gi); // ES2020
+```

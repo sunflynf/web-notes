@@ -1,0 +1,158 @@
+## OOP
+
+### Classes
+
+```java
+public class Car {
+    String color;
+    int year;
+
+    // Default constructor with no arguments
+    public Car() {
+        this.color = "Blue";
+        this.year = 2024;
+    }
+
+    // Custom constructor
+    public Car(String color, int year) {
+        this.color = color;
+        this.year = year;
+    }
+
+    public void display() {
+        System.out.println("Color: " + color + ", Year: " + year);
+    }
+}
+```
+
+```java
+// Using
+Car defaultCar = new Car(); // "Blue", 2024
+Car myCar = new Car("Red", 2020);
+myCar.display();
+```
+
+### Interfaces
+
+```java
+public interface IAnimal {
+    static String sound = "E";
+    void eat();
+    void sleep();
+    // Can use without override method
+    default void wakeUp () {
+        System.out.println("Open eyes!");
+    }
+}
+```
+
+### Encapsulation
+
+```java
+// private attributes + public methods
+class User {
+    private String name;
+    private Date dob;
+
+    public String getName() { return this.name; }
+    public void setName(String name) { this.name = name; }
+}
+```
+
+### Polymorphism
+
+```java
+class CustomMath {
+    // overload method
+    public int sum(int a, int b) { return a + b; }
+    public long sum(int a, int b, int c) { return a + b + c; }
+    public float sum(float a, float b) { return a + b; }
+}
+```
+
+```java
+class Shape {
+    void draw() {
+        System.out.println("Drawing lines...");
+    }
+}
+
+class Circle extends Shape {
+    @Override
+    void draw() {
+        System.out.println("Drawing a circle...");
+    }
+}
+
+Shape c = new Circle();
+c.draw(); // Drawing a circle
+```
+
+### Abstraction
+
+```java
+interface Battery { void charge(); }
+interface Horn { void horn(); }
+
+// abstract class cannot use to create "new" object
+abstract class Car {
+    int wheels;
+    String name;
+
+    abstract void run();
+}
+```
+
+### Inheritance
+
+```java
+class Car {
+    String name;
+    // other configs
+}
+
+final class NotInherited {
+    // extends raise Error
+}
+
+class ElectricCar extends Car {
+    // attributes
+    public ElectricCar(String name, float enginePower) {
+        super(name); // put props to parents
+    }
+    // methods
+}
+```
+
+### OOP Concepts
+
+- `static` method
+- `final` & `static final`
+- `default` method in interface
+
+### Records
+
+- **JDK Version**: 14+
+- **Records** are immutable data classes that require only the type and name of fields.
+
+```java
+// Yep, it's done! Now you can create Object like normal class.
+public record Person(String name, String address) {}
+
+// Using
+Person person = new Person('John', 'Americano');
+System.out.print(person.name()); // getters
+```
+
+```java
+// Static variables & methods
+public record Person(String name, String address) {
+    public static String UNKNOWN_ADDRESS = "Unknown";
+    public static Person unnamed(String address) {
+        return new Person("Unnamed", address);
+    }
+}
+
+Person.UNKNOWN_ADDRESS;
+Person.unnamed("Some where");
+```
