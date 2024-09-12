@@ -91,6 +91,8 @@ const config: Config = {
         "handlebars",
         "java",
         "less",
+        "markdown",
+        "mermaid",
         "mongodb",
         "php",
         "powershell",
