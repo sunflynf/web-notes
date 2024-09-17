@@ -46,37 +46,69 @@ public interface IAnimal {
 }
 ```
 
-### Encapsulation
+### **Encapsulation**
+
+- Keeping the data (attributes) private
+- Providing public **getter** and **setter** methods to access or modify that data.
 
 ```java
-// private attributes + public methods
+// Encapsulation example with private attributes and public methods
 class User {
+    // Private attributes can only be accessed within this class
     private String name;
     private Date dob;
 
-    public String getName() { return this.name; }
-    public void setName(String name) { this.name = name; }
+    // Public getter method to access the private 'name' attribute
+    public String getName() {
+        return this.name;
+    }
+
+    // Public setter method to modify the private 'name' attribute
+    public void setName(String name) {
+        this.name = name;
+    }
 }
 ```
 
-### Polymorphism
+### **Polymorphism**
+
+- Polymorphism allows a method to behave differently based on the object or input.
+
+#### **Method Overloading (Compile-Time Polymorphism)**
 
 ```java
 class CustomMath {
-    // overload method
-    public int sum(int a, int b) { return a + b; }
-    public long sum(int a, int b, int c) { return a + b + c; }
-    public float sum(float a, float b) { return a + b; }
+    // Overloaded method: same name 'sum' but different parameter types and counts
+
+    // Adds two integers
+    public int sum(int a, int b) {
+        return a + b;
+    }
+
+    // Adds three integers (method overloading with different number of parameters)
+    public long sum(int a, int b, int c) {
+        return a + b + c;
+    }
+
+    // Adds two float numbers (method overloading with different parameter types)
+    public float sum(float a, float b) {
+        return a + b;
+    }
 }
 ```
 
+#### **Method Overriding (Runtime Polymorphism)**
+
 ```java
+// Base class Shape with a 'draw' method
 class Shape {
+    // Default behavior for drawing a shape
     void draw() {
         System.out.println("Drawing lines...");
     }
 }
 
+// Derived class Circle that overrides the 'draw' method of Shape
 class Circle extends Shape {
     @Override
     void draw() {
@@ -84,51 +116,74 @@ class Circle extends Shape {
     }
 }
 
-Shape c = new Circle();
-c.draw(); // Drawing a circle
+public class Main {
+    public static void main(String[] args) {
+        // Polymorphic behavior: Circle class's 'draw' method is called
+        Shape shape = new Circle();
+        shape.draw();  // Output: Drawing a circle...
+    }
+}
 ```
 
-### Abstraction
+### **Abstraction**
+
+- Abstraction hides implementation details from the user, exposing only what’s necessary.
+- It can be achieved through **abstract classes** and **interfaces**.
 
 ```java
-interface Battery { void charge(); }
-interface Horn { void horn(); }
+// An interface defines a contract for behavior without implementing it
+interface Battery {
+    void charge();  // Method without implementation
+}
 
-// abstract class cannot use to create "new" object
+interface Horn {
+    void horn();  // Method without implementation
+}
+
+// Abstract class cannot be instantiated and can have abstract methods
 abstract class Car {
     int wheels;
     String name;
 
+    // Abstract method must be implemented by derived classes
     abstract void run();
 }
 ```
 
-### Inheritance
+### **Inheritance**
+
+- Inheritance allows one class to acquire properties and behaviors of another class. 
+- The `final` keyword can be used to prevent inheritance.
 
 ```java
+// Base class Car with some common attributes
 class Car {
     String name;
-    // other configs
-}
 
-final class NotInherited {
-    // extends raise Error
-}
-
-class ElectricCar extends Car {
-    // attributes
-    public ElectricCar(String name, float enginePower) {
-        super(name); // put props to parents
+    // Constructor to initialize the car's name
+    public Car(String name) {
+        this.name = name;
     }
-    // methods
+}
+
+// Class that cannot be inherited because of 'final' keyword
+final class NotInherited {
+    // This class can't be extended by another class
+}
+
+// Derived class ElectricCar that extends the base class Car
+class ElectricCar extends Car {
+    float enginePower;
+
+    // Constructor that calls the parent constructor using 'super'
+    public ElectricCar(String name, float enginePower) {
+        super(name);  // Passing name to the parent class constructor
+        this.enginePower = enginePower;
+    }
+
+    // Additional methods and behavior specific to ElectricCar can be added here
 }
 ```
-
-### OOP Concepts
-
-- `static` method
-- `final` & `static final`
-- `default` method in interface
 
 ### Records
 

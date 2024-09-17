@@ -7,14 +7,14 @@ public class Demo {
     // constructor
     public Demo() {}
 
+    // Non-static block statement
+    // Executed every Demo is created
     {
-        // Non-static block statement
-        // Executed every Demo is created
         System.out.println("Non-static block executed")
     }
 
+    // Executed once when the class is loaded by JVM
     static {
-        // Executed once when the class is loaded by JVM
         System.out.println("Static block executed")
     }
 }

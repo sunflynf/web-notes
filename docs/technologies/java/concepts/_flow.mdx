@@ -71,7 +71,7 @@ for (int number : numbers) {
 
 // Collection.forEach
 List<Integer> listNumber = List.of(1, 2, 3, 4, 5);
-listNumber.forEach(num -> {}); // use with callback
+listNumber.forEach(num -> {}); // use with lambda
 ```
 
 #### While, Do - while Loop
@@ -79,11 +79,13 @@ listNumber.forEach(num -> {}); // use with callback
 ```java
 int i = 1, sum = 0;
 
-// while(i <= 5) {
-//     sum += i;
-//     i++;
-// }
+// check before run
+while(i <= 5) {
+    sum += i;
+    i++;
+}
 
+// Run 1st before check
 do {
     sum += i;
     i++;
@@ -94,12 +96,13 @@ do {
 
 ```java
 // Labeled Statements
+// "continue" works same
 outer_loop:
 for (int i = 0; i <= 5; i++) {
     inner_loop:
     for (int j = 0; j <= 5; j++) {
         // break; // breaks inner loop only
-        break outer_loop; // same way with "continue"
+        break outer_loop; 
     }
 }
 ```
@@ -113,7 +116,7 @@ try {
 catch (Exception err) {
     // It's fire, WATERRRRRRRRRR!
 }
-// OPTIONAL
+// OPTIONAL, this block always run
 finally {
     // You love me or hate me, I dont kare.
 }
