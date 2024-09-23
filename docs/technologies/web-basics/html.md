@@ -202,8 +202,9 @@ Button as a Link - `<button onclick="document.location='index.html'">HTML Tutor
     </tr>
     <!-- other contents -->
   </tbody>
-  <tfoot></tfoot>
-  <!-- use td like body -->
+  <tfoot>
+    <!-- use tr td like body -->
+  </tfoot>
 </table>
 ```
 

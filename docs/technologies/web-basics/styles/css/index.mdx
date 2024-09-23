@@ -6,9 +6,12 @@ tags:
 
 # CSS3
 
+```txt
 - Describes how HTML elements are to be displayed on screen, paper, or in other media
 - Control the layout of multiple web pages all at once
-- External stylesheets are stored in CSS files -> CSS removed the style formatting from the HTML page!
+- External stylesheets are stored in CSS files
+  -> CSS removed the style formatting from the HTML page!
+```
 
 ## Selectors
 
@@ -16,41 +19,47 @@ tags:
 
 **Used to "find" (or select) the HTML elements you want to style.**
 
-- Simple selectors (select elements based on `name`, `id`, `class`)
-- [Combinator selectors](https://www.w3schools.com/css/css_combinators.asp) (select elements based on a specific relationship between them)
-- [Pseudo-class selectors](https://www.w3schools.com/css/css_pseudo_classes.asp) (select elements based on a certain state)
-- [Pseudo-elements selectors](https://www.w3schools.com/css/css_pseudo_elements.asp) (select and style a part of an element)
-- [Attribute selectors](https://www.w3schools.com/css/css_attribute_selectors.asp) (select elements based on an attribute or attribute value)
+- Simple selectors (`name`, `id`, `class`)
+- [Combinator selectors](https://www.w3schools.com/css/css_combinators.asp) (a specific relationship between them)
+- [Pseudo-class selectors](https://www.w3schools.com/css/css_pseudo_classes.asp) (a certain state)
+- [Pseudo-elements selectors](https://www.w3schools.com/css/css_pseudo_elements.asp) (style a part of an element)
+- [Attribute selectors](https://www.w3schools.com/css/css_attribute_selectors.asp) (has an attribute or attribute value)
 
 :::
 
 ```css
-* {  /* Comment in css: Apply to all */
- color: blue;
+/* Apply to all */
+* {
+  color: blue;
 }
+
 /* Group selectors*/
-h1, h2, p,
+h1,
+h2,
+p,
 .class-text-center,
-strong.contain-class-center {
- text-align: center;
+strong.contain-class-center {
+  text-align: center;
 }
-#id-need-bold, div#id-must-be-bold {
- font-weight: bold;
+
+#id-need-bold,
+div#id-must-be-bold {
+  font-weight: bold;
 }
 ```
 
 ### Combination
 
+{/* prettier-ignore */}
 ```css
 /* Child */
-.root > .specified-child {
-}
+.root > .specified-child { }
+
 /* Adjacent Sibling */
-.root + .first-placed-immediately-below {
-}
+.root + .first-placed-immediately-below { }
+
 /* General Sibling */
-.root ~ .all-placed-immediately-below {
-}
+.root ~ .all-placed-immediately-below { }
 ```
 
 ### Pseudo
@@ -77,90 +86,143 @@ strong.contain-class-center {
 
 ### Specificity
 
-- `*` - 0
-- element - 1
-- `.class` - 10
-- `#id` - 100
-- inline `style=""` - 1000
-- `!important` - Infinity
+```
+*                     -> 0
+element               -> 1
+.class                -> 10
+#id                   -> 100
+<inline style="" />   -> 1000
+!important            -> Infinity
+```
 
 :::note
 
-- Combination will sum all points. Example: `div#first-name.text-center` -> 1 + 100 + 10 = 111
+{/* prettier-ignore */}
+- Combination will sum all points.
+  ```css
+  div#first-name.text-center { }
+  /* 1 + 100 + 10 = 111 */
+  ```
 - Selector with same point will apply latest rule
 
 :::
 
 ## Colours
 
-- Name: `red`, `black`, `white`, `blue`,... [HTML Color Names](https://www.w3schools.com/colors/colors_names.asp)
-- **RGB** (red, green, blue) & **RGBA** (alpha): `rgb(0, 0, 0)` | `rgba(255, 255, 255, 0.2)`
-- **HEX**: `#rrggbb` - use `00 -> FF (0 -> 255)`
-- **HSL** : `hsl(hue, saturation, lightness)` & **HSLA** - alpha like RGBA
-  - hue: `[0, 360]`
-    - 0 - red
-    - 120 - green
-    - 240 - blue
-  - saturation:
-    - 0% - shade of gray
-    - 100% - full color
-  - lightness:
-    - 0% - black
-    - 50% - neither light or dark
-    - 100% - white
+| Type                                                      | Example                      |
+| --------------------------------------------------------- | ---------------------------- |
+| [Name](https://www.w3schools.com/colors/colors_names.asp) | red, black, white, blue, ... |
+| **RGB**                                                   | rgb(0, 0, 0)                 |
+| RGBA                                                      | rgba(0, 0, 0, 0.2)           |
+| **HEX**                                                   | #000000                      |
+| HSL                                                       | hsl(0, 100%, 100%)           |
+| HSLA                                                      | hsl(0, 100%, 100%, 0.2)      |
+
+:::info HSL colors
+
+- **hue** `[0, 360]`
+  - 0 - red
+  - 120 - green
+  - 240 - blue
+- **saturation**
+  - 0% - shade of gray
+  - 100% - full color
+- **lightness**
+  - 0% - dark
+  - 50% - neither light or dark
+  - 100% - light
+
+:::
+
+:::note Special colors
+
+- `transparent`: like `opacity`
+- `currentcolor`: get initial color of element, use with pseudo
+
+:::
 
 ## Backgrounds
 
-**Shorthand:** `background: color image repeat position;`
+:::note Shorthand
 
-- `background-color`: [Colour](#colours)
-- `background-image`: `url("image_file.type")`;
-- `background-repeat`: `repeat` | `repeat-x[y]` | `no-repeat`;
-- `background-position`: `left[right]` `top[bottom]`;
-- `background-attachment`: `fixed[scroll]`;
+- [Colour](#colours)
 
-**Other options:**
+```css
+background[-position]: color image repeat position;
+```
 
-- `background-clip`
-- `background-origin`
+:::
+
+```css
+/* Small pieces */
+background-color: #000000;
+background-image: url("image_file.type");
+background-repeat: repeat | repeat-x | repeat-y | no-repeat;
+background-position: left | right | top | bottom;
+background-attachment: fixed | scroll;
+
+/* Advance */
+background-clip
+background-origin
+```
 
 ## Units
 
-- **Absolute**
-  - cm - centimeters
-  - mm - milimeters
-  - in - inches
-  - `px` - pixels = 1/96 in
-  - pt - points = 1/72 in
-  - pc - picas = 12 pt
-- **Relative**
-  - `em` - n \* _current font size_
-  - `rem` - n \* **_root font size_**
-  - `%` - base on parent element
-  - ex - base on x-height (rarely)
-  - ch - base on width of "0"
-  - _`vw` - n -> n% width of viewport_
-  - _`vh` - n -> n% height of viewport_
-  - vmin - n -> n% viewport's smaller dimension
-  - vmax - n -> n% viewport's larger dimension
+### Absolute
+
+- cm - centimeters
+- mm - milimeters
+- in - inches
+- `px` - pixels = 1/96 in
+- pt - points = 1/72 in
+- pc - picas = 12 pt
+
+### Relative
+
+- `em` - n \* _current font size_
+- `rem` - n \* **_root font size_**
+- `%` - base on parent element
+- ex - base on x-height (rarely)
+- ch - base on width of "0"
+- _`vw` - n -> n% width of viewport_
+- _`vh` - n -> n% height of viewport_
+- vmin - n -> n% viewport's smaller dimension
+- vmax - n -> n% viewport's larger dimension
 
 ## Borders
 
-**Shorthand**: `border[-position]: width style(required) color`
+:::note Shorthand
 
-- `-position`: `top`, `right`, `bottom`, `left`
-- `border[-position]-width`: `top right bottom left`;
-- `border[-position]-style`: `dotted`, `dashed`, `solid`, `double`, `groove`, `ridge`, `inset`, `outset`, `hidden`
-- `border[-position]-color`: [Colour](#colours)
-- `border-radius`: `0 (square) -> 50px (round)`
+```css
+border[-position]: width style(required) color;
+```
+
+:::
+
+```css
+border[-position]-width: 2px;
+/* dotted | dashed | solid | double | groove | ridge | inset | outset | hidden; */
+border[-position]-style: solid;
+border[-position]-color: #000000;
+
+/* OPTIONAL */
+border-position: top | right | bottom | left;
+/* 0 (square) -> 50% (round) */
+border-radius: 0;
+border-radius[-top|-bottom][-left|-right]: 0;
+border-image: url("some_img.jpg");
+```
 
 ## Margins & Padding
 
 - **Margin**: space around element
 - **Padding**: space inside element
-- **_Using_**
-  - `[type][-position]: width;`
-  - `margin-top: 20px;`
+
+```css
+/* [type][-position]: width; */
+/* Example for margin on top */
+margin-top: 20px;
+```
 
 ## Size
 
@@ -177,8 +239,8 @@ strong.contain-class-center {
 
 | Attribute          | Value                                                  | Note                                                                                                         |
 | ------------------ | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| `background-color` | [[#Colour]]                                            |                                                                                                              |
-| `color`            | [[#Colour]]                                            |                                                                                                              |
+| `background-color` | [Colour](#colours)                                     |                                                                                                              |
+| `color`            | [Colour](#colours)                                     |                                                                                                              |
 | `text-align`       | left, center, justify, right                           | "justify" - each line is stretched so that every line has equal width                                        |
 | `text-align-last`  | left, center, justify, right                           | Apply only last row of text (long text)                                                                      |
 | `direction`        | ltr (default), rtl                                     |                                                                                                              |
@@ -209,10 +271,15 @@ strong.contain-class-center {
 
 :::
 
-:::note Using Google font
+:::tip Using Google font
 
-1. `<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=FontName">`
-2. Add above tag to `<head>` tag
+{/* prettier-ignore */}
+```html
+<head>
+  <!-- Other tags -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=FontName" />
+</head>
+```
 
 :::
 
@@ -232,14 +299,17 @@ strong.contain-class-center {
 a:link {
   color: violet;
 }
+
 /* visited link */
 a:visited {
   color: green;
 }
+
 /* mouse over link */
 a:hover {
   cursor: pointer; /* default */
 }
+
 /* selected link */
 a:active {
   color: darkgreen !important;
@@ -278,7 +348,7 @@ table {
 
 ## Display
 
-> Toggle element: `visibility: visible|hidden;`
+Toggle element: `visibility: visible|hidden;`
 
 | `display` value | Description                                      |
 | --------------- | ------------------------------------------------ |
@@ -302,10 +372,13 @@ table {
 | absolute         | base on nearest element has `position: relative;`         |
 | sticky           | `relative` (normal) + `fixed` (scroll to sticks in place) |
 
-> POSITION not `static`:
->
-> - Combine with `left`, `top`, `right`, `bottom` (not includes 4)
-> - Can use `z-index` to specifies the stack order
+:::note
+POSITION not `static`:
+
+- Combine with `left`, `top`, `right`, `bottom` (not includes 4)
+- Can use `z-index` to specifies the stack order
+
+:::
 
 ### Overflow
 
@@ -316,12 +389,23 @@ table {
 | scroll                  | show scroll if content out of box |
 | auto                    |                                   |
 
-> Special: `overflow-break: normal|break-word;` -> handle overflow words
+:::tip Handle overflow words
+
+```css
+overflow-break: normal | break-word;
+```
+
+:::
 
 ### Layout: `float` and `clear`
 
-- `float: none|left|right|inherit` specifies how an element should float.
-- `clear: none|left|right|both|inherit` specifies what elements can float beside the cleared element and on which side.
+```css
+/* specifies how an element should float. */
+float: none | left | right | inherit;
+
+/* specifies what elements can float beside the cleared element and on which side. */
+clear: none | left | right | both | inherit;
+```
 
 ### Math function
 
@@ -368,30 +452,29 @@ div {
 }
 ```
 
-{/* ## TODO
+## Topics
 
-- [ ] `border-radius`
-- [ ] `border-image`
-- [ ] `special-color`: transparent, currentcolor
-- [ ] `box-shadow`
-- [ ] `transforms` + Animation
-- [ ] Image properties
-- [ ] Multiple Columns
-- [ ] `resize`
-- [ ] `var(--variable)`
-- [ ] `box-sizing`
-- [ ] Media Query
-- [ ] Flex system
-- [ ] Grid system
-- [ ] Responsive Web Design */}
+### Properties
+
+- `box-shadow`
+- `transforms` + Animation
+- Image properties
+- Multiple Columns
+- `resize`
+- `var(--variable)`
+- `box-sizing`
+- Media Query
+
+### UI Design
+
+- Flex system
+- Grid system
+- Responsive Web Design
 
 ## Resources
 
 - [CSS Reference](https://cssreference.io/)
-
-## How to make it
-
-- [Build like w3schools](https://www.w3schools.com/howto/default.asp)
+- [Build components - w3schools](https://www.w3schools.com/howto/default.asp)
 
 ## CSS Preprocesssors
 
@@ -410,6 +493,8 @@ div {
 | **Pros**               | Large community, extensive documentation, widely used, supports both SCSS and SASS syntax | Easy to learn, lightweight, fast, good for smaller projects | Flexible and concise syntax, powerful and expressive, good for programmatic approach |
 | **Cons**               | Overkill for smaller projects, steeper learning curve                                     | Smaller community, fewer advanced features                  | Smaller community, less documentation, less intuitive for traditional CSS users      |
 | **Best For**           | Large projects and teams                                                                  | Smaller projects, quick and easy-to-learn                   | Developers preferring a more programmatic approach, concise syntax                   |
+
+## More Information
 
 import DocCardList from "@theme/DocCardList";
 
