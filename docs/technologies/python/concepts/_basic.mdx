@@ -1,0 +1,72 @@
+## Basics
+
+### Syntax and Variables
+
+Python uses simple, clean syntax. Variables don't need explicit declarations.
+
+```python
+# Basic variables
+x = 10
+y = 3.14
+name = "Alice"
+
+# Printing values
+print(x, y, name)
+```
+
+### Control Flow
+
+```python
+# if-else example
+x = 10
+if x > 5:
+    print("x is greater than 5")
+else:
+    print("x is 5 or less")
+
+# for loop example
+for i in range(5):
+    print(i)
+```
+
+### Functions
+
+```python
+def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("Alice"))
+```
+
+### Data Structures
+
+Python has built-in data structures like **lists**, **dictionaries**, and **sets**
+
+```python
+# List
+numbers = [1, 2, 3, 4]
+print(numbers)
+
+# Tuple - ordered and unchangeable
+ord_numbers = (1, 2, 3, 4)
+print(ord_numbers)
+
+# Dictionary
+person = {"name": "Alice", "age": 25}
+print(person["name"])
+
+# Set
+unique_values = {1, 2, 3, 3}
+print(unique_values)
+```
+
+### Error Handling
+
+Handle errors gracefully using try-except blocks.
+
+```python
+try:
+    x = int("not a number")
+except ValueError as e:
+    print(f"Error: {e}")
+```
