@@ -17,27 +17,43 @@ tags:
 
 ## Basic Types
 
-- Type Assignment:
-  - **Explicit**: `let firstName: string = "Dylan";`
-  - **Implicit** (guess): `let firstName = "Dylan";` -> string
-- Primitives type:
-  - main: `boolean`, `number`, `string`
-  - other: `bigint`, `symbol`
-- Special type:
-  - `any`
-  - `unknown` - safe `any`, add type later with casting (use `as` keyword)
-  - `never`, `undefined`, `null` - maybe useless
-  - `void` - for **function** return `undefined`
-  - Array
-    - `const arr: number[] = [];` | `string[]` | `Something[]`
-    - `const PAGE_MODE: readonly string[] = ['view', 'create', 'edit']`
-  - Tuples
-    - Array for multiple type - `let tuple: [number, boolean, string] = [2, false, 'abc']`
-    - Can use `readonly`
-  - Object
-    - `let car: { model: string, year: number, mileage?: number, [x: string]: any }`
-    - `?` use for optional
-    - This type can replace by `type` or `interface`
+```ts
+// Type Assignment
+let firstName: string = 'Dylan'; // Explicit
+let firstName = 'Dylan'; // Implicit -> auto be string
+
+// Primitives type
+let isTrue: boolean = false;
+let firstNum: number = 0;
+let yourName: string = 'My Name';
+let myVirtualBalance = new BigInt('999999999999999');
+let mySymbol: symbol = new Symbol('SIMP');
+
+// SPECIAL
+// 'undefined' | 'null' maybe useless
+let dontUseThis: never;
+let thing: any; 
+let something: unknown; // any but safe, cast with "as"
+
+// () => void -> function return undefined
+function doIt(): () => void { }
+
+// T[]
+const listAgeValid: number[] = [];
+const BLACK_LIST: readonly string[] = [];
+
+// Tuples: [T1, T2, ..., Tn]
+// - Can use 'readonly'
+const materials: [string, number, boolean] = ['truffles', 2, false];
+
+// Object
+let car : {
+  model: string,
+  year: number,
+  mileage?: number, // OPTIONAL property
+  [x: string]: any, // OPTIONAL information
+}
+```
 
 ## Enums
 
@@ -119,17 +135,23 @@ const car: Car = {
 // Type Alias
 type Negate = (value: number) => number;
 
-// in this function, the parameter `value` automatically gets assigned the type `number` from the type `Negate`
+// in this function, the parameter `value` automatically gets assigned 
+// the type `number` from the type `Negate`
 const negateFunction: Negate = (value) => value * -1;
 ```
 
 ## Casting
 
-Casting doesn't actually change the type of the data within the variable => Force casting
+```ts
+// var as type
+let value = x as string; 
 
-1. `variable as type`. Exp: `x as string`
-2. `<type>variable`. Exp: `<string>x`
-3. **Force casting**: `(variable as unknown|any) as type`. Exp: `(x as unknown) as number`
+// <type>var
+let value = <string>x;
+
+// Force casting - Usually use for fetching data
+let value = (x as unknown) as number;
+```
 
 ## Class
 
@@ -140,7 +162,7 @@ Casting doesn't actually change the type of the data within the variable => Forc
   - `protected` - Class member, Classes inherit it
   - `public` - anywhere
 - `implements` multiple `interface`
-- `extends` 1 `class`
+- `extends` only one `class`
 - `override` function
 - `abstract` class - not use to create Object
 
@@ -161,7 +183,8 @@ class Person {
 }
 
 const person = new Person("Jane");
-console.log(person.getName()); // person.name isn't accessible from outside the class since it's private
+// person.name isn't accessible from outside the class since it's private
+console.log(person.getName()); 
 ```
 
 ```ts
@@ -170,8 +193,12 @@ interface Shape {
 }
 
 class Rectangle implements Shape {
-  // using protected for these members allows access from classes that extend from this class, such as Square
-  public constructor(protected readonly width: number, protected readonly height: number) {}
+  // using protected for these members allows access 
+  // from classes that extend from this class, such as Square
+  public constructor(
+    protected readonly width: number, 
+    protected readonly height: number
+  ) {}
 
   public getArea(): number {
     return this.width * this.height;
@@ -204,7 +231,10 @@ abstract class Polygon {
 }
 
 class Rectangle extends Polygon {
-  public constructor(protected readonly width: number, protected readonly height: number) {
+  public constructor(
+    protected readonly width: number, 
+    protected readonly height: number
+  ) {
     super();
   }
 
