@@ -160,3 +160,74 @@ function App() {
 
 export default App;
 ```
+
+## Run with 1 command
+
+1. **Install the necessary packages:**
+
+   ```bash
+   npm install concurrently
+   ```
+
+2. **Set up your project structure:**
+
+   ```txt
+   my-project/
+   ├── client/
+   │   ├── src/
+   │   ├── public/
+   │   ├── package.json
+   │   └── vite.config.js
+   ├── server/
+   │   ├── index.js
+   │   └── package.json
+   ├── package.json
+   └── README.md
+   ```
+
+3. **Configure your `package.json`:**
+
+    ```json title="package.json"
+    {
+      "name": "my-project",
+      "version": "1.0.0",
+      "scripts": {
+        "start": "concurrently \"npm run client\" \"npm run server\"",
+        "client": "cd client && npm run dev",
+        "server": "cd server && npm run dev"
+      },
+      "devDependencies": {
+        "concurrently": "^6.0.0"
+      }
+    }
+    ```
+
+      This example use `create-vite` for **React**
+
+    ```json title="client/package.json"
+    {
+      "scripts": {
+        "dev": "vite"
+      },
+    }
+    ```
+
+    ```json title="server/package.json"
+    {
+      "scripts": {
+        "dev": "nodemon index.js"
+      },
+      "dependencies": {
+        "express": "^4.17.1"
+      },
+      "devDependencies": {
+        "nodemon": "^2.0.7"
+      }
+    }
+    ```
+
+4. **Run the project:**
+
+    ```bash
+    npm start
+    ```
