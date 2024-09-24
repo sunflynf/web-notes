@@ -1,3 +1,7 @@
+---
+description: Compare popular cloud platforms
+---
+
 # Cloud Platforms
 
 | Cloud Platform | Pricing (Per Month) | Free Tier | Key Services | Unique Features | Ideal For |

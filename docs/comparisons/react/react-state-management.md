@@ -1,3 +1,7 @@
+---
+description: Compasition table for popular state management libraries of React
+---
+
 # State Management
 
 | Feature                  | React Context | Zustand | Jotai   | Recoil   | Redux     | MobX    |
