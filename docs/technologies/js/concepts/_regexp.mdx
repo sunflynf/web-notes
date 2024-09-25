@@ -1,0 +1,28 @@
+## RegExp
+
+```js
+// Declare
+const re1 = /[a-z]/gi;
+const re2 = new RegExp("[a-z]");
+const re3 = new RegExp(/[a-z]/, gi);
+
+// Using
+const str = "Some long text....";
+
+re1.test(str); // true | false
+
+str.match(re1); // String[]
+str.replace(re1, text); // replace all match re1 -> text
+str.replace(re1, (text) => replaceText);
+str.split(re1); // can use for special symbols
+```
+
+:::note
+
+**Flags**
+
+- /g - Global Search
+- /i - Case Insensitive
+- /m - Multiline Search
+
+:::

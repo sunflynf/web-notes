@@ -37,7 +37,7 @@ function sum(a, b) {
   return a + b;
 }
 
-// Self-Invoking
+// Immediately Invoked Function Expressions
 (function () {
   let x = "Hello!!"; // I will invoke myself
 })();
@@ -66,8 +66,9 @@ const add = (function () {
     return counter;
   };
 })();
-// After run self-invoking (only 1 time) -> add = function() { counter += 1; return counter; };
-// counter start with 0, call add() will increase
+// After run self-invoking (only 1 time) 
+// -> add = function() { counter += 1; return counter; };
+// NOTE: counter start with 0, call add() will increase
 ```
 
 :::warning Arrow function
