@@ -1,49 +1,24 @@
 # PHP
 
-### Setup evironment on Visual Studio Code
+import Setup from './concepts/_setup.mdx';
+import Basic from './concepts/_basic.mdx';
+import Array from './concepts/_array.mdx';
+import Function from './concepts/_function.mdx';
+import OOP from './concepts/_oop.mdx';
+import ErrorHandling from './concepts/_error-handling.mdx';
+import Form from './concepts/_form.mdx';
+import Database from './concepts/_database.mdx';
+import SessionsCookies from './concepts/_sessions-cookies.mdx';
 
-- [Visual Studio Code](https://code.visualstudio.com/)
-- [Official PHP website](https://www.php.net/downloads)
-
-#### Install PHP Extensions for VSCode
-
-- **PHP Intelephense**: provides PHP language support, including syntax highlighting, code completion, and more.
-- **PHP Debug**: allows you to debug PHP code within VSCode.
-
-#### Configure PHP Debug
-
-```json title='launch.json'
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Listen for XDebug",
-      "type": "php",
-      "request": "launch",
-      "port": 9003,
-      "pathMappings": {
-        "/var/www/html": "${workspaceFolder}"
-      }
-    },
-    {
-      "name": "Launch currently open script",
-      "type": "php",
-      "request": "launch",
-      "program": "${file}",
-      "cwd": "${fileDirname}",
-      "port": 9003
-    }
-  ]
-}
-```
-
-#### Simple PHP Code
-
-```php
-<?php
-echo "Hello, World!";
-?>
-```
+<Setup />
+<Basic/>
+<Array/>
+<Function/>
+<OOP/>
+<ErrorHandling/>
+<Form/>
+<Database/>
+<SessionsCookies/>
 
 ## Resources
 
