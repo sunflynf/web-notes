@@ -1,24 +1,24 @@
 ---
-description: build CSS style with JavaScript
+description: Build CSS style with JavaScript
 tags: [Frontend, CSS, JavaScript]
 ---
 
 # CSS in JS
 
-| CSS-in-JS Library | Style Definition | Composition | Server-Side Rendering (SSR) |  Community & Support |
-|---|---|---|---|:---:|
-| **styled-components** | template literals | ✅ (Composition via props) | ✅ (via ReactDOMServer) | ★★★★☆ |
-| **emotion** | template literals + string interpolation | ✅ (Composition via props + interpolation) | ✅ (via emotion-server) | ★★★★☆ |
-| **JSS** | JavaScript objects | ✅ (Composition via props + classes) | ✅ (via JSS's server renderer) | ★★★★☆ |
-| **goober** | template literals + string interpolation | ✅ (Composition via props + interpolation) | ✅ (via goober's server renderer) | ★★★☆☆ |
-| **twind** | utility classes + preflight styles | ✅ (Composition via utility classes) | ✅ (via twind's server renderer) | ★★★☆☆ |
-| **vanilla-extract** | TypeScript + CSS variables | ✅ (Composition via props and CSS variables) | ✅ (via vanilla-extract's server renderer) | ★★★★☆ |
+| CSS-in-JS Library     | Style Definition                         | Composition                                  | Server-Side Rendering (SSR)                | Community & Support |
+| --------------------- | ---------------------------------------- | -------------------------------------------- | ------------------------------------------ | :-----------------: |
+| **styled-components** | template literals                        | ✅ (Composition via props)                   | ✅ (via ReactDOMServer)                    |        ★★★★☆        |
+| **emotion**           | template literals + string interpolation | ✅ (Composition via props + interpolation)   | ✅ (via emotion-server)                    |        ★★★★☆        |
+| **JSS**               | JavaScript objects                       | ✅ (Composition via props + classes)         | ✅ (via JSS's server renderer)             |        ★★★★☆        |
+| **goober**            | template literals + string interpolation | ✅ (Composition via props + interpolation)   | ✅ (via goober's server renderer)          |        ★★★☆☆        |
+| **twind**             | utility classes + preflight styles       | ✅ (Composition via utility classes)         | ✅ (via twind's server renderer)           |        ★★★☆☆        |
+| **vanilla-extract**   | TypeScript + CSS variables               | ✅ (Composition via props and CSS variables) | ✅ (via vanilla-extract's server renderer) |        ★★★★☆        |
 
 :::info All package above have
 
 - Theming: Support `ThemeProvider`
 - Hot Module Replacement (HMR)
-:::
+  :::
 
 ## Key
 
@@ -33,14 +33,14 @@ tags: [Frontend, CSS, JavaScript]
 
 > Based on some additional factors
 
-| Library | TypeScript Support | CSS Modules Support | CSS-in-JS API | Learning Curve |
-|---|---|:---:|---|---|
-| **styled-components** | ✅ (via `styled-components/macro`) | ✅ | ✅ (template literals) | Easy |
-| **emotion** | ✅ (via `@emotion/styled` and `@emotion/react`) | ✅ | ✅ (template literals and string interpolation) | Easy to Moderate |
-| **JSS** | ✅ | ✅ | ✅ (JavaScript objects) | Moderate |
-| **goober** | ✅ (via `@emotion/react` and `@emotion/styled`) | ✅ | ✅ (template literals and string interpolation) | Easy |
-| **twind** | ✅ (via `twind/preset-auto`) | ✅ | ✅ (utility classes) | Easy |
-| **vanilla-extract** | ✅ (built-in) | ✅ | ✅ (TypeScript and CSS variables) | Moderate to Hard |
+| Library               | TypeScript Support                              | CSS Modules Support | CSS-in-JS API                                   | Learning Curve   |
+| --------------------- | ----------------------------------------------- | :-----------------: | ----------------------------------------------- | ---------------- |
+| **styled-components** | ✅ (via `styled-components/macro`)              |         ✅          | ✅ (template literals)                          | Easy             |
+| **emotion**           | ✅ (via `@emotion/styled` and `@emotion/react`) |         ✅          | ✅ (template literals and string interpolation) | Easy to Moderate |
+| **JSS**               | ✅                                              |         ✅          | ✅ (JavaScript objects)                         | Moderate         |
+| **goober**            | ✅ (via `@emotion/react` and `@emotion/styled`) |         ✅          | ✅ (template literals and string interpolation) | Easy             |
+| **twind**             | ✅ (via `twind/preset-auto`)                    |         ✅          | ✅ (utility classes)                            | Easy             |
+| **vanilla-extract**   | ✅ (built-in)                                   |         ✅          | ✅ (TypeScript and CSS variables)               | Moderate to Hard |
 
 ## Additional Notes
 

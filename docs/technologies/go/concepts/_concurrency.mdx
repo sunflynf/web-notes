@@ -1,0 +1,13 @@
+## Concurrency
+
+```go
+// Goroutine - Lightweight threads managed by Go
+go func() {
+    fmt.Println("Running in a goroutine")
+}()
+
+// Use channels to communicate between goroutines
+c := make(chan string)
+go func() { c <- "Hello from goroutine" }()
+fmt.Println(<-c)
+```

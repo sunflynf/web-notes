@@ -1,14 +1,19 @@
+---
+description: Back-end builders compare
+tags: [Python]
+---
+
 # Python Frameworks
 
-| Feature        | Flask                | FastAPI                      | Django                  |
-|----------------|----------------------|------------------------------|-------------------------|
-| **Type**       | Microframework        | Microframework (API-focused)  | Full-stack framework    |
-| **Performance**| Moderate              | Very High (async by default)  | Moderate                |
-| **Ease of Use**| Easy (for small apps) | Easy with modern Python       | Moderate (more complex) |
-| **Async**      | Limited (via plugins) | Full async support            | Partial async support   |
-| **Built-in Features**| Minimal          | API docs, validation, async   | ORM, admin, auth, etc.  |
-| **Community**  | Large, mature         | Fast-growing                  | Huge, mature            |
-| **Best For**   | Small/medium apps     | High-performance APIs         | Large, feature-rich apps|
+| Feature               | [Flask](../technologies/python/frameworks/flask.md) | [FastAPI](../technologies/python/frameworks/fastapi.md) | [Django](../technologies/python/frameworks/django.md) |
+| --------------------- | --------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------- |
+| **Type**              | Microframework                                      | Microframework (API-focused)                            | Full-stack framework                                  |
+| **Performance**       | Moderate                                            | Very High (async by default)                            | Moderate                                              |
+| **Ease of Use**       | Easy (for small apps)                               | Easy with modern Python                                 | Moderate (more complex)                               |
+| **Async**             | Limited (via plugins)                               | Full async support                                      | Partial async support                                 |
+| **Built-in Features** | Minimal                                             | API docs, validation, async                             | ORM, admin, auth, etc.                                |
+| **Community**         | Large, mature                                       | Fast-growing                                            | Huge, mature                                          |
+| **Best For**          | Small/medium apps                                   | High-performance APIs                                   | Large, feature-rich apps                              |
 
 ## Choosing between them
 

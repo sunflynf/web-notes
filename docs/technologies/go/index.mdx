@@ -2,158 +2,25 @@
 
 Go is a statically typed, compiled language known for its simplicity, performance, and concurrency features.
 
-## Setting
+import Setting from './concepts/_setting.mdx';
+import Basic from './concepts/_basic.mdx';
+import Flow from './concepts/_flow.mdx';
+import Function from './concepts/_function.mdx';
+import DataStructure from './concepts/_data-structure.mdx';
+import Structs from './concepts/_structs.mdx';
+import ErrorHandling from './concepts/_error-handling.mdx';
+import Concurrency from './concepts/_concurrency.mdx';
+import Testing from './concepts/_testing.mdx';
 
-- [Official page](https://go.dev/dl/)
-- Check version
-  ```bash
-  go version
-  ```
-- First Go program
-
-  ```go
-  package main
-  import "fmt"
-  func main() {
-      fmt.Println("Hello, World!")
-  }
-  ```
-
-  ```bash
-  go run <filename>.go
-  ```
-
-## Variables & Data Types
-
-Go can automatically infer types with the short-hand declaration.
-
-### Declare
-
-```go
-var x int = 10
-y := 20 // short hand
-```
-
-### Basic Types
-
-```go
-var age int = 30
-var name string = "John"
-var isActive bool = true
-```
-
-## Control flow
-
-### Conditional
-
-```go
-if age > 18 {
-    fmt.Println("Adult")
-} else {
-    fmt.Println("Minor")
-}
-
-switch day {
-    case "Monday":
-        fmt.Println("Start of the week")
-    default:
-        fmt.Println("Other day")
-}
-```
-
-### Loops
-
-```go
-for i := 0; i < 5; i++ {
-    fmt.Println(i)
-}
-```
-
-## Functions
-
-```go
-func add(x int, y int) int {
-    return x + y
-}
-
-// Multiple return values
-func swap(a, b string) (string, string) {
-    return b, a
-}
-```
-
-## Data structures
-
-### Array & Slice
-
-```go
-// Arrays are fixed-length, while Slices are dynamic
-var arr = [3]int{1, 2, 3}
-var slice = []int{1, 2, 3, 4, 5}
-```
-
-### Map
-
-```go
-m := map[string]int{"apple": 1, "banana": 2}
-```
-
-## Structs & Methods
-
-```go
-// Structs are used to group related data together
-type Person struct {
-    Name string
-    Age  int
-}
-
-// Using
-func (p Person) Greet() {
-    fmt.Println("Hello, my name is", p.Name)
-}
-```
-
-## Error handling
-
-```go
-// Go uses explicit error handling with the error type.
-func divide(x, y float64) (float64, error) {
-    if y == 0 {
-        return 0, fmt.Errorf("cannot divide by zero")
-    }
-    return x / y, nil
-}
-
-// Research more about
-// defer, panic & recover
-defer fmt.Println("End of program")
-panic("Something went wrong!")
-```
-
-## Concurrency
-
-```go
-// Goroutine - Lightweight threads managed by Go
-go func() {
-    fmt.Println("Running in a goroutine")
-}()
-
-// Use channels to communicate between goroutines
-c := make(chan string)
-go func() { c <- "Hello from goroutine" }()
-fmt.Println(<-c)
-```
-
-## Tesing
-
-```go
-func TestAdd(t *testing.T) {
-    result := add(2, 3)
-    if result != 5 {
-        t.Errorf("expected 5, got %d", result)
-    }
-}
-```
+<Setting />
+<Basic />
+<Flow />
+<Function />
+<DataStructure />
+<Structs />
+<ErrorHandling />
+<Concurrency />
+<Testing />
 
 ## Resources
 
