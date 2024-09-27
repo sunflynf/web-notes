@@ -1,0 +1,16 @@
+## Error handling
+
+```go
+// Go uses explicit error handling with the error type.
+func divide(x, y float64) (float64, error) {
+    if y == 0 {
+        return 0, fmt.Errorf("cannot divide by zero")
+    }
+    return x / y, nil
+}
+
+// Research more about
+// defer, panic & recover
+defer fmt.Println("End of program")
+panic("Something went wrong!")
+```
