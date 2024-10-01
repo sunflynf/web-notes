@@ -1,0 +1,134 @@
+## Form
+
+Collect user input and sent to a server for processing.
+
+```html
+<form>
+  <!-- Other form element here! -->
+</form>
+```
+
+### Input tag
+
+:::info
+
+- Default: `<input type="text" />`
+- Common attributes: `id`, `class`, `title`, `value`, `name` (add to url params), `hidden`, `disabled`, `required`, `form` - a part of specifies form
+- Input with text (or number) attributes: `autofocus`, `autocomplete`, `readonly`, `size` - width, `maxlength`, `placeholder`, `pattern` - RegEx
+- Input type _submit_ & _image_: `formaction`, `formenctype`, `formmethod`, `formtarget`
+- Functions: `onclick`, `ondoubleclick`, `onblur`, `onfocus`
+
+:::
+
+| Type           | Special Atrributes  |
+| -------------- | ------------------- |
+| button         | value - text inside |
+| submit         |                     |
+| reset          |                     |
+| color          |                     |
+| checkbox       | checked             |
+| radio          | checked             |
+| range          |                     |
+| file           | multiple            |
+| number         | min, max, step      |
+| email          |                     |
+| password       |                     |
+| search         |                     |
+| tel            |                     |
+| text           |                     |
+| url            |                     |
+| month          | min, max            |
+| week           | min, max            |
+| time           | min, max            |
+| date           | min, max            |
+| datetime-local | min, max            |
+| hidden         |                     |
+| image          | src, height, width  |
+
+:::warning Input Form special attribute
+
+- `formaction` - run override current `action`
+- `formenctype` - submit with encode form data
+- `formmethod` - submit override current `method`
+- `formtarget` - override `target`
+
+:::
+
+### Label tag
+
+- Useful for screen-reader users
+- Helps users who have difficulty clicking on very small regions (such as radio buttons or checkboxes) - focus on `for` and `id`
+
+```html
+<label for="fname">First name:</label><br />
+<input type="text" id="fname" name="fname" value="John" />
+```
+
+### Form attributes
+
+| Attributes   | Description                                                                                                | Example                                                     |
+| ------------ | ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| action       | Defines the action to be performed when the form is submitted                                              | `action="/login.asp"`                                       |
+| target       | `_blank` - new window / tab `_self` - current window `_parent` - parent frame `_top` - full body of window | `target="_blank"`                                           |
+| method       | `GET` (default), `POST`, `PUT`, `PATCH`, `DELETE`                                                          | `method="get"`                                              |
+| autocomplete | Allow browser auto fill - default is `on`                                                                  | `autocomplete="off"`                                        |
+| novalidate   | Specifies that the form-data (input) should not be validated when submitted                                |                                                             |
+| rel          | Specifies the relationship between a linked resource and the current document                              | [See here](https://www.w3schools.com/tags/att_form_rel.asp) |
+
+:::note
+
+URL limit: 2048 characters
+
+:::
+
+### Form elements
+
+| Elements | Using                                                  | Attributes                          |
+| -------- | ------------------------------------------------------ | ----------------------------------- |
+| button   |                                                        | type                                |
+| label    | [Label tag](#label-tag)                                |                                     |
+| input    | [Input tag](#input-tag)                                | list - use with `datalist`          |
+| textarea | A multi-line input                                     | rows, cols                          |
+| select   | Drop-down list, contain collection of `option`         | name, size (visible item), multiple |
+| option   |                                                        | selected                            |
+| optgroup | Group of related options                               |                                     |
+| datalist | Specifies a list of pre-defined options for an `input` |                                     |
+| output   | Defines the result of a calculation                    |                                     |
+| fieldset | Wrap group elements                                    |                                     |
+| legend   | Title for group elements wrap by `fieldset`            |                                     |
+
+```html
+<form>
+  <fieldset>
+    <legend>Personalia:</legend>
+
+    <label for="fname">First name:</label><br />
+    <input type="text" id="fname" name="fname" value="John" /><br />
+    <label for="lname">Last name:</label><br />
+    <input type="text" id="lname" name="lname" value="Doe" /><br /><br />
+
+    <select id="cars" name="cars">
+      <optgroup label="Swedish Cars">
+        <option value="volvo">Volvo</option>
+        <option value="saab">Saab</option>
+      </optgroup>
+      <optgroup label="German Cars">
+        <option value="mercedes" selected>Mercedes</option>
+        <option value="audi">Audi</option>
+      </optgroup>
+    </select>
+
+    <input list="browsers" />
+    <datalist id="browsers">
+      <option value="Edge"></option>
+      <option value="Firefox"></option>
+      <option value="Chrome"></option>
+      <option value="Opera"></option>
+      <option value="Safari"></option>
+    </datalist>
+
+    <hr />
+    <input type="submit" value="Submit" />
+  </fieldset>
+</form>
+```

@@ -1,15 +1,3 @@
----
-description: Hyper-Text Markup Languages
-tags:
-  - Frontend
----
-
-# HTML
-
-- Describes the structure of a Web page
-- **HTML elements** tell the browser how to display the content
-- Version (2023): HTML5 - HTML5.2
-
 ## Basic
 
 ### Page Structure
@@ -136,14 +124,14 @@ Button as a Link - `<button onclick="document.location='index.html'">HTML Tutor
 ```html
 <img src="workplace.jpg" alt="Workplace" usemap="#workmap" />
 <map name="workmap">
-    <area
+  <area
     shape="rect"
     coords="34,44,270,350"
     alt="Computer"
     href="computer.htm"
   />
-    <area shape="rect" coords="290,172,333,250" alt="Phone" href="phone.htm" />
-    <area shape="circle" coords="337,300,44" alt="Coffee" href="coffee.htm" />
+  <area shape="rect" coords="290,172,333,250" alt="Phone" href="phone.htm" />
+  <area shape="circle" coords="337,300,44" alt="Coffee" href="coffee.htm" />
 </map>
 ```
 
@@ -151,11 +139,10 @@ Button as a Link - `<button onclick="document.location='index.html'">HTML Tutor
 
 ```html
 <picture>
-    
   <source media="(min-width: 650px)" srcset="img_food.jpg" />
-    
+
   <source media="(min-width: 465px)" srcset="img_car.jpg" />
-    <img src="img_girl.jpg" />
+  <img src="img_girl.jpg" />
 </picture>
 ```
 
@@ -166,9 +153,8 @@ Button as a Link - `<button onclick="document.location='index.html'">HTML Tutor
 
 ```html
 <head>
-    
   <title>My Page Title</title>
-    
+
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
 </head>
 ```
@@ -233,7 +219,7 @@ Button as a Link - `<button onclick="document.location='index.html'">HTML Tutor
 - `a -> a b c`
 - `I -> I II III IV`
 - `i -> i ii iii iv`
-:::
+  :::
 
 ### Block & Inline Elements
 
@@ -315,15 +301,15 @@ The HTML `<head>` element is a container for the following elements: `<title>
 - `meta` is typically used to specify the character set, page description, keywords, author of the document, and viewport settings.
 
   ```html
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <!-- good for search engines -->
-  <meta name="keywords" content="HTML, CSS, JavaScript">
-  <meta name="description" content="Free Web tutorials">
-  <meta name="author" content="John Doe">
+  <meta name="keywords" content="HTML, CSS, JavaScript" />
+  <meta name="description" content="Free Web tutorials" />
+  <meta name="author" content="John Doe" />
   <!-- auto refresh -->
-  <meta http-equiv="refresh" content="30"> 
+  <meta http-equiv="refresh" content="30" />
   <!-- Setting the viewport (fit size on multiple devices). -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   ```
 
 - `link` **tag** is most often used to link to external style sheets.
@@ -346,231 +332,3 @@ The HTML `<head>` element is a container for the following elements: `<title>
 | details    | Defines additional details that the user can view or hide                                   |
 | summary    | Defines a visible heading for a `details` element                                           |
 | time       | Defines a date/time                                                                         |
-
-## Form
-
-Collect user input and sent to a server for processing.
-
-```html
-<form>
-  <!-- Other form element here! -->
-</form>
-```
-
-### Input tag
-
-:::info
-
-- Default: `<input type="text" />`
-- Common attributes: `id`, `class`, `title`, `value`, `name` (add to url params), `hidden`, `disabled`, `required`, `form` - a part of specifies form
-- Input with text (or number) attributes: `autofocus`, `autocomplete`, `readonly`, `size` - width, `maxlength`, `placeholder`, `pattern` - RegEx
-- Input type _submit_ & _image_: `formaction`, `formenctype`, `formmethod`, `formtarget`
-- Functions: `onclick`, `ondoubleclick`, `onblur`, `onfocus`
-
-:::
-
-| Type            | Special Atrributes                    |
-| --------------- | ------------------------------------- |
-| button          | value - text inside                   |
-| submit          |                                       |
-| reset           |                                       |
-| color           |                                       |
-| checkbox        | checked                               |
-| radio           | checked                               |
-| range           |                                       |
-| file            | multiple                              |
-| number          | min, max, step                        |
-| email           |                                       |
-| password        |                                       |
-| search          |                                       |
-| tel             |                                       |
-| text            |                                       |
-| url             |                                       |
-| month           | min, max                              |
-| week            | min, max                              |
-| time            | min, max                              |
-| date            | min, max                              |
-| datetime-local  | min, max                              |
-| hidden          |                                       |
-| image           | src, height, width                    |
-
-:::warning Input Form special attribute
-
-- `formaction` - run override current `action`
-- `formenctype` - submit with encode form data
-- `formmethod` - submit override current `method`
-- `formtarget` - override `target`
-
-:::
-
-### Label tag
-
-- Useful for screen-reader users
-- Helps users who have difficulty clicking on very small regions (such as radio buttons or checkboxes) - focus on `for` and `id`
-
-```html
-<label for="fname">First name:</label><br />
-<input type="text" id="fname" name="fname" value="John" />
-```
-
-### Form attributes
-
-| Attributes    | Description                                                                                                               | Example                                                     |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| action        | Defines the action to be performed when the form is submitted                                                             | `action="/login.asp"`                                       |
-| target        | `_blank` - new window / tab `_self` - current window `_parent` - parent frame `_top` - full body of window                | `target="_blank"`                                           |
-| method        | `GET` (default), `POST`, `PUT`, `PATCH`, `DELETE`                                                                         | `method="get"`                                              |
-| autocomplete  | Allow browser auto fill - default is `on`                                                                                 | `autocomplete="off"`                                        |
-| novalidate    | Specifies that the form-data (input) should not be validated when submitted                                               |                                                             |
-| rel           | Specifies the relationship between a linked resource and the current document                                             | [See here](https://www.w3schools.com/tags/att_form_rel.asp) |
-
-<!-- URL limit: 2048 characters -->
-
-### Form elements
-
-| Elements | Using | Attributes |
-| ---- | ---- | ---- |
-| button | | type |
-| label | [Label tag](#label-tag) | |
-| input | [Input tag](#input-tag) | list - use with `datalist` |
-| textarea | A multi-line input | rows, cols |
-| select | Drop-down list, contain collection of `option` | name, size (visible item), multiple |
-| option | | selected |
-| optgroup | Group of related options | |
-| datalist | Specifies a list of pre-defined options for an `input` | |
-| output | Defines the result of a calculation | |
-| fieldset | Wrap group elements | |
-| legend | Title for group elements wrap by `fieldset` | |
-
-```html
-<form>
-  <fieldset>
-    <legend>Personalia:</legend>
-
-    <label for="fname">First name:</label><br />
-    <input type="text" id="fname" name="fname" value="John" /><br />
-    <label for="lname">Last name:</label><br />
-    <input type="text" id="lname" name="lname" value="Doe" /><br /><br />
-
-    <select id="cars" name="cars">   
-      <optgroup label="Swedish Cars">
-        <option value="volvo">Volvo</option>
-        <option value="saab">Saab</option>
-      </optgroup>
-      <optgroup label="German Cars">
-        <option value="mercedes" selected>Mercedes</option>
-        <option value="audi">Audi</option>
-      </optgroup>
-    </select>
-
-    <input list="browsers" />        
-    <datalist id="browsers">   
-      <option value="Edge"></option>
-      <option value="Firefox"></option>
-      <option value="Chrome"></option>
-      <option value="Opera"></option>
-      <option value="Safari"></option>
-    </datalist>
-
-    <hr />
-    <input type="submit" value="Submit" />    
-  </fieldset>
-</form>
-```
-
-## Graphics
-
-| Canvas                                               | Scalable Vector Graphics                                                  |
-| ---------------------------------------------------- | ------------------------------------------------------------------------- |
-| Draws 2D graphics, on the fly (with JavaScript)      | A language for describing 2D graphics in XML                              |
-| Resolution dependent                                 | Resolution independent                                                    |
-| No support for event handlers                        | Support for event handlers                                                |
-| Poor text rendering capabilities                     | Best suited for applications with large rendering areas (Google Maps)     |
-| You can save the resulting image as `.png` or `.jpg` | Slow rendering if complex (anything that uses the DOM a lot will be slow) |
-| Well suited for graphic-intensive games              | Not suited for game applications                                          |
-
-## Media
-
-**Format** has **bold** is supported by all browser!
-
-| Video Format               | File         | Developed                         | Description                                                                                               |
-| -------------------------- | ------------ | --------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| MPEG                       | _.mpg .mpeg_ | Moving Pictures Expert Group      | The first popular video format on the web. Not supported anymore in HTML.                                 |
-| AVI Audio Video Interleave | _.avi_       | Microsoft                         | Commonly used in video cameras and TV hardware. Plays well on Windows computers, but not in web browsers. |
-| WMVWindows Media Video     | _.wmv_       | Microsoft                         | Same above                                                                                                |
-| QuickTime                  | _.mov_       | Apple                             | Commonly used in video cameras and TV hardware. Plays well on Apple computers, but not in web browsers.   |
-| RealVideo                  | _.rm .ram_   | Real Media                        | Allow video streaming with low bandwidths. Does not play in web browsers.                                 |
-| Flash                      | _.swf .flv_  | Macromedia                        | Often requires an extra component (plug-in) to play in web browsers.                                      |
-| **Theora Ogg**             | _.ogg_       | Xiph. Org Foundation.             | Supported by HTML.                                                                                        |
-| **WebM**                   | _.webm_      | Mozilla, Opera, Adobe, and Google | Supported by HTML.                                                                                        |
-| **MPEG-4/MP4**             | _.mp4_       | Moving Pictures Expert Group      | Commonly used in video cameras and TV hardware. Supported by all browsers and  recommended by YouTube.    |
-
-| Audio Format                             | File       | Developed             | Description                                                                                                                                                                                                                                       |
-| ---------------------------------------- | ---------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| MIDIMusical Instrument Digital Interface | .mid .midi |                       | Main format for all electronic music devices like synthesizers and PC sound cards. MIDI files do not contain sound, but digital notes that can be played by electronics. Plays well on all computers and music hardware, but not in web browsers. |
-| RealAudio                                | .rm .ram   | Real Media            | Allow streaming of audio with low bandwidths. Does not play in web browsers.                                                                                                                                                                      |
-| WMAWindows Media Audio                   | .wma       | Microsoft             | Plays well on Windows computers, but not in web browsers.                                                                                                                                                                                         |
-| AACAdvanced Audio Coding                 | .aac       | Apple                 | The default format for iTunes. Plays well on Apple computers, but not in web browsers.                                                                                                                                                            |
-| **WAV**                                  | .wav       | IBM and Microsoft     | Plays well on Windows, Macintosh, and Linux operating systems. Supported by HTML.                                                                                                                                                                 |
-| **Ogg**                                  | .ogg       | Xiph. Org Foundation. | Supported by HTML.                                                                                                                                                                                                                                |
-| **MP3**                                  | .mp3       |                       | The sound part of MPEG files. MP3 is the most popular format for music players. Combines good compression (small files) with high quality.                                                                                                        |
-| MP4                                      | .mp4       |                       | MP4 is a video format, but can also be used for audio.                                                                                                                                                                                            |
-
-### Video tag
-
-```html
-<video width="320" height="240" controls>
-  <source src="movie.mp4" type="video/mp4" />
-  <source src="movie.ogg" type="video/ogg" />
-  <track
-    src="fgsubtitles_en.vtt"
-    kind="subtitles"
-    srclang="en"
-    label="English"
-  />
-  <track
-    src="fgsubtitles_no.vtt"
-    kind="subtitles"
-    srclang="no"
-    label="Norwegian"
-  />
-  Your browser does not support the video tag.
-</video>
-```
-
-### Audio tag
-
-```html
-<audio controls autoplay muted>
-  <source src="horse.ogg" type="audio/ogg" />
-  <source src="horse.mp3" type="audio/mpeg" />
-  Your browser does not support the audio element.
-</audio>
-```
-
-### YouTube videos
-
-```html
-<iframe
-  width="420"
-  height="315"
-  src="https://www.youtube.com/embed/tgbNymZ7vqY?autoplay=1&mute=1"
->
-</iframe>
-```
-
-:::info Youtube API Params
-
-Use after `?` and combine with `&`
-
-- autoplay=1
-- mute=1
-- loop=1
-- playlist=
-- control=0 (not display) | 1 (default)
-
-:::
-
-## Resources
-
-- [W3School](https://www.w3schools.com/htmL)

@@ -1,0 +1,23 @@
+## Borders
+
+:::note Shorthand
+
+```css
+border[-position]: width style(required) color;
+```
+
+:::
+
+```css
+border[-position]-width: 2px;
+/* dotted | dashed | solid | double | groove | ridge | inset | outset | hidden; */
+border[-position]-style: solid;
+border[-position]-color: #000000;
+
+/* OPTIONAL */
+border-position: top | right | bottom | left;
+/* 0 (square) -> 50% (round) */
+border-radius: 0;
+border-radius[-top|-bottom][-left|-right]: 0;
+border-image: url("some_img.jpg");
+```

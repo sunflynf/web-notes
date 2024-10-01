@@ -1,0 +1,93 @@
+## Selectors
+
+:::info CSS Selectors
+
+**Used to "find" (or select) the HTML elements you want to style.**
+
+- Simple selectors (`name`, `id`, `class`)
+- [Combinator selectors](https://www.w3schools.com/css/css_combinators.asp) (a specific relationship between them)
+- [Pseudo-class selectors](https://www.w3schools.com/css/css_pseudo_classes.asp) (a certain state)
+- [Pseudo-elements selectors](https://www.w3schools.com/css/css_pseudo_elements.asp) (style a part of an element)
+- [Attribute selectors](https://www.w3schools.com/css/css_attribute_selectors.asp) (has an attribute or attribute value)
+
+:::
+
+```css
+/* Apply to all */
+* {
+  color: blue;
+}
+
+/* Group selectors*/
+h1,
+h2,
+p,
+.class-text-center,
+strong.contain-class-center {
+  text-align: center;
+}
+
+#id-need-bold,
+div#id-must-be-bold {
+  font-weight: bold;
+}
+```
+
+### Combination
+
+{/* prettier-ignore */}
+```css
+/* Child */
+.root > .specified-child { }
+
+/* Adjacent Sibling */
+.root + .first-placed-immediately-below { }
+
+/* General Sibling */
+.root ~ .all-placed-immediately-below { }
+```
+
+### Pseudo
+
+:::info Structure
+
+- Pseudo Classes `selector:pseudo-class`
+- Pseudo Elements `selector::pseudo-element`
+- [See more](https://www.w3schools.com/css/css_pseudo_classes.asp)
+
+:::
+
+### Attribute
+
+| Using                          | Description                                     | Example                |
+| ------------------------------ | ----------------------------------------------- | ---------------------- |
+| `selector[attribute]`          | Has attribute                                   | `a[target]`            |
+| `selector[attribute="value"]`  | Has attribute with exact value                  | `a[target="_blank"]`   |
+| `selector[attribute!="value"]` | Has attribute with exact value or like "value-" | `div[class="date"]`    |
+| `selector[attribute~="value"]` | Has attribute containing exact word "value"     | `img[title~='animal']` |
+| `selector[attribute^="value"]` | Has attribute start with value                  | `a[href^='https']`     |
+| `selector[attribute$="value"]` | Has attribute end with value                    | `a[href$=".pdf"]`      |
+| `selector[attribute*="value"]` | Has attribute includes word: value              | `img[title*="dog"]`    |
+
+### Specificity
+
+```
+*                     -> 0
+element               -> 1
+.class                -> 10
+#id                   -> 100
+<inline style="" />   -> 1000
+!important            -> Infinity
+```
+
+:::note
+
+{/* prettier-ignore */}
+- Combination will sum all points.
+  ```css
+  div#first-name.text-center { }
+  /* 1 + 100 + 10 = 111 */
+  ```
+- Selector with same point will apply latest rule
+
+:::
