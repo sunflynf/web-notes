@@ -1,0 +1,81 @@
+## Media
+
+**Format** has **bold** is supported by all browser!
+
+| Video Format               | File         | Developed                         | Description                                                                                               |
+| -------------------------- | ------------ | --------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| MPEG                       | _.mpg .mpeg_ | Moving Pictures Expert Group      | The first popular video format on the web. Not supported anymore in HTML.                                 |
+| AVI Audio Video Interleave | _.avi_       | Microsoft                         | Commonly used in video cameras and TV hardware. Plays well on Windows computers, but not in web browsers. |
+| WMVWindows Media Video     | _.wmv_       | Microsoft                         | Same above                                                                                                |
+| QuickTime                  | _.mov_       | Apple                             | Commonly used in video cameras and TV hardware. Plays well on Apple computers, but not in web browsers.   |
+| RealVideo                  | _.rm .ram_   | Real Media                        | Allow video streaming with low bandwidths. Does not play in web browsers.                                 |
+| Flash                      | _.swf .flv_  | Macromedia                        | Often requires an extra component (plug-in) to play in web browsers.                                      |
+| **Theora Ogg**             | _.ogg_       | Xiph. Org Foundation.             | Supported by HTML.                                                                                        |
+| **WebM**                   | _.webm_      | Mozilla, Opera, Adobe, and Google | Supported by HTML.                                                                                        |
+| **MPEG-4/MP4**             | _.mp4_       | Moving Pictures Expert Group      | Commonly used in video cameras and TV hardware. Supported by all browsers and  recommended by YouTube.    |
+
+| Audio Format                             | File       | Developed             | Description                                                                                                                                                                                                                                       |
+| ---------------------------------------- | ---------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MIDIMusical Instrument Digital Interface | .mid .midi |                       | Main format for all electronic music devices like synthesizers and PC sound cards. MIDI files do not contain sound, but digital notes that can be played by electronics. Plays well on all computers and music hardware, but not in web browsers. |
+| RealAudio                                | .rm .ram   | Real Media            | Allow streaming of audio with low bandwidths. Does not play in web browsers.                                                                                                                                                                      |
+| WMAWindows Media Audio                   | .wma       | Microsoft             | Plays well on Windows computers, but not in web browsers.                                                                                                                                                                                         |
+| AACAdvanced Audio Coding                 | .aac       | Apple                 | The default format for iTunes. Plays well on Apple computers, but not in web browsers.                                                                                                                                                            |
+| **WAV**                                  | .wav       | IBM and Microsoft     | Plays well on Windows, Macintosh, and Linux operating systems. Supported by HTML.                                                                                                                                                                 |
+| **Ogg**                                  | .ogg       | Xiph. Org Foundation. | Supported by HTML.                                                                                                                                                                                                                                |
+| **MP3**                                  | .mp3       |                       | The sound part of MPEG files. MP3 is the most popular format for music players. Combines good compression (small files) with high quality.                                                                                                        |
+| MP4                                      | .mp4       |                       | MP4 is a video format, but can also be used for audio.                                                                                                                                                                                            |
+
+### Video tag
+
+```html
+<video width="320" height="240" controls>
+  <source src="movie.mp4" type="video/mp4" />
+  <source src="movie.ogg" type="video/ogg" />
+  <track
+    src="fgsubtitles_en.vtt"
+    kind="subtitles"
+    srclang="en"
+    label="English"
+  />
+  <track
+    src="fgsubtitles_no.vtt"
+    kind="subtitles"
+    srclang="no"
+    label="Norwegian"
+  />
+  Your browser does not support the video tag.
+</video>
+```
+
+### Audio tag
+
+```html
+<audio controls autoplay muted>
+  <source src="horse.ogg" type="audio/ogg" />
+  <source src="horse.mp3" type="audio/mpeg" />
+  Your browser does not support the audio element.
+</audio>
+```
+
+### YouTube videos
+
+```html
+<iframe
+  width="420"
+  height="315"
+  src="https://www.youtube.com/embed/tgbNymZ7vqY?autoplay=1&mute=1"
+>
+</iframe>
+```
+
+:::info Youtube API Params
+
+Use after `?` and combine with `&`
+
+- autoplay=1
+- mute=1
+- loop=1
+- playlist=
+- control=0 (not display) | 1 (default)
+
+:::
