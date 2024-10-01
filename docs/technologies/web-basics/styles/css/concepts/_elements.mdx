@@ -1,0 +1,112 @@
+## Elements
+
+### Text
+
+| Attribute          | Value                                                  | Note                                                                                                         |
+| ------------------ | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| `background-color` | [Colour](#colours)                                     |                                                                                                              |
+| `color`            | [Colour](#colours)                                     |                                                                                                              |
+| `text-align`       | left, center, justify, right                           | "justify" - each line is stretched so that every line has equal width                                        |
+| `text-align-last`  | left, center, justify, right                           | Apply only last row of text (long text)                                                                      |
+| `direction`        | ltr (default), rtl                                     |                                                                                                              |
+| `unicode-bidi`     | bidi-override                                          | Used together with `direction`                                                                               |
+| `vertical-align`   | base-line (default), text-top, text-bottom, sub, super |                                                                                                              |
+| `text-decoration`  | **Example**: underline #333 solid 5px                  | Shorthand: -line -color -style -thickness (All are optional)                                                 |
+| `text-transform`   | uppercase, lowercase, capitalize                       |                                                                                                              |
+| `text-indent`      | **Example**: 50px                                      | The indentation of the first line of a text                                                                  |
+| `letter-spacing`   | **Example**: 2px                                       | The space between the characters in a text                                                                   |
+| `word-spacing`     | **Example**: 10px                                      | The space between words in a text                                                                            |
+| `line-height`      | **Example**: 0.8                                       | The space between lines. **NOTE:** should use between 0.8 -> 2                                               |
+| `white-space`      | nowrap, wrap, pre, pre-line, pre-wrap                  | Specifies how white-space inside an element is handled                                                       |
+| `text-shadow`      | **Example**: 2px 2px 5px blue, 2px -2px 5px red;       | Order: horizontal-shadow vertical-shadow blur(optional) color.<br/>**FEATURE**: use "," and add more shadow; |
+
+### Fonts
+
+:::info Safe font for HTML & CSS
+
+- Arial (sans-serif)
+- Verdana (sans-serif)
+- Tahoma (sans-serif)
+- Trebuchet MS (sans-serif)
+- Times New Roman (serif)
+- Georgia (serif)
+- Garamond (serif)
+- Courier New (monospace)
+- Brush Script MT (cursive)
+
+:::
+
+:::tip Using Google font
+
+{/* prettier-ignore */}
+```html
+<head>
+  <!-- Other tags -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=FontName" />
+</head>
+```
+
+:::
+
+| Attribute      | Value                                      | Note                                                                  |
+| -------------- | ------------------------------------------ | --------------------------------------------------------------------- |
+| `font`         | **Example**: 12px Arial, sans-serif        | -style -variant -weight -size(required)/line-height -family(required) |
+| `font-family`  | **Example**: Arial, Helvetica, sans-serif; | Main font, Second font, fallback font (recommend)                     |
+| `font-style`   | normal, italic / oblique                   |                                                                       |
+| `font-weight`  | normal, bold, (100 -> 900)                 |                                                                       |
+| `font-variant` | normal, small-caps                         |                                                                       |
+| `font-size`    | **Example**: 0.8rem                        | **Recommend**: use `em`, `rem` instead of `px`                        |
+
+### Link
+
+```css
+/* unvisited link */
+a:link {
+  color: violet;
+}
+
+/* visited link */
+a:visited {
+  color: green;
+}
+
+/* mouse over link */
+a:hover {
+  cursor: pointer; /* default */
+}
+
+/* selected link */
+a:active {
+  color: darkgreen !important;
+}
+```
+
+### List
+
+| Attribute             | Value                                                                                                                                                  | Note                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------- |
+| `list-style`          | **Example**: square inside url("sqpurple.gif");                                                                                                        | -type -position -image |
+| `list-style-type`     | `none`, <br/> (ul): `circle`, `disc`, `square`; <br/> (ol): `decimal`, `decimal-leading-zero`, [`lower`, `upper`]-[`alpha`, `greek`, `latin`, `roman`] |                        |
+| `list-style-position` | `outside`, `inside` (indent first line)                                                                                                                |                        |
+| `list-style-image`    | url("image.type")                                                                                                                                      | Change mark icon       |
+
+### Table
+
+:::info Recommend setup
+
+```css
+table {
+  width: 100%; /* full width */
+  border-collapse: collapse;
+}
+```
+
+:::
+
+| Attribute         | Value                                        | Note                                                         |
+| ----------------- | -------------------------------------------- | ------------------------------------------------------------ |
+| `caption-side`    | top, bottom                                  |                                                              |
+| `border-collapse` | collapse, separate                           |                                                              |
+| `border-spacing`  | (horizontal vertical) **Example**: 10px 20px | use in case `border-collapse: separate;`                     |
+| `empty-cell`      | show (default), hide                         | use in case `border-collapse: separate;`                     |
+| `table-layout`    | auto (default), fixed                        | **Tip**: `fixed` make table render faster (same size column) |

@@ -1,0 +1,105 @@
+## Display
+
+Toggle element: `visibility: visible|hidden;`
+
+| `display` value | Description                                      |
+| --------------- | ------------------------------------------------ |
+| none            | Remove element                                   |
+| inline          |                                                  |
+| block           |                                                  |
+| flex            | a block-level flex **container**                 |
+| grid            | a block-level grid **container**                 |
+| inline-block    | display inline but it can set `height` & `width` |
+| inline-flex     | a inline-level flex **container**                |
+| inline-grid     | a inline-level grid **container**                |
+| contents        | only show contents                               |
+
+### Position
+
+| `position` value | Description                                               |
+| ---------------- | --------------------------------------------------------- |
+| static           | default                                                   |
+| fixed            | fixed on screen                                           |
+| relative         | base on current position                                  |
+| absolute         | base on nearest element has `position: relative;`         |
+| sticky           | `relative` (normal) + `fixed` (scroll to sticks in place) |
+
+:::note
+POSITION not `static`:
+
+- Combine with `left`, `top`, `right`, `bottom` (not includes 4)
+- Can use `z-index` to specifies the stack order
+
+:::
+
+### Overflow
+
+| `overflow[-x/-y]` value | description                       |
+| ----------------------- | --------------------------------- |
+| visible                 | default                           |
+| hidden                  | hide content                      |
+| scroll                  | show scroll if content out of box |
+| auto                    |                                   |
+
+:::tip Handle overflow words
+
+```css
+overflow-break: normal | break-word;
+```
+
+:::
+
+### Layout: `float` and `clear`
+
+```css
+/* specifies how an element should float. */
+float: none | left | right | inherit;
+
+/* specifies what elements can float beside the cleared element and on which side. */
+clear: none | left | right | both | inherit;
+```
+
+### Math function
+
+| Method   | Note                       | Example                     |
+| -------- | -------------------------- | --------------------------- |
+| `calc()` | Good for set flexible size | `width: calc(100% - 10px);` |
+| `min()`  | Use smaller value          | `height: min(50%, 200px);`  |
+| `max()`  | Use larger value           | `height: max(400px, 60%);`  |
+
+### Counter
+
+```css
+body {
+  counter-reset: section;
+}
+
+h1 {
+  counter-reset: subsection;
+}
+
+h1::before {
+  counter-increment: section;
+  content: "Section " counter(section) ". ";
+}
+
+h2::before {
+  counter-increment: subsection;
+  content: counter(section) "." counter(subsection) " ";
+}
+```
+
+### `@font-face`: use your font
+
+```css
+@font-face {
+  font-family: myFirstFont;
+  src: url(sansation_light.woff);
+  /* font-weight: bold;  */
+  /* font-style: italic; */
+}
+
+div {
+  font-family: myFirstFont;
+}
+```
