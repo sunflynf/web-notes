@@ -1,9 +1,10 @@
 ---
+description: An open source server environment
 tags:
-    - Environment
-    - JavaScript
-    - TypeScript
-    - WebSocket
+  - Environment
+  - JavaScript
+  - TypeScript
+  - WebSocket
 ---
 
 # Node.js
@@ -59,50 +60,52 @@ exports.myDateTime = function () {
 // { myDateTime: func }
 
 // other file
-const dt = require('./myFirstModule');
+const dt = require("./myFirstModule");
 console.log(dt.myDateTime());
 ```
 
 ## Built-in modules
 
-| Modules | For |
-| --- | --- |
-| **assert** | test |
-| buffer | binary data |
-| child_processes | run a child processes |
-| cluster | split single Node process -> multiple |
-| **crypto** | handle OpenSSL cryptographic func |
-| dns | DNS lookups & name resolution func |
-| **events** | assign and trigger events |
-| **fs** | handle file system |
-| **http** | Node.js act as an HTTP server |
-| **https** | Node.js act as an HTTPS server |
-| **net** | create servers & clients |
-| **os** | Provides information about operation system |
-| **path** | handle file path |
-| querystring | handle URL query string |
-| readline | readable streams one line at the time |
-| **stream** | handle streaming data |
-| **string_decoder** | decode buffer objects to strings |
-| **timers** | To execute a function after a given number of milliseconds |
-| tls | implementing TLS (Transport Layer Security) and SSL (Secure Socket Layer) |
-| **url** | parse URL strings |
-| **util** | utility functions |
-| vm | compile js code in a virtual machine - like `eval()` in js |
-| zlib | compress or decompress files |
+| Modules            | For                                                                       |
+| ------------------ | ------------------------------------------------------------------------- |
+| **assert**         | test                                                                      |
+| buffer             | binary data                                                               |
+| child_processes    | run a child processes                                                     |
+| cluster            | split single Node process -> multiple                                     |
+| **crypto**         | handle OpenSSL cryptographic func                                         |
+| dns                | DNS lookups & name resolution func                                        |
+| **events**         | assign and trigger events                                                 |
+| **fs**             | handle file system                                                        |
+| **http**           | Node.js act as an HTTP server                                             |
+| **https**          | Node.js act as an HTTPS server                                            |
+| **net**            | create servers & clients                                                  |
+| **os**             | Provides information about operation system                               |
+| **path**           | handle file path                                                          |
+| querystring        | handle URL query string                                                   |
+| readline           | readable streams one line at the time                                     |
+| **stream**         | handle streaming data                                                     |
+| **string_decoder** | decode buffer objects to strings                                          |
+| **timers**         | To execute a function after a given number of milliseconds                |
+| tls                | implementing TLS (Transport Layer Security) and SSL (Secure Socket Layer) |
+| **url**            | parse URL strings                                                         |
+| **util**           | utility functions                                                         |
+| vm                 | compile js code in a virtual machine - like `eval()` in js                |
+| zlib               | compress or decompress files                                              |
 
 ### HTTP
 
 ```js
-var http = require('http');
-var url = require('url');
+var http = require("http");
+var url = require("url");
 
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/html'});
-  var q = url.parse(req.url, true).query;
-  var txt = q.year + " " + q.month;
-  res.end(txt); // Add to body
-}).listen(8080);
+http
+  .createServer(function (req, res) {
+    res.writeHead(200, { "Content-Type": "text/html" });
+    var q = url.parse(req.url, true).query;
+    var txt = q.year + " " + q.month;
+    res.end(txt); // Add to body
+  })
+  .listen(8080);
 
 // http://localhost:8080/?year=2017&month=July -> "2017 July"
 ```
@@ -110,13 +113,13 @@ http.createServer(function (req, res) {
 ### Testing
 
 ```js
-import assert from 'node:assert';
-import test from 'node:test';
+import assert from "node:assert";
+import test from "node:test";
 
-test('that 1 is equal 1', () => {
+test("that 1 is equal 1", () => {
   assert.strictEqual(1, 1);
 });
-test('that throws as 1 is not equal 2', () => {
+test("that throws as 1 is not equal 2", () => {
   // throws an exception because 1 != 2
   assert.strictEqual(1, 2);
 });
@@ -125,13 +128,13 @@ test('that throws as 1 is not equal 2', () => {
 ### Read & Hash a file
 
 ```js
-import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
 
-const hasher = createHash('sha1');
-hasher.setEncoding('hex');
+const hasher = createHash("sha1");
+hasher.setEncoding("hex");
 // ensure you have a `package.json` file for this test!
-hasher.write(await readFile('package.json'));
+hasher.write(await readFile("package.json"));
 hasher.end();
 const fileHash = hasher.read();
 ```
@@ -139,29 +142,33 @@ const fileHash = hasher.read();
 ### Stream pipeline
 
 ```js
-import { pipeline } from 'node:stream/promises';
-import { createReadStream, createWriteStream } from 'node:fs';
-import { createGzip } from 'node:zlib';
+import { pipeline } from "node:stream/promises";
+import { createReadStream, createWriteStream } from "node:fs";
+import { createGzip } from "node:zlib";
 
 // ensure you have a `package.json` file for this test!
-await pipeline // 🤔
-(
-  createReadStream('package.json'),
+await pipeline(
+  // 🤔
+  createReadStream("package.json"),
   createGzip(),
-  createWriteStream('package.json.gz')
+  createWriteStream("package.json.gz")
 );
 ```
 
 ### Threads
 
 ```js
-import { Worker, isMainThread,
-  workerData, parentPort } from 'node:worker_threads';
+import {
+  Worker,
+  isMainThread,
+  workerData,
+  parentPort,
+} from "node:worker_threads";
 
 if (isMainThread) {
-  const data = 'some data';
+  const data = "some data";
   const worker = new Worker(import.meta.filename, { workerData: data });
-  worker.on('message', msg => console.log('Reply from Thread:', msg));
+  worker.on("message", (msg) => console.log("Reply from Thread:", msg));
 } else {
   const source = workerData;
   parentPort.postMessage(btoa(source.toUpperCase()));
@@ -171,22 +178,34 @@ if (isMainThread) {
 ### How to keep packages up-to-date
 
 Install `npm-check-updates`
-  
-  ```bash
-  npm install -g npm-check-updates
-  ```
+
+```bash
+npm install -g npm-check-updates
+```
 
 Scan packages (You can repeat this step)
 
-  ```bash
-  ncu -u
-  ```
+```bash
+ncu -u
+```
 
 Update packages (use `npm` or `yarn`)
 
-  ```bash
-  npm install
-  ```
+```bash
+npm install
+```
+
+:::info When to use Module, CommonJS, Class
+
+- Use **ES Modules** (`import/export`) for modern projects, especially if targeting both browser and Node.js environments, or if you want to use the latest JavaScript features.
+- Use **CommonJS** (`require/module.exports`) for backward compatibility or if working with older Node.js projects and libraries.
+- Use classes in JavaScript when:
+  - You need to encapsulate data and behavior together (OOP).
+  - You are building complex, reusable objects with inheritance or polymorphism.
+  - In frameworks like **React**, where class components are used (though functional components are now more common).
+
+For simpler tasks or functional programming, avoid classes and opt for regular functions or objects.
+:::
 
 ### Resources
 
