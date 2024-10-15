@@ -169,11 +169,11 @@ my-app/
    export default App;
    ```
 
-## **Comparison: React Redux Thunk vs. React Redux Query**
+## **Comparison**: React Redux Thunk vs. React Redux Query
 
 **React Redux Thunk** and **React Redux Query (RTK Query)** are two popular tools for managing side effects and API interactions in React-Redux applications. While both serve the purpose of handling async operations, they differ in terms of features, ease of use, and how they are structured.
 
-### 1. **React Redux Thunk**
+### 1. React Redux Thunk
 
 **Redux Thunk** is a middleware that allows you to write action creators that return a function instead of an action. This function can then dispatch multiple actions and interact with APIs or any asynchronous logic (e.g., fetch data from a server).
 
@@ -208,7 +208,7 @@ export const fetchUser = (userId) => async (dispatch) => {
 };
 ```
 
-### 2. **React Redux Query (RTK Query)**
+### 2. React Redux Query (RTK Query)
 
 **RTK Query** is a data-fetching and caching tool built into **Redux Toolkit**. It abstracts a lot of the boilerplate away and provides a more declarative approach to fetching and caching data.
 
@@ -256,7 +256,7 @@ const UserProfile = ({ userId }) => {
 };
 ```
 
-### **When to Use Redux Thunk vs. RTK Query**
+### When to Use Redux Thunk vs. RTK Query
 
 | **Criteria**                       | **Redux Thunk**                            | **RTK Query**                                |
 | ---------------------------------- | ------------------------------------------ | -------------------------------------------- |
@@ -269,7 +269,7 @@ const UserProfile = ({ userId }) => {
 | **Custom Logic for Async Actions** | Easily customizable for complex workflows  | Limited customization of async flows         |
 | **Integration with Redux**         | More manual integration with Redux state   | Seamless integration with Redux Toolkit      |
 
-### **Which Should You Use?**
+### Which Should You Use?
 
 1. **Use Redux Thunk** if:
 
