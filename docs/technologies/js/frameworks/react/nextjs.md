@@ -1,20 +1,24 @@
 ---
 description: Frontend / Fullstack Frameworks for SEO & SSR
 tags:
-    - Frontend
-    - JavaScript
-    - TypeScript
-    - React
+  - Frontend
+  - JavaScript
+  - TypeScript
+  - React
 ---
 
 # Next.js
 
 ## Features
 
-- Client-side rendering
-- Server-side rendering
 - Static site generation
-- Improve performance and SEO
+- Improve performance (1st initialize content) and SEO
+- Server-side Components
+- Routing with Folder's structure
+  - `[dynamic id]`
+  - `[...multiple match]`
+  - `(collocation)`
+  - `_private`
 
 ## Install & Setup
 
@@ -29,16 +33,13 @@ npm run dev
 
 ### Project Structures
 
-```txt
+```txt title="Next 13+"
 my-next-app/
 ├── node_modules/
-├── pages/
-│   ├── api/
-│   │   └── hello.js
-│   ├── _app.js
-│   ├── _document.js
-│   └── index.js
 ├── public/
+├── app/
+│   └── layout.tsx
+│   └── page.tsx
 ├── styles/
 │   └── globals.css
 ├── .gitignore
@@ -46,73 +47,93 @@ my-next-app/
 └── README.md
 ```
 
-## Using
+## Fundamental
 
-### Page & Routing
+### Routing
 
-```tsx title="pages/index.tsx"
-export default function Home() {
-  return <h1>Home Page</h1>;
-}
+```txt title="App folder structure"
+├── app/
+│   ├── components/           -> Not routing
+│   │   └── Button.tsx
+│   │   └── Dialog.tsx
+│   ├── (auth)/
+│   │   └── login/
+│   │   │   └── page.tsx      -> /login
+│   │   │   └── template.tsx  -> like layout but re-render when component update
+│   │   └── register/
+│   │       └── page.tsx      -> /register
+│   ├── dashboard/
+│   │   └── page.tsx          -> /dashboard
+│   │   └── @notification
+│   │   │   └── page.tsx      -> parallel but not routing
+│   │   └── @users
+│   │       └── page.tsx      -> parallel but not routing
+│   │       └── archive
+│   │           └── page.tsx  -> /dashboard/archive ??
+│   ├── intercepting/
+│   │   └── thing
+│   │   │   └── page.tsx      -> /intercepting/thing
+│   │   └── (.)thing
+│   │       └── page.tsx      -> when re-render, this page will show -> refresh
+│   ├── hello/
+│   │   └── page.tsx          -> /hello
+│   │   └── bros
+│   │   │   └── page.tsx      -> /hello/bros
+│   │   └── [username]
+│   │       └── page.tsx      -> /hello/someone-name
+│   ├── [...slugs]/
+│   │   └── page.tsx          -> /topics1/sub-topic2/something
+│   ├── _secret/
+│   │   └── page.tsx          -> Not routing
+│   └── layout.tsx            -> config components
+│   └── page.tsx              -> index
+│   └── not-found.tsx         -> custom not found display
 ```
 
-```tsx title="pages/posts/[id].tsx"
-import { useRouter } from 'next/router';
+```tsx title="app/hello/[username]/page.tsx"
+import { useRouter } from "next/router";
 
-export default function Post() {
+export default function HelloUser() {
   const router = useRouter();
-  const { id } = router.query;
-  return <p>Post: {id}</p>;
+  const { username } = router.query;
+  return <p>Hello {username}!</p>;
 }
 ```
 
-### API Routes
-
-```tsx title="pages/api/hello.ts"
-export default function handler(req, res) {
-  res.status(200).json({ text: 'Hello' });
-}
-```
-
-### `use server`
-
-```ts title="submit-form.ts"
-'use server'
-
-export async function submitForm(formData) {
-  const name = formData.get('name')
-  const email = formData.get('email')
-  // Process the form data on the server
-  // ...
-}
-```
-
-```tsx title='FormLogin.tsx'
-import { submitForm } from './submit-form'
-
-export default function Form() {
+```tsx title="app/dashboard/page.tsx"
+export function Dashboard({
+  children: React.Node,
+  notifications: React.Node,
+  users: React.Node
+}) {
   return (
-    <form action={submitForm}>
-      <input type="text" name="name" />
-      <input type="email" name="email" />
-      <button type="submit">Submit</button>
-    </form>
-  )
+    <div>
+      {children}
+      {notifications}
+      {users}
+    </div>
+  );
 }
 ```
 
 ### Server Component
 
-```tsx title='app/ServerComponent.tsx'
+```tsx title='app/components/ServerComponent.tsx'
 async function ServerComponent() {
-  const data = await fetch('https://api.example.com/data')
-  const result = await data.json()
+  const data = await fetch("https://api.example.com/data");
+  const result = await data.json();
 
-  return <div>{result.map(item => <p key={item.id}>{item.name}</p>)}</div>
+  return (
+    <div>
+      {result.map((item) => (
+        <p key={item.id}>{item.name}</p>
+      ))}
+    </div>
+  );
 }
 
 // Using like normal components
-<ServerComponent />
+<ServerComponent />;
 ```
 
 ### Metadata
@@ -121,17 +142,40 @@ async function ServerComponent() {
 - Use with file `[layout|page].[js|jsx|ts|tsx]`
 
 ```tsx title='app/layout.tsx'
-import type { Metadata } from 'next'
- 
+import type { Metadata } from "next";
+
 export const metadata: Metadata = {
-  title: '...',
-  description: '...',
-}
- 
+  title: "...",
+  description: "...",
+};
+
 export default function Page() {}
 ```
 
-## Tips
+## Notes
 
+- **Fetch options**
+  - Data on server-components has catching, put `{ cache: 'no-store' }`
+  - To revidate on n seconds, put `{ next: { revalidate: time } }`
+- **Component**
+
+  - All components of Next is **server-components**
+  - To make **client-components**, put `'use-client'` on top of file
+
+    ```tsx
+    "use-client";
+
+    export function ClientComponent() {}
+    ```
+
+  - Hooks can only use in **client-components**
+  - Package catching type of component: `client-only` & `server-only`
+  - When to use
+    - **Client**: actions | themes | user's behaviors
+    - **Server**: fetching, work with file + data
+
+## References
+
+- [React](../../libraries/react/index.mdx)
+- [Next.js Documentation](https://nextjs.org/docs)
 - [Lightning-Fast Development with Turbo](https://turbo.build/) - 10x faster
-<!-- - [] -->
