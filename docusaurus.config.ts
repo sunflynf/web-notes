@@ -86,7 +86,9 @@ const config: Config = {
       additionalLanguages: [
         "bash",
         "csharp",
+        "cypher",
         "dart",
+        "docker",
         "ejs",
         "handlebars",
         "java",
@@ -101,6 +103,7 @@ const config: Config = {
         "scss",
         "solidity",
         "sql",
+        "yaml",
         "zig",
       ],
     },
