@@ -1,10 +1,8 @@
 # Cassandra
 
-## Cassandra Basics
-
 Apache Cassandra is a distributed NoSQL database known for its high availability, scalability, and fault tolerance. It is well-suited for applications with heavy read and write requirements.
 
-### Key Concepts
+## Key Concepts
 
 - **Cluster**: A set of nodes where Cassandra stores data in a distributed manner.
 - **Keyspace**: The highest-level container that defines data replication across nodes.
@@ -12,7 +10,7 @@ Apache Cassandra is a distributed NoSQL database known for its high availability
 - **Row**: A single data record with columns and values.
 - **Partition Key**: The key that determines data distribution across the cluster.
 
-### Setup Cassandra Locally
+## Setup Cassandra Locally
 
 1. **Install Cassandra**
    - Download and install Cassandra from [Apache Cassandra Downloads](https://cassandra.apache.org/_/download.html).
@@ -21,7 +19,7 @@ Apache Cassandra is a distributed NoSQL database known for its high availability
    - Run Cassandra (typically by running `cassandra` in the terminal).
    - The default port is `9042`.
 
-### Basic Cassandra Commands
+## Basic Cassandra Commands
 
 - **Create Keyspace**
   ```sql

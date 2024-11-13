@@ -86,6 +86,7 @@ const config: Config = {
       additionalLanguages: [
         "bash",
         "csharp",
+        "cypher",
         "dart",
         "docker",
         "ejs",

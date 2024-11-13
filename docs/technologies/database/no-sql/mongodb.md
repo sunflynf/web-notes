@@ -16,7 +16,7 @@ MongoDB is a popular NoSQL database that stores data in flexible, JSON-like docu
 - **Collection**: Group of documents, similar to tables in relational databases.
 - **Document**: Individual record, stored in BSON format (Binary JSON), containing fields and values.
 
-### Setup MongoDB Locally
+## Setup MongoDB Locally
 
 1. **Install MongoDB**:
    - Download MongoDB from [MongoDB Downloads](https://www.mongodb.com/try/download/community).
@@ -25,7 +25,7 @@ MongoDB is a popular NoSQL database that stores data in flexible, JSON-like docu
    - Start the MongoDB service (typically `mongod`).
    - MongoDB will start on the default port `27017`.
 
-### Basic MongoDB Commands
+## Basic MongoDB Commands
 
 - Show databases: `show dbs`
 - Switch database: `use <db_name>`
@@ -295,11 +295,3 @@ kubectl apply -f mongodb-deployment.yaml
 kubectl apply -f mongodb-service.yaml
 kubectl apply -f express-app-deployment.yaml
 ```
-
-### Summary
-
-With this setup:
-
-- MongoDB runs either as a standalone container, a service in Docker Compose, or a pod in Kubernetes.
-- Your backend frameworks (Express or Spring Boot) can connect to MongoDB through environment-specific configurations.
-- Using Docker Compose and Kubernetes provides you flexibility for development and production deployments.
