@@ -1,11 +1,11 @@
 ---
 description: Backend Frameworks in JavaScript ecosystem.
 tags:
-    - Backend
-    - JavaScript
-    - TypeScript
-    - MVC
-    - REST APIs
+  - Backend
+  - JavaScript
+  - TypeScript
+  - MVC
+  - REST APIs
 ---
 
 # NestJS
@@ -19,9 +19,17 @@ tags:
 
 ## Basic Commands
 
-- **Installation**: `npm install -g @nestjs/cli`
-- **Create Project**: `nest new project-name`
-- **Run Application**: `npm run start`
+```bash
+# Installation CLI global
+npm install -g @nestjs/cli
+
+# Create Project
+nest new project-name
+
+# Run Application
+npm run start
+npm run start:dev # For development env
+```
 
 ## Application Structure
 
@@ -37,23 +45,23 @@ src/
 ### Controller
 
 ```typescript
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from "@nestjs/common";
 
-@Controller('items')
+@Controller("items")
 export class ItemsController {
   @Get()
   findAll(): string {
-    return 'This action returns all items';
+    return "This action returns all items";
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string): string {
+  @Get(":id")
+  findOne(@Param("id") id: string): string {
     return `This action returns item #${id}`;
   }
 
   @Post()
   create(@Body() createItemDto: any): string {
-    return 'This action adds a new item';
+    return "This action adds a new item";
   }
 }
 ```
@@ -61,12 +69,12 @@ export class ItemsController {
 ### Service
 
 ```typescript
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class ItemsService {
   findAll(): string {
-    return 'This action returns all items';
+    return "This action returns all items";
   }
 
   findOne(id: string): string {
@@ -74,7 +82,7 @@ export class ItemsService {
   }
 
   create(createItemDto: any): string {
-    return 'This action adds a new item';
+    return "This action adds a new item";
   }
 }
 ```
@@ -82,9 +90,9 @@ export class ItemsService {
 ### Module
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { ItemsController } from './items.controller';
-import { ItemsService } from './items.service';
+import { Module } from "@nestjs/common";
+import { ItemsController } from "./items.controller";
+import { ItemsService } from "./items.service";
 
 @Module({
   controllers: [ItemsController],
@@ -96,8 +104,8 @@ export class ItemsModule {}
 ### Main Entry File
 
 ```typescript
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { NestFactory } from "@nestjs/core";
+import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -119,14 +127,19 @@ export class CreateItemDto {
 ### Pipes
 
 ```typescript
-import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
+import {
+  PipeTransform,
+  Injectable,
+  ArgumentMetadata,
+  BadRequestException,
+} from "@nestjs/common";
 
 @Injectable()
 export class ParseIntPipe implements PipeTransform<string, number> {
   transform(value: string, metadata: ArgumentMetadata): number {
     const val = parseInt(value, 10);
     if (isNaN(val)) {
-      throw new BadRequestException('Validation failed');
+      throw new BadRequestException("Validation failed");
     }
     return val;
   }
@@ -136,13 +149,13 @@ export class ParseIntPipe implements PipeTransform<string, number> {
 ### Middleware
 
 ```typescript
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import { Injectable, NestMiddleware } from "@nestjs/common";
+import { Request, Response, NextFunction } from "express";
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    console.log('Request...');
+    console.log("Request...");
     next();
   }
 }
@@ -151,14 +164,19 @@ export class LoggerMiddleware implements NestMiddleware {
 ### Interceptors
 
 ```typescript
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+} from "@nestjs/common";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Injectable()
 export class TransformInterceptor<T> implements NestInterceptor<T, any> {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next.handle().pipe(map(data => ({ data })));
+    return next.handle().pipe(map((data) => ({ data })));
   }
 }
 ```
@@ -166,13 +184,13 @@ export class TransformInterceptor<T> implements NestInterceptor<T, any> {
 ### Guards
 
 ```typescript
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   canActivate(
-    context: ExecutionContext,
+    context: ExecutionContext
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
     return validateRequest(request);
@@ -185,13 +203,13 @@ export class AuthGuard implements CanActivate {
 - **Custom Decorator**
 
 ```typescript
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
 export const User = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     return request.user;
-  },
+  }
 );
 ```
 
@@ -200,10 +218,10 @@ export const User = createParamDecorator(
 - **Unit Test**
 
 ```typescript
-import { Test, TestingModule } from '@nestjs/testing';
-import { ItemsService } from './items.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ItemsService } from "./items.service";
 
-describe('ItemsService', () => {
+describe("ItemsService", () => {
   let service: ItemsService;
 
   beforeEach(async () => {
@@ -214,7 +232,7 @@ describe('ItemsService', () => {
     service = module.get<ItemsService>(ItemsService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });
