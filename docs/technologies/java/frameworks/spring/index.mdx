@@ -19,18 +19,19 @@ flowchart LR
         Service <-->|Model| Repository
         Controller <-->|Model| Repository
         Repository <--> Entity
+        Repository -.-> SpringData("`**Spring data**
+        JDBC, JPA
+        MongoDB,
+        Redis, ...
+        `")
+        SpringData -.->|@Entity| Entity
     end
     Entity <--> Database[(Database)]
+    %% Add-ons
     Controller --> |Templates| View(["`**View**
     *Mustache*,
     *Thymleaf*, ...
     `"])
-    %% Add-ons
-    SpringData("`**Spring data**
-     JDBC, JPA
-     MongoDB,
-     Redis, ...
-    `") -.->|@Table| Repository
     Validation -.->|@Rule| Entity
     Security(Security) -.->|Filter Chain| Controller
     Swagger(Swagger) -.->|@Annotation| Controller
@@ -48,3 +49,14 @@ flowchart LR
     %% AI
     %% LDAP
 ```
+
+## Topics
+
+import DocCardList from "@theme/DocCardList";
+
+<DocCardList />
+
+## References
+
+- [Start project here!](https://start.spring.io)
+- [Home Page](https://spring.io/)
