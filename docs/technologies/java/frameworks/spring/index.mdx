@@ -1,0 +1,62 @@
+---
+description: Backend Frameworks support REST APIs.
+tags:
+  - Backend
+  - Java
+  - Kotlin
+  - XML
+  - Spring
+  - REST APIs
+---
+
+# Spring
+
+```mermaid
+flowchart LR
+    subgraph Core concepts
+        Controller <-->|DTO| Service(["`Service
+        *Optional*`"])
+        Service <-->|Model| Repository
+        Controller <-->|Model| Repository
+        Repository <--> Entity
+        Repository -.-> SpringData("`**Spring data**
+        JDBC, JPA
+        MongoDB,
+        Redis, ...
+        `")
+        SpringData -.->|@Entity| Entity
+    end
+    Entity <--> Database[(Database)]
+    %% Add-ons
+    Controller --> |Templates| View(["`**View**
+    *Mustache*,
+    *Thymleaf*, ...
+    `"])
+    Validation -.->|@Rule| Entity
+    Security(Security) -.->|Filter Chain| Controller
+    Swagger(Swagger) -.->|@Annotation| Controller
+    HOAS -.->|jackson| Controller
+    Actuator(Actuator) -.->|health| Controller
+    subgraph Testing
+        %% Testing
+        JUnit([JUnit]) --> Repository
+        JUnit --> Service
+        Mockito --> Repository
+        Mockito([Mockito]) -->|Inject mocks| Service
+        MockMvc([MockMvc]) --> Controller
+    end
+    %% Cloud
+    %% AI
+    %% LDAP
+```
+
+## Topics
+
+import DocCardList from "@theme/DocCardList";
+
+<DocCardList />
+
+## References
+
+- [Start project here!](https://start.spring.io)
+- [Home Page](https://spring.io/)
