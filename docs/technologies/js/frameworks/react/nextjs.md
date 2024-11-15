@@ -11,14 +11,28 @@ tags:
 
 ## Features
 
-- Static site generation
-- Improve performance (1st initialize content) and SEO
-- Server-side Components
-- Routing with Folder's structure
+- Hybrid rendering = Server-side rendering + Static site generation
+- Automatic Code Splitting
+- Built-in CSS and SASS support + TypeScript support
+- Image Optimization
+- Edge & Middleware support
+- Hot reloading
+- SEO Friendly
+- Incremental Static Regeneration
+- Easy deployment with **Vercel**
+- API Routes with folder's structure
   - `[dynamic id]`
   - `[...multiple match]`
   - `(collocation)`
   - `_private`
+
+### Use cases
+
+- E-commerce websites
+- Blogs and content-driven sites
+- Dashboard and admin panels
+- Marketing and landing pages
+- Applications requiring dynamic and static content mix
 
 ## Install & Setup
 

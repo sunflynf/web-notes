@@ -1,9 +1,149 @@
 ---
 description: Frontend Frameworks
 tags:
-    - Frontend
-    - JavaScript
-    - TypeScript
+  - Frontend
+  - JavaScript
+  - TypeScript
 ---
 
 # Angular
+
+Angular is a powerful framework for building scalable and maintainable web applications. This guideline covers best practices, tips, and a step-by-step roadmap to help you master Angular development.
+
+## The Basics
+
+### Core Concepts
+
+- **Components**: Building blocks of the UI.
+- **Templates**: HTML structure for a component.
+- **Directives**: Add behavior to templates.
+- **Services**: Encapsulate business logic and data fetching.
+- **Modules**: Organize the application and enable lazy loading.
+- **Dependency Injection (DI)**: Provide and manage instances of services.
+
+### Essential Tools
+
+- **Node.js & npm**: Required for Angular CLI and package management.
+- **Angular CLI**: Command-line interface for project scaffolding and management.
+- **TypeScript**: Angular's primary language for development.
+
+## Project Setup
+
+### Install Angular CLI
+
+```bash
+npm install -g @angular/cli
+```
+
+### Create a New Project
+
+```bash
+ng new my-angular-app
+```
+
+- Select `SCSS` (preferred for styling) during setup.
+- Use strict typing for better code quality.
+
+### Run the Project
+
+```bash
+ng serve
+```
+
+## Application Architecture
+
+### Recommended Project Structure
+
+```txt
+src/
+  app/
+    components/
+    services/
+    models/
+    pipes/
+    directives/
+    shared/
+    modules/
+```
+
+### Component Naming
+
+- Use **kebab-case** for selectors: `<app-header>`.
+- Use **PascalCase** for filenames: `HeaderComponent`.
+
+### Module Organization
+
+- **Core Module**: Singletons like services, interceptors.
+- **Shared Module**: Reusable components, directives, and pipes.
+- Feature modules for specific application domains.
+
+## Best Practices
+
+### Components
+
+- Keep components focused: **One task per component.**
+- Use `@Input` and `@Output` for parent-child communication.
+- Avoid logic in templates; delegate it to the component class.
+
+### Services
+
+- Use services for state management, API calls, and shared logic.
+- Follow the **Singleton** pattern.
+
+### Change Detection
+
+- Use **OnPush** strategy for performance optimization when appropriate.
+- Leverage `trackBy` in \*ngFor for efficient DOM updates.
+
+### Forms
+
+- Use **Reactive Forms** for complex use cases.
+- Use **Template-Driven Forms** for simpler scenarios.
+
+## Styling Guidelines
+
+- Use SCSS with Angular.
+- Follow a consistent BEM (Block-Element-Modifier) naming convention.
+- Use Angular Material for a consistent UI.
+- Leverage CSS variables for theming.
+
+## State Management
+
+- For small apps, manage state using services.
+- For large applications, consider **NgRx** (Redux for Angular) or other state management libraries.
+- Avoid over-complicating state management; use it only when necessary.
+
+## Error Handling and Logging
+
+- Centralize API error handling using **HTTP Interceptors**.
+- Use Angular's **ErrorHandler** for global error tracking.
+- Implement logging services for debugging and monitoring.
+
+## Performance Optimization
+
+- Lazy load feature modules.
+- Preload critical assets using Angular's `PreloadingStrategy`.
+- Use `ngx-quicklink` for route preloading.
+- Optimize image loading with modern formats like WebP.
+- Minimize change detection with `detached` views where necessary.
+
+## Testing
+
+- Use **Karma** and **Jasmine** for unit testing.
+- Write tests for:
+  - Components
+  - Services
+  - Directives
+- Use **Protractor** or **Cypress** for end-to-end (E2E) testing.
+
+## Deployment
+
+- Use `ng build --prod` to build production-ready code.
+- Optimize bundle sizes using:
+  - Tree-shaking.
+  - Ahead-of-Time (AOT) compilation.
+- Host on platforms like Firebase, Netlify, or AWS.
+
+### Useful Resources
+
+- [Angular Documentation](https://angular.dev/overview)
