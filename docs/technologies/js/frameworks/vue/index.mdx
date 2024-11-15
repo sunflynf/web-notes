@@ -7,4 +7,232 @@ tags:
   - Vue
 ---
 
-# Vue
+# Vue 3
+
+## Getting Started
+
+### Install Vue
+```bash
+# Using Vue CLI
+npm install -g @vue/cli
+vue create my-vue3-project
+
+# Using Vite
+npm create vite@latest my-vue3-project --template vue
+```
+
+### 1.2 Project Structure
+Organize your files for scalability and maintainability:
+```
+src/
+  assets/         # Static assets (images, fonts)
+  components/     # Reusable Vue components
+  views/          # Page components
+  store/          # Vuex/Pinia store files
+  router/         # Vue Router configuration
+  utils/          # Utility functions
+  styles/         # Global styles (CSS/SCSS)
+  App.vue         # Root component
+  main.js         # Application entry point
+```
+
+## Key Features of Vue
+
+### Composition API
+Utilize the Composition API for better logic reusability:
+```jsx
+import { ref, reactive, computed, watch } from 'vue';
+
+export default {
+  setup() {
+    const count = ref(0);
+    const state = reactive({ name: "Vue 3" });
+    const doubleCount = computed(() => count.value * 2);
+
+    const increment = () => count.value++;
+
+    return { count, state, doubleCount, increment };
+  },
+};
+```
+
+### Teleport
+Render components outside the root DOM hierarchy:
+```jsx
+<teleport to="body">
+  <div class="modal">This is a modal</div>
+</teleport>
+```
+
+### Fragments
+Return multiple root elements from a component:
+```jsx
+<template>
+  <div>Element 1</div>
+  <div>Element 2</div>
+</template>
+```
+
+### Suspense
+Handle async loading with `Suspense`:
+```html
+<template>
+  <Suspense>
+    <template #default>
+      <AsyncComponent />
+    </template>
+    <template #fallback>
+      <div>Loading...</div>
+    </template>
+  </Suspense>
+</template>
+```
+
+## Coding Standards
+
+### Single File Components (SFCs)
+Use `.vue` files to keep template, script, and style in one file:
+```html
+<template>
+  <div>{{ message }}</div>
+</template>
+
+<script>
+export default {
+  data() {
+    return { message: "Hello Vue 3!" };
+  },
+};
+</script>
+
+<style scoped>
+div {
+  color: blue;
+}
+</style>
+```
+
+### Naming Conventions
+- Component names: `PascalCase`
+- File names: Match component name (`MyComponent.vue`)
+- Props: `camelCase` in JavaScript, `kebab-case` in templates
+
+## State Management
+
+### Pinia (Preferred State Library)
+```bash
+npm install pinia
+```
+Define and use a store:
+```javascript title="store/counter.js"
+import { defineStore } from 'pinia';
+
+export const useCounterStore = defineStore('counter', {
+  state: () => ({ count: 0 }),
+  actions: {
+    increment() {
+      this.count++;
+    },
+  },
+});
+
+// Usage in a component
+import { useCounterStore } from '@/store/counter';
+
+export default {
+  setup() {
+    const counterStore = useCounterStore();
+    return { counterStore };
+  },
+};
+```
+
+## Routing
+
+### Vue Router Setup
+Install Vue Router:
+```bash
+npm install vue-router
+```
+Configure routes:
+```javascript title="router/index.js"
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '@/views/HomeView.vue';
+import AboutView from '@/views/AboutView.vue';
+
+const routes = [
+  { path: '/', component: HomeView },
+  { path: '/about', component: AboutView },
+];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+});
+
+export default router;
+```
+
+### Lazy Loading Routes
+```javascript
+const AboutView = () => import('@/views/AboutView.vue');
+```
+
+## Styling
+
+### Scoped CSS
+Use scoped styles to apply styles locally:
+```html
+<style scoped>
+div {
+  color: red;
+}
+</style>
+```
+
+### CSS Frameworks
+Integrate Tailwind, Bootstrap, or any CSS framework:
+```bash
+npm install tailwindcss
+npx tailwindcss init
+```
+
+## Performance Optimization
+
+### Code Splitting
+Use dynamic imports for lazy loading:
+```javascript
+const MyComponent = () => import('@/components/MyComponent.vue');
+```
+
+### Optimize Reactivity
+Use `shallowRef` and `shallowReactive` for less reactive overhead when deep reactivity isn’t needed.
+
+## Testing
+
+### Unit Testing
+Use Jest or Vitest:
+```bash
+npm install --save-dev jest vue-jest
+```
+
+### End-to-End Testing
+Use Cypress:
+```bash
+npm install --save-dev cypress
+```
+
+## Deployment
+
+### Build for Production
+```bash
+npm run build
+```
+
+### Deploy
+Deploy via services like Netlify, Vercel, or your preferred hosting.
+
+## Resources
+- Official Vue 3 Docs: [https://vuejs.org](https://vuejs.org)
+- Vue Router Docs: [https://router.vuejs.org](https://router.vuejs.org)
+- Pinia Docs: [https://pinia.vuejs.org](https://pinia.vuejs.org)

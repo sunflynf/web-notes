@@ -7,3 +7,252 @@ tags:
 ---
 
 # Nuxt
+
+## Getting Started
+
+### Installation
+Install Nuxt 3 using `npx`, `npm`, or `yarn`:
+```bash
+# Using npx
+npx nuxi init my-nuxt3-app
+
+# Using npm
+npm create nuxt-app@latest my-nuxt3-app
+
+# Using yarn
+yarn create nuxt-app my-nuxt3-app
+```
+
+Navigate to the project directory and install dependencies:
+```bash
+cd my-nuxt3-app
+npm install
+```
+
+Start the development server:
+```bash
+npm run dev
+```
+
+## Project Structure
+The default structure is designed for scalability:
+```
+├── assets/          # Unprocessed assets like CSS, images, etc.
+├── components/      # Reusable Vue components
+├── composables/     # Reusable functions with the Composition API
+├── layouts/         # Application layouts
+├── middleware/      # Middleware for routes
+├── pages/           # File-based routing
+├── plugins/         # Client/server-side plugins
+├── public/          # Static files served as-is
+├── store/           # State management (Pinia)
+├── nuxt.config.ts   # Nuxt configuration
+```
+
+## Key Features of Nuxt
+
+### File-Based Routing
+Nuxt 3 automatically generates routes based on files in the `pages/` directory:
+```bash
+pages/
+  index.vue         # Accessible at /
+  about.vue         # Accessible at /about
+```
+
+Dynamic routes:
+```bash
+pages/
+  blog/
+    [id].vue        # Accessible at /blog/:id
+```
+Access route parameters:
+```javascript
+<script setup>
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+console.log(route.params.id);
+</script>
+```
+
+### Server-Side Rendering (SSR)
+Nuxt 3 enables SSR by default. You can switch to Static Site Generation (SSG) by updating the build target in `nuxt.config.ts`:
+```javascript
+export default defineNuxtConfig({
+  target: 'static', // Enables SSG
+});
+```
+
+### Server API
+Add server routes in the `server/api/` directory:
+```bash
+server/
+  api/
+    hello.js        # Accessible at /api/hello
+```
+Example API endpoint:
+```javascript
+export default defineEventHandler(() => {
+  return { message: "Hello, Nuxt!" };
+});
+```
+
+## State Management
+
+### Pinia (Preferred State Library)
+Install Pinia:
+```bash
+npm install pinia
+```
+Define a store:
+```javascript title="store/counter.js"
+import { defineStore } from 'pinia';
+
+export const useCounterStore = defineStore('counter', {
+  state: () => ({ count: 0 }),
+  actions: {
+    increment() {
+      this.count++;
+    },
+  },
+});
+```
+Use the store in a component:
+```javascript
+<script setup>
+import { useCounterStore } from '@/store/counter';
+
+const counter = useCounterStore();
+counter.increment();
+</script>
+```
+
+## Styling
+
+### Global Styles
+Add global styles in the `app.vue` file:
+```html
+<script setup>
+import '@/assets/styles/global.css';
+</script>
+
+<template>
+  <NuxtPage />
+</template>
+```
+
+### Scoped Styles
+Use `scoped` to restrict styles to a specific component:
+```html
+<style scoped>
+div {
+  color: blue;
+}
+</style>
+```
+
+## Plugins
+
+### Create a Plugin
+Add plugins in the `plugins/` directory. For example:
+```bash
+plugins/
+  my-plugin.js
+```
+Example plugin:
+```javascript
+export default defineNuxtPlugin(() => {
+  return {
+    provide: {
+      greet: (name) => `Hello, ${name}!`,
+    },
+  };
+});
+```
+Use it in components:
+```javascript
+<script setup>
+const { $greet } = useNuxtApp();
+console.log($greet('Nuxt'));
+</script>
+```
+
+## Middleware
+
+### Define Middleware
+Middleware is stored in the `middleware/` directory:
+```bash
+middleware/
+  auth.js
+```
+Example middleware:
+```javascript
+export default defineNuxtRouteMiddleware((to, from) => {
+  if (!isAuthenticated()) {
+    return '/login';
+  }
+});
+```
+
+### Apply Middleware
+Apply middleware in a page or globally:
+```javascript
+// In a page
+<script>
+definePageMeta({
+  middleware: 'auth',
+});
+</script>
+
+// Globally in nuxt.config.ts
+export default defineNuxtConfig({
+  router: {
+    middleware: ['auth'],
+  },
+});
+```
+
+## Performance Optimization
+
+### Auto-Importing
+Nuxt automatically imports composables, components, and other utilities. No need for explicit imports for most use cases.
+
+### Lazy Loading Components
+Nuxt automatically lazy-loads components by default.
+
+### Route-Level Code Splitting
+Dynamic imports are handled automatically for route components.
+
+## Testing
+
+### Unit Testing
+Use Jest or Vitest for unit tests:
+```bash
+npm install --save-dev jest @vue/test-utils
+```
+
+### End-to-End Testing
+Use Cypress or Playwright:
+```bash
+npm install --save-dev cypress
+```
+
+## Deployment
+
+### Build for Production
+```bash
+npm run build
+```
+
+### Deploy to Hosting
+Deploy to services like Vercel, Netlify, or your preferred hosting provider.
+
+For example, deploy to Vercel:
+```bash
+npm install -g vercel
+vercel
+```
+
+## Resources
+- **Nuxt 3 Documentation:** [https://nuxt.com/docs](https://nuxt.com/docs)
+- **Pinia Documentation:** [https://pinia.vuejs.org](https://pinia.vuejs.org)
