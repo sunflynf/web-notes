@@ -43,7 +43,7 @@
 | `<!DOCTYPE html>`      | Declaration represents the document type. Helps browsers to display web pages correctly.     |                                                                                                                                 |
 | **html**               | The root element and it defines the whole HTML document.                                     | `<html lang="en"><head></head><body></body></html>`                                                                             |
 | **head**               | All configs for web page here!                                                               | `<head></head>`                                                                                                                 |
-| link                   | Defines a link between a document and an external resource                                   | `<link rel="stylesheet" href="./styles.css">`                                                                                   |
+| link                   | Defines a link between a document and an external resource                                   | `<link rel="stylesheet" href="./styles.css">`                                                                                   |
 | **body**               | Defines the document's body.                                                                 | `<body></body>`                                                                                                                 |
 | h1, h2, h3, h4, h5, h6 | Heading from **most important** to _less important_                                          | ` <h1>First</h1>``<h2>Second</h2> `...`<h6>Last</h6>`                                                                           |
 | p                      | Paragraph - automatically remove any extra spaces                                            | `<p>Some text</p>`                                                                                                              |
@@ -60,18 +60,18 @@
 | ins                    | text with underline to mark                                                                  | `<ins>Insert text</ins>`                                                                                                        |
 | sub                    | small text lower than others                                                                 | `<sub>2</sub>`                                                                                                                  |
 | sup                    | small text higher then others                                                                | `<sup>x</sup>`                                                                                                                  |
-| div                    | Defines a section in a document (block-level)                                                | [[#Block & Inline Elements]]                                                                                                    |
-| span                   | Defines a section in a document (inline)                                                     | [[#Block & Inline Elements]]                                                                                                    |
+| div                    | Defines a section in a document (block-level)                                                | [Block & Inline Elements](#block--inline-elements)                                                                                                    |
+| span                   | Defines a section in a document (inline)                                                     | [Block & Inline Elements](#block--inline-elements)                                                                                       |
 | iframe                 | Used to display a web page within a web page.                                                | `<iframe src="https://www.w3schools.com/html/html_iframe.asp" style="height:200px;width:100%" title="Iframe Example"></iframe>` |
 
-:::info ATTRIBUTES
+:::info
 
-- All HTML elements can have **attributes**
-- Attributes provide **additional information** about elements
-- Attributes are always specified in **the start tag**
-- Attributes usually come in name/value pairs like: **name="value"**
-- `id` attribute is used to specify **a unique** id for an HTML element.
-- `class` attribute is used to specify a class for an HTML element, multiple HTML elements can share the same class.
+- All HTML elements can have **Attributes**
+  - It provides **additional information** about elements
+  - Always specified in **the start tag**
+  - Usually come in pairs like: `name="value"`
+- `id` -> specify **a unique** id for HTML element.
+- `class` -> specify a class for HTML element, multiple HTML elements can share the same class.
 
 :::
 
@@ -88,25 +88,27 @@
 
 ### Link
 
-The `target` attribute specifies where to open the linked document. It can have one of the following values:
+The `target` attribute specifies where to open the linked document. It can have one of the following values:
 
-- `_self` - Default. Opens the document in the same window/tab as it was clicked
-- `_blank` - Opens the document in a new window or tab
-- `_parent` - Opens the document in the parent frame
-- `_top` - Opens the document in the full body of the window
+- `_self` - Default. Opens the document in the same window/tab as it was clicked
+- `_blank` - Opens the document in a new window or tab
+- `_parent` - Opens the document in the parent frame
+- `_top` - Opens the document in the full body of the window
 
 :::info Special
 
-Link to an Email Address - `<a href="mailto:someone@example.com">Send email</a>`
-
-Button as a Link - `<button onclick="document.location='index.html'">HTML Tutorial</button>`
-
+```html
+<!-- Link to an Email Address  -->
+<a href="mailto:someone@example.com">Send email</a>
+<!-- Button as a Link  -->
+<button onclick="document.location='index.html'">HTML Tutorial</button>
+```
 :::
 
-:::note Making bookmarks
+:::tip Making bookmarks
 
-1. Use `id` to create bookmark: `<h2 id="C4">Chapter 4</h2>`
-2. Put to `href` with ==#==: `<a href="#C4">Jump to Chapter 4</a>`
+1. Use `id` to create bookmark: `<h2 id="C4">Chapter 4</h2>`
+2. Put to `href` with #: `<a href="#C4">Jump to Chapter 4</a>`
 
 :::
 
@@ -219,11 +221,12 @@ Button as a Link - `<button onclick="document.location='index.html'">HTML Tutor
 - `a -> a b c`
 - `I -> I II III IV`
 - `i -> i ii iii iv`
-  :::
+
+:::
 
 ### Block & Inline Elements
 
-- Block-level element always starts on a new line & takes up the full width available.
+- **Block-level** element always starts on a new line & takes up the full width available.
 
   ```html
   <address>
@@ -257,7 +260,7 @@ Button as a Link - `<button onclick="document.location='index.html'">HTML Tutor
   <video>
   ```
 
-- Inline-level element does not start on a new line & only takes up as much width as necessary.
+- **Inline-level** element does not start on a new line & only takes up as much width as necessary.
 
   ```html
   <a>
@@ -294,8 +297,7 @@ Button as a Link - `<button onclick="document.location='index.html'">HTML Tutor
 
 ### The Head element
 
-The HTML `<head>` element is a container for the following elements: `<title>`, `<style>`, `<meta>`, `<link>`, `<script>`, and `<base>`
-
+The HTML `<head>` element is a container for the following elements
 - `title` is **required** and it defines **_the title of the document_**.
 - `style` is used to define style information **_for a single document_**.
 - `meta` is typically used to specify the character set, page description, keywords, author of the document, and viewport settings.

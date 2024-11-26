@@ -10,15 +10,33 @@ Collect user input and sent to a server for processing.
 
 ### Input tag
 
-:::info
+```html
+<!-- type is required -->
+<input 
+  type="text"
+  id="input-1"
+  class="form-control"
+  placeholder="default display"
+  value="default text"
+  name="form-props-or-url-params"
+  hidden="false"
+  disabled="false"
+  required="true"
+  form="a-part-of-specifies-form"
+  autofocus="true"
+  autocomplete="false"
+  readonly="false"
+  size="200px"
+  maxLength="100"
+  pattern="/[abc]+/"
+  onclick="action()"
+  onchange="action()"
+  onblur="action()"
+  onfocus="action()"
+  aria-*="custom-aria-props"
+/>
 
-- Default: `<input type="text" />`
-- Common attributes: `id`, `class`, `title`, `value`, `name` (add to url params), `hidden`, `disabled`, `required`, `form` - a part of specifies form
-- Input with text (or number) attributes: `autofocus`, `autocomplete`, `readonly`, `size` - width, `maxlength`, `placeholder`, `pattern` - RegEx
-- Input type _submit_ & _image_: `formaction`, `formenctype`, `formmethod`, `formtarget`
-- Functions: `onclick`, `ondoubleclick`, `onblur`, `onfocus`
-
-:::
+```
 
 | Type           | Special Atrributes  |
 | -------------- | ------------------- |
@@ -57,7 +75,8 @@ Collect user input and sent to a server for processing.
 ### Label tag
 
 - Useful for screen-reader users
-- Helps users who have difficulty clicking on very small regions (such as radio buttons or checkboxes) - focus on `for` and `id`
+- Helps users who have difficulty clicking on very small regions (such as radio buttons or checkboxes) 
+- Focus on `for` and `id`
 
 ```html
 <label for="fname">First name:</label><br />
@@ -75,9 +94,9 @@ Collect user input and sent to a server for processing.
 | novalidate   | Specifies that the form-data (input) should not be validated when submitted                                |                                                             |
 | rel          | Specifies the relationship between a linked resource and the current document                              | [See here](https://www.w3schools.com/tags/att_form_rel.asp) |
 
-:::note
+:::danger
 
-URL limit: 2048 characters
+URL limit: **2048 characters**
 
 :::
 

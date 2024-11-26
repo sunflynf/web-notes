@@ -4,15 +4,9 @@ description: spring-boot-starter-test
 
 # Spring Testing
 
-## Overview
-
-Testing in Spring can be divided into the following types:
-
 - **Unit Testing**: Testing individual units or methods in isolation, often by mocking dependencies.
 - **Integration Testing**: Testing components together to ensure they interact as expected, typically involving databases or other external systems.
 - **End-to-End Testing**: Testing the complete flow of an application from start to finish, often using tools like Selenium for web applications.
-
-Each type of testing serves a distinct purpose, and Spring provides support for all of these within the framework.
 
 ## Setting Up Testing Dependencies
 

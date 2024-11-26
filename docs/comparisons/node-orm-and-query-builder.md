@@ -90,8 +90,6 @@
 - **Prisma** supports both SQL and limited MongoDB support, though it’s primarily SQL-focused.
 - **Sequelize** and **TypeORM** support a wide range of relational databases, with TypeORM also offering partial MongoDB support.
 
----
-
 ## Summary Table
 
 | Aspect                | Drizzle            | Prisma                   | Sequelize          | TypeORM                  |
@@ -102,8 +100,6 @@
 | **Performance**       | High, lightweight  | Efficient, some overhead | Moderate           | Moderate to high         |
 | **Community**         | Growing            | Large                    | Very large         | Established              |
 | **Database Support**  | SQL-centric        | SQL + limited MongoDB    | Broad SQL          | Broad SQL, limited NoSQL |
-
----
 
 ## **Conclusion**
 
