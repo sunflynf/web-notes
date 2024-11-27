@@ -1,64 +1,83 @@
 ---
 description: How to naming things in code.
 tags:
-    - Clean code
+  - Clean code
 ---
 
 # Naming styles
 
-## **hy-phens**
-
-:::info Examples
+## hy-phens
 
 - **HTML**'s attributes - id, class
-  - `form-group`
-  - `form-check`
-  - `form-label`
-- folder name
-  - `partial-field`
-  - `<field-name>-<features>`
 
-:::
+  ```html
+  <div id="main-form" class="form-group">
+    <label class="form-label">
+      <input type="text" class="form-input" aria-label="main-form-input" />
+    </label>
+  </div>
+  ```
 
-## **under_score**
+- Name of helpers/utils files or folder
+  ```txt
+  currency-transfer
+  utils/date-time-format.js
+  ```
+- Version Control
+  ```txt
+  features/dialog-info
+  tasks/dialog-info-header
+  ```
 
-:::info Examples
+## under_score
 
 - Database variables
-  - `user_id`
-  - `user_name`
-  - `total_price`
+
+  ```sql
+  SELECT user.id AS user_id, user.name AS user_name, invoice.total_price
+  FROM user, invoice
+  WHERE user.id = invoice.user_id;
+  ```
+
+- Test case (combine with lowerCamelCase)
+  ```java
+  // [methodUnderTest]_[scenario]_[expectedResult]
+  @Test
+  public void getNewAddress_thenSetDefault_resultNewAddressIsDefault() {}
+  ```
 - _Optional_: use for **variables** in Code (languages allow)
 
-:::
-
-## **UpperCamelCase (PascalCase)**
-
-:::info Examples
+## UpperCamelCase (PascalCase)
 
 - `class` in OOP languages
-  - `Account`
-  - `Product`
-  - `User`
+
+  ```java
+  public class Account {}
+  public abstract class Product {}
+  public final class User {}
+  ```
+
 - **React**'s components
-  - `Modal`
-  - `Button`
-  - `ButtonGroup`
-  - `Sidebar`
+  ```jsx
+  <Modal/>
+  <Button/>
+  <ButtonGroup/>
+  <Sidebar/>
+  ```
 
-:::
-
-## **lowerCamelCase**
-
-:::info Examples
+## lowerCamelCase
 
 - **Variables**
-  - `firstName`
-  - `lastName`
-  - `address`
-- **Function**'s name
-  - `getProducts`
-  - `setProduct`
-  - `getTotalPrice`
 
-:::
+  ```ts
+  let firstName: String;
+  let lastName: String;
+  let address: Address;
+  ```
+
+- **Function**'s name
+  ```js
+  function getProducts() {}
+  function setProduct() {}
+  function getTotalPrice() {}
+  ```

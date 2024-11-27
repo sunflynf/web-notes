@@ -4,15 +4,9 @@ description: spring-boot-starter-test
 
 # Spring Testing
 
-## Overview
-
-Testing in Spring can be divided into the following types:
-
 - **Unit Testing**: Testing individual units or methods in isolation, often by mocking dependencies.
 - **Integration Testing**: Testing components together to ensure they interact as expected, typically involving databases or other external systems.
 - **End-to-End Testing**: Testing the complete flow of an application from start to finish, often using tools like Selenium for web applications.
-
-Each type of testing serves a distinct purpose, and Spring provides support for all of these within the framework.
 
 ## Setting Up Testing Dependencies
 
@@ -32,7 +26,16 @@ Each type of testing serves a distinct purpose, and Spring provides support for 
 testImplementation 'org.springframework.boot:spring-boot-starter-test'
 ```
 
-`spring-boot-starter-test` includes JUnit, Mockito, AssertJ, Hamcrest, and Spring’s own testing utilities.
+:::info
+
+`spring-boot-starter-test` includes 
+- JUnit
+- Mockito
+- AssertJ
+- Hamcrest
+- Spring’s own testing utilities.
+
+:::
 
 ## Unit Testing with Spring
 
@@ -152,7 +155,9 @@ public class UserServiceTest {
 
     @Test
     public void testFindUserByEmail() {
-        Mockito.when(userRepository.findByEmail("john@example.com")).thenReturn(new User("John", "john@example.com"));
+        Mockito
+            .when(userRepository.findByEmail("john@example.com"))
+            .thenReturn(new User("John", "john@example.com"));
 
         User user = userService.findUserByEmail("john@example.com");
         assertEquals("John", user.getName());
@@ -195,8 +200,9 @@ public class ApiServiceTest {
 
     @Test
     public void testApiCall() {
-        mockServer.expect(requestTo("/api/data"))
-                .andRespond(withSuccess("{\"name\":\"John\"}", MediaType.APPLICATION_JSON));
+        mockServer
+            .expect(requestTo("/api/data"))
+            .andRespond(withSuccess("{\"name\":\"John\"}", MediaType.APPLICATION_JSON));
 
         String response = restTemplate.getForObject("/api/data", String.class);
         assertEquals("{\"name\":\"John\"}", response);
@@ -250,7 +256,8 @@ Use [TestContainers](https://www.testcontainers.org/) to spin up Docker containe
 
 ```java
 @Container
-static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:latest");
+static PostgreSQLContainer<?> postgresContainer = 
+    new PostgreSQLContainer<>("postgres:latest");
 
 @BeforeAll
 static void setup() {
