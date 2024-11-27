@@ -26,7 +26,16 @@ description: spring-boot-starter-test
 testImplementation 'org.springframework.boot:spring-boot-starter-test'
 ```
 
-`spring-boot-starter-test` includes JUnit, Mockito, AssertJ, Hamcrest, and Spring’s own testing utilities.
+:::info
+
+`spring-boot-starter-test` includes 
+- JUnit
+- Mockito
+- AssertJ
+- Hamcrest
+- Spring’s own testing utilities.
+
+:::
 
 ## Unit Testing with Spring
 
@@ -146,7 +155,9 @@ public class UserServiceTest {
 
     @Test
     public void testFindUserByEmail() {
-        Mockito.when(userRepository.findByEmail("john@example.com")).thenReturn(new User("John", "john@example.com"));
+        Mockito
+            .when(userRepository.findByEmail("john@example.com"))
+            .thenReturn(new User("John", "john@example.com"));
 
         User user = userService.findUserByEmail("john@example.com");
         assertEquals("John", user.getName());
@@ -189,8 +200,9 @@ public class ApiServiceTest {
 
     @Test
     public void testApiCall() {
-        mockServer.expect(requestTo("/api/data"))
-                .andRespond(withSuccess("{\"name\":\"John\"}", MediaType.APPLICATION_JSON));
+        mockServer
+            .expect(requestTo("/api/data"))
+            .andRespond(withSuccess("{\"name\":\"John\"}", MediaType.APPLICATION_JSON));
 
         String response = restTemplate.getForObject("/api/data", String.class);
         assertEquals("{\"name\":\"John\"}", response);
@@ -244,7 +256,8 @@ Use [TestContainers](https://www.testcontainers.org/) to spin up Docker containe
 
 ```java
 @Container
-static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:latest");
+static PostgreSQLContainer<?> postgresContainer = 
+    new PostgreSQLContainer<>("postgres:latest");
 
 @BeforeAll
 static void setup() {
