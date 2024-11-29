@@ -1,10 +1,10 @@
 ---
 description: best extension for FORM control in React
 tags:
-    - JavaScript
-    - TypeScript
-    - React
-    - Extension
+  - JavaScript
+  - TypeScript
+  - React
+  - Extension
 ---
 
 # React Hook Forms
@@ -22,14 +22,14 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { DevTool } from "@hookform/devtools"; // OPTIONAL
 
 type FormValues = {
-  firstName: string
-  name: string
-  email: string
-}
+  firstName: string;
+  name: string;
+  email: string;
+};
 
 export default function App() {
-  const { register, handleSubmit } = useForm<FormValues>()
-  const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data)
+  const { register, handleSubmit } = useForm<FormValues>();
+  const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
 
   return (
     <>
@@ -40,7 +40,7 @@ export default function App() {
       </form>
       <DevTool control={control} />
     </>
-  )
+  );
 }
 ```
 
@@ -48,18 +48,18 @@ export default function App() {
 
 ```ts
 const {
-  watch, 
+  watch,
   // watch(name?: string | string[] | (data, options?) => any)) => any
-  getValues, 
+  getValues,
   // getValues(name?: string | string[]) => any
   // - NOTE: getValues not trigger re-renders or subcribe to input changes
-  setValue, 
-  // setValue(name, value, configs?) 
+  setValue,
+  // setValue(name, value, configs?)
   // + configs: { shouldValidate, shouldDirty, shouldTouch }
-  setFocus, 
+  setFocus,
   // setFocus('f', { shouldSelect: boolean })
-  resetField, 
-  // resetField(name, options?) 
+  resetField,
+  // resetField(name, options?)
   // + options: { keepError, keepDirty, keepTouched, defaultValue }
   reset,
   // reset(values: T | (v: T) => any, options?)
@@ -67,19 +67,19 @@ const {
   getFieldState,
   // getFieldState(name) => ({ isDirty, isTouched, invalid, error })
   // - VERSION: 7.25.0
-  formState: { 
-    defaultValues, 
+  formState: {
+    defaultValues,
     isDirty, // true if user modifies any field
     dirtyFields, // object with the user-modified fields
     touchedFields, // containing all fields user intereacted with
-    isSubmitted, 
+    isSubmitted,
     isSubmitSuccessful,
     isSubmitting,
     isLoading, // true if form is currently loading async defaultValues
-    submitCount, 
-    isValid, 
-    isValidating, 
-    validatingFields, 
+    submitCount,
+    isValid,
+    isValidating,
+    validatingFields,
     errors
   },
   trigger,
@@ -126,12 +126,12 @@ const {
 ## FormProvider & useFormContext
 
 ```jsx
-import React from "react"
-import { useForm, FormProvider, useFormContext } from "react-hook-form"
+import React from "react";
+import { useForm, FormProvider, useFormContext } from "react-hook-form";
 
 export default function App() {
-  const formCtx = useForm()
-  const onSubmit = (data) => console.log(data)
+  const formCtx = useForm();
+  const onSubmit = (data) => console.log(data);
 
   return (
     <FormProvider {...formCtx}>
@@ -141,12 +141,12 @@ export default function App() {
         <input type="submit" />
       </form>
     </FormProvider>
-  )
+  );
 }
 
 function NestedInput() {
-  const { register } = useFormContext() // retrieve all hook methods
-  return <input {...register("test")} />
+  const { register } = useFormContext(); // retrieve all hook methods
+  return <input {...register("test")} />;
 }
 ```
 
@@ -154,62 +154,64 @@ function NestedInput() {
 
 ```jsx
 const watchData = useWatch({
-    name, // string | string[]
-    control, // optional if use FormProvider
-    defaultValue, // Optional: value return before initial render  
-})
+  name, // string | string[]
+  control, // optional if use FormProvider
+  defaultValue, // Optional: value return before initial render
+});
 
-const watchDob = useWatch({ name: 'dob' });
-const [watchFirstName, watchLastName] = useWatch({ name: ['firstName', 'lastName'] });
+const watchDob = useWatch({ name: "dob" });
+const [watchFirstName, watchLastName] = useWatch({
+  name: ["firstName", "lastName"],
+});
 
 // Custom hook for newest data
 const useFormValues = () => {
-  const { getValues } = useFormContext()
+  const { getValues } = useFormContext();
   return {
     ...useWatch(), // subscribe to form value updates
     ...getValues(), // always merge with latest form values
-  }
-}
+  };
+};
 ```
 
 ## useFormState
 
 ```jsx
-const { 
-  defaultValues, 
+const {
+  defaultValues,
   isDirty, // true if user modifies any field
   dirtyFields, // object with the user-modified fields
   touchedFields, // containing all fields user intereacted with
-  isSubmitted, 
+  isSubmitted,
   isSubmitSuccessful,
   isSubmitting,
   isLoading, // true if form is currently loading async defaultValues
-  submitCount, 
-  isValid, 
-  isValidating, 
-  validatingFields, 
-  errors
+  submitCount,
+  isValid,
+  isValidating,
+  validatingFields,
+  errors,
 } = useFormState({
-    control, // optional if use FormProvider
-    name // Optional: string | string[]
-})
+  control, // optional if use FormProvider
+  name, // Optional: string | string[]
+});
 ```
 
 ## Controller && useController
 
 ```jsx
 const {
-    field: { onChange, onBlur, value, disabled, name, ref },
-    fieldState: { invalid, isTouched, isDirty, error },
-    formState
+  field: { onChange, onBlur, value, disabled, name, ref },
+  fieldState: { invalid, isTouched, isDirty, error },
+  formState,
 } = useController({
-    name, // string
-    control, // optional if use FormProvider
-    // Optional
-    rules, 
-    shouldUnregister,
-    disabled
-})
+  name, // string
+  control, // optional if use FormProvider
+  // Optional
+  rules,
+  shouldUnregister,
+  disabled,
+});
 ```
 
 ```jsx
@@ -230,29 +232,29 @@ const {
 ```jsx
 // + focusOptions: { shouldFocus, focusIndex, focusName }
 const {
-    fields, 
-    // object & { id: string }
-    prepend, 
-    // prepend(obj: object | object[], focusOptions?)
-    append, 
-    // append(obj: object | object[], focusOptions?)
-    insert, 
-    // insert(index, value: object | object[], focusOption?)
-    update,
-    // update(index, value: object)
-    replace,
-    // replace(values: object[])
-    remove, 
-    // remove(index?: number | number[])
-    swap, 
-    // swap(firstIndex, secondIndex)
-    move, 
-    // move(currentIndex, toIndex)
+  fields,
+  // object & { id: string }
+  prepend,
+  // prepend(obj: object | object[], focusOptions?)
+  append,
+  // append(obj: object | object[], focusOptions?)
+  insert,
+  // insert(index, value: object | object[], focusOption?)
+  update,
+  // update(index, value: object)
+  replace,
+  // replace(values: object[])
+  remove,
+  // remove(index?: number | number[])
+  swap,
+  // swap(firstIndex, secondIndex)
+  move,
+  // move(currentIndex, toIndex)
 } = useFieldArray({
-    name, // string
-    control, // optional if use FormProvider
-    shouldUnregister,
-    rules
+  name, // string
+  control, // optional if use FormProvider
+  shouldUnregister,
+  rules,
 });
 ```
 
@@ -261,16 +263,18 @@ import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 
 function App() {
-  const { register, control, handleSubmit, reset, trigger, setError } = useForm({
-    defaultValues: { test: [] } 
-  });
+  const { register, control, handleSubmit, reset, trigger, setError } = useForm(
+    {
+      defaultValues: { test: [] },
+    }
+  );
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "test"
+    name: "test",
   });
-  
+
   return (
-    <form onSubmit={handleSubmit(data => console.log(data))}>
+    <form onSubmit={handleSubmit((data) => console.log(data))}>
       <ul>
         {fields.map((item, index) => (
           <li key={item.id}>
@@ -280,7 +284,9 @@ function App() {
               name={`test.${index}.lastName`}
               control={control}
             />
-            <button type="button" onClick={() => remove(index)}>Delete</button>
+            <button type="button" onClick={() => remove(index)}>
+              Delete
+            </button>
           </li>
         ))}
       </ul>
@@ -307,8 +313,8 @@ npm install @hookform/resolvers
 The **most powerful data validation** library for JS.
 
 ```tsx
-import { joiResolver } from '@hookform/resolvers/joi';
-import Joi from 'joi';
+import { joiResolver } from "@hookform/resolvers/joi";
+import Joi from "joi";
 
 const schema = Joi.object({
   name: Joi.string().required(),
@@ -320,15 +326,15 @@ const resolver = joiResolver(schema);
 
 ### [Zod](https://github.com/react-hook-form/resolvers#zod)
 
-**TypeScript-first** schema validation with *static* type inference
+**TypeScript-first** schema validation with _static_ type inference
 
 ```tsx
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 const schema = z.object({
-  name: z.string().min(1, { message: 'Required' }),
+  name: z.string().min(1, { message: "Required" }),
   age: z.number().min(10),
 });
 
@@ -340,9 +346,9 @@ const resolver = zodResolver(schema);
 **Dead simple Object** schema validation.
 
 ```tsx
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 const schema = yup
   .object()
@@ -363,13 +369,13 @@ const resolver = yupResolver(schema);
 {
   // add 2 lines below to file
   "strictPropertyInitialization": false,
-  "experimentalDecorators": true,
+  "experimentalDecorators": true
 }
 ```
 
 ```tsx
-import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { Length, Min, IsEmail } from 'class-validator';
+import { classValidatorResolver } from "@hookform/resolvers/class-validator";
+import { Length, Min, IsEmail } from "class-validator";
 
 class User {
   @Length(2, 30)
@@ -387,10 +393,10 @@ const resolver = classValidatorResolver(User);
 Validate your data with **powerful decoders**.
 
 ```tsx
-import { ioTsResolver } from '@hookform/resolvers/io-ts';
-import t from 'io-ts';
+import { ioTsResolver } from "@hookform/resolvers/io-ts";
+import t from "io-ts";
 // you don't have to use io-ts-types, but it's very useful
-import tt from 'io-ts-types';
+import tt from "io-ts-types";
 
 const schema = t.type({
   username: t.string,
@@ -405,8 +411,8 @@ const resolver = ioTsResolver(schema);
 **A simple and composable way** to validate data in JavaScript (or TypeScript).
 
 ```tsx
-import { superstructResolver } from '@hookform/resolvers/superstruct';
-import { object, string, number } from 'superstruct';
+import { superstructResolver } from "@hookform/resolvers/superstruct";
+import { object, string, number } from "superstruct";
 
 const schema = object({
   name: string(),
@@ -418,10 +424,10 @@ const resolver = superstructResolver(schema);
 
 ### Compare
 
-| Feature               | [Yup](https://yup-docs.vercel.app/)         | [Zod](https://zod.dev/)         | [Joi](https://joi.dev/)         | [class-validator](https://github.com/typestack/class-validator) | [io-ts](https://www.npmjs.com/package/io-ts)       | [Superstruct](https://www.npmjs.com/package/superstruct)  |
-|-----------------------|-------------|-------------|-------------|-----------------|-------------|--------------|
-| **TypeScript Support**| Good        | **Excellent**   | Limited     | **Excellent**       | **Excellent**   | Good         |
-| **API Style**         | Fluent      | Fluent      | Fluent      | Declarative     | *Functional*  | Fluent       |
-| **Popularity**        | High        | **Growing**     | High        | Popular in [**NestJS**](../../../../../technologies/js/frameworks/backend/nest.md) | Niche      | Moderate     |
-| **Validation Type**   | Sync/**Async**  | Sync        | Sync/**Async**  | Sync/**Async**      | Sync        | Sync         |
-| **Use Case**          | Forms, general validation | Type-safe validation | Node.js services, general validation | Class-based validation | Functional programming | General validation |
+| Feature                | [Yup](https://yup-docs.vercel.app/) | [Zod](https://zod.dev/) | [Joi](https://joi.dev/)              | [class-validator](https://github.com/typestack/class-validator)               | [io-ts](https://www.npmjs.com/package/io-ts) | [Superstruct](https://www.npmjs.com/package/superstruct) |
+| ---------------------- | ----------------------------------- | ----------------------- | ------------------------------------ | ----------------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------------- |
+| **TypeScript Support** | Good                                | **Excellent**           | Limited                              | **Excellent**                                                                 | **Excellent**                                | Good                                                     |
+| **API Style**          | Fluent                              | Fluent                  | Fluent                               | Declarative                                                                   | _Functional_                                 | Fluent                                                   |
+| **Popularity**         | High                                | **Growing**             | High                                 | Popular in [**NestJS**](../../../../../technologies/js/be-frameworks/nest.md) | Niche                                        | Moderate                                                 |
+| **Validation Type**    | Sync/**Async**                      | Sync                    | Sync/**Async**                       | Sync/**Async**                                                                | Sync                                         | Sync                                                     |
+| **Use Case**           | Forms, general validation           | Type-safe validation    | Node.js services, general validation | Class-based validation                                                        | Functional programming                       | General validation                                       |
