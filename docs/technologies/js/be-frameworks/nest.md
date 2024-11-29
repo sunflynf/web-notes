@@ -238,4 +238,5 @@ describe("ItemsService", () => {
 });
 ```
 
-More detail: [NestJS documentation](https://docs.nestjs.com/).
+## References
+- [NestJS documentation](https://docs.nestjs.com/).

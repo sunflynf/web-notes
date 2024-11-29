@@ -6,7 +6,7 @@ tags: [MongoDB, Express, Node, React]
 # MERN
 
 - [MongoDB](../technologies/database/no-sql/mongodb.md)
-- [Express](../technologies/js/frameworks/backend/express.md)
+- [Express](../technologies/js/be-frameworks/express.md)
 - [React](../technologies/js/libraries/react/index.mdx)
 - [Node.js](../technologies/js/env/nodejs.md)
 

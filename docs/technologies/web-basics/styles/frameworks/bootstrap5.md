@@ -1,49 +1,67 @@
 ---
 description: A powerful, feature-packed frontend toolkit.
 tags:
-    - CSS
-    - SASS
-    - Frontend
+  - CSS
+  - SASS
+  - Frontend
 ---
 
 # Bootstrap 5
 
-- Bootstrap is a free front-end framework
-- Mobile-first
-- This note for Bootstrap version 5.3 (04-2024)
+Bootstrap is a popular front-end framework for building responsive, mobile-first websites using pre-designed components and utility classes.
 
-:::info 7 variants (color)
+> _This note for Bootstrap version 5.3 (04-2024)_
 
-- `primary` - blue
-- `success` - green
-- `danger` - red
-- `warning` - yellow
-- `info` - skyblue
-- `light` - white
-- `dark` - black
-:::
+```txt
+-- VARIANTS --
+primary  --> blue
+success  --> green
+danger   --> red
+warning  --> yellow
+info     --> skyblue
+light    --> white
+dark     --> black
+```
 
 ## How to use?
 
 ### HTML + CDN
 
 ```html
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Anything</title>
     <!-- CDN link here -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
   </head>
   <body>
     <h1>Hello</h1>
     <!-- CDN script here -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>\
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    \
     <!-- Add Popper below in case using dropdowns, popovers or tooltips -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
 ```
@@ -56,284 +74,124 @@ tags:
 
 ### With package manager
 
-- `npm install bootstrap@version`
-- `yarn add bootstrap@version`
-- _Recommend add-ons_
-  - **React**: [react-bootstrap](https://react-bootstrap.github.io/)
-  - **Vue3**: [bootstrap-vue-next](https://bootstrap-vue-next.github.io/bootstrap-vue-next/)
-  - **Angular**: [@ng-bootstrap/ng-bootstrap](https://ng-bootstrap.github.io)
-
-## Customize
-
-- Change colors
-  - Syntax:
-    - Normal: `--bs-{color_type}-{color|bg}`
-    - RGB: `--bs-{color_type}-{color|bg}-rgb`
-    - Color mode: `--bs-{color_variant}`, `--bs-{color_variant}-{rgb|bg-subtle|text-emphasis}`
-  - Type:
-    - color: `body`, `secondary`, `teriary`, `emphasis`, `border`  
-    - bg: `body`, `secondary`, `teriary`
-- Setting Theme mode: `data-bs-theme="light|dark"`
-  - Apply all pages - add to html tag
-  - Apply to component - add to component tag
-
-## Layout
-
-### Breakpoint
-
-| Marked | Class | Dimensions |
-| --- | --- | --- |
-| Small | `sm` | >= 576px |
-| Medium | `md` | >= 768px |
-| Large | `lg` | >= 992px |
-| Extra large | `xl` | >= 1200px |
-| Extra extra large | `xxl` | >= 1400px |
-
-### Container
->
-> `<div class="container"></div>`
-
-- `container`: max-width changes at each breakpoint
-- `container-{breakpoint}`: 100% width until the specified breakpoint is reacted
-- `container-fluid`: full width viewport
-
-### Display
-
-:::info Block display
-
-- `none`
-- `inline` | `inline-block` | `block`
-- `grid` | `inline-grid`
-- `flex` | `inline-flex`
-- `table` | `table-cell` | `table-row`
-
-:::
-
-- `d-{block_display}`
-- `d-{breakpoint}-{block_display}`
-- `d-print-{block_display}` - Print mode
-
-### Grid
-
-:::note
-
-- **1 row has max 12 cols** (default)
-- `row` & `col` class built with flex system
-- `grid` & `g-col-*` class built with grid system
-
-:::
-
-- `grid`
-  - `gap-{[0, 5]}`
-  - `row-gap-{[0, 5]}`
-  - `col-gap-{[0, 5]}`
-  - `g-col-*`
-  - `g-start-{n > 1}`
-  - style options: `style=""`
-    - `--bs-columns`
-    - `--bs-rows` -> child: `grid-row`
-    - `--bs-gap: horizontal vertical`
-- `row`
-  - `align-items-{start|center|end}`
-  - `justify-content-{start|center|end}`
-  - `justify-content-{around|between|evenly}` - space around, space between, space evenly
-  - `g-*`, `gx-*`, `gy-*` - gap, column-gap, row-gap
-  - `g-{breakpoint}-*`
-  - `row-cols-{max_in_row | auto}` - set maximum cols per row
-  - `row-cols-{breakpoint}-{max_in_row | auto}` - set maximum cols per row when reacted breakpoint
-- `col` - nested in row or **stand alone**, auto resize
-  - `align-self-{start|center|end}`
-  - `order-{first|[1, 6]|last}` - reorder col by css
-  - `offset-{n}` - Left margin by spaces of n columns. Exp: `offset-3` - margin-left equals 3 cols
-  - `offset-{breakpoint}-{n}`
-- `col-{[1, 12]}` - apply max-width (%)
-- `col-{breakpoint}-{[1, 12]|auto}` - apply max-width (%) when reacted breakpoint
-
-### Flex
-
-> Every thing go to 1 side
-
-- `d-flex`
-  - `flex-{row|column}`
-  - `flex-{breakpoint}-{row|column}`
-  - `flex-{row|column}-reverse`
-  - `flex-{breakpoint}-{row|column}-reverse`
-  - `justify-content-{start|center|end|around|between|evenly}`
-  - `justify-content-{breakpoint}-{start|center|end|around|between|evenly}`
-  - `align-items-{start|center|end|baseline|stretch}`
-  - `align-items-{breakpoint}-{start|center|end|baseline|stretch}`
-  - `align-content-{start|center|end|between|around|stretch}`
-  - `align-content-{breakpoint}-{start|center|end|between|around|stretch}`
-  - `flex-{wrap|nowrap|wrap-reverse}`
-  - `flex-{breakpoint}-{wrap|nowrap|wrap-reverse}`
-  - `gap-{[0, 5]}`
-  - `d-{breakpoint}-flex`
-- `d-inline-flex`: `display: inline-flex`
-- `d-{breakpoint}-inline-flex`
-- **child**:
-  - `align-self-{start|center|end|baseline|stretch}`
-  - `align-self-{breakpoint}-{start|center|end|baseline|stretch}`
-  - `order-{first|[0, 5]|last}`
-  - `order-{breakpoint}-{first|[0, 5]|last}`
-  - `flex-fill`
-  - `flex-{breakpoint}-fill`
-  - `flex-{grow|shrink}-{0|1}`
-  - `flex-{breakpoint}-{grow|shrink}-{0|1}`
-
-### Space
-
-- Size:
-  - 0
-  - 1 (0.25rem)
-  - 2 (0.5rem)
-  - 3 (1rem)
-  - 4 (1.5rem)
-  - 5 (3rem)
-  - auto
-- Position:
-  - `s`: start | left
-  - `e`: end | right
-  - `t`: top
-  - `b`: bottom
-  - `x`: both left & right
-  - `y`: both top & bottom
-- Margin: `m-{size}`, `m{position}-{size}`, `m{position}-{breakpoint}-{size}`
-- Padding: `p-{size}`, `p{position}-{size}`, `p{position}-{breakpoint}-{size}`
-
-## Components
-
-### Content
-
-Bootstrap has default font based on platform
-
-| Font | Using |
-| --- | --- |
-| system-ui | Cross-platform (default user interface font) |
-| san-serif | fallback |
-| Arial | Basic web fallback |
-| -apple-system | Safari for macOS & iOS |
-| "Helvetica Neue" | older macOS & iOS |
-| Roboto | Android |
-| "Segoe UI" | Windows |
-| "Noto Sans"\|"Liberation Sans" | Linux |
-| "Apple Color Emoji"\|"Segoe UI Emoji"\|"Segoe UI Symbol", "Noto Color Emoji" | Emoji |
-
-```html
-<!-- Example using Figure display -->
-<figure>
-  <blockquote class="blockquote">
-    <p>A well-known quote, contained in a blockquote element.</p>
-  </blockquote>
-  <figcaption class="blockquote-footer">
-    Someone famous in <cite title="Source Title">Source Title</cite>
-  </figcaption>
-</figure>
-<figure class="figure">
-  <img src="..." class="figure-img img-fluid rounded" alt="...">
-  <figcaption class="figure-caption">A caption for the above image.</figcaption>
-</figure>
+```bash
+npm install bootstrap@version
+# or
+yarn add bootstrap@version
 ```
 
-### Text
+_Recommend add-ons_
 
-- header(h1-h6): `display-{[1, 6]}`
-- abbr: `initialism` (smaller dots)
-- `text-body-secondary` - faded text
-- `lead` - stand out text
-- `mark` - `<mark>`
-- `small` - `<small>`
-- `text-decoration-underline` - `<u>`
-- `text-decoration-line-through` - `<s>`
-- `text-truncate` - Some longgggg te...
-- Align:
-  - `text-{start|center|end}`
-- List:
-  - `list-unstyled` - remove marked
-  - `list-inline` + `list-inline-item`
+- **React**: [react-bootstrap](https://react-bootstrap.github.io/)
+- **Vue3**: [bootstrap-vue-next](https://bootstrap-vue-next.github.io/bootstrap-vue-next/)
+- **Angular**: [@ng-bootstrap/ng-bootstrap](https://ng-bootstrap.github.io)
 
-### Image
+## Core Concepts
 
-- `img-fluid` - width: 100%, height: "auto"
-- `img-thumbnail` - make border
+1. **Grid System**:  
+   Bootstrap uses a 12-column grid layout to create responsive designs. 
 
-### Table
+   ```html
+   <div class="container">
+     <div class="row">
+       <div class="col-md-6">Column 1</div>
+       <div class="col-md-6">Column 2</div>
+     </div>
+   </div>
+   ```
 
-- table
-  - `table` - default based on current `data-bs-theme`
-  - `table-{color_variant}` - can apply to `<thead>` or `<tr>` or `<td>` (special case)
-  - `table-striped` - even & odd rows
-  - `table-striped-columns`
-  - `table-hover`
-  - `table-bordered` - can mix with `border-{color_variant}`
-  - `table-borderless`
-  - `table-responsive`
-  - `table-responsive-{breakpoint}`
-  - `table-sm`
-  - `caption-top`
-- tbody
-  - `table-group-divider` - thick top border
-- tr
-  - `table-active` - can apply to `<td>`
-  - `align-{top|middle|bottom}` - vertical
+2. **Responsive Breakpoints**:  
+   Bootstrap’s classes adapt based on screen sizes like `sm`, `md`, `lg`, `xl`, `xxl`. 
 
-### Block
+   ```html
+   <div class="d-none d-md-block">Visible on md and larger</div>
+   ```
 
-- `rounded` - border-radius
-- `rounded-{[0, 5]}`
-- `border`
-- `border-{color_variant}`
-- `visually-hidden` - hidden in UI (not remove element as `display: none`)
+3. **Components**:  
+   Pre-built UI elements like buttons, navbars, modals, and more. 
 
-### Form
+   ```html
+   <button class="btn btn-primary">Primary Button</button>
+   ```
 
-- `form-text` - extra text in form (can use as hint)
-- `invalid-feedback`
-- label
-  - `form-label`
-  - `col-form-label` - apply in horizontal form (auto align center vertical)
-  - `col-form-label-{sm|lg}`
-- input
-  - `form-control` - can apply to `<textarea>`
-  - `form-control-{sm|lg}` - add to change size
-  - `form-control-plaintext` - remove border + using with `readonly`
-  - `form-control-color` - input[type="color"]
-  - `form-range`
-  - `is-{valid|invalid}` - style for input after vadidate
-- select
-  - `form-select`
-  - `form-select-{sm|lg}`
-- form floating (wrap by `<div>`) - label auto change
-  - `form-floating`
-- form check (wrap by `<div>`) apply both checkbox and radio
-  - `form-check` - can add `form-switch` to change type of checkbox (not radio)
-  - `form-check-reverse`
-  - `form-check-inline` - multiple inline check
-  - input: `form-check-input`
-  - label: `form-check-label`
-- form check (style: button)
-  - input: `btn-check`
-  - label: `btn btn-{color_variants}` + extra class of Button
-- tooltip feedback (`<div>`)
-  - Add class `position-relative` to wrapper **div**
-  - Add class `{valid|invalid}-tooltip` to div show after validate  
-- input group (wrap by `<div class="input-group">`)
-  - `input-group-{sm|lg}`
-  - `has-validation` - fixed border radius issue after add valid class
-  - childs:
-    - `<span class="input-group-text">`
-    - `<input class="form-control" />`
-    - button
-    - dropdown
+4. **Utility Classes**:  
+   Quick styles for padding, margin, text alignment, etc.  
 
-![image](https://github.com/sunflynf/web-notes/assets/75079929/aad40b5a-b938-427b-bf65-ff960f9feac2)
+   ```html
+   <div class="p-3 m-2 text-center bg-light">Utility Class Example</div>
+   ```
 
-## Documents
+## Common Classes
 
-- [Bootstrap 5.3](https://getbootstrap.com/docs/5.3)
+- **Typography**: `h1`, `text-muted`, `fw-bold`, `text-uppercase`
+- **Colors**: `text-primary`, `bg-success`, `border-danger`
+- **Spacing**: `p-3`, `m-2`, `px-5`, `py-2`
+- **Flexbox**: `d-flex`, `justify-content-center`, `align-items-center`
+- **Display**: `d-none`, `d-block`, `d-inline-block`
+
+## Bootstrap Grid Cheat Sheet
+
+| Class              | Description                                |
+| ------------------ | ------------------------------------------ |
+| `.container`       | Fixed-width container                      |
+| `.container-fluid` | Full-width container                       |
+| `.row`             | Creates a horizontal group of columns      |
+| `.col` / `.col-*`  | Columns in different sizes (e.g., `col-6`) |
+
+## Key Bootstrap Components
+
+1. **Navbar**
+
+   ```html
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+     <a class="navbar-brand" href="#">Navbar</a>
+   </nav>
+   ```
+
+2. **Modal**
+
+   ```html
+   <button
+     type="button"
+     class="btn btn-primary"
+     data-bs-toggle="modal"
+     data-bs-target="#exampleModal"
+   >
+     Launch Modal
+   </button>
+   <div class="modal fade" id="exampleModal">
+     <div class="modal-dialog">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title">Modal Title</h5>
+           <button
+             type="button"
+             class="btn-close"
+             data-bs-dismiss="modal"
+           ></button>
+         </div>
+         <div class="modal-body">Modal content here...</div>
+       </div>
+     </div>
+   </div>
+   ```
+
+3. **Card**
+   ```html
+   <div class="card" style="width: 18rem;">
+     <img src="..." class="card-img-top" alt="..." />
+     <div class="card-body">
+       <h5 class="card-title">Card Title</h5>
+       <p class="card-text">Some quick example text.</p>
+       <a href="#" class="btn btn-primary">Go somewhere</a>
+     </div>
+   </div>
+   ```
 
 ## References
 
-- [Icons](https://icons.getbootstrap.com/)
-- [React + bootstrap](https://react-bootstrap.github.io/)
+- [Bootstrap Documents (5.3.x)](https://getbootstrap.com/docs/5.3)
+- [Bootstrap Icons](https://icons.getbootstrap.com/)
+- [React-bootstrap](https://react-bootstrap.github.io/)
 - [Angular + bootstrap](https://ng-bootstrap.github.io/#/home)
 - [Vue + bootstrap](https://bootstrap-vue-next.github.io/bootstrap-vue-next/)
