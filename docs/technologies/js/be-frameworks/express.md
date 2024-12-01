@@ -1,11 +1,11 @@
 ---
 description: Backend Frameworks in JavaScript ecosystem.
 tags:
-   - Backend
-   - JavaScript
-   - TypeScript
-   - MVC
-   - REST APIs
+  - Backend
+  - JavaScript
+  - TypeScript
+  - MVC
+  - REST APIs
 ---
 
 # Express
@@ -34,12 +34,12 @@ npm i -D nodemon
 ### 2. Basic Server
 
 ```js
-const express = require('express');
+const express = require("express");
 const app = express();
 const port = 3000;
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
 
 app.listen(port, () => {
@@ -52,7 +52,7 @@ app.listen(port, () => {
 ### Using Middleware
 
 ```js
-const express = require('express');
+const express = require("express");
 const app = express();
 
 // Built-in middleware for parsing JSON
@@ -68,7 +68,7 @@ app.use((req, res, next) => {
 ### Serving Static Files
 
 ```js
-app.use(express.static('public'));
+app.use(express.static("public"));
 ```
 
 ## Routing
@@ -76,27 +76,27 @@ app.use(express.static('public'));
 ### Basic
 
 ```js
-app.get('/', (req, res) => {
-  res.send('GET request to the homepage');
+app.get("/", (req, res) => {
+  res.send("GET request to the homepage");
 });
 
-app.post('/', (req, res) => {
-  res.send('POST request to the homepage');
+app.post("/", (req, res) => {
+  res.send("POST request to the homepage");
 });
 
-app.put('/user', (req, res) => {
-  res.send('PUT request to /user');
+app.put("/user", (req, res) => {
+  res.send("PUT request to /user");
 });
 
-app.delete('/user', (req, res) => {
-  res.send('DELETE request to /user');
+app.delete("/user", (req, res) => {
+  res.send("DELETE request to /user");
 });
 ```
 
 ### Route Parameters
 
 ```js
-app.get('/users/:userId/books/:bookId', (req, res) => {
+app.get("/users/:userId/books/:bookId", (req, res) => {
   res.send(req.params);
 });
 ```
@@ -104,7 +104,7 @@ app.get('/users/:userId/books/:bookId', (req, res) => {
 ### Query Strings
 
 ```js
-app.get('/search', (req, res) => {
+app.get("/search", (req, res) => {
   res.send(req.query);
 });
 ```
@@ -114,22 +114,22 @@ app.get('/search', (req, res) => {
 ### Request Object
 
 ```js
-app.get('/user/:id', (req, res) => {
-  console.log(req.params.id);  // Route parameters
+app.get("/user/:id", (req, res) => {
+  console.log(req.params.id); // Route parameters
   console.log(req.query.name); // Query parameters
-  console.log(req.body);       // Request body (for POST/PUT requests)
+  console.log(req.body); // Request body (for POST/PUT requests)
 });
 ```
 
 ### Response Object
 
 ```js
-app.get('/json', (req, res) => {
-  res.json({ name: 'Express' });
+app.get("/json", (req, res) => {
+  res.json({ name: "Express" });
 });
 
-app.get('/status', (req, res) => {
-  res.status(404).send('Not Found');
+app.get("/status", (req, res) => {
+  res.status(404).send("Not Found");
 });
 ```
 
@@ -140,15 +140,15 @@ app.get('/status', (req, res) => {
 ```js
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.send('Home page');
+router.get("/", (req, res) => {
+  res.send("Home page");
 });
 
-router.get('/about', (req, res) => {
-  res.send('About page');
+router.get("/about", (req, res) => {
+  res.send("About page");
 });
 
-app.use('/pages', router);
+app.use("/pages", router);
 ```
 
 ### Error Handling
@@ -156,7 +156,7 @@ app.use('/pages', router);
 ```js
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Something broke!');
+  res.status(500).send("Something broke!");
 });
 ```
 
@@ -172,24 +172,24 @@ const port = process.env.PORT || 3000;
 
 :::info Popular templates
 
-- [EJS](../../../../technologies/js/templates/ejs.md)
-- [Mustache](../../../../technologies/js/templates/mustache.md)
-- [Pug (Jade)](../../../../technologies/js/templates/pug.md)
-:::
+- [EJS](../../../technologies/js/templates/ejs.md)
+- [Mustache](../../../technologies/js/templates/mustache.md)
+- [Pug (Jade)](../../../technologies/js/templates/pug.md)
+  :::
 
 ```js
-app.set('view engine', 'pug');
-app.set('views', './views');
+app.set("view engine", "pug");
+app.set("views", "./views");
 
-app.get('/template', (req, res) => {
-  res.render('index', { title: 'Hey', message: 'Hello there!' });
+app.get("/template", (req, res) => {
+  res.render("index", { title: "Hey", message: "Hello there!" });
 });
 ```
 
 ### CORS
 
 ```js
-const cors = require('cors');
+const cors = require("cors");
 app.use(cors());
 ```
 
@@ -197,26 +197,26 @@ app.use(cors());
 
 ### Environment Configuration
 
-   ```js
-   require('dotenv').config();
+```js
+require("dotenv").config();
 
-   // Note: Module JS using
-   // import dotenv from 'dotenv';
-   // dotenv.config();
+// Note: Module JS using
+// import dotenv from 'dotenv';
+// dotenv.config();
 
-   const port = process.env.PORT || 3000;
-   ```
+const port = process.env.PORT || 3000;
+```
 
 ### Security
 
-   ```js
-   const helmet = require('helmet');
-   app.use(helmet());
-   ```
+```js
+const helmet = require("helmet");
+app.use(helmet());
+```
 
 ### Logging
 
-   ```js
-   const morgan = require('morgan');
-   app.use(morgan('combined'));
-   ```
+```js
+const morgan = require("morgan");
+app.use(morgan("combined"));
+```
