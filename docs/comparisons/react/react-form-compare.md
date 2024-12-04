@@ -1,5 +1,5 @@
 ---
-description: Compasition table for popular form libraries/frameworks of React
+description: React hook form | Formik | Tanstack Form
 ---
 
 # React Form Comparison

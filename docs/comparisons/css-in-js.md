@@ -1,5 +1,5 @@
 ---
-description: Build CSS style with JavaScript
+description: styled-components | emotion | JSS | goober | twind | vanilla-extract
 tags: [Frontend, CSS, JavaScript]
 ---
 
@@ -44,8 +44,8 @@ tags: [Frontend, CSS, JavaScript]
 
 ## Additional Notes
 
-- **styled-components** and **emotion** are the most popular CSS-in-JS libraries, with a large community and extensive documentation.
-- **JSS** is a more traditional CSS-in-JS library that uses JavaScript objects to define styles. It has a larger learning curve but offers more flexibility and power.
-- **goober** is a performant and lightweight alternative to **emotion**, with a similar API and feature set.
-- **twind** is a utility-first CSS-in-JS library that focuses on simplicity and ease of use. It's a good choice if you prefer a more functional and composable approach to styling.
-- **vanilla-extract** is a newer CSS-in-JS library that focuses on type safety and performance. It's a good choice if you prefer a more functional and type-safe approach to styling, and if you're using TypeScript.
+- [**styled-components**](https://styled-components.com/) and [**emotion**](https://emotion.sh/docs/introduction) are the most popular CSS-in-JS libraries, with a large community and extensive documentation.
+- [**JSS**](https://cssinjs.org) is a more traditional CSS-in-JS library that uses JavaScript objects to define styles. It has a larger learning curve but offers more flexibility and power.
+- [**goober**](https://www.npmjs.com/package/goober) is a performant and lightweight alternative to **emotion**, with a similar API and feature set.
+- [**twind**](https://twind.style/) is a utility-first CSS-in-JS library that focuses on simplicity and ease of use. It's a good choice if you prefer a more functional and composable approach to styling.
+- [**vanilla-extract**](https://vanilla-extract.style/) is a newer CSS-in-JS library that focuses on type safety and performance. It's a good choice if you prefer a more functional and type-safe approach to styling, and if you're using TypeScript.
