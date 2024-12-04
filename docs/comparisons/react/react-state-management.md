@@ -1,5 +1,5 @@
 ---
-description: Compasition table for popular state management libraries of React
+description: React context | Zustand | Jotai | Recoil | MobX | Redux
 ---
 
 # State Management
