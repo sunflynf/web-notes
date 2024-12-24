@@ -5,8 +5,25 @@ func add(x int, y int) int {
     return x + y
 }
 
+func getUserInput(info string) (value float32) {
+    fmt.Print(info)
+    fmt.Scan(&value)
+    return value
+}
+```
+
+```go
 // Multiple return values
 func swap(a, b string) (string, string) {
     return b, a
+}
+
+// constraint variable's name
+func calculateFinancials(revenue float32, expenses float32, taxRate float32) (ebt float32, profit float32, ratio float32) {
+    ebt = revenue - expenses // Earn Before Tax
+    profit = ebt * (1 - taxRate/100)
+    ratio = ebt / profit
+
+    return ebt, profit, ratio
 }
 ```
