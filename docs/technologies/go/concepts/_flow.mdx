@@ -5,22 +5,42 @@
 ```go
 if age > 18 {
     fmt.Println("Adult")
-} else {
+} else if (age > 14) {
     fmt.Println("Minor")
+} else {
+    fmt.Println("Child")
 }
 
 switch day {
-    case "Monday":
-        fmt.Println("Start of the week")
-    default:
-        fmt.Println("Other day")
+case "Monday":
+    fmt.Println("Start of the week")
+default:
+    fmt.Println("Other day")
 }
 ```
 
 ### Loops
 
 ```go
+// declare; condition; update
 for i := 0; i < 5; i++ {
     fmt.Println(i)
 }
+
+// Infinity -> for condition {}
+for {
+    // do something and break
+}
+
+// Use with switch
+outer:
+    for userInput != 0 {
+        switch userInput {
+        case 1:
+            // something
+        // ...
+        default:
+            break outer // exit loop
+        }
+    }
 ```
