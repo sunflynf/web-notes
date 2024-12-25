@@ -16,3 +16,66 @@ var age int = 30
 var name string = "John"
 var isActive bool = true
 ```
+
+| Category            | Type          | Zero Value (null)        | Range                                                                            |
+| ------------------- | ------------- | ------------------------ | -------------------------------------------------------------------------------- |
+| **Boolean**         | `bool`        | `false`                  | `true` or `false`                                                                |
+| **Numeric Types**   |               |                          |                                                                                  |
+| Integer             | `int`         | `0`                      | 32-bit systems: -2^31 to 2^31-1 <br /> 64-bit systems: -2^63 to 2^63-1           |
+|                     | `int8`        | `0`                      | -128 to 127 <br /> (-2^7 to 2^7-1)                                               |
+|                     | `int16`       | `0`                      | -32,768 to 32,767 <br /> (-2^15 to 2^15-1)                                       |
+|                     | `int32`       | `0`                      | -2,147,483,648 to 2,147,483,647 <br /> (-2^31 to 2^31-1)                         |
+|                     | `int64`       | `0`                      | -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 <br /> (-2^63 to 2^63-1) |
+| Unsigned Integer    | `uint`        | `0`                      | 32-bit systems: 0 to 2^32-1 <br /> 64-bit systems: 0 to 2^64-1                   |
+|                     | `uint8`       | `0`                      | 0 to 255 <br /> (0 to 2^8-1)                                                     |
+|                     | `uint16`      | `0`                      | 0 to 65,535 <br /> (0 to 2^16-1)                                                 |
+|                     | `uint32`      | `0`                      | 0 to 4,294,967,295 <br /> (0 to 2^32-1)                                          |
+|                     | `uint64`      | `0`                      | 0 to 18,446,744,073,709,551,615 <br /> (0 to 2^64-1)                             |
+|                     | `uintptr`     | `0`                      | 32-bit systems: 0 to 2^32-1 <br /> 64-bit systems: 0 to 2^64-1                   |
+| Float               | `float32`     | `0.0`                    | ±1.18E-38 to ±3.4E38                                                             |
+|                     | `float64`     | `0.0`                    | ±2.23E-308 to ±1.80E308                                                          |
+| Complex             | `complex64`   | `0+0i`                   | Real and imaginary parts are `float32`                                           |
+|                     | `complex128`  | `0+0i`                   | Real and imaginary parts are `float64`                                           |
+| **String**          | `string`      | `""`                     | 0 to 2^31-1 bytes <br /> (limited by max slice size)                             |
+| **Pointer**         | `*T`          | `nil`                    | Memory address space                                                             |
+| **Reference Types** |               |                          |                                                                                  |
+| Slice               | `[]T`         | `nil`                    | 0 to 2^31-1 elements <br /> (implementation dependent)                           |
+| Map                 | `map[K]V`     | `nil`                    | Limited by available memory                                                      |
+| Channel             | `chan T`      | `nil`                    | Buffer size limited by available memory                                          |
+| Interface           | `interface{}` | `nil`                    | N/A                                                                              |
+| Function            | `func()`      | `nil`                    | N/A                                                                              |
+| **Composite Types** |               |                          |                                                                                  |
+| Struct              | `struct{}`    | Zero value of each field | Depends on field types                                                           |
+| Array               | `[n]T`        | Array of zero values     | Fixed size defined at declaration                                                |
+
+:::info Additional notes
+
+1. **Memory Usage:**
+
+   - `string`: Each string takes 16 bytes overhead plus actual string data
+   - `slice`: 24 bytes overhead plus underlying array
+   - `map`: Implementation dependent, but has overhead per entry
+
+2. **Platform Dependencies:**
+
+   - `int`, `uint`, and `uintptr` sizes depend on the platform (32 or 64 bit)
+   - Memory addresses and maximum slice sizes are platform dependent
+
+3. **Special Considerations:**
+
+   - Floats: Follow IEEE-754 standard
+   - Strings: Immutable UTF-8 encoded
+   - Maps: Must be initialized with `make()` before use
+   - Channels: Must be initialized with `make()` before use
+
+4. **SQL Nullable Types:**
+
+   ```go
+   sql.NullString    // For nullable string
+   sql.NullInt64    // For nullable int64
+   sql.NullFloat64  // For nullable float64
+   sql.NullBool     // For nullable bool
+   sql.NullTime     // For nullable time.Time
+   ```
+
+:::

@@ -1,0 +1,99 @@
+# Programming Princibles
+
+**SOLID**, **DRY**, KISS, YAGNI, Code Review & Clean code, ...
+
+{/* truncate */}
+
+Dưới đây là các nguyên tắc lập trình phổ biến, kèm theo mức độ dự án thích hợp để áp dụng:  
+
+### 1. **SOLID Principles**  
+- **Mô tả:** 5 nguyên tắc giúp thiết kế hệ thống hướng đối tượng dễ bảo trì và mở rộng:  
+  - **S**: Single Responsibility Principle (Mỗi lớp có một trách nhiệm duy nhất).  
+  - **O**: Open/Closed Principle (Mở để mở rộng, đóng để chỉnh sửa).  
+  - **L**: Liskov Substitution Principle (Thay thế lớp cha bằng lớp con mà không làm hỏng ứng dụng).  
+  - **I**: Interface Segregation Principle (Giao diện không nên chứa các phương thức không cần thiết).  
+  - **D**: Dependency Inversion Principle (Phụ thuộc vào abstraction, không phải implementation).  
+- **Mức độ áp dụng:**  
+  - Dự án vừa và lớn (phần mềm thương mại, hệ thống backend).  
+  - Dự án cần khả năng mở rộng lâu dài.
+
+---
+
+### 2. **DRY (Don’t Repeat Yourself)**  
+- **Mô tả:** Hạn chế lặp lại mã nguồn bằng cách sử dụng abstraction, hàm, hoặc lớp.  
+- **Mức độ áp dụng:**  
+  - Tất cả các dự án, từ nhỏ đến lớn.  
+  - Đặc biệt quan trọng trong ứng dụng cần bảo trì thường xuyên.
+
+---
+
+### 3. **KISS (Keep It Simple, Stupid)**  
+- **Mô tả:** Thiết kế đơn giản, tránh phức tạp hóa không cần thiết.  
+- **Mức độ áp dụng:**  
+  - Dự án nhỏ và vừa (ứng dụng MVP, prototyping).  
+  - Phù hợp khi tốc độ phát triển ưu tiên hơn khả năng mở rộng.
+
+---
+
+### 4. **YAGNI (You Aren’t Gonna Need It)**  
+- **Mô tả:** Chỉ lập trình những gì cần thiết, không tạo tính năng "dự phòng" không cần thiết.  
+- **Mức độ áp dụng:**  
+  - Dự án nhỏ và vừa (ứng dụng cần nhanh ra thị trường).  
+  - Không phù hợp cho các dự án dài hạn hoặc có yêu cầu mở rộng lớn.
+
+---
+
+### 5. **Separation of Concerns (Tách biệt mối quan tâm)**  
+- **Mô tả:** Mỗi thành phần của phần mềm nên đảm nhận một vai trò cụ thể. Ví dụ:  
+  - UI xử lý giao diện.  
+  - Logic xử lý nghiệp vụ.  
+  - Dữ liệu được quản lý bởi cơ sở dữ liệu.  
+- **Mức độ áp dụng:**  
+  - Dự án vừa và lớn.  
+  - Phần mềm đa lớp (3-tier hoặc MVC).
+
+---
+
+### 6. **Principle of Least Astonishment (Nguyên tắc ít gây ngạc nhiên nhất)**  
+- **Mô tả:** Thiết kế phần mềm theo cách mà người dùng (hoặc lập trình viên khác) mong đợi.  
+- **Mức độ áp dụng:**  
+  - Dự án có giao diện người dùng (web, mobile).  
+  - Hệ thống dành cho đội ngũ kỹ thuật lớn.
+
+---
+
+### 7. **Encapsulation (Đóng gói)**  
+- **Mô tả:** Ẩn chi tiết nội bộ và cung cấp giao diện đơn giản để tương tác.  
+- **Mức độ áp dụng:**  
+  - Tất cả các dự án, đặc biệt là hướng đối tượng.  
+
+---
+
+### 8. **Code Review and Clean Code Practices**  
+- **Mô tả:** Viết mã dễ đọc, dễ hiểu và tuân thủ các tiêu chuẩn (naming conventions, indentation).  
+- **Mức độ áp dụng:**  
+  - Tất cả các dự án, đặc biệt với nhóm nhiều lập trình viên.  
+
+---
+
+### 9. **Test-Driven Development (TDD)**  
+- **Mô tả:** Viết test trước khi viết code, đảm bảo chức năng luôn đúng.  
+- **Mức độ áp dụng:**  
+  - Dự án có yêu cầu cao về độ ổn định (ứng dụng tài chính, y tế).  
+  - Không phù hợp cho dự án ngắn hạn hoặc deadline gấp.
+
+---
+
+### 10. **Microservices and Modular Design**  
+- **Mô tả:** Xây dựng hệ thống gồm các module nhỏ, độc lập với nhau.  
+- **Mức độ áp dụng:**  
+  - Dự án lớn (hệ thống phân tán, cloud-based).  
+  - Hệ thống cần khả năng mở rộng hoặc tích hợp dễ dàng.
+
+---
+
+### Lời khuyên:  
+- Dự án **nhỏ**: Tập trung KISS, DRY, Encapsulation.  
+- Dự án **vừa**: Áp dụng SOLID, Separation of Concerns, và Clean Code.  
+- Dự án **lớn**: Tích hợp thêm TDD, Microservices, và kiến trúc module.  
+Bạn có thể lựa chọn áp dụng linh hoạt các nguyên tắc này để phù hợp với quy mô và mục tiêu của dự án.  
