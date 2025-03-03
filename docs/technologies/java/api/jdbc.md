@@ -1,13 +1,14 @@
 ---
-description: Support for Java connection with DBMS.
+description: Low-level methods for querying, updating, and managing database connections directly
 tags:
   - Java
   - Database
+  - Spring boot
 ---
 
-# JDBC
+# Java Database Connectivity
 
-**JDBC** is a standard API in Java for interacting with relational databases. It provides low-level methods for querying, updating, and managing database connections directly.
+A standard API in Java for interacting with relational databases. It provides low-level methods for querying, updating, and managing database connections directly.
 
 ## **Core JDBC Components**
 
