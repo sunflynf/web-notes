@@ -1,15 +1,14 @@
 ---
-description: ORM Tech
+description: Object-relational mapping (ORM) in Java
 tags:
   - Java
+  - Database
   - Spring boot
 ---
 
-# JPA
+# Java Persistence API
 
-## Definitions
-
-- **JPA (Java Persistence API)**: A standard API for object-relational mapping (ORM) in Java.
+- **JPA**: A standard API for object-relational mapping (ORM) in Java.
 - **Hibernate**: A popular ORM framework implementing JPA, offering extra features like caching, batch processing, and more.
 - **Spring Data JPA**: A Spring module providing an abstraction layer for JPA, simplifying repository creation and data access patterns.
 

@@ -5,16 +5,15 @@ tags:
   - Java
   - Kotlin
   - XML
-  - Spring
-  - REST APIs
+  - RESTful API
 ---
 
-# Spring
+# Spring Framework
 
 ```mermaid
 flowchart LR
     subgraph Core concepts
-        Controller <-->|DTO| Service(["`Service
+        Controller["(REST) Controllers"] <-->|DTO| Service(["`Service
         *Optional*`"])
         Service <-->|Model| Repository
         Controller <-->|Model| Repository
