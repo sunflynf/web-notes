@@ -12,7 +12,7 @@ Collect user input and sent to a server for processing.
 
 ```html
 <!-- type is required -->
-<input 
+<input
   type="text"
   id="input-1"
   class="form-control"
@@ -27,7 +27,7 @@ Collect user input and sent to a server for processing.
   autocomplete="false"
   readonly="false"
   size="200px"
-  maxLength="100"
+  maxlength="100"
   pattern="/[abc]+/"
   onclick="action()"
   onchange="action()"
@@ -35,33 +35,32 @@ Collect user input and sent to a server for processing.
   onfocus="action()"
   aria-*="custom-aria-props"
 />
-
 ```
 
-| Type           | Special Atrributes  |
-| -------------- | ------------------- |
-| button         | value - text inside |
-| submit         |                     |
-| reset          |                     |
-| color          |                     |
-| checkbox       | checked             |
-| radio          | checked             |
-| range          |                     |
-| file           | multiple            |
-| number         | min, max, step      |
-| email          |                     |
-| password       |                     |
-| search         |                     |
-| tel            |                     |
-| text           |                     |
-| url            |                     |
-| month          | min, max            |
-| week           | min, max            |
-| time           | min, max            |
-| date           | min, max            |
-| datetime-local | min, max            |
-| hidden         |                     |
-| image          | src, height, width  |
+| Type           | Special Atrributes       |
+| -------------- | ------------------------ |
+| button         | `value` - text inside    |
+| submit         |                          |
+| reset          |                          |
+| color          |                          |
+| checkbox       | `checked`                |
+| radio          | `checked`                |
+| range          |                          |
+| file           | `multiple`               |
+| number         | `min`, `max`, `step`     |
+| email          |                          |
+| password       |                          |
+| search         |                          |
+| tel            |                          |
+| text           |                          |
+| url            |                          |
+| month          | `min`, `max`             |
+| week           | `min`, `max`             |
+| time           | `min`, `max`             |
+| date           | `min`, `max`             |
+| datetime-local | `min`, `max`             |
+| hidden         |                          |
+| image          | `src`, `height`, `width` |
 
 :::warning Input Form special attribute
 
@@ -75,7 +74,7 @@ Collect user input and sent to a server for processing.
 ### Label tag
 
 - Useful for screen-reader users
-- Helps users who have difficulty clicking on very small regions (such as radio buttons or checkboxes) 
+- Helps users who have difficulty clicking on very small regions (such as radio buttons or checkboxes)
 - Focus on `for` and `id`
 
 ```html
