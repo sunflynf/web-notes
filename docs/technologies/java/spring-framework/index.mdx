@@ -23,7 +23,7 @@ flowchart LR
         MongoDB,
         Redis, ...
         `")
-        SpringData -.->|@Entity| Entity
+        SpringData -.->|"@Entity"| Entity
     end
     Entity <--> Database[(Database)]
     %% Add-ons
@@ -31,9 +31,9 @@ flowchart LR
     *Mustache*,
     *Thymleaf*, ...
     `"])
-    Validation -.->|@Rule| Entity
+    Validation -.->|"@Rule"| Entity
     Security(Security) -.->|Filter Chain| Controller
-    Swagger(Swagger) -.->|@Annotation| Controller
+    Swagger(Swagger) -.->|"@Annotation"| Controller
     HOAS -.->|jackson| Controller
     Actuator(Actuator) -.->|health| Controller
     subgraph Testing
