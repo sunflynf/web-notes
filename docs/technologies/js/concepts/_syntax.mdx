@@ -31,53 +31,58 @@ Start with `(A-Z) (a-z) $ _`
 ### Operators
 
 ```md
-- MATH
-  - Number `+ - * / % **`
-  - Assignment `= ++ += -- -= *= /= %=`
-  - String `+ +=`
-  - Bitwise (can assign like `<operator>=`)
-    - And `&`
-    - Or `|`
-    - Not `~`
-    - Xor `^`
-    - shift `<<` `<<<` `>>` `>>>`
+<!-- MATH -->
 
-- COMPARE
-  - value 
-    - `==` `!=` 
-    - `>` `>=` 
-    - `<` `<=`
-  - type & value 
-    - `===` `!==` 
-    - `Object.is(v1, v2)`
-  - logical `!` (not) `&&` (and) `||` (or)
-  - ternary `(condition) ? (value if true) : (value if false)`
-  - type
-    -> `typeof param` -> type
-    -> `instanceof param === ObjectType` -> true | false
+- Number `+ - * / % **`
+- Assignment `= ++ += -- -= *= /= %=`
+- String `+ +=`
+- Bitwise (can assign like `<operator>=`)
+  - And `&`
+  - Or `|`
+  - Not `~`
+  - Xor `^`
+  - shift `<<` `<<<` `>>` `>>>`
 
-- Coalescing (ES2020)
-  -> `let val = pi ?? 3.14;`
-  => `let val = (pi !== null && pi !== undefined) ? pi : 3.14;`
+<!-- COMPARE -->
 
-- Optional Chaining (ES2020)
-  -> `let currentAge = user?.age;`
-  => `let currentAge = (user !== null && user !== undefined) ? user.age : undefined`
-  => Note: this operators avoid error when object user is null or undefined
+- value
+  - `==` `!=`
+  - `>` `>=`
+  - `<` `<=`
+- type & value
+  - `===` `!==`
+  - `Object.is(v1, v2)`
+- logical `!` (not) `&&` (and) `||` (or)
+- ternary `(condition) ? (value if true) : (value if false)`
+- type
+  -> `typeof param` -> type
+  -> `instanceof param === ObjectType` -> true | false
+
+<!-- Coalescing (ES2020) -->
+
+`let val = pi ?? 3.14;`
+`let val = (pi !== null && pi !== undefined) ? pi : 3.14;`
+
+<!-- Optional Chaining (ES2020) -->
+
+`let currentAge = user?.age;`
+`let currentAge = (user !== null && user !== undefined) ? user.age : undefined`
+Note: this operators avoid error when object user is `null` or `undefined`
 ```
 
 :::warning Special zone
 
+{/* prettier-ignore */}
 ```js
 !"" == !0 == !null == !undefined == true
 
 ![] == !{} == false
 
-condition && value 
--> condition === true ? value : undefined
+condition && value
+// condition === true ? value : undefined
 
-value || defaultValue 
--> !!value ? value : defaultValue
+value || defaultValue
+// !!value ? value : defaultValue
 ```
 
 :::
