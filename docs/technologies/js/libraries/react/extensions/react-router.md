@@ -1,10 +1,10 @@
 ---
 description: Set up routing
 tags:
-    - JavaScript
-    - TypeScript
-    - React
-    - Extension
+  - JavaScript
+  - TypeScript
+  - React
+  - Extension
 ---
 
 # React Router
@@ -96,7 +96,9 @@ const router = createBrowserRouter([
 ]);
 
 // fallbackElement is optional
-const AppRoutes = () => <RouterProvider router={router} fallbackElement={<BigSpinner />}/>;
+const AppRoutes = () => (
+  <RouterProvider router={router} fallbackElement={<BigSpinner />} />
+);
 export default AppRoutes;
 ```
 
@@ -123,12 +125,13 @@ interface RouteObject {
 }
 ```
 
-- path
-  - "" -> / (current url)
-  - "/things" -> /things
-  - "/things/:thingId" -> /things/12a-bc
-  - "*" -> /any-slug | /c1/c11/c111
-  - "/:lang?/categories -> /categories | /fr/categories | /vi/categories | ...
+| Text                | Path                                                                       |
+| ------------------- | -------------------------------------------------------------------------- |
+| ""                  | current url                                                                |
+| "/things"           | /things                                                                    |
+| "/things/:thingId"  | /things/12a-bc                                                             |
+| "\*"                | /any-slug <br/> /c1/c11/c111                                               |
+| "/:lang?/categories | /categories <br/> /en/categories <br/> /fr/categories <br/> /vi/categories |
 
 ```jsx
 <Route
@@ -155,8 +158,8 @@ function Team() {
 ## Navigation
 
 ```jsx
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -180,13 +183,13 @@ export default Navbar;
 ```
 
 ```jsx
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Home from './components/Home';
-import About from './components/About';
-import Contact from './components/Contact';
-import NotFound from './components/NotFound';
-import Navbar from './components/Navbar';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Home from "./components/Home";
+import About from "./components/About";
+import Contact from "./components/Contact";
+import NotFound from "./components/NotFound";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   return (
@@ -211,8 +214,8 @@ export default App;
 
 ```jsx
 // ItemDetail.js
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React from "react";
+import { useParams } from "react-router-dom";
 
 const ItemDetail = () => {
   const { id } = useParams();
@@ -222,20 +225,20 @@ const ItemDetail = () => {
 export default ItemDetail;
 
 // In your App.js or Routes configuration
-<Route path="/item/:id" element={<ItemDetail />} />
+<Route path="/item/:id" element={<ItemDetail />} />;
 ```
 
 ### useNavigate
 
 ```jsx
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
 
   const goToAbout = () => {
-    navigate('/about');
+    navigate("/about");
   };
 
   return (
