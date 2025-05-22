@@ -48,6 +48,9 @@ const config: Config = {
   themeConfig: {
     // TODO: replace image
     image: "img/docusaurus-social-card.jpg",
+    colorMode: {
+      respectPrefersColorScheme: true,
+    },
     docs: {
       sidebar: {
         autoCollapseCategories: true,

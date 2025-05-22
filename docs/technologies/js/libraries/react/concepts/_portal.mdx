@@ -2,3 +2,11 @@
 
 - Render some children into a different part of the DOM (drawer, modal, tooltips, ...)
 - `createPortal(children, domNode, key?)`
+
+```jsx
+import { createPortal } from "react-dom";
+
+export function Modal({ children }) {
+  return createPortal(children, document.body);
+}
+```
