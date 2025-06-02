@@ -1,8 +1,8 @@
 ---
 description: Templates Languages
 tags:
-    - MVC
-    - JavaScript
+  - MVC
+  - JavaScript
 ---
 
 # EJS
@@ -18,22 +18,22 @@ npm i ejs
 :::info Set up with [Express](../../../technologies/js/be-frameworks/express.md)
 
 ```js
-const express = require('express');
+const express = require("express");
 const app = express();
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 ```
 
 :::
 
 ## Tags
 
-| Code | Use for |
-| --- | --- |
-| `<%= variables %>` | output data |
-| `<% users.forEach(user => { %>` | excute code |
-| `<%- <h1>Hello</h1> %>` | render html |
-| `<%- include('') %>` | partial files |
-| `<%# comment %>` | Comment inline |
+| Code                            | Use for        |
+| ------------------------------- | -------------- |
+| `<%= variables %>`              | output data    |
+| `<% users.forEach(user => { %>` | excute code    |
+| `<%- <h1>Hello</h1> %>`         | render html    |
+| `<%- include('') %>`            | partial files  |
+| `<%# comment %>`                | Comment inline |
 
 ## Samples
 
@@ -45,13 +45,10 @@ app.set('view engine', 'ejs');
     <title><%= title %></title>
   </head>
   <body>
-    <%# comment %>
-    <%- include('./layout/header.ejs') %>
-
-    <% if (user) { %>
-        <h2>Hello, <%= user.name %>!</h2>
+    <%# comment %> <%- include('./layout/header.ejs') %> <% if (user) { %>
+    <h2>Hello, <%= user.name %>!</h2>
     <% } else { %>
-        <h2>Hello, Guest!</h2>
+    <h2>Hello, Guest!</h2>
     <% } %>
 
     <pre><%= date %></pre>
@@ -85,15 +82,15 @@ app.set('view engine', 'ejs');
 
 ```js
 // express
-app.get('/hello', (req, res) => {
-  res.render('index.ejs', {
-    title: 'Well done!',
+app.get("/hello", (req, res) => {
+  res.render("index.ejs", {
+    title: "Well done!",
     // user: undefined,
-    user: { name: 'Fi' },
-    items: ['apple', 'banana', 'dragon fruit', 'mango', 'orange'],
+    user: { name: "Fi" },
+    items: ["apple", "banana", "dragon fruit", "mango", "orange"],
     date: new Date().toLocaleDateString(),
   });
 });
 ```
 
-![alt text](../../../assets/ejs-samples.png)
+![alt text](../../../assets/ejs-samples.webp)
