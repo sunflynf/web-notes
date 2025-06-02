@@ -112,18 +112,20 @@ const config: Config = {
     },
   } satisfies Preset.ThemeConfig,
 
-  themes: [
-    "@docusaurus/theme-mermaid",
-    [
-      require.resolve("@easyops-cn/docusaurus-search-local"),
-      {
-        hashed: true,
-        language: ["en"],
-      },
-    ],
-  ],
+  themes: ["@docusaurus/theme-mermaid"],
   markdown: {
     mermaid: true,
+  },
+  future: {
+    v4: {
+      removeLegacyPostBuildHeadAttribute: true, // required
+    },
+    // Note: This is experimental and may change in future versions
+    experimental_faster: {
+      ssgWorkerThreads: true,
+      rspackBundler: true,
+      rspackPersistentCache: true,
+    },
   },
 };
 
