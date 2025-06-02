@@ -1,9 +1,0 @@
-# Tech
-https://stylus-lang.com
-
-# Extensions
-https://eslint.org/
-https://prettier.io/
-
-# Infrastructure
-- Datadog
