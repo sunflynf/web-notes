@@ -46,7 +46,6 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // TODO: replace image
     image: "img/docusaurus-social-card.jpg",
     colorMode: {
       respectPrefersColorScheme: true,
@@ -77,6 +76,27 @@ const config: Config = {
           position: "right",
         },
       ],
+    },
+    algolia: {
+      appId: "ZE2R3K1GKF",
+      apiKey: "f099734d82028cf0858416286df9ebc5",
+      indexName: "sunflynfio",
+
+      // Optional: see doc section below
+      // contextualSearch: true,
+
+      // Optional: Replace parts of the item URLs from Algolia. Useful when using the same search index for multiple deployments using a different baseUrl. You can use regexp or string in the `from` param. For example: localhost:3000 vs myCompany.com/docs
+      // replaceSearchResultPathname: {
+      //   from: "/docs/", // or as RegExp: /\/docs\//
+      //   to: "/",
+      // },
+
+      // Optional: Algolia search parameters
+      // searchParameters: {},
+      // Optional: path for search page that enabled by default (`false` to disable it)
+      // searchPagePath: "search",
+      // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
+      // insights: false,
     },
     footer: {
       style: "dark",
