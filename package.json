@@ -29,6 +29,7 @@
     "@docusaurus/module-type-aliases": "^3.7.0",
     "@docusaurus/tsconfig": "^3.7.0",
     "@docusaurus/types": "^3.7.0",
+    "eslint-plugin-react-hooks": "^6.1.0-canary-280ff6fe-20250606",
     "typescript": "^5.8.2"
   },
   "browserslist": {
