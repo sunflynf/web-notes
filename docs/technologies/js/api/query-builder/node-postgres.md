@@ -268,5 +268,5 @@ const pool = new Pool({
 
 ## References
 
-- [Postgre](../../../technologies/database/relational/postgre.md)
+- [Postgre](/docs/technologies/database/relational/postgre.md)
 - [Documents](https://node-postgres.com/)
