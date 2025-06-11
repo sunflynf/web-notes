@@ -1,4 +1,4 @@
-# Elastic Search
+# Elasticsearch
 
 ElasticSearch is a powerful, distributed search and analytics engine designed for working with large datasets. It's commonly used for log and event data, full-text search, and analytics. To use it effectively, you need to understand how to interact with its RESTful API, structure your data properly, and optimize your queries. Here's a step-by-step guide on getting started:
 
@@ -8,6 +8,7 @@ ElasticSearch is a powerful, distributed search and analytics engine designed fo
   - Download it from the [official Elastic website](https://www.elastic.co/downloads/elasticsearch).
   - Unzip the downloaded file and run it with `bin/elasticsearch` (Linux/Mac) or `bin\elasticsearch.bat` (Windows).
 - **Docker Installation**: For a more isolated setup, you can use Docker:
+
   ```bash
   docker pull docker.elastic.co/elasticsearch/elasticsearch:8.0.0
   docker run -p 9200:9200 -e "discovery.type=single-node" elasticsearch:8.0.0
@@ -25,10 +26,13 @@ ElasticSearch is a powerful, distributed search and analytics engine designed fo
 ElasticSearch stores data in JSON format. Here’s an example of indexing (adding) a document to an index:
 
 - **Create or Use an Index**:
+
   ```json
   PUT /my_index
   ```
+
 - **Add a Document**:
+
   ```json
   POST /my_index/_doc/1
   {
@@ -43,6 +47,7 @@ ElasticSearch stores data in JSON format. Here’s an example of indexing (addin
 ElasticSearch offers several types of queries:
 
 - **Match Query**: Searches for documents that contain specific terms in a field.
+
   ```json
   GET /my_index/_search
   {
@@ -51,7 +56,9 @@ ElasticSearch offers several types of queries:
     }
   }
   ```
+
 - **Term Query**: Looks for exact matches, often used for fields with exact values (like IDs).
+
   ```json
   GET /my_index/_search
   {
@@ -60,7 +67,9 @@ ElasticSearch offers several types of queries:
     }
   }
   ```
+
 - **Range Query**: Searches within a numeric or date range.
+
   ```json
   GET /my_index/_search
   {
@@ -88,10 +97,13 @@ POST /my_index/_update/1
 ## Deleting Documents
 
 - **Delete a Document**:
+
   ```json
   DELETE /my_index/_doc/1
   ```
+
 - **Delete an Index**:
+
   ```json
   DELETE /my_index
   ```
@@ -133,10 +145,13 @@ ElasticSearch is highly flexible and supports various applications:
 Here's a simple sequence that combines multiple operations:
 
 1. **Create an index**:
+
    ```json
    PUT /library
    ```
+
 2. **Index a book**:
+
    ```json
    POST /library/_doc/1
    {
@@ -145,7 +160,9 @@ Here's a simple sequence that combines multiple operations:
      "year": 1949
    }
    ```
+
 3. **Search by author**:
+
    ```json
    GET /library/_search
    {
@@ -154,7 +171,9 @@ Here's a simple sequence that combines multiple operations:
      }
    }
    ```
+
 4. **Aggregate by publication year**:
+
    ```json
    GET /library/_search
    {
