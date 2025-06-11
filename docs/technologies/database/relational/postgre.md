@@ -52,12 +52,14 @@ tags:
    ```
 
 4. **Close Pool**
+
    - After completing operations, close the connection pool to avoid hanging connections.
+
    ```javascript
    pool.end();
    ```
 
-#### Pooling (Recommended for Production)
+### Pooling (Recommended for Production)
 
 The `pg` package's `Pool` class handles connection pooling automatically, making it efficient for high-load environments.
 
@@ -153,6 +155,7 @@ The `pg` package's `Pool` class handles connection pooling automatically, making
    ```
 
 4. **Start Containers**
+
    ```bash
    docker-compose up -d
    ```
@@ -222,5 +225,5 @@ The `pg` package's `Pool` class handles connection pooling automatically, making
 
 ## References
 
-- [Documents](https://www.postgresql.org/docs/current/)
-- [Tools](../../../technologies/js/api/node-postgres.md)
+- [PostgreSQL Documents](https://www.postgresql.org/docs/current/)
+- [JS tools - node-postgres](/docs/technologies/js/api/query-builder/node-postgres.md)
