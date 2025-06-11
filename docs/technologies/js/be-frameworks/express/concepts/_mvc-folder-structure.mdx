@@ -1,0 +1,125 @@
+## Example for MVC Project
+
+```txt
+project-root/
+├── src/
+│   ├── config/
+│   │   ├── database.js
+│   │   ├── env.js
+│   │   └── ...
+│   ├── controllers/
+│   │   ├── userController.js
+│   │   ├── productController.js
+│   │   └── ...
+│   ├── models/
+│   │   ├── userModel.js
+│   │   ├── productModel.js
+│   │   └── ...
+│   ├── views/
+│   │   ├── user/
+│   │   │   ├── index.ejs
+│   │   │   ├── create.ejs
+│   │   │   └── ...
+│   │   ├── product/
+│   │   │   ├── index.ejs
+│   │   │   └── ...
+│   │   ├── partials/
+│   │   │   ├── header.ejs
+│   │   │   ├── footer.ejs
+│   │   │   └── ...
+│   │   └── error.ejs
+│   ├── routes/
+│   │   ├── userRoutes.js
+│   │   ├── productRoutes.js
+│   │   └── index.js
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   ├── errorMiddleware.js
+│   │   └── ...
+│   ├── services/
+│   │   ├── userService.js
+│   │   ├── productService.js
+│   │   └── ...
+│   ├── utils/
+│   │   ├── logger.js
+│   │   ├── errorHandler.js
+│   │   └── ...
+│   ├── public/
+│   │   ├── css/
+│   │   │   ├── styles.css
+│   │   │   └── ...
+│   │   ├── js/
+│   │   │   ├── scripts.js
+│   │   │   └── ...
+│   │   └── images/
+│   └── app.js
+├── ...
+```
+
+### Update for important files
+
+```js title="server.js"
+import express from "express";
+import { connectDB } from "./src/config/database.js";
+import routes from "./src/routes/index.js";
+import path from "path";
+import app from "./src/app.js";
+
+// Focus here!
+app.set("views", path.join(process.cwd(), "src/views"));
+app.set("view engine", "ejs");
+app.use(express.static(path.join(process.cwd(), "src/public")));
+app.use("/api", routes);
+
+const PORT = process.env.PORT || 3000;
+connectDB().then(() => {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+});
+```
+
+```js title="app.js"
+app.use(express.urlencoded({ extended: true })); // For form submissions
+```
+
+#### For views
+
+```html title="index.ejs"
+<!-- Can use pug, hsb, ... -->
+<%- include('../partials/header') %>
+<h1>Users</h1>
+<ul>
+  <% users.forEach(user => { %>
+  <li><%= user.name %> (<%= user.email %>)</li>
+  <% }) %>
+</ul>
+<a href="/users/create">Add User</a>
+<%- include('../partials/footer') %>
+```
+
+```js title="userController.js"
+import * as userService from "../services/userService.js";
+
+export const getUsers = async (req, res, next) => {
+  try {
+    const users = await userService.getAllUsers();
+    res.render("user/index", { users }); // Render view
+  } catch (error) {
+    next(error);
+  }
+};
+
+// get -> /users/create
+export const getCreateUserForm = (req, res) => {
+  res.render("user/create"); // Render create form
+};
+
+// post -> users
+export const createUser = async (req, res, next) => {
+  try {
+    await userService.createUser(req.body);
+    res.redirect("/users"); // Redirect after form submission
+  } catch (error) {
+    next(error);
+  }
+};
+```

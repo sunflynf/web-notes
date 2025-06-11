@@ -1,0 +1,25 @@
+## Example for Larger Projects
+
+For very large projects, you can modularize further. This groups all user-related files together, improving modularity.
+
+```plaintext
+src/
+├── modules/
+│   ├── user/
+│   │   ├── userController.js
+│   │   ├── userRoutes.js
+│   │   ├── userService.js
+│   │   ├── userModel.js
+│   │   └── userValidator.js
+│   ├── product/
+│   │   ├── productController.js
+│   │   └── ...
+│   └── ...
+├── common/
+│   ├── middleware/
+│   ├── utils/
+│   └── ...
+├── config/
+├── app.js
+└── server.js
+```
