@@ -10,160 +10,96 @@ tags:
 
 # NestJS
 
-## Core Concepts
+## 1. Core Concepts
 
-- **Controller**: Handles incoming requests and returns responses.
-- **Service**: Business logic layer; reusable across the application.
-- **Module**: Groups related controllers and providers.
-- **Provider**: Any class annotated with `@Injectable()` for dependency injection.
+### 1.1. Module
 
-## Basic Commands
+Organizes code into reusable units with controllers and providers.
 
-```bash
-# Installation CLI global
-npm install -g @nestjs/cli
+```typescript title="app.module.ts"
+import { Module } from "@nestjs/common";
+import { CatsController } from "./cats.controller";
+import { CatsService } from "./cats.service";
 
-# Create Project
-nest new project-name
-
-# Run Application
-npm run start
-npm run start:dev # For development env
+@Module({
+  controllers: [CatsController],
+  providers: [CatsService],
+})
+export class AppModule {}
 ```
 
-## Application Structure
+### 1.2. Controller
 
-```plaintext
-src/
-  ├── app.controller.ts
-  ├── app.controller.spec.ts
-  ├── app.module.ts
-  ├── app.service.ts
-  ├── main.ts
-```
+Handles HTTP requests and defines routes.
 
-### Controller
+```typescript title="cats.controller.ts"
+import { Controller, Get, Param } from "@nestjs/common";
+import { CatsService } from "./cats.service";
 
-```typescript
-import { Controller, Get, Post, Body, Param } from "@nestjs/common";
-
-@Controller("items")
-export class ItemsController {
-  @Get()
-  findAll(): string {
-    return "This action returns all items";
-  }
+@Controller("cats")
+export class CatsController {
+  constructor(private readonly catsService: CatsService) {}
 
   @Get(":id")
   findOne(@Param("id") id: string): string {
-    return `This action returns item #${id}`;
-  }
-
-  @Post()
-  create(@Body() createItemDto: any): string {
-    return "This action adds a new item";
+    return this.catsService.findOne(id);
   }
 }
 ```
 
-### Service
+### 1.3. Service (Provider)
 
-```typescript
+Contains business logic, injectable into controllers.
+
+```typescript title="cats.service.ts"
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
-export class ItemsService {
-  findAll(): string {
-    return "This action returns all items";
-  }
-
+export class CatsService {
   findOne(id: string): string {
-    return `This action returns item #${id}`;
-  }
-
-  create(createItemDto: any): string {
-    return "This action adds a new item";
+    return `Cat with id ${id}`;
   }
 }
 ```
 
-### Module
+### 1.4. Middleware
 
-```typescript
-import { Module } from "@nestjs/common";
-import { ItemsController } from "./items.controller";
-import { ItemsService } from "./items.service";
+Processes requests before reaching controllers.
 
-@Module({
-  controllers: [ItemsController],
-  providers: [ItemsService],
-})
-export class ItemsModule {}
-```
-
-### Main Entry File
-
-```typescript
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
-
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
-}
-bootstrap();
-```
-
-### DTO (Data Transfer Object)
-
-```typescript
-export class CreateItemDto {
-  readonly name: string;
-  readonly description: string;
-  readonly price: number;
-}
-```
-
-### Pipes
-
-```typescript
-import {
-  PipeTransform,
-  Injectable,
-  ArgumentMetadata,
-  BadRequestException,
-} from "@nestjs/common";
-
-@Injectable()
-export class ParseIntPipe implements PipeTransform<string, number> {
-  transform(value: string, metadata: ArgumentMetadata): number {
-    const val = parseInt(value, 10);
-    if (isNaN(val)) {
-      throw new BadRequestException("Validation failed");
-    }
-    return val;
-  }
-}
-```
-
-### Middleware
-
-```typescript
+```typescript title="logger.middleware.ts"
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { Request, Response, NextFunction } from "express";
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    console.log("Request...");
+    console.log("Request:", req.method, req.url);
     next();
   }
 }
 ```
 
-### Interceptors
+### 1.5. Guard
 
-```typescript
+Protects routes by checking permissions.
+
+```typescript title="auth.guard.ts"
+import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest();
+    return request.headers["api_key"] === "MY_API_KEY";
+  }
+}
+```
+
+### 1.6. Interceptor
+
+Transforms request/response data.
+
+```typescript title="transform.interceptor.ts"
 import {
   Injectable,
   NestInterceptor,
@@ -174,69 +110,166 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 @Injectable()
-export class TransformInterceptor<T> implements NestInterceptor<T, any> {
+export class TransformInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(map((data) => ({ data })));
   }
 }
 ```
 
-### Guards
+### 1.7. Pipe
 
-```typescript
-import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
-import { Observable } from "rxjs";
+Validates or transforms input data.
 
-@Injectable()
-export class AuthGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest();
-    return validateRequest(request);
+```typescript title="create-cat.dto.ts"
+import { IsString, IsInt } from "class-validator";
+
+export class CreateCatDto {
+  @IsString()
+  name: string;
+
+  @IsInt()
+  age: number;
+}
+```
+
+```ts title="cats.controller.ts"
+import { Controller, Post, Body, ValidationPipe } from "@nestjs/common";
+import { CreateCatDto } from "./create-cat.dto";
+
+// You can add provider APP_PIPE (@nestjs/core) with new ValidationPipe({ whitelist: true }) on AppModule
+@Controller("cats")
+export class CatsController {
+  @Post()
+  create(@Body(ValidationPipe) createCatDto: CreateCatDto) {
+    return createCatDto;
   }
 }
 ```
 
-### Decorators
+## 2. Popular Packages
 
-- **Custom Decorator**
+| Package             | Purpose                      | Integration Example                        |
+| ------------------- | ---------------------------- | ------------------------------------------ |
+| **class-validator** | Validates DTOs               | Use with `ValidationPipe` in controllers.  |
+| **passport**        | Authentication (JWT, OAuth2) | Use `@nestjs/passport` for strategies.     |
+| **swagger**         | Generates API docs           | Use `@nestjs/swagger` to annotate APIs.    |
+| **typeorm**         | ORM for SQL databases        | Use `@nestjs/typeorm` for DB integration.  |
+| **nestjs/config**   | Manages app configuration    | Use `@nestjs/config` to load `.env` files. |
 
-```typescript
-import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+**Config Example**:
 
-export const User = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    return request.user;
-  }
-);
+```typescript title="app.module.ts"
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+
+@Module({
+  imports: [ConfigModule.forRoot({ isGlobal: true })],
+})
+export class AppModule {}
 ```
 
-### Testing
+## 3. Advanced Topics
 
-- **Unit Test**
+### 3.1. Microservices
 
-```typescript
-import { Test, TestingModule } from "@nestjs/testing";
-import { ItemsService } from "./items.service";
+Enables distributed systems with message brokers.
 
-describe("ItemsService", () => {
-  let service: ItemsService;
+```typescript title="app.module.ts"
+import { Module } from "@nestjs/common";
+import { ClientsModule, Transport } from "@nestjs/microservices";
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [ItemsService],
-    }).compile();
+@Module({
+  imports: [
+    ClientsModule.register([
+      {
+        name: "BOOKSTORE_SERVICE",
+        transport: Transport.TCP,
+        options: { host: "localhost", port: 3000 },
+      },
+    ]),
+  ],
+})
+export class AppModule {}
+```
 
-    service = module.get<ItemsService>(ItemsService);
-  });
+**Common Issues & Solutions**:
 
-  it("should be defined", () => {
-    expect(service).toBeDefined();
-  });
-});
+- **Scaling**: Use Docker/Kubernetes for horizontal scaling.
+- **Connection Issues**: Implement retry mechanisms and heartbeats.
+- **Data Consistency**: Use event-driven patterns (e.g., Kafka).
+
+### 3.2. WebSocket
+
+Supports real-time communication.
+
+```typescript title="chat.gateway.ts"
+import {
+  WebSocketGateway,
+  SubscribeMessage,
+  WebSocketServer,
+} from "@nestjs/websockets";
+import { Server } from "socket.io";
+
+@WebSocketGateway({ cors: { origin: "*" } })
+export class ChatGateway {
+  @WebSocketServer() server: Server;
+
+  @SubscribeMessage("chat")
+  handleEvent(@MessageBody() payload: any): any {
+    this.server.emit("chat", payload);
+    return payload;
+  }
+}
+```
+
+**Common Issues & Solutions**:
+
+- **Scaling**: Use Redis pub/sub for distributed WebSocket.
+- **Dropped Connections**: Implement heartbeats.
+- **Security**: Authenticate clients with tokens.
+
+### 3.3. Security
+
+Secures APIs with authentication and protections.
+
+```typescript title="auth.module.ts"
+import { Module } from "@nestjs/common";
+import { PassportModule } from "@nestjs/passport";
+import { JwtModule } from "@nestjs/jwt";
+
+@Module({
+  imports: [
+    PassportModule.register({ defaultStrategy: "jwt" }),
+    JwtModule.register({
+      secret: "secretKey",
+      signOptions: { expiresIn: "60m" },
+    }),
+  ],
+})
+export class AuthModule {}
+```
+
+**Common Issues & Solutions**:
+
+- **Permission Errors**: Use role-based access control (RBAC).
+- **Security Holes**: Apply Helmet and input validation.
+- **Rate Limiting**: Use `express-rate-limit` for API protection.
+
+## 4. System Architecture Diagram
+
+```mermaid
+graph TD
+  A[Client] -->|HTTP/WebSocket| B[NestJS App]
+  B --> C[Controllers]
+  B --> D[Services]
+  B --> E[Microservices]
+  E -->|Message Broker| F[Kafka/Redis]
+  C -->|Guards| G[Auth]
+  C -->|Pipes| H[Validation]
+  B --> I[Database]
 ```
 
 ## References
+
 - [NestJS documentation](https://docs.nestjs.com/).
