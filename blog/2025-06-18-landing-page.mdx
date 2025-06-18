@@ -1,0 +1,121 @@
+# Landing Pages Workflows
+
+Workflow diagram of Projects
+
+{/* truncate */}
+
+import ZoomBlock from "@site/src/components/ZoomBlock";
+
+## 1. New Page Creation Flow
+
+This diagram describes the process from when a user clicks "Create New Page" until the editor is displayed.
+
+<ZoomBlock>
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant HomePage as Home Page (Client)
+    participant NextRouter as Next.js Router
+    participant EditorPage as Editor Page (Client)
+    participant ServerAction as Server Action
+    participant MongoDB
+
+    User->>HomePage: Clicks "Create New Page"
+    HomePage->>HomePage: handleCreateNewPage() is called
+    HomePage->>HomePage: Generates newPageId (uuidv4)
+    HomePage->>NextRouter: router.push(`/editor/[newPageId]`)
+    NextRouter->>EditorPage: Navigates & renders page
+    EditorPage->>ServerAction: useEffect() calls getPageById(newPageId)
+    ServerAction->>MongoDB: findOne({ pageId: newPageId })
+    MongoDB-->>ServerAction: Page not found
+    ServerAction->>MongoDB: Creates new record with newPageId
+    MongoDB-->>ServerAction: Returns new (empty) page
+    ServerAction-->>EditorPage: Returns page data
+    EditorPage->>User: Displays the editor UI
+```
+
+</ZoomBlock>
+
+## 2. Edit and Save Flow
+
+This diagram illustrates the core edit-save loop of the application.
+
+<ZoomBlock>
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant PropertiesPanel as Properties Panel (Client)
+    participant ZustandStore as Zustand Store
+    participant Canvas as Canvas (Client)
+    participant Header
+    participant ServerAction as Server Action
+    participant MongoDB
+
+    User->>PropertiesPanel: Changes a property (e.g., text color)
+    PropertiesPanel->>ZustandStore: Calls updateElementProps(id, newProps)
+    ZustandStore->>ZustandStore: Updates the `elements` state
+    ZustandStore-->>Canvas: Triggers re-render with new data
+    Canvas->>User: Instantly displays the change
+
+    User->>Header: Clicks "Save" button
+    Header->>ServerAction: Calls savePage(pageId, elements)
+    ServerAction->>MongoDB: findOneAndUpdate({ pageId: ... }, { elements: ... })
+    MongoDB-->>ServerAction: Confirms successful save
+    ServerAction-->>Header: Returns { success: true }
+    Header->>User: Shows "Save successful" notification
+
+```
+
+</ZoomBlock>
+
+## 3. Drag and Drop Logic Flow
+
+This diagram outlines the decision logic within the `onDragEnd` handler when a user performs a drag-and-drop action.
+
+<ZoomBlock>
+
+```mermaid
+graph TD
+    A["Start: onDragEnd(event)"] --> B{"Is there a drop target (over)?"};
+    B --No--> Z[End];
+    B --Yes--> C{"Is it a new element from Sidebar?"};
+    C --Yes--> D["Call addElement(index, type)"];
+    D --> Z;
+    C --No--> E{"Is it dropped on itself? (active.id === over.id)"};
+    E --Yes--> Z;
+    E --No--> F["Call reorderElements(oldIndex, newIndex)"];
+    F --> Z;
+```
+
+</ZoomBlock>
+
+## 4. HTML Export Flow
+
+This diagram describes the process from when a user requests to export a file until the browser initiates the download.
+
+<ZoomBlock>
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant EditorClient as Editor (Client)
+    participant ServerAction as Server Action
+    participant ReactDOMServer
+    participant Browser
+
+    User->>EditorClient: Clicks "Export HTML" button
+    EditorClient->>ServerAction: Calls exportPageToHtml(pageId)
+    ServerAction->>ServerAction: getPageById(pageId) to fetch data
+    ServerAction->>ReactDOMServer: renderToStaticMarkup(<StaticPageRenderer ... />)
+    ReactDOMServer-->>ServerAction: Returns static HTML string
+    ServerAction->>ServerAction: Builds the full HTML document
+    ServerAction-->>EditorClient: Returns { success: true, html: "..." }
+    EditorClient->>Browser: Creates a Blob from the HTML string
+    EditorClient->>Browser: Creates a URL for the Blob and triggers download
+    Browser->>User: Displays "Save File" dialog
+
+```
+
+</ZoomBlock>
