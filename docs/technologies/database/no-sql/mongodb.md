@@ -203,6 +203,7 @@ spec:
 
 ## References
 
+- [Learn Mongo](https://learn.mongodb.com/)
 - [Add MongoDB Image to Docker](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-community-with-docker/?msockid=0291cb7f1eee63680eafdd7a1f8862e9)
 - [Install Mongosh on Ubuntu](https://www.bytebase.com/reference/mongodb/how-to/how-to-install-mongodb-shell-on-mac-ubuntu-centos-windows/#apt)
 - [MongoDB Shell Commands](https://www.tutorialsteacher.com/mongodb/mongodb-shell-commands)
