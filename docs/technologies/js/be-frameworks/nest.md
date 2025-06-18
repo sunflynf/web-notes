@@ -273,3 +273,7 @@ graph TD
 ## References
 
 - [NestJS documentation](https://docs.nestjs.com/).
+- Using **TypeORM**
+  - [MongoDB](/docs/technologies/database/no-sql/mongodb.md#nestjs-with-mongoose)
+  - [MySQL](/docs/technologies/database/relational/mysql.md#nestjs-with-typeorm)
+  - [PostgreSQL](/docs/technologies/database/relational/postgre.md#nestjs-with-typeorm)
