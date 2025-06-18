@@ -202,7 +202,8 @@ docker push username/my-app:latest               # Push to Docker Hub
 
 ## Work with databases
 
-- [Redis](/docs/technologies/database/in-memory/redis.md)
+<!-- - [Redis](/docs/technologies/database/in-memory/redis.md) -->
+
 - [MongoDB](/docs/technologies/database/no-sql/mongodb.md)
 - [MySQL](/docs/technologies/database/relational/mysql.md)
 - [PostgreSQL](/docs/technologies/database/relational/postgre.md)
