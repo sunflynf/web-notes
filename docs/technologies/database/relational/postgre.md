@@ -7,223 +7,260 @@ tags:
 
 # PostgreSQL
 
-## Setting Up PostgreSQL with Node.js
+## Key Features
 
-1. **Install PostgreSQL Node.js Driver**
+| Feature                       | Description                                                                                                                                                                                          |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ACID Compliance**           | Strong transactional integrity with multi-version concurrency control (MVCC).                                                                                                                        |
+| **Advanced Data Types**       | Built-in support for `JSON`, `JSONB`, `ARRAY`, `UUID`, `HSTORE`, etc.                                                                                                                                |
+| **Full-Text Search**          | Powerful search capabilities natively supported, customizable ranking and dictionaries.                                                                                                              |
+| **CTEs & Window Functions**   | Common Table Expressions and advanced windowing operations out-of-the-box.                                                                                                                           |
+| **Extensions**                | Supports extensions like [`PostGIS`](https://postgis.net/), [`pg_trgm`](https://www.postgresql.org/docs/current/pgtrgm.html), [`uuid-ossp`](https://www.postgresql.org/docs/current/uuid-ossp.html). |
+| **Concurrency & MVCC**        | Avoids locking via MVCC, enabling high performance in concurrent environments.                                                                                                                       |
+| **Write-Ahead Logging (WAL)** | Ensures data safety and replication consistency.                                                                                                                                                     |
+| **Streaming Replication**     | Native replication support for HA/DR setups.                                                                                                                                                         |
+| **Security & Roles**          | Role-based authentication, row-level security (RLS), SSL/TLS support.                                                                                                                                |
+| **Procedural Languages**      | Write functions in PL/pgSQL, Python, or others.                                                                                                                                                      |
 
-   ```bash
-   npm install pg
-   ```
+## Connecting with Frameworks & ORMs
 
-   - The [pg](https://www.npmjs.com/package/pg) package is widely used to interact with PostgreSQL databases in Node.js applications.
+### NestJS (with [TypeORM](https://typeorm.io/))
 
-2. **Create PostgreSQL Database Connection in Node.js**
+```bash
+npm install --save @nestjs/typeorm typeorm pg
+```
 
-   ```javascript
-   const { Pool } = require("pg");
+```ts title="app.module.ts"
+TypeOrmModule.forRoot({
+  type: "postgres",
+  host: "localhost",
+  port: 5432,
+  username: "postgres",
+  password: "password",
+  database: "your_db",
+  autoLoadEntities: true,
+  synchronize: true, // ⚠️ Disable in production
+});
+```
 
-   const pool = new Pool({
-     host: "localhost", // replace with your PostgreSQL server host
-     user: "username", // replace with your PostgreSQL username
-     password: "password", // replace with your PostgreSQL password
-     database: "mydb", // replace with your PostgreSQL database name
-     port: 5432, // default PostgreSQL port
-   });
+> ✅ Tip: Use `@nestjs/config` for environment-based configuration separation.
 
-   pool.connect((err) => {
-     if (err) {
-       console.error("Connection error", err.stack);
-     } else {
-       console.log("Connected to PostgreSQL database!");
-     }
-   });
-   ```
+### [Prisma](https://www.prisma.io) (Node.js)
 
-3. **Using Pool for Queries**
+```bash
+npm install prisma --save-dev
+npm install @prisma/client pg
+npx prisma init
+```
 
-   ```javascript
-   pool.query("SELECT * FROM users", (err, res) => {
-     if (err) {
-       console.error(err);
-     } else {
-       console.log(res.rows); // Results contain rows returned by the query
-     }
-   });
-   ```
+```env title=".env"
+DATABASE_URL="postgresql://postgres:password@localhost:5432/your_db"
+```
 
-4. **Close Pool**
+```prisma title="prisma/schema.prisma"
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
-   - After completing operations, close the connection pool to avoid hanging connections.
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+}
+```
 
-   ```javascript
-   pool.end();
-   ```
+> ✅ Supports PostgreSQL-specific features like `@db.Json`, `@db.Uuid`, etc.
 
-### Pooling (Recommended for Production)
+### [Sequelize](https://sequelize.org) (Node.js)
 
-The `pg` package's `Pool` class handles connection pooling automatically, making it efficient for high-load environments.
+```bash
+npm install sequelize pg pg-hstore
+```
 
-## Setting Up PostgreSQL with Spring Boot
+```js title="db.js"
+import { Sequelize } from "sequelize";
 
-1. **Add PostgreSQL Dependency**
+const sequelize = new Sequelize("your_db", "postgres", "password", {
+  host: "localhost",
+  dialect: "postgres",
+});
 
-   ```xml title="pom.xml"
-   <dependency>
-       <groupId>org.postgresql</groupId>
-       <artifactId>postgresql</artifactId>
-       <version>42.3.1</version> <!-- Replace with the latest version -->
-   </dependency>
-   ```
+export default sequelize;
+```
 
-2. **Configure `application.properties`**
+> ✅ Sequelize supports array, JSONB, and UUID types via `DataTypes.ARRAY`, `DataTypes.JSONB`, and `DataTypes.UUID`.
 
-   ```properties title="application.properties"
-   spring.datasource.url=jdbc:postgresql://localhost:5432/mydb
-   spring.datasource.username=username
-   spring.datasource.password=password
-   spring.datasource.driver-class-name=org.postgresql.Driver
-   spring.jpa.hibernate.ddl-auto=update
-   ```
+### Spring Boot (with [Spring Data JPA](https://spring.io/projects/spring-data-jpa))
 
-3. **Define Repositories & Entities**
+```xml title="pom.xml"
+<dependency>
+  <groupId>org.postgresql</groupId>
+  <artifactId>postgresql</artifactId>
+  <scope>runtime</scope>
+</dependency>
+```
 
-   - Use **Spring Data JPA** to define repositories for managing entities.
+```yaml title="application.yml"
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/your_db
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+```
 
-   ```java
-   @Entity
-   public class User {
-       @Id
-       @GeneratedValue(strategy = GenerationType.IDENTITY)
-       private Long id;
-       private String name;
-       // getters and setters
-   }
+> ✅ Tip: Use Hibernate dialects like `org.hibernate.dialect.PostgreSQLDialect` for better support.
 
-   public interface UserRepository extends JpaRepository<User, Long> {}
-   ```
+### Laravel (with [Eloquent ORM](https://laravel.com/docs/eloquent))
 
-4. **Service Layer (optional)**
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=your_db
+DB_USERNAME=postgres
+DB_PASSWORD=password
+```
 
-   ```java
-   @Service
-   public class UserService {
-       @Autowired
-       private UserRepository userRepository;
+```php title="config/database.php"
+'pgsql' => [
+    'driver' => 'pgsql',
+    'host' => env('DB_HOST', '127.0.0.1'),
+    ...
+],
+```
 
-       public List<User> getAllUsers() {
-           return userRepository.findAll();
-       }
-   }
-   ```
+> ✅ Tip: Use Laravel’s native `migrate`, `seed`, and `factory` system for full DB lifecycle automation.
 
-## Running PostgreSQL in Docker
+## Managing PostgreSQL with Docker
 
-1. **Run PostgreSQL Docker Container**
+```yaml title="docker-compose.yml"
+version: "3.8"
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_DB: your_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - backend
 
-   ```bash
-   docker run --name postgres-db -e POSTGRES_PASSWORD=root_password -e POSTGRES_DB=mydb -e POSTGRES_USER=username -p 5432:5432 -d postgres:latest
-   ```
+volumes:
+  pg_data:
 
-   - This command sets up PostgreSQL with a root password, a database, and user credentials.
+networks:
+  backend:
+```
 
-2. **Configure Node.js or Spring Boot to Use Docker PostgreSQL Instance**
+```bash
+# Use psql
+docker exec -it postgres psql -U myuser -d mydatabase
+```
 
-   - Point the connection URL to `localhost:5432` (if using Docker on the local machine) or to the internal Docker network IP if needed.
+:::tip
 
-3. **Docker Compose for PostgreSQL + Application**
+- Use healthchecks and secret mounts for prod readiness.
+- Try GUI tools like **pgAdmin**, **DBeaver**, or **TablePlus**.
 
-   - Create a `docker-compose.yml` file to manage both the application and PostgreSQL container in a single command.
-
-   ```yaml title="docker-compose.yml"
-   version: "3.8"
-   services:
-     postgres:
-       image: postgres:latest
-       environment:
-         POSTGRES_USER: username
-         POSTGRES_PASSWORD: root_password
-         POSTGRES_DB: mydb
-       ports:
-         - "5432:5432"
-
-     app:
-       build: .
-       ports:
-         - "8080:8080"
-       depends_on:
-         - postgres
-   ```
-
-4. **Start Containers**
-
-   ```bash
-   docker-compose up -d
-   ```
+:::
 
 ## Deploying PostgreSQL with Kubernetes
 
-1. **Create PostgreSQL Deployment in Kubernetes**
+**StatefulSet + PVC Example**:
 
-   ```yaml title="postgres-deployment.yaml"
-   apiVersion: apps/v1
-   kind: Deployment
-   metadata:
-     name: postgres
-   spec:
-     replicas: 1
-     selector:
-       matchLabels:
-         app: postgres
-     template:
-       metadata:
-         labels:
-           app: postgres
-       spec:
-         containers:
-           - name: postgres
-             image: postgres:13
-             env:
-               - name: POSTGRES_USER
-                 value: "username"
-               - name: POSTGRES_PASSWORD
-                 value: "root_password"
-               - name: POSTGRES_DB
-                 value: "mydb"
-             ports:
-               - containerPort: 5432
-   ```
+```yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+          volumeMounts:
+            - name: postgres-pvc
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-pvc
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
+```
 
-2. **Create PostgreSQL Service**
+:::tip
 
-   - To expose PostgreSQL within the Kubernetes cluster.
+- 🔐 Use Kubernetes `Secrets` for password management and ConfigMaps for tuning (`postgresql.conf` overrides).
+- 📦 Alternative: Use [Bitnami Helm Chart](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) for advanced production-ready deployment.
 
-   ```yaml
-   apiVersion: v1
-   kind: Service
-   metadata:
-     name: postgres
-   spec:
-     ports:
-       - port: 5432
-     selector:
-       app: postgres
-     clusterIP: None
-   ```
+:::
 
-3. **Deploy the PostgreSQL Pod and Service**
+## Best Practices
 
-   ```bash
-   kubectl apply -f postgres-deployment.yaml
-   ```
+### ⚙️ Configuration & Performance
 
-4. **Update Application Configuration to Connect to PostgreSQL in Kubernetes**
+- Enable `shared_buffers`, `work_mem`, `effective_cache_size` tuning.
+- Use `EXPLAIN ANALYZE` and `pg_stat_statements` for query optimization.
+- Add proper indexes for `JOIN`, `WHERE`, and `ORDER BY` fields.
 
-   - Use the service name (`postgres` in this case) as the host for PostgreSQL in your Node.js or Spring Boot application configuration.
+### 🔐 Security
 
-5. **Deploy Application to Kubernetes**
-   - Deploy your application to Kubernetes, ensuring it connects to PostgreSQL using the Kubernetes service name.
+- Enforce SSL/TLS and role-based access (`REVOKE ALL`, `GRANT SELECT`).
+- Enable **Row-Level Security (RLS)** when needed.
+- Regularly rotate credentials and access tokens.
+
+### 📈 Scaling Strategy
+
+- Use **read replicas** for scaling reads.
+- Add **connection pooling** (e.g., PgBouncer).
+- Consider horizontal scaling with **Citus** for sharding if needed.
+
+### 🧪 Dev Workflow
+
+- Use **Testcontainers**, **Docker Compose**, or **local Kubernetes** to simulate production.
+- Always track schema with **migrations** — Flyway, Liquibase, or ORM-native.
+- Split environments via `.env`, `application.yml`, or secrets manager.
+
+### 🔧 Monitoring & Maintenance
+
+- Schedule backups (e.g., `pg_dump`, cron, or Velero).
+- Use Prometheus + Grafana or [pgMonitor](https://github.com/CrunchyData/pgmonitor).
+- Watch for slow queries, connection leaks, bloat, and WAL segment overflows.
 
 ## References
 
 - [PostgreSQL Documents](https://www.postgresql.org/docs/current/)
+- [PostgreSQL in Docker](https://www.datacamp.com/tutorial/postgresql-docker)
+- [psql Command Line](https://tomcam.github.io/postgres/#getting-information-about-databases)
 - [JS tools - node-postgres](/docs/technologies/js/api/query-builder/node-postgres.md)
