@@ -22,19 +22,25 @@ Apache Cassandra is a distributed NoSQL database known for its high availability
 ## Basic Cassandra Commands
 
 - **Create Keyspace**
+
   ```sql
   CREATE KEYSPACE mykeyspace
   WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
   ```
+
 - **Use Keyspace** - `USE mykeyspace;`
 - **Create Table**
+
   ```sql
   CREATE TABLE users (id UUID PRIMARY KEY, name text, age int);
   ```
+
 - **Insert Data**
+
   ```sql
   INSERT INTO users (id, name, age) VALUES (uuid(), 'Alice', 30);
   ```
+
 - **Query Data** - `SELECT * FROM users;`
 
 ## Integrate Cassandra with Backend Frameworks
@@ -44,12 +50,15 @@ Apache Cassandra is a distributed NoSQL database known for its high availability
 #### Step 1: Set up the Project
 
 1. Initialize a new Node.js project:
+
    ```bash
    mkdir cassandra-express-app
    cd cassandra-express-app
    npm init -y
    ```
+
 2. Install required dependencies:
+
    ```bash
    npm install express cassandra-driver dotenv
    ```
@@ -57,11 +66,13 @@ Apache Cassandra is a distributed NoSQL database known for its high availability
 #### Step 2: Connect to Cassandra
 
 1. Create a `.env` file to store Cassandra connection details
+
    ```properties
    CASSANDRA_CONTACT_POINTS=127.0.0.1
    CASSANDRA_KEYSPACE=mykeyspace
    PORT=3000
    ```
+
 2. Set up a Cassandra client and express server in `server.js`
 
    ```javascript
@@ -91,18 +102,19 @@ Apache Cassandra is a distributed NoSQL database known for its high availability
    ```
 
 3. Run the application:
+
    ```bash
    node server.js
    ```
 
 ### Using Cassandra with Spring Boot (Java)
 
-#### Step 1: Set up the Project
+#### 1. Set up the Project
 
 1. Create a new Spring Boot project via [Spring Initializr](https://start.spring.io/) or using your IDE.
    - Choose dependencies: `Spring Web`, `Spring Data` for **Apache Cassandra**.
 
-#### Step 2: Configure Cassandra in `application.properties`
+#### 2. Configure Cassandra in `application.properties`
 
 ```properties
 spring.data.cassandra.contact-points=127.0.0.1
@@ -111,7 +123,7 @@ spring.data.cassandra.keyspace-name=mykeyspace
 server.port=8080
 ```
 
-#### Step 3: Create a Simple Model and Repository
+#### 3 Create a Simple Model and Repository
 
 1. Define a model class:
 
@@ -172,20 +184,23 @@ server.port=8080
 
 ## Using Cassandra in Docker
 
-#### Step 1: Create a Dockerfile for Cassandra
+### 1: Create a Dockerfile for Cassandra
 
 1. **Basic Dockerfile**
+
    ```dockerfile
    FROM cassandra:latest
    EXPOSE 9042
    ```
+
 2. **Build and Run Cassandra Container**
+
    ```bash
    docker build -t cassandra-db .
    docker run -d -p 9042:9042 --name cassandra-container cassandra-db
    ```
 
-#### Step 2: Docker Compose for Multi-Container Applications
+#### 2: Docker Compose for Multi-Container Applications
 
 Create a `docker-compose.yml` file for both Cassandra and your backend (Express or Spring Boot).
 
@@ -227,9 +242,9 @@ docker-compose up -d
 
 ## Configuring Cassandra with Kubernetes (K8s)
 
-#### Step 1: Create Cassandra Deployment and Service
+### 1: Create Cassandra Deployment and Service
 
-**Cassandra Deployment YAML**
+**Cassandra Deployment YAML**:
 
 ```yaml
 apiVersion: apps/v1
@@ -253,7 +268,7 @@ spec:
             - containerPort: 9042
 ```
 
-**Cassandra Service YAML**
+**Cassandra Service YAML**:
 
 ```yaml
 apiVersion: v1
@@ -269,7 +284,7 @@ spec:
       targetPort: 9042
 ```
 
-#### Step 2: Configure Backend Deployment and Service
+### 2: Configure Backend Deployment and Service
 
 The backend deployment can include environment variables pointing to the Cassandra service.
 
