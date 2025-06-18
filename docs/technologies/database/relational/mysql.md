@@ -7,223 +7,267 @@ tags:
 
 # MySQL
 
-## Setting Up MySQL with Node.js
+## Key Features
 
-1. **Install MySQL Node.js Driver**
+| Feature                    | Description                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------ |
+| **ACID Compliance**        | Ensures data consistency and reliability through atomic transactions (especially with InnoDB).   |
+| **Storage Engine Support** | Supports multiple engines like InnoDB (default), MyISAM, MEMORY, ARCHIVE.                        |
+| **Replication**            | Master-Slave, Master-Master, and Group Replication for high availability and horizontal scaling. |
+| **Partitioning**           | Table partitioning to enhance performance on large datasets.                                     |
+| **Full-Text Search**       | Native full-text indexes and MATCH...AGAINST queries for fast text search.                       |
+| **GIS Support**            | Supports spatial data types and indexing for geolocation applications.                           |
+| **JSON Support**           | Native JSON column type and functions for modern structured/unstructured data.                   |
+| **Performance Schema**     | Real-time diagnostics and profiling for SQL execution and memory usage.                          |
+| **Security Features**      | SSL/TLS, password expiration policies, role-based access control.                                |
+| **Event Scheduler**        | Cron-like functionality to schedule and automate tasks at the DB level.                          |
 
-   ```bash
-   npm install mysql2
-   ```
+## Connecting with Frameworks & ORMs
 
-   - The [mysql2](https://sidorares.github.io/node-mysql2/docs) package is preferred for MySQL as it provides modern, faster operations.
+### NestJS (with [TypeORM](https://typeorm.io/))
 
-2. **Create MySQL Database Connection in Node.js**
+```bash
+npm install --save @nestjs/typeorm typeorm mysql2
+```
 
-   ```javascript
-   const mysql = require("mysql2");
-
-   const connection = mysql.createConnection({
-     host: "localhost", // replace with your MySQL server host
-     user: "username", // replace with your MySQL username
-     password: "password", // replace with your MySQL password
-     database: "mydb", // replace with your MySQL database name
-   });
-
-   connection.connect((err) => {
-     if (err) throw err;
-     console.log("Connected to MySQL database!");
-   });
-   ```
-
-3. **Using Connection with Queries**
-
-   ```javascript
-   connection.query("SELECT * FROM users", (err, results, fields) => {
-     if (err) throw err;
-     console.log(results); // Results contain rows returned by the query
-   });
-   ```
-
-4. **Close Connection**
-   - After your operations, ensure you close the connection.
-   ```javascript
-   connection.end();
-   ```
-
-#### Pooling (Recommended for Production)
-
-Use a connection pool for efficient database management.
-
-```javascript
-const pool = mysql.createPool({
+```ts title="app.module.ts"
+TypeOrmModule.forRoot({
+  type: "mysql",
   host: "localhost",
-  user: "username",
+  port: 3306,
+  username: "root",
   password: "password",
-  database: "mydb",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
+  database: "your_db",
+  autoLoadEntities: true,
+  synchronize: true, // ⚠️ Avoid in production
 });
 ```
 
-## Setting Up MySQL with Spring Boot
+> ✅ Tip: Use `.env` with [`@nestjs/config`](https://docs.nestjs.com/techniques/configuration) for better secrets management.
 
-1. **Add MySQL Dependency**
+### [Prisma](https://www.prisma.io) (Node.js)
 
-   ```xml title="pom.xml"
-   <dependency>
-       <groupId>mysql</groupId>
-       <artifactId>mysql-connector-java</artifactId>
-       <version>8.0.29</version> <!-- Replace with the latest version -->
-   </dependency>
-   ```
+```bash
+npm install prisma --save-dev
+npm install @prisma/client mysql2
+npx prisma init
+```
 
-2. **Configure `application.properties`**
+```env title=".env"
+DATABASE_URL="mysql://root:password@localhost:3306/your_db"
+```
 
-   ```properties title="application.properties"
-   spring.datasource.url=jdbc:mysql://localhost:3306/mydb
-   spring.datasource.username=username
-   spring.datasource.password=password
-   spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-   spring.jpa.hibernate.ddl-auto=update
-   ```
+```prisma title="prisma/schema.prisma"
+generator client {
+  provider = "prisma-client-js"
+}
 
-3. **Define Repositories & Entities**
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
 
-   - Use **Spring Data JPA** to define repositories for managing entities.
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+}
+```
 
-   ```java
-   @Entity
-   public class User {
-       @Id
-       @GeneratedValue(strategy = GenerationType.IDENTITY)
-       private Long id;
-       private String name;
-       // getters and setters
-   }
+> ✅ Tip: Use [Prisma Studio](https://www.prisma.io/studio) (`npx prisma studio`) for a visual DB browser.
 
-   public interface UserRepository extends JpaRepository<User, Long> {}
-   ```
+### [Sequelize](https://sequelize.org) (Node.js)
 
-4. **Service Layer (optional)**:
+```bash
+npm install sequelize mysql2
+```
 
-   ```java
-   @Service
-   public class UserService {
-       @Autowired
-       private UserRepository userRepository;
+```js title="db.js"
+import { Sequelize } from "sequelize";
 
-       public List<User> getAllUsers() {
-           return userRepository.findAll();
-       }
-   }
-   ```
+const sequelize = new Sequelize("your_db", "root", "password", {
+  host: "localhost",
+  dialect: "mysql",
+});
 
-## Running MySQL in Docker
+export default sequelize;
+```
 
-1. **Run MySQL Docker Container**
+> ✅ Tip: Use [sequelize-cli](https://github.com/sequelize/cli) for migrations and DB seeders.
 
-   ```bash
-   docker run --name mysql-db -e MYSQL_ROOT_PASSWORD=root_password -e MYSQL_DATABASE=mydb -e MYSQL_USER=username -e MYSQL_PASSWORD=password -p 3306:3306 -d mysql:latest
-   ```
+### Spring Boot (with [Spring Data JPA](https://spring.io/projects/spring-data-jpa))
 
-   - This command sets up MySQL with a root password, a database, and user credentials.
+```xml title="pom.xml"
+<dependency>
+  <groupId>mysql</groupId>
+  <artifactId>mysql-connector-j</artifactId>
+  <scope>runtime</scope>
+</dependency>
+```
 
-2. **Configure Node.js or Spring Boot to Use Docker MySQL Instance**
+```yaml title="application.yml"
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/your_db
+    username: root
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+```
 
-   - Point the connection URL to `localhost:3306` (if using Docker on local machine) or to the internal Docker network IP if needed.
+> ✅ Tip: Add [`Flyway`](https://flywaydb.org/) or [`Liquibase`](https://www.liquibase.org/) for safe schema versioning.
 
-3. **Docker Compose for MySQL + Application**
+### Laravel (with [Eloquent ORM](https://laravel.com/docs/eloquent))
 
-   - Create a `docker-compose.yml` file to manage both the application and MySQL container in a single command.
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_db
+DB_USERNAME=root
+DB_PASSWORD=password
+```
 
-   ```yaml title="docker-compose.yml"
-   version: "3.8"
-   services:
-     mysql:
-       image: mysql:latest
-       environment:
-         MYSQL_ROOT_PASSWORD: root_password
-         MYSQL_DATABASE: mydb
-         MYSQL_USER: username
-         MYSQL_PASSWORD: password
-       ports:
-         - "3306:3306"
+```php title="config/database.php"
+'mysql' => [
+    'driver' => 'mysql',
+    'host' => env('DB_HOST', '127.0.0.1'),
+    ...
+],
+```
 
-     app:
-       build: .
-       ports:
-         - "8080:8080"
-       depends_on:
-         - mysql
-   ```
+> ✅ Tip: Use `php artisan migrate:fresh --seed` during development.
 
-4. **Start Containers**:
-   ```bash
-   docker-compose up -d
-   ```
+Here’s the additional section for **Prisma** and **Sequelize** integration with **MySQL**, designed in the same style as the previous sections:
 
-## Deploying MySQL with Kubernetes
+## Managing MySQL with Docker
 
-1. **Create MySQL Deployment in Kubernetes**
+```yaml title="docker-compose.yml"
+version: "3.8"
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: your_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - backend
 
-   ```yaml title="mysql-deployment.yaml"
-   apiVersion: apps/v1
-   kind: Deployment
-   metadata:
-     name: mysql
-   spec:
-     replicas: 1
-     selector:
-       matchLabels:
-         app: mysql
-     template:
-       metadata:
-         labels:
-           app: mysql
-       spec:
-         containers:
-           - name: mysql
-             image: mysql:5.7
-             env:
-               - name: MYSQL_ROOT_PASSWORD
-                 value: "root_password"
-               - name: MYSQL_DATABASE
-                 value: "mydb"
-               - name: MYSQL_USER
-                 value: "username"
-               - name: MYSQL_PASSWORD
-                 value: "password"
-             ports:
-               - containerPort: 3306
-   ```
+volumes:
+  db_data:
 
-2. **Create MySQL Service**
+networks:
+  backend:
+```
 
-   - To expose MySQL within the Kubernetes cluster.
+```bash
+# Using bash when container is running
+docker exec -it mysql-db bash
+# Connect to the MySQL server as the root user
+mysql -u root -p
+```
 
-   ```yaml
-   apiVersion: v1
-   kind: Service
-   metadata:
-     name: mysql
-   spec:
-     ports:
-       - port: 3306
-     selector:
-       app: mysql
-     clusterIP: None
-   ```
+:::tip
 
-3. **Deploy the MySQL Pod and Service**
+- Use `.env` and secret files for production-grade credentials.
+- Attach monitoring sidecars like [MySQL Exporter](https://github.com/prometheus/mysqld_exporter) for Prometheus.
 
-   ```bash
-   kubectl apply -f mysql-deployment.yaml
-   ```
+:::
 
-4. **Update Application Configuration to Connect to MySQL in Kubernetes**
+## Deploying MySQL with Kubernetes (K8s)
 
-   - Use the service name (`mysql` in this case) as the host for MySQL in your Node.js or Spring Boot application configuration.
+**StatefulSet + Persistent Volume Claim**:
 
-5. **Deploy Application to Kubernetes**
-   - Deploy your application to Kubernetes, ensuring it connects to MySQL using the Kubernetes service name.
+```yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: mysql
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: root-password
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-persistent-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
+```
+
+:::tip
+
+- 🛡️ Use [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) to store DB credentials and `mysql-config` ConfigMap for tuning.
+- 🔄 Consider tools like [Bitnami MySQL Helm Chart](https://github.com/bitnami/charts/tree/main/bitnami/mysql) for production-grade deployments.
+
+:::
+
+## Best Practices
+
+### Configuration & Performance
+
+- Prefer **InnoDB** for transactions, row-level locking, and crash recovery.
+- Optimize settings like `innodb_buffer_pool_size` based on server memory.
+- Use indexes wisely; over-indexing can degrade writes.
+
+### Security
+
+- Never expose MySQL directly to the internet.
+- Use non-root users with limited permissions.
+- Enable SSL and use certificate-based authentication in production.
+
+### Development Workflow
+
+- Automate DB setup using tools like `docker-compose` or Testcontainers.
+- Use versioned migrations instead of auto schema sync.
+- Separate dev/test/prod DB configs.
+
+### Scaling Strategy
+
+- Start with read replicas.
+- Shard based on business logic (user ID, region, etc.) if needed.
+- Use external caching layers like Redis for performance boost.
+
+### Maintenance & Monitoring
+
+- Set up automatic backups (e.g., cron jobs or Kubernetes Jobs).
+- Monitor metrics via Prometheus/Grafana or tools like PMM.
+- Regularly review and optimize slow queries.
+
+## Resources
+
+- [MySQL Tutorial](https://www.mysqltutorial.org/)
+- [How to Set Up and Configure MySQL in Docker](https://www.datacamp.com/tutorial/set-up-and-configure-mysql-in-docker)
