@@ -1,0 +1,25 @@
+.zoom-container {
+  position: relative;
+  overflow-x: auto;
+  min-height: 140px;
+}
+
+.zoom-btn {
+  opacity: 20%;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+}
+
+.zoom-btn:hover {
+  opacity: 70%;
+  cursor: pointer;
+}
+
+.zoom-btn[disabled] {
+  cursor: not-allowed;
+}
+.zoom-btn[disabled]:hover {
+  cursor: not-allowed;
+  opacity: 20%;
+}
