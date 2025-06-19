@@ -1,10 +1,7 @@
-## JSX
-
-- JavaScript XML
-- Write HTML in JS
-- `<>` | `<Fragment>` | `<React.Fragment>`
+## JavaScript XML (JSX)
 
 ```jsx
+// `<>` | `<Fragment>` | `<React.Fragment>`
 const secretText = "Daniel";
 const age = 17;
 const users = (
@@ -71,23 +68,54 @@ class Car1 extends React.Component {
 ### Function Component
 
 ```jsx
+// props = { children: null|JSX.Element, attr1: value1, attr2: value2, ..., attrN: valueN }`
 function Name(props?) {
   return <JSX />;
 }
+
+// Usage
+<Component attr1={value1} {...otherAttr} />
+<Parent {...attrs}><Children /></Parent>
 ```
 
-- Props: `{ children: null|JSX.Element, attr1: value1, attr2: value2, ..., attrN: valueN }`
-- Using with props: `<Component attr1={value1} {...otherAttr} />`
-- Using with children: `<Parent {...attrs}><Children /></Parent>`
-- Event
-  - Based on HTML Events
-  - `on<EventName>={(event?) => {}}`
-- Conditionals
-  - `conditions ? <CompIfTrue /> : <CompIfFalse />`
-  - `conditions && <CompIfTrue />`
-- List:
-  - Using: `{listRender.map((item, index) => { return (<JSX key={index} {...item} />); } )}`
-  - Each children should have a unique key
+```jsx
+// Event based on HTML Events
+// on<EventName>={(event) => {}}
+<button type="button" onClick={(e) => {}}>
+  Click
+</button>
+```
+
+```jsx
+// conditions ? <CompIfTrue /> : <CompIfFalse />
+function HomePage(user) {
+  return <div>{user ? <Home /> : <Login />}</div>;
+}
+```
+
+```jsx
+function Calendar({ isAllowedButtonControls }) {
+  return (
+    <>
+      {/* Other components */}
+      {isAllowedButtonControls && <ButtonControls />}
+    </>
+  );
+}
+```
+
+```jsx
+function ItemList({ items }) {
+  return (
+    <>
+      {/* Each children should have a unique key */}
+      {items.map((item, index) => {
+        return <JSX key={index} {...item} />;
+      })}
+    </>
+  );
+}
+```
 
 ```jsx
 function Car2() {
@@ -111,16 +139,53 @@ export default Garage;
 
 ### Feature Component
 
-- `<Fragment> | <>` - Wrap all Elements and render in UI without unexpected element
-- `<Suspense fallback={<Spinner />}>{children}</Suspense>`
-  - Only Suspense-enabled data sources will activate the Suspense component.
-    - Data fetching with Suspense-enabled frameworks like **Relay** and **Next.js**
-    - Lazy-loading component code with `lazy`: `const LazyReviewCar = lazy(() => import('./components/cars/ReviewCar.js'));')`
-    - Reading the value of a **Promise** with `use`
-- `<StrictMode><App/></StrictMode>` - find common bugs in your components early during development
-- `<Profiler id='Component' onRender={onRender}><Component /></Profiler>`
-  - `const onRender = (id, phase, actualDuration, baseDuration, startTime, commitTime) => {}`
-  - [View params explains](https://react.dev/reference/react/Profiler#onrender-parameters)
+#### `<Fragment>` / `<>...</>`
+
+- Wraps multiple elements without adding extra nodes to the DOM.
+- Keeps your UI clean and avoids unexpected wrappers.
+
+#### `<Suspense fallback={<Spinner />}>...</Suspense>`
+
+- Used for components or data that take time to load.
+- **Triggers only when using Suspense-aware features**, like:
+
+  - 🛠️ Frameworks: **Relay**, **Next.js**
+  - 📦 Lazy-loaded components:
+
+    ```js
+    const LazyReviewCar = lazy(() => import("./components/cars/ReviewCar.js"));
+    ```
+
+  - ⏳ React's experimental `use()` hook to read Promises
+
+#### `<StrictMode><App /></StrictMode>`
+
+- **Development-only tool** (no effect in production).
+- Helps catch common issues early, like:
+
+  - Deprecated APIs
+  - Unexpected side effects
+  - Unsafe lifecycle methods
+
+#### `<Profiler id="Component" onRender={onRender}>...</Profiler>`
+
+- Measures performance of a specific component.
+- `onRender` callback example:
+
+  ```js
+  const onRender = (
+    id,
+    phase,
+    actualDuration,
+    baseDuration,
+    startTime,
+    commitTime
+  ) => {
+    // Log or analyze performance metrics
+  };
+  ```
+
+- 📚 [View parameter docs](https://react.dev/reference/react/Profiler#onrender-parameters)
 
 ## Styles component
 

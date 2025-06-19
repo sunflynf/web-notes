@@ -1,18 +1,36 @@
-- Building User Interface
-- Single-page Application
-- Create Reuseable UI Components (Virtual DOM)
-- To use React in production, you need **npm** which is included with [Node.js](https://www.w3schools.com/nodejs/nodejs_get_started.asp).
+## Creating a React App
 
-## Builder Tools
+### Using a build tool
 
-- [Create React App](https://create-react-app.dev/)
-  - Includes built tools such as **webpack**, **Babel**, and **ESLint**.
-  - `npx create-react-app app-name`
-  - `npm start` | `yarn start`
-- [React Vite](https://vitejs.dev/guide/)
-  - `npm create vite app-name --template react`
-  - `npm create vite app-name --template react-ts`
-  - `npm run dev`
+- [Vite](https://vitejs.dev/guide/) has a rich ecosystem of plugins to support fast refresh, JSX, Babel/SWC, and other common features
+- [Parcel](https://parceljs.org/) supports fast refresh, JSX, TypeScript, Flow, and styling out of the box.
+- [Rsbuild](https://rsbuild.dev/) includes built-in support for React features like fast refresh, JSX, TypeScript, and styling.
+
+```bash
+npm create vite@latest app-name --template react
+# Using TypeScript
+npm create vite@latest app-name --template react-ts
+
+# Parcel
+npm install --save-dev parcel
+# Rsbuild
+npx create-rsbuild --template react
+```
+
+### Using Full-stack Frameworks
+
+- [Next.js](/docs/technologies/js/fe-frameworks/react/nextjs.md) takes full advantage of React’s architecture to enable full-stack React apps.
+- [React Router](https://reactrouter.com/start/framework/installation) emphasizes standard Web APIs and has several ready to deploy templates for various JavaScript runtimes and platforms.
+- [Remix](/docs/technologies/js/fe-frameworks/react/remix.md) is a full stack web framework that lets you focus on the user interface and work back through web standards to deliver a fast, slick, and resilient user experience.
+- [Tanstack Start](https://tanstack.com/start/latest/docs/framework/react/overview) provides a full-document SSR, streaming, server functions, bundling, and more using tools like Nitro and Vite.
+- [RedwoodJS](https://redwoodjs.com/) is a full stack React framework with lots of pre-installed packages and configuration that makes it easy to build full-stack web applications.
+
+```bash
+# Next
+npx create-next-app@latest
+# React Router
+npx create-react-router@latest
+```
 
 ## Render
 

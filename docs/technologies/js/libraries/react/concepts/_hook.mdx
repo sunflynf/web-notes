@@ -20,7 +20,6 @@
 
 ### useState
 
-- Structure `const [state, setState] = useState(initState);`
 - `state` change after setState call -> component re-render
 - `setState(newState)` | `setState(prevState => { return newState })` (use with callback)
 
@@ -28,6 +27,7 @@
 import { useState } from "react";
 
 function Car() {
+  // const [state, setState] = useState(initState | () => initState);
   const [car, setCar] = useState({
     brand: "Ford",
     model: "Mustang",
@@ -93,7 +93,7 @@ export default function App() {
 
 ### useReducer
 
-- Tracking complex state (like object) -> Same tech like [React-Redux](../state/react-redux.md)
+- Tracking complex state (like object) -> Same tech like [React-Redux](/docs/technologies/js/libraries/react/state/react-redux.md)
 - Custom handle state
 - Syntax: `const [state, dispatch] = useReducer(reducer, initialState);`
 - **reducer**: `const reducer = (currentState, action: { type, [any]?: value }) => { return newState }`
@@ -161,14 +161,14 @@ export default function Form() {
 ### useImperativeHandle
 
 - Customize the handle exposed as a `ref`
-- Combine with `forwardRef`
 - `useImperativeHandle(ref, createHandle, dependencies?)`
+- `forwardRef` is **deprecated** in React 19
 - **If you can express something as a prop, you should not use a ref.**
 
 ```jsx
-import React, { forwardRef, useRef, useImperativeHandle } from "react";
+import React, { useRef, useImperativeHandle } from "react";
 
-const ValidInput = forwardRef((props, ref) => {
+const ValidInput = ({ ref, ...props }) => {
   const inputRef = useRef();
 
   useImperativeHandle(
@@ -182,7 +182,7 @@ const ValidInput = forwardRef((props, ref) => {
   );
 
   return <input type="text" ref={inputRef} {...props} />;
-});
+};
 
 export default function App() {
   const pointingRef = useRef();
@@ -206,7 +206,7 @@ export default function App() {
   - fetching data
   - directly update DOM
   - timers
-- Syntax: `useEffect(<function>, [...dependencies]?)`
+- Syntax: `useEffect(<function>, [...dependencies]?)` (React teams recommend)
   - Effect run 1st after component render
   - Effect recall if dependencies has change, none if dependencies is []
 - `useLayoutEffect`
@@ -314,7 +314,7 @@ export default Modal;
 - Manage state globally
 - State use in component that need it, avoid put parent props -> child props -> ... -> n-child props (prop drilling)
 
-:::info How to use
+:::note How to use
 
 - **Step 1 - Create**
   - `const Context = createContext(defaultValue?);`
@@ -332,7 +332,7 @@ export default Modal;
 :::
 
 ```jsx
-import { useState, createContext, useContext } from "react";
+import { createContext, use, useContext, useState } from "react";
 
 const UserContext = createContext();
 
@@ -366,7 +366,8 @@ function Component3() {
 }
 
 function Component4() {
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
+  const user = use(UserContext); // React 19 features
 
   return (
     <>
@@ -414,7 +415,7 @@ export default function App() {
 
 - **Suspense** + `lazy`
 - `createContext` -> Context (Context.Provider value={}) -> `useContext`(Context)
-- `useRef` -> `forwardRef` -> `useImperativeHandle`
+- `useRef` -> put `ref` as props (**React 19**) -> `useImperativeHandle`
 
 :::
 
