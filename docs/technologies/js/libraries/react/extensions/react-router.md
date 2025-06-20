@@ -7,23 +7,30 @@ tags:
   - Extension
 ---
 
-# React Router
+# React Router DOM
 
 - Enables **Client-side routing**
-- **ADD TO PROJECT**: `npm i -D react-router-dom`
-- **React Router** for mobile app write by **React Native**: `react-router-native`
+
+```bash
+# Add to project
+npm i react-router-dom
+# For React Native
+npm i react-router-native
+```
 
 ## Routers
 
-- Router type 🤔
-  - **Browser** - default
-  - **Hash** - use when server not support get full URL
-  - **Memory** - for Testing setup
-  - **Statis** - support **Server-Side rendering**
-- `<[Browser|Hash|Memory|Native|Static]Router/>` - Small application & less affect by url
-- `create[Broswer|Hash|Memory|Static]Router([ ... ], opt?: {})` - Easy maintain & improve, works with SEO
+| Type        | For                                      |
+| ----------- | ---------------------------------------- |
+| **Browser** | default                                  |
+| **Hash**    | use when server not support get full URL |
+| **Memory**  | for Testing setup                        |
+| **Statis**  | support **Server-Side rendering**        |
 
 ```jsx
+// <[Browser|Hash|Memory|Native|Static]Router/>
+// -> Small application & less affect by url
+
 // --- JSX Router ---
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -59,7 +66,11 @@ const AppRouter = () => (
 ```
 
 ```jsx
+// create[Broswer|Hash|Memory|Static]Router([ ... ], opt?: {})
+// -> Easy maintain & improve, works with SEO
+
 // --- Plain objects ---
+// Recommended for 6.4+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -125,13 +136,13 @@ interface RouteObject {
 }
 ```
 
-| Text                | Path                                                                       |
-| ------------------- | -------------------------------------------------------------------------- |
-| ""                  | current url                                                                |
-| "/things"           | /things                                                                    |
-| "/things/:thingId"  | /things/12a-bc                                                             |
-| "\*"                | /any-slug <br/> /c1/c11/c111                                               |
-| "/:lang?/categories | /categories <br/> /en/categories <br/> /fr/categories <br/> /vi/categories |
+| Text                   | Path                                                                               |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| `""`                   | current url                                                                        |
+| `"/things"`            | `/things`                                                                          |
+| `"/things/:thingId"`   | `/things/12a-bc`                                                                   |
+| `"*"`                  | `/any-slug` <br/> `/c1/c11/c111`                                                   |
+| `"/:lang?/categories"` | `/categories` <br/> `/en/categories` <br/> `/fr/categories` <br/> `/vi/categories` |
 
 ```jsx
 <Route
@@ -158,7 +169,6 @@ function Team() {
 ## Navigation
 
 ```jsx
-import React from "react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -183,13 +193,8 @@ export default Navbar;
 ```
 
 ```jsx
-import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "./components/Home";
-import About from "./components/About";
-import Contact from "./components/Contact";
-import NotFound from "./components/NotFound";
-import Navbar from "./components/Navbar";
+import { About, Contact, Home, NotFound } from "./pages";
 
 const App = () => {
   return (
@@ -208,30 +213,40 @@ const App = () => {
 export default App;
 ```
 
+## Form
+
+```tsx
+import { Form } from "react-router-dom";
+
+const InputSearch = () => {
+  return (
+    <Form action="/search">
+      <input type="text" name="name" />
+    </Form>
+  );
+};
+```
+
 ## Hooks
 
 ### useParams
 
 ```jsx
+// In your App.js or Routes configuration
+<Route path="/item/:id" element={<ItemDetail />} />;
+
 // ItemDetail.js
-import React from "react";
 import { useParams } from "react-router-dom";
 
 const ItemDetail = () => {
   const { id } = useParams();
   return <div>Item Detail for item with ID: {id}</div>;
 };
-
-export default ItemDetail;
-
-// In your App.js or Routes configuration
-<Route path="/item/:id" element={<ItemDetail />} />;
 ```
 
 ### useNavigate
 
 ```jsx
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -250,4 +265,31 @@ const Home = () => {
 };
 
 export default Home;
+```
+
+### useLoaderData
+
+```jsx title="App.jsx"
+const router = [
+  {
+    path: "dashboard",
+    element: <Dashboard />,
+    loader: async ({ request }) => {
+      const res = await fetch("/api/home-page");
+      const data = await res.json();
+      return data;
+    },
+  },
+  // ...
+];
+```
+
+```jsx title="Dashboard.jsx"
+import { useLoaderData } from "react-router-dom";
+
+const Dashboard = () => {
+  const data = useLoaderData();
+
+  // ...
+};
 ```
