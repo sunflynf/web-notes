@@ -113,7 +113,33 @@ System.out.println(Arrays.deepToString( myNumbers ));
 
 ## Collection Framework
 
-![java-collections-cheat-sheet](https://github.com/sunflynf/web-notes/assets/75079929/6f945578-cb29-452d-b22e-1bbac827898e)
+```mermaid
+graph LR
+    A[Java Collections Framework] -->|Root| B[Collection Interface<br><b>Note:</b> Root for most collections, defines add, remove, contains.]
+
+    B -->|Ordered| C[List Interface<br><b>Note:</b> Ordered, duplicates OK, index-based access.]
+    B -->|Unique| D[Set Interface<br><b>Note:</b> Unordered, no duplicates, for unique elements.]
+    B -->|FIFO| E[Queue Interface<br><b>Note:</b> Ordered, for FIFO or priority processing.]
+
+    C -->|Array| F[ArrayList<br><b>Note:</b> Resizable array, fast access, not thread-safe.]
+    C -->|Linked| G[LinkedList<br><b>Note:</b> Doubly-linked, efficient for insertions, implements Deque.]
+    C -->|Sync| H[Vector<br><b>Note:</b> Synchronized ArrayList, legacy, thread-safe, slower.]
+    H -->|LIFO| S[Stack<br><b>Note:</b> Extends Vector, legacy, LIFO structure, use Deque instead for modern code.]
+
+    D -->|Hash| I[HashSet<br><b>Note:</b> Unordered, hash table, fast lookups, allows null.]
+    D -->|Ordered| J[LinkedHashSet<br><b>Note:</b> Keeps insertion order, slower than HashSet.]
+    D -->|Sorted| K[TreeSet<br><b>Note:</b> Sorted, red-black tree, no null elements.]
+
+    E -->|Priority| L[PriorityQueue<br><b>Note:</b> Priority-based, uses heap, not FIFO.]
+    E -->|Deque| M[ArrayDeque<br><b>Note:</b> Resizable, double-ended queue, faster than LinkedList.]
+
+    A -->|Key-Value| N[Map Interface<br><b>Note:</b> Key-value pairs, no duplicate keys, not a Collection.]
+
+    N -->|Hash| O[HashMap<br><b>Note:</b> Unordered, fast access, allows null, not thread-safe.]
+    N -->|Ordered| P[LinkedHashMap<br><b>Note:</b> Keeps insertion order, slower than HashMap.]
+    N -->|Sorted| Q[TreeMap<br><b>Note:</b> Sorted by keys, red-black tree, no null keys.]
+    N -->|Sync| R[Hashtable<br><b>Note:</b> Synchronized, legacy, no null keys/values.]
+```
 
 ### List Interface
 
