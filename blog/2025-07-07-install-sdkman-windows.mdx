@@ -1,0 +1,80 @@
+# Install SDKMAN on Windows
+
+This is hands-down the cleanest way to get SDKMAN! on Windows. Here's how to do it:
+
+{/* truncate */}
+
+> ✅ Recommended Way: Use WSL (Windows Subsystem for Linux)
+
+## **Step 1: Install WSL (if you haven't already)**
+
+1. Open **PowerShell as Administrator** and run:
+
+   ```powershell
+   wsl --install
+   ```
+
+   > This installs WSL with the default Ubuntu distro.
+
+2. Restart your computer when prompted.
+
+3. Launch **Ubuntu** from the Start menu and let it finish setup.
+
+## **Step 2: Install SDKMAN! inside Ubuntu (WSL)**
+
+Once you're inside the Ubuntu terminal:
+
+1. Install dependencies:
+
+   ```bash
+   sudo apt update && sudo apt install -y zip unzip curl
+   ```
+
+2. Install SDKMAN!:
+
+   ```bash
+   curl -s "https://get.sdkman.io" | bash
+   ```
+
+3. Activate SDKMAN!:
+
+   ```bash
+   source "$HOME/.sdkman/bin/sdkman-init.sh"
+   ```
+
+4. Confirm it works:
+
+   ```bash
+   sdk version
+   ```
+
+> You should see something like `SDKMAN x.y.z installed`.
+
+## **Step 3: Use SDKMAN! to install stuff**
+
+Now you can use commands like:
+
+```bash
+sdk list java
+sdk install java 17-tem
+```
+
+---
+
+## ❌ Native Windows (Not Recommended)
+
+There’s no official support for native Windows (CMD or PowerShell), and while there are hacky workarounds using Git Bash or Cygwin, they tend to break easily and aren't worth the maintenance headache.
+
+If you really want Java version management natively on Windows, you're better off using tools like:
+
+- **[jEnv](https://www.jenv.be/)** (with workarounds)
+- **[Scoop](https://scoop.sh/)** (PowerShell-based package manager for Windows)
+- **[asdf](https://asdf-vm.com/)** (if you set up a Unix-like environment)
+
+---
+
+## TL;DR
+
+- ✅ Use **WSL + Ubuntu** → install SDKMAN there.
+- ❌ Don't try to run SDKMAN! directly on native Windows.
+- 👌 Use `scoop` or `asdf` if you want alternatives natively.

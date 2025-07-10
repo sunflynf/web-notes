@@ -1,0 +1,79 @@
+# Install Brew on Windows
+
+This is hands-down the cleanest way to get Brew on Windows.
+
+{/* truncate */}
+
+> ✅ Recommended: Install Homebrew via WSL (Ubuntu)
+
+## **Step 1: Make sure WSL is installed**
+
+If you haven't installed WSL yet:
+
+1. Open **PowerShell as Administrator** and run:
+
+   ```powershell
+   wsl --install
+   ```
+
+2. Reboot your PC if needed.
+3. Launch **Ubuntu** from your Start menu and finish the setup.
+
+## **Step 2: Install Homebrew inside WSL**
+
+Once you're inside the Ubuntu terminal, run the following:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+During install, it might ask you to install some dependencies. Just follow the prompts.
+
+## **Step 3: Add Homebrew to your shell profile**
+
+After installation, you need to add Homebrew to your shell path.
+
+Run:
+
+```bash
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+```
+
+If you use Zsh instead of Bash:
+
+```bash
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.zshrc
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+```
+
+## **Step 4: Confirm it works**
+
+```bash
+brew --version
+```
+
+You should see something like:
+
+```bash
+Homebrew 4.x.x
+```
+
+Now you’re good to start installing packages with `brew install ...` just like on macOS.
+
+## ❌ Native Windows? Nope.
+
+Homebrew **doesn't run natively on Windows** — not even with Git Bash or Cygwin — and it’s not worth trying to force it. Use WSL.
+
+If you really need a native Windows package manager, try:
+
+- 🧊 **[Scoop](https://scoop.sh/)** – lightweight and works via PowerShell
+- 🍫 **[Chocolatey](https://chocolatey.org/)** – great for system-level installs
+
+## TL;DR
+
+| Method         | Works? | Notes                           |
+| -------------- | ------ | ------------------------------- |
+| WSL (Ubuntu)   | ✅     | Official, supported             |
+| Native Windows | ❌     | Not supported                   |
+| Alternative    | ✅     | Use **Scoop** or **Chocolatey** |
