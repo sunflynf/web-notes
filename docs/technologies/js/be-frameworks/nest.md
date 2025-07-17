@@ -149,17 +149,27 @@ export class CatsController {
 
 ## 2. Popular Packages
 
-| Package             | Purpose                      | Integration Example                        |
-| ------------------- | ---------------------------- | ------------------------------------------ |
-| **class-validator** | Validates DTOs               | Use with `ValidationPipe` in controllers.  |
-| **passport**        | Authentication (JWT, OAuth2) | Use `@nestjs/passport` for strategies.     |
-| **swagger**         | Generates API docs           | Use `@nestjs/swagger` to annotate APIs.    |
-| **typeorm**         | ORM for SQL databases        | Use `@nestjs/typeorm` for DB integration.  |
-| **nestjs/config**   | Manages app configuration    | Use `@nestjs/config` to load `.env` files. |
+| Feature Group               | Package                                                                          | Use For                                                                                           |
+| --------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Validation & Transformation | [class-validator](https://github.com/typestack/class-validator)                  | Decorator-based validation for DTOs, works with `ValidationPipe` to ensure request data integrity |
+|                             | [class-transformer](https://github.com/typestack/class-transformer)              | Transform and serialize objects, often used with `class-validator` for DTOs                       |
+| Authentication & Security   | [@nestjs/passport](https://docs.nestjs.com/security/authentication)              | Integrate Passport strategies for authentication (JWT, OAuth2, local, etc.)                       |
+|                             | [passport-jwt](https://github.com/mikenicholson/passport-jwt)                    | JWT authentication strategy for Passport (used with `@nestjs/passport`)                           |
+|                             | [@nestjs/jwt](https://docs.nestjs.com/security/authentication#jwt-functionality) | JWT utilities for signing and verifying tokens in authentication flows                            |
+|                             | [helmet](https://github.com/helmetjs/helmet)                                     | Secure HTTP headers, helps protect your app from common web vulnerabilities                       |
+|                             | [@nestjs/throttler](https://docs.nestjs.com/security/rate-limiting)              | Rate limiting for APIs to prevent abuse                                                           |
+|                             | [express-rate-limit](https://github.com/nfriedly/express-rate-limit)             | Rate limiting middleware for Express (works with NestJS)                                          |
+| API Documentation           | [@nestjs/swagger](https://docs.nestjs.com/openapi/introduction)                  | Auto-generate OpenAPI (Swagger) docs from decorators in your code                                 |
+| Database & Data Access      | [@nestjs/typeorm](https://docs.nestjs.com/techniques/database)                   | Integrate SQL databases using TypeORM ORM (PostgreSQL, MySQL, etc.)                               |
+|                             | [@nestjs/mongoose](https://docs.nestjs.com/techniques/mongodb)                   | Integrate MongoDB using Mongoose ODM                                                              |
+| Configuration & Utilities   | [@nestjs/config](https://docs.nestjs.com/techniques/configuration)               | Manage environment variables and app configuration, load `.env` files                             |
+|                             | [rxjs](https://rxjs.dev/)                                                        | Reactive programming library, core to NestJS for handling async streams                           |
+| HTTP & Communication        | [@nestjs/axios](https://docs.nestjs.com/techniques/http-module)                  | Make HTTP requests to external APIs, supports interceptors and observables                        |
+| Task Scheduling & CQRS      | [@nestjs/schedule](https://docs.nestjs.com/techniques/task-scheduling)           | Cron jobs and scheduled tasks in NestJS apps                                                      |
+|                             | [@nestjs/cqrs](https://docs.nestjs.com/recipes/cqrs)                             | Implements CQRS (Command Query Responsibility Segregation) pattern                                |
+| Static Assets               | [@nestjs/serve-static](https://docs.nestjs.com/recipes/serve-static)             | Serve static files (images, frontend assets) from your NestJS app                                 |
 
-**Config Example**:
-
-```typescript title="app.module.ts"
+```typescript title="Example: app.module.ts"
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
