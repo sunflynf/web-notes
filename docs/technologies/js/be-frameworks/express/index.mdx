@@ -18,8 +18,23 @@ import MVC_FolderStructure from "./concepts/_mvc-folder-structure.mdx";
 <LargeAPI_FolderStructure />
 <MVC_FolderStructure />
 
+## Useful Packages
+
+| Layer                              | Package                                                              | Role in Project                              |
+| ---------------------------------- | -------------------------------------------------------------------- | -------------------------------------------- |
+| **Middleware & Security**          | [helmet](https://www.npmjs.com/package/helmet)                       | Sets security-related HTTP headers           |
+|                                    | [cors](https://www.npmjs.com/package/cors)                           | Enables cross-origin access to your server   |
+|                                    | [morgan](https://www.npmjs.com/package/morgan)                       | Logs HTTP requests for debugging             |
+|                                    | [express-session](https://www.npmjs.com/package/express-session)     | Manages user sessions                        |
+|                                    | [multer](https://www.npmjs.com/package/multer)                       | Handles file uploads from forms              |
+| **Configuration**                  | [dotenv](https://www.npmjs.com/package/dotenv)                       | Loads environment variables from `.env` file |
+| **Authentication & Authorization** | [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)           | Generates and verifies JWT tokens            |
+| **Validation**                     | [express-validator](https://www.npmjs.com/package/express-validator) | Validates and sanitizes incoming requests    |
+| **Database Layer**                 | [mongoose](https://www.npmjs.com/package/mongoose)                   | Object Data Modeling (ODM) for MongoDB       |
+
 ## References
 
 - [Express homepage](https://expressjs.com/)
 - [Express - TypeScript](https://blog.logrocket.com/express-typescript-node/)
 - [View template engines](/docs/technologies/js/libraries/view-template-engines.md)
+- [Demo project - Natours](https://gitlab.com/fee-fight-learning-lab/nodejs/natours)
