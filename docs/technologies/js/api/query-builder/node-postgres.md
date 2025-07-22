@@ -20,10 +20,9 @@ The core of `pg` involves creating a client and establishing a connection. There
 - **Using a Single Client**
 - **Using a Connection Pool** (recommended for most applications)
 
-### Example: Connecting with a Single Client
-
 ```javascript
-const { Client } = require("pg");
+// Connecting with a Single Client
+import { Client } from "pg";
 
 const client = new Client({
   user: "your_database_user",
@@ -39,10 +38,9 @@ client
   .catch((err) => console.error("Connection error", err.stack));
 ```
 
-### Example: Using a Connection Pool (Recommended)
-
 ```javascript
-const { Pool } = require("pg");
+// Using a Connection Pool (Recommended)
+import { Pool } from "pg";
 
 const pool = new Pool({
   user: "your_database_user",
@@ -61,20 +59,9 @@ pool
   .catch((err) => console.error("Connection error", err.stack));
 ```
 
-## 3. Basic Queries
+## 3. CRUD Queries
 
 With `pg`, queries can be executed with either `client.query` or `pool.query`.
-
-### Selecting
-
-```javascript
-pool
-  .query("SELECT * FROM users WHERE id = $1", [1])
-  .then((result) => console.log(result.rows))
-  .catch((error) => console.error("Query error", error.stack));
-```
-
-### Inserting
 
 ```javascript
 pool
@@ -86,7 +73,12 @@ pool
   .catch((error) => console.error("Insert error", error.stack));
 ```
 
-### Updating
+```javascript
+pool
+  .query("SELECT * FROM users WHERE id = $1", [1])
+  .then((result) => console.log(result.rows))
+  .catch((error) => console.error("Query error", error.stack));
+```
 
 ```javascript
 pool
@@ -94,8 +86,6 @@ pool
   .then((result) => console.log("User updated:", result.rows[0]))
   .catch((error) => console.error("Update error", error.stack));
 ```
-
-### Deleting
 
 ```javascript
 pool
@@ -106,7 +96,7 @@ pool
 
 ## 4. Advanced Queries
 
-### Joins
+### Table Joins
 
 ```javascript
 pool
@@ -140,22 +130,7 @@ pool
   .catch((error) => console.error("Conditional query error", error.stack));
 ```
 
-## 5. Using Async/Await
-
-Using async/await with `pg` can simplify the code and make error handling easier.
-
-```javascript
-async function getUser(id) {
-  try {
-    const result = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
-    return result.rows[0];
-  } catch (error) {
-    console.error("Error fetching user:", error.stack);
-  }
-}
-```
-
-## 6. Prepared Statements
+## 5. Prepared Statements
 
 Prepared statements are useful to prevent SQL injection and improve performance on repeated queries.
 
@@ -169,7 +144,7 @@ pool
   .catch((error) => console.error("Prepared statement error", error.stack));
 ```
 
-## 7. Transactions
+## 6. Transactions
 
 Transactions ensure multiple queries are executed as a single atomic operation. If one query fails, the whole transaction is rolled back.
 
@@ -197,7 +172,7 @@ async function transferFunds(fromUserId, toUserId, amount) {
 }
 ```
 
-## 8. Connection Pooling
+## 7. Connection Pooling
 
 Using a pool is typically more efficient, as it manages a set of reusable database connections.
 
@@ -219,7 +194,7 @@ pool.on("error", (err, client) => {
 });
 ```
 
-## 9. Error Handling
+## 8. Error Handling
 
 Error handling is essential for managing database connection issues, query errors, and transaction rollbacks.
 
@@ -237,36 +212,7 @@ pool
   });
 ```
 
-## 10. Environment Configuration
-
-Store sensitive data like database credentials in environment variables for security. You can use packages like `dotenv` to load these variables from an `.env` file.
-
-### Example: Using `.env` with `dotenv`
-
-```bash title=".env"
-DB_USER=your_database_user
-DB_PASSWORD=your_database_password
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=your_database_name
-```
-
-### Loading Environment Variables
-
-```javascript
-require("dotenv").config();
-const { Pool } = require("pg");
-
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
-```
-
 ## References
 
-- [Postgre](/docs/technologies/database/relational/postgre.md)
-- [Documents](https://node-postgres.com/)
+- [PostgreSQL](/docs/technologies/database/relational/postgre.md)
+- [Node Postgres - Official Documents](https://node-postgres.com/)
