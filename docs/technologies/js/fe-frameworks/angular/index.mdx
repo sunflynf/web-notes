@@ -8,142 +8,173 @@ tags:
 
 # Angular
 
-Angular is a powerful framework for building scalable and maintainable web applications. This guideline covers best practices, tips, and a step-by-step roadmap to help you master Angular development.
+Angular is a TypeScript-based open-source web application framework led by the Angular Team at Google.
 
-## The Basics
-
-### Core Concepts
-
-- **Components**: Building blocks of the UI.
-- **Templates**: HTML structure for a component.
-- **Directives**: Add behavior to templates.
-- **Services**: Encapsulate business logic and data fetching.
-- **Modules**: Organize the application and enable lazy loading.
-- **Dependency Injection (DI)**: Provide and manage instances of services.
-
-### Essential Tools
-
-- **Node.js & npm**: Required for Angular CLI and package management.
-- **Angular CLI**: Command-line interface for project scaffolding and management.
-- **TypeScript**: Angular's primary language for development.
-
-## Project Setup
-
-### Install Angular CLI
+## **1. Setup & Basics**
 
 ```bash
 npm install -g @angular/cli
-```
-
-### Create a New Project
-
-```bash
-ng new my-angular-app
-```
-
-- Select `SCSS` (preferred for styling) during setup.
-- Use strict typing for better code quality.
-
-### Run the Project
-
-```bash
+ng new my-app
+cd my-app
 ng serve
 ```
 
-## Application Architecture
+### Project Structure
 
-### Recommended Project Structure
-
-```txt
+```
 src/
-  app/
-    components/
-    services/
-    models/
-    pipes/
-    directives/
-    shared/
-    modules/
+├── app/          # Components, modules, services
+├── assets/       # Static files
+├── environments/ # Configs for dev/prod
+├── index.html    # Main HTML
+└── main.ts       # Bootstraps app
 ```
 
-### Component Naming
+- **Key Files**:
+  - `app.module.ts` → Root module (`@NgModule`)
+  - `app.component.ts` → Root component (`@Component`)
 
-- Use **kebab-case** for selectors: `<app-header>`.
-- Use **PascalCase** for filenames: `HeaderComponent`.
-
-### Module Organization
-
-- **Core Module**: Singletons like services, interceptors.
-- **Shared Module**: Reusable components, directives, and pipes.
-- Feature modules for specific application domains.
-
-## Best Practices
+## 2. Core Concepts
 
 ### Components
 
-- Keep components focused: **One task per component.**
-- Use `@Input` and `@Output` for parent-child communication.
-- Avoid logic in templates; delegate it to the component class.
+```typescript
+@Component({
+  selector: "app-example",
+  templateUrl: "./example.component.html",
+  styleUrls: ["./example.component.css"],
+})
+export class ExampleComponent {
+  @Input() data: string;
+  @Output() action = new EventEmitter();
+}
+```
 
-### Services
+### Templates & Data Binding
 
-- Use services for state management, API calls, and shared logic.
-- Follow the **Singleton** pattern.
+- **Interpolation**: `{{ value }}`
+- **Property Binding**: `[property]="value"`
+- **Event Binding**: `(event)="handler()"`
+- **Two-Way Binding**: `[(ngModel)]="property"` (Requires `FormsModule`)
 
-### Change Detection
+### **Directives**
 
-- Use **OnPush** strategy for performance optimization when appropriate.
-- Leverage `trackBy` in \*ngFor for efficient DOM updates.
+- **Structural**:
+  ```html
+  <div *ngIf="condition">Content</div>
+  <div *ngFor="let item of items">{{ item }}</div>
+  ```
+- **Attribute**:
+  ```html
+  <div [ngClass]="{ 'active': isActive }"></div>
+  ```
 
-### Forms
+## 3. Services & Dependency Injection
 
-- Use **Reactive Forms** for complex use cases.
-- Use **Template-Driven Forms** for simpler scenarios.
+```typescript
+@Injectable({ providedIn: "root" })
+export class DataService {
+  fetchData() {
+    return this.http.get("/api/data");
+  }
+}
+```
 
-## Styling Guidelines
+- **Injecting Services**:
+  ```typescript
+  constructor(private dataService: DataService) {}
+  ```
 
-- Use SCSS with Angular.
-- Follow a consistent BEM (Block-Element-Modifier) naming convention.
-- Use Angular Material for a consistent UI.
-- Leverage CSS variables for theming.
+## 4. HTTP Client (RxJS Observables)
 
-## State Management
+```typescript
+import { HttpClient } from "@angular/common/http";
 
-- For small apps, manage state using services.
-- For large applications, consider **NgRx** (Redux for Angular) or other state management libraries.
-- Avoid over-complicating state management; use it only when necessary.
+@Injectable()
+export class ApiService {
+  constructor(private http: HttpClient) {}
+  getData() {
+    return this.http.get("url");
+  }
+}
+```
 
-## Error Handling and Logging
+- **Subscribing**:
+  ```typescript
+  this.apiService.getData().subscribe((data) => console.log(data));
+  ```
 
-- Centralize API error handling using **HTTP Interceptors**.
-- Use Angular's **ErrorHandler** for global error tracking.
-- Implement logging services for debugging and monitoring.
+## 5. Routing
 
-## Performance Optimization
+- **Setup Routes**: (`app-routing.module.ts`)
+  ```typescript
+  const routes: Routes = [
+    { path: "", component: HomeComponent },
+    { path: "about", component: AboutComponent },
+  ];
+  ```
+- **Router Outlet**:
+  ```html
+  <router-outlet></router-outlet>
+  ```
+- **Navigation**:
+  ```typescript
+  this.router.navigate(["/about"]);
+  ```
 
-- Lazy load feature modules.
-- Preload critical assets using Angular's `PreloadingStrategy`.
-- Use `ngx-quicklink` for route preloading.
-- Optimize image loading with modern formats like WebP.
-- Minimize change detection with `detached` views where necessary.
+## 6. Forms
 
-## Testing
+- **Template-Driven Forms**:
+  ```html
+  <form #form="ngForm" (ngSubmit)="submit(form)">
+    <input name="email" ngModel required />
+  </form>
+  ```
+- **Reactive Forms**:
+  ```typescript
+  form = new FormGroup({
+    email: new FormControl("", [Validators.required]),
+  });
+  ```
 
-- Use **Karma** and **Jasmine** for unit testing.
-- Write tests for:
-  - Components
-  - Services
-  - Directives
-- Use **Protractor** or **Cypress** for end-to-end (E2E) testing.
+## 7. State Management (Advanced)
 
-## Deployment
+- **NgRx (Redux-like)**:
+  - Actions, Reducers, Store, Effects
+  ```bash
+  npm install @ngrx/store @ngrx/effects
+  ```
 
-- Use `ng build --prod` to build production-ready code.
-- Optimize bundle sizes using:
-  - Tree-shaking.
-  - Ahead-of-Time (AOT) compilation.
-- Host on platforms like Firebase, Netlify, or AWS.
+## 8. Performance & Optimization
 
-### Useful Resources
+- **Lazy Loading**:
+  ```typescript
+  { path: 'admin', loadChildren: () => import('./admin.module') }
+  ```
+- **Change Detection**: `OnPush` strategy
+- **AOT Compilation**: `ng build --prod`
+
+## 9. Testing
+
+```bash
+# Unit Tests (Jasmine/Karma)
+ng test
+
+#  E2E (Protractor/Cypress)
+ng e2e
+```
+
+## 10. Deployment
+
+```bash
+ng build --prod
+# Deploy `/dist` folder to hosting (Netlify, Vercel, Firebase, etc.)
+```
+
+## Reference
 
 - [Angular Documentation](https://angular.dev/overview)
+- **Advanced Topics**:
+  - Micro-frontends (Module Federation)
+  - Server-Side Rendering (Angular Universal)
+  - Web Components Integration
