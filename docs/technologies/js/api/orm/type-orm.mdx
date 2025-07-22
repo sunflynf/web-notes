@@ -1,8 +1,8 @@
 ---
 description: ORM Tech
 tags:
-    - JavaScript
-    - TypeScript
+  - JavaScript
+  - TypeScript
 ---
 
 # TypeORM
@@ -10,6 +10,9 @@ tags:
 A quick reference for TypeORM, an ORM for TypeScript and JavaScript, supporting databases like PostgreSQL, MySQL, SQLite, MongoDB, Oracle, etc.
 
 ## Installation
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 ```bash
 npm install typeorm reflect-metadata
@@ -23,7 +26,8 @@ Enable `experimentalDecorators` and `emitDecoratorMetadata` in `tsconfig.json`.
 
 Create a `data-source.ts` or `ormconfig.json` to configure the database connection.
 
-### PostgreSQL
+<Tabs>
+  <TabItem value="postgres" label="PostgreSQL" default>
 
 ```ts
 import { DataSource } from "typeorm";
@@ -41,7 +45,8 @@ export const AppDataSource = new DataSource({
 });
 ```
 
-### MySQL / MariaDB
+  </TabItem>
+  <TabItem value="mysql-maria" label="MySQL/MariaDB" default>
 
 ```ts
 import { DataSource } from "typeorm";
@@ -59,7 +64,8 @@ export const AppDataSource = new DataSource({
 });
 ```
 
-### MongoDB
+  </TabItem>
+  <TabItem value="mongo" label="MongoDB" default>
 
 ```ts
 import { DataSource } from "typeorm";
@@ -75,7 +81,8 @@ export const AppDataSource = new DataSource({
 
 > **Note**: MongoDB requires `typeorm` version with MongoDB support (`npm install typeorm@latest`) and uses a different entity structure (no migrations).
 
-### Oracle
+  </TabItem>
+  <TabItem value="oracle" label="Oracle" default>
 
 ```ts
 import { DataSource } from "typeorm";
@@ -95,7 +102,8 @@ export const AppDataSource = new DataSource({
 
 > **Note**: Install `oracledb` driver (`npm install oracledb`) and ensure Oracle Instant Client is configured.
 
-### SQLite
+  </TabItem>
+  <TabItem value="sqlite" label="SQLite" default>
 
 ```ts
 import { DataSource } from "typeorm";
@@ -110,6 +118,9 @@ export const AppDataSource = new DataSource({
 ```
 
 > **Note**: Install `sqlite3` driver (`npm install sqlite3`).
+
+  </TabItem>
+</Tabs>
 
 ### Initialize in your app
 
@@ -274,8 +285,14 @@ Use transactions for atomic operations.
 
 ```ts
 await AppDataSource.transaction(async (transactionalEntityManager) => {
-  await transactionalEntityManager.save(User, { name: "John", email: "john@example.com" });
-  await transactionalEntityManager.save(Post, { title: "First Post", user: user });
+  await transactionalEntityManager.save(User, {
+    name: "John",
+    email: "john@example.com",
+  });
+  await transactionalEntityManager.save(Post, {
+    title: "First Post",
+    user: user,
+  });
 });
 ```
 
@@ -292,7 +309,7 @@ await AppDataSource.transaction(async (transactionalEntityManager) => {
 - **Entity Not Found**: Check `entities` path in DataSource config.
 - **Migration Fails**: Ensure `migrations` path is correct and run migrations in order.
 
-## Useful Links
+## References
 
 - [TypeORM Official Documentation](https://typeorm.io/)
 - [TypeORM GitHub Repository](https://github.com/typeorm/typeorm)
