@@ -1,11 +1,14 @@
 ---
 description: A promise-based ORM
 tags:
-    - JavaScript
-    - TypeScript
+  - JavaScript
+  - TypeScript
 ---
 
 # Sequelize
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 ## 1. Project Setup
 
@@ -22,40 +25,49 @@ npx tsc --init
 npm install sqlite3  # SQLite
 npm install pg pg-hstore  # PostgreSQL
 npm install mysql2  # MySQL
-
-# Express
-npm install express sequelize
-
-# Nest
-npm install @nestjs/config reflect-metadata rxjs @nestjs/sequelize sequelize-typescript 
 ```
+
+<Tabs>
+  <TabItem value="express" label="Express" default>
+
+```bash
+npm install express sequelize
+```
+
+  </TabItem>
+  <TabItem value="nestjs" label="NestJS">
+
+```bash
+npm install @nestjs/config reflect-metadata rxjs @nestjs/sequelize sequelize-typescript
+```
+
+  </TabItem>
+</Tabs>
 
 ## 2. Sequelize Configuration
 
-### Database Connection
-
-```typescript title="src/config/database.ts"
-import { Sequelize } from 'sequelize-typescript';
+```ts title="src/config/database.ts"
+import { Sequelize } from "sequelize-typescript";
 
 export const sequelize = new Sequelize({
-  dialect: 'sqlite', // or 'postgres', 'mysql'
-  storage: './database.sqlite', // SQLite only
+  dialect: "sqlite", // or 'postgres', 'mysql'
+  storage: "./database.sqlite", // SQLite only
   // For PostgreSQL/MySQL:
   // host: process.env.DB_HOST,
   // database: process.env.DB_NAME,
   // username: process.env.DB_USER,
   // password: process.env.DB_PASSWORD,
-  models: [__dirname + '/../**/*.model.ts'], // Load all models
+  models: [__dirname + "/../**/*.model.ts"], // Load all models
 });
 
 // Test connection
 async function connect() {
   try {
     await sequelize.authenticate();
-    console.log('Database connected');
+    console.log("Database connected");
     await sequelize.sync({ force: true }); // Use migrations in production
   } catch (error) {
-    console.error('Connection error:', error);
+    console.error("Connection error:", error);
   }
 }
 
@@ -64,10 +76,10 @@ connect();
 
 ## 3. Define Models
 
-```typescript title="src/models/user.model.ts"
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+```ts title="src/models/user.model.ts"
+import { Table, Column, Model, DataType } from "sequelize-typescript";
 
-@Table({ tableName: 'users' })
+@Table({ tableName: "users" })
 export class User extends Model {
   @Column({
     type: DataType.STRING,
@@ -83,34 +95,30 @@ export class User extends Model {
 }
 ```
 
-## 4. Using Sequelize with Express
+## 4. Using Sequelize with [Express](/docs/technologies/js/be-frameworks/express)
 
-### Setup Express
-
-```typescript title="src/index.ts"
-import express from 'express';
-import { sequelize } from './config/database';
-import userRoutes from './routes/user.routes';
+```ts title="src/index.ts"
+import express from "express";
+import { sequelize } from "./config/database";
+import userRoutes from "./routes/user.routes";
 
 const app = express();
 app.use(express.json());
-app.use('/api', userRoutes);
+app.use("/api", userRoutes);
 
 app.listen(3000, () => {
-  console.log('Server running at http://localhost:3000');
+  console.log("Server running at http://localhost:3000");
 });
 ```
 
-### Routes
-
-```typescript title="src/routes/user.routes.ts"
-import { Router } from 'express';
-import { User } from '../models/user.model';
+```ts title="src/routes/user.routes.ts"
+import { Router } from "express";
+import { User } from "../models/user.model";
 
 const router = Router();
 
 // Create user
-router.post('/users', async (req, res) => {
+router.post("/users", async (req, res) => {
   try {
     const user = await User.create(req.body);
     res.status(201).json(user);
@@ -120,7 +128,7 @@ router.post('/users', async (req, res) => {
 });
 
 // Get all users
-router.get('/users', async (req, res) => {
+router.get("/users", async (req, res) => {
   const users = await User.findAll();
   res.json(users);
 });
@@ -128,23 +136,21 @@ router.get('/users', async (req, res) => {
 export default router;
 ```
 
-## 5. Using Sequelize with NestJS
-
-### Setup NestJS
+## 5. Using Sequelize with [NestJS](/docs/technologies/js/be-frameworks/nest)
 
 ### Configure Sequelize
 
-```typescript title="src/app.module.ts"
-import { Module } from '@nestjs/common';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from './models/user.model';
-import { UsersModule } from './users/users.module';
+```ts title="src/app.module.ts"
+import { Module } from "@nestjs/common";
+import { SequelizeModule } from "@nestjs/sequelize";
+import { User } from "./models/user.model";
+import { UsersModule } from "./users/users.module";
 
 @Module({
   imports: [
     SequelizeModule.forRoot({
-      dialect: 'sqlite',
-      storage: './database.sqlite',
+      dialect: "sqlite",
+      storage: "./database.sqlite",
       models: [User],
       autoLoadModels: true,
       synchronize: true, // Use migrations in production
@@ -163,10 +169,10 @@ npx @nestjs/cli generate service users
 npx @nestjs/cli generate controller users
 ```
 
-```typescript title="src/users/users.service.ts"
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { User } from '../models/user.model';
+```ts title="src/users/users.service.ts"
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/sequelize";
+import { User } from "../models/user.model";
 
 @Injectable()
 export class UsersService {
@@ -182,11 +188,11 @@ export class UsersService {
 }
 ```
 
-```typescript title="src/users/users.controller.ts"
-import { Controller, Get, Post, Body } from '@nestjs/common';
-import { UsersService } from './users.service';
+```ts title="src/users/users.controller.ts"
+import { Controller, Get, Post, Body } from "@nestjs/common";
+import { UsersService } from "./users.service";
 
-@Controller('users')
+@Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -202,14 +208,21 @@ export class UsersController {
 }
 ```
 
-## 6. Best Practices
+## 6. [Migrations](https://sequelize.org/docs/v6/other-topics/migrations/)
 
-- **Migrations**: Use `sequelize-cli` for production schema changes:
+Use `sequelize-cli` for production schema changes:
 
-  ```bash
-  npm install sequelize-cli
-  npx sequelize-cli init
-  ```
+```bash
+npm install --save-dev sequelize-cli
+# Initialize Sequelize CLI
+npx sequelize-cli init
+# Create a migration
+npx sequelize-cli migration:generate --name create-users-table
+# Run migrations
+npx sequelize-cli db:migrate
+```
+
+## 7. Best Practices
 
 - **Validation**: Use DTOs (NestJS) or middleware (Express) for input validation.
 - **Error Handling**: Implement global error handlers.
@@ -219,13 +232,13 @@ export class UsersController {
 ## Recommend for setup Sequelize
 
 - Use Plain Sequelize (`extends Model<ModelAttributes, ModelCreationAttributes> implements ModelAttributes`)
-  - You’re working in a project with existing plain Sequelize code.
+  - You're working in a project with existing plain Sequelize code.
   - You want minimal dependencies or prefer explicit schema definitions.
-  - You’re using **Express** and *don’t need NestJS’s dependency injection*.
+  - You're using **Express** and _don't need NestJS's dependency injection_.
 - Use `sequelize-typescript`
-  - You’re building a **TypeScript-first** project, especially with **NestJS**.
+  - You're building a **TypeScript-first** project, especially with **NestJS**.
   - You prefer concise, decorator-based syntax.
-  - You want better integration with TypeScript’s type system and frameworks.
+  - You want better integration with TypeScript's type system and frameworks.
 
 ## References
 
