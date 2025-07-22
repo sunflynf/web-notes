@@ -1,5 +1,5 @@
 ---
-description: ORM Tech
+description: Type-safe database client & Schema-first approach
 tags:
   - JavaScript
   - TypeScript
@@ -7,205 +7,235 @@ tags:
 
 # Prisma
 
-**Think of Prisma as a helpful translator between your code and your database.** It allows you to write JavaScript/TypeScript code to interact with your database instead of writing raw SQL, making development faster, safer, and more enjoyable.
+- Type-safe database client
+- Schema-first approach
+- Auto-completion for all queries
+- Handles connections, pooling, and transactions
+- Works with all major databases
 
-## 1. Prerequisites
+For complex queries, Prisma Client provides an intuitive API that covers 95% of use cases while allowing raw SQL when needed.
 
-- **Node.js and npm (or yarn/pnpm)**
-- **Database:**
-  - **PostgreSQL:** A powerful and popular open-source database.
-  - **MySQL:** Another widely used open-source database.
-  - **SQLite:** A lightweight file-based database (great for local development and learning).
-  - **SQL Server:** Microsoft's relational database.
-  - **MongoDB (preview):** Support for MongoDB is currently in preview.
-
-## 2. Setting up your Project
+## Core Setup
 
 ```bash
-mkdir prisma-beginner-project
-cd prisma-beginner-project
-npm init -y  # Creates a default package.json file
+npm install prisma tsx --save-dev
+npm install @prisma/client
+
+# Initialize Prisma in project
+npx prisma init --db --output ../app/generated/prisma
 ```
 
-## 3. Installing Prisma CLI and Client
+## Basic Schema (SQLite example)
 
-```bash
-npm install prisma prisma-client @prisma/client --save-dev
-```
-
-- **`prisma`:** The Prisma CLI is used for tasks like initializing Prisma, generating the Prisma Client, running migrations, and more.
-- **`prisma-client` & `@prisma/client`:** These packages are necessary for generating and using the actual Prisma Client within your JavaScript/TypeScript code.
-
-## 4. Initializing Prisma
-
-- Create a `prisma` directory in your project.
-- Create a `schema.prisma` file within the `prisma` directory.
-- Create a `.env` file (if you don't have one already).
-
-```bash
-npx prisma init
-```
-
-## 5. Understanding `schema.prisma`
-
-Open the `prisma/schema.prisma` file. This is the heart of Prisma, where you define your database schema using the Prisma Schema Language (PSL). It's divided into three main parts:
-
-- **`generator client`:** Configures how the Prisma Client is generated. By default, it's set to `prisma-client-js` for JavaScript/TypeScript projects.
-- **`datasource db`:** Defines how Prisma connects to your database. You'll need to configure the `provider` and `url` here.
-- **`model`:** This is where you define your data models (tables in relational databases, collections in MongoDB).
-
-**Let's modify `schema.prisma` to use SQLite and define a simple `User` model:**
-
-```js title='schema.prisma'
+```prisma title="prisma/schema.prisma"
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db" // Path to your SQLite database file
+  url      = "file:./dev.db"
 }
 
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String?
-  posts Post[] // Relation to the Post model (explained later)
+  posts Post[]
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   title     String
   content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User    @relation(fields: [authorId], references: [id])
   authorId  Int
 }
 ```
 
-**Explanation:**
+Key schema elements:
 
-- **`datasource db`**
-  - `provider = "sqlite"`: We're using SQLite.
-  - `url = "file:./dev.db"`: Prisma will create an SQLite database file named `dev.db` in your project root (if it doesn't exist).
-- **`model User`**
-  - `id    Int     @id @default(autoincrement())`: `id` is an integer, marked as the `@id` (primary key), and `@default(autoincrement())` means it will automatically increase with each new user.
-  - `email String  @unique`: `email` is a string, marked as `@unique` (ensuring no two users have the same email).
-  - `name  String?`: `name` is a string, `?` indicates it's optional (nullable).
-  - `posts Post[]`: This defines a relation to the `Post` model (one-to-many relationship - one user can have multiple posts). We'll discuss relations in more detail later.
-- **`model Post`**
-  - Similar structure, defining fields for posts.
-  - `author    User     @relation(fields: [authorId], references: [id])`: This is the other side of the relation, connecting `Post` back to `User`. It specifies that the `author` field is a `User` and is related through the `authorId` field in the `Post` model, referencing the `id` field in the `User` model.
+- `@id` = Primary key
+- `@unique` = Unique constraint
+- `?` = Optional field
+- `@relation` = Defines relationships
 
-## 6. Generating Prisma Client
-
-Now that you've defined your schema, you need to generate the Prisma Client. This will create a type-safe client library based on your `schema.prisma` that you can use in your code.
+## Common Commands
 
 ```bash
-npx prisma generate
+npx prisma generate    # Generate client after schema changes
+npx prisma migrate dev --name "init"  # Create & apply migrations
+npx prisma studio      # GUI to view/edit data
+npx prisma db push     # Sync schema without migrations (dev only)
 ```
 
-This command reads your `schema.prisma` and creates the Prisma Client in the `@prisma/client` package.
+## CRUD Operations
 
-## 7. Creating and Applying Migrations
+```ts
+// Create single record
+await prisma.user.create({
+  data: { email: "user@example.com", name: "Alice" }
+})
 
-Prisma Migrate helps you evolve your database schema over time. The first step is to create a migration based on your `schema.prisma` and then apply it to your database.
-
-```bash
-npx prisma migrate dev --name init
+// Create with relation
+await prisma.user.create({
+  data: {
+    email: "user@example.com",
+    posts: {
+      create: [{ title: "First Post" }]
+    }
+  }
+})
 ```
 
-- **`prisma migrate dev`:** This command is used during development. It will:
-  - Compare your current `schema.prisma` with the current database schema.
-  - Generate a new migration (if there are changes).
-  - Apply the migration to your development database (SQLite `dev.db` in our case).
-  - The `--name init` flag gives your migration a descriptive name ("init" in this case, indicating the initial migration).
+```ts
+// Find all
+const users = await prisma.user.findMany()
 
-You'll see a new `migrations` directory created in your `prisma` folder containing the SQL files for your migration.
+// Find with conditions
+const user = await prisma.user.findUnique({
+  where: { email: "user@example.com" }
+})
 
-## 8. Using Prisma Client in your Code
+// Include relations
+const usersWithPosts = await prisma.user.findMany({
+  include: { posts: true }
+})
 
-Now you can start writing code to interact with your database using the Prisma Client\!
+// Pagination
+const posts = await prisma.post.findMany({
+  skip: 10,
+  take: 5
+})
+```
 
-```javascript title="script.js"
-const { PrismaClient } = require("@prisma/client");
+```ts
+// Single update
+await prisma.user.update({
+  where: { id: 1 },
+  data: { name: "Updated Name" }
+})
 
-const prisma = new PrismaClient();
+// Update or create (upsert)
+await prisma.user.upsert({
+  where: { email: "user@example.com" },
+  update: { name: "Updated" },
+  create: { email: "user@example.com", name: "New User" }
+})
+```
 
-async function main() {
-  // Create a new user
-  const newUser = await prisma.user.create({
-    data: {
-      email: "alice@example.com",
-      name: "Alice",
-      posts: {
-        create: [
-          { title: "Hello Prisma", content: "My first post with Prisma!" },
-          { title: "Another Post", content: "Just testing things out." },
-        ],
-      },
-    },
-  });
-  console.log("Created new user:", newUser);
+```ts
+// Delete single
+await prisma.user.delete({
+  where: { id: 1 }
+})
 
-  // Find all users
-  const allUsers = await prisma.user.findMany({
-    include: {
-      posts: true, // Include related posts in the result
-    },
-  });
-  console.log("All users:", allUsers);
+// Delete many
+await prisma.post.deleteMany({
+  where: { createdAt: { lt: new Date('2023-01-01') } }
+})
+```
+
+## Advanced Patterns
+
+### Transactions
+
+```ts
+const [user, post] = await prisma.$transaction([
+  prisma.user.create({ data: { email: "user@example.com" } }),
+  prisma.post.create({ data: { title: "Hello" } })
+])
+```
+
+### Aggregations
+
+```ts
+const stats = await prisma.post.aggregate({
+  _count: true,
+  _avg: { views: true },
+  where: { published: true }
+})
+```
+
+### Raw SQL (when needed)
+
+```ts
+const users = await prisma.$queryRaw`
+  SELECT * FROM User WHERE active = true LIMIT 10
+`
+```
+
+## Production Tips
+
+### 1. Connection Handling
+
+```ts
+// Best practice for Next.js/Edge
+const prisma = new PrismaClient()
+
+if (process.env.NODE_ENV !== 'production') {
+  globalThis.prisma = prisma
 }
-
-main()
-  .catch((e) => {
-    throw e;
-  })
-  .finally(async () => {
-    await prisma.$disconnect(); // Disconnect Prisma Client when done
-  });
 ```
 
-**Explanation:**
+### 2. Indexes for Performance
 
-- **`const { PrismaClient } = require('@prisma/client');`:** Imports the `PrismaClient` constructor from the generated `@prisma/client` package.
-- **`const prisma = new PrismaClient();`:** Creates an instance of the Prisma Client. This is your entry point to interact with your database.
-- **`async function main() { ... }`:** We use an `async` function because Prisma Client operations are asynchronous (they return Promises).
-- **`await prisma.user.create({ ... })`:**
-  - `prisma.user` accesses the `User` model (defined in your `schema.prisma`).
-  - `.create({ data: { ... } })` creates a new record in the `User` table.
-  - `data: { email: 'alice@example.com', name: 'Alice', posts: { create: [...] } }`: Provides the data for the new user. Notice how we can also create related `posts` in the same operation (nested writes).
-- **`await prisma.user.findMany({ ... })`:**
-  - `prisma.user.findMany()` retrieves multiple `User` records.
-  - `include: { posts: true }`: This is called **eager loading**. It tells Prisma to also fetch the related `posts` for each user in a single query, improving efficiency.
-- **`console.log(...)`:** Prints the results to the console.
-- **`.catch(...)` and `.finally(...)`:** Basic error handling and ensuring Prisma Client is disconnected after the script runs.
-- **`prisma.$disconnect()`:** Important to disconnect the Prisma Client gracefully when you're done with it.
-
-## 9. Running your Script
-
-```bash
-node script.js
+```prisma
+model User {
+  id    Int    @id
+  email String @unique
+  @@index([name]) // Composite index
+}
 ```
 
-You should see output in your console showing the created user and a list of all users (including Alice with her posts). If you open the `dev.db` file (you can use a SQLite browser application), you'll see the `User` and `Post` tables populated with data.
+### 3. Environment Variables
 
-## Next Steps and Further Learning
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
 
-This is just the beginning\! Prisma offers many more powerful features. Here are some things you can explore next:
+## Common Use Cases
 
-- **More Prisma Client Operations:** Learn about `findUnique`, `findFirst`, `update`, `delete`, `upsert`, aggregations, transactions, and more in the Prisma Client documentation.
-- **Relations:** Dive deeper into defining and querying relations between models (one-to-one, one-to-many, many-to-many).
-- **Prisma Studio:** A visual database editor that allows you to view and manage your data directly from your browser. Run `npx prisma studio` to launch it.
-- **Prisma Migrate in Production:** Learn how to use `prisma migrate deploy` for applying migrations in production environments.
-- **Different Databases:** Experiment with connecting Prisma to PostgreSQL, MySQL, or other supported databases.
-- **Advanced Schema Features:** Explore more advanced features of the Prisma Schema Language, like enums, custom types, indexes, and more.
-- **TypeScript Support:** If you're using TypeScript, Prisma is even more powerful as it provides excellent type safety throughout your database interactions.
+### 1. Next.js API Routes
 
-## Key Takeaways for Beginners
+```ts title="pages/api/users.ts"
+export default async function handler(req, res) {
+  const users = await prisma.user.findMany()
+  res.json(users)
+}
+```
 
-- **Schema-First Approach:** Prisma emphasizes defining your database schema in `schema.prisma` first, then generating code from it. This promotes a structured and predictable development process.
-- **Type Safety:** Prisma Client is type-safe, which means you get autocompletion and error checking in your code editor, reducing errors and improving developer experience.
-- **Developer Experience:** Prisma is designed to make database interactions enjoyable. Its intuitive API and helpful tools like Prisma Studio contribute to a smooth development workflow.
-- **Database Migrations Made Easy:** Prisma Migrate simplifies database schema management, making it easier to track changes and keep your database in sync with your application.
-- [**Documentation**](https://www.prisma.io/docs/)
+### 2. Serverless Functions
+
+```ts
+// Lambda/Cloud Function
+export const handler = async () => {
+  const data = await prisma.data.findMany()
+  return { statusCode: 200, body: JSON.stringify(data) }
+}
+```
+
+### 3. CLI Scripts
+
+```ts title="scripts/seed.ts"
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+
+async function seed() {
+  await prisma.user.createMany({ data: [...] })
+}
+```
+
+## References
+
+1. [Prisma Documentation](https://www.prisma.io/docs/) - The complete guide to all Prisma features, from basic CRUD to advanced patterns.
+2. [Prisma Client API Reference](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference) - Detailed reference for all query methods (`findMany`, `create`, etc.).
+3. [Prisma Schema Reference](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference) - Syntax for defining models, enums, relations, and database configurations.
+4. [Prisma Studio](https://www.prisma.io/studio) - GUI to view/edit your database directly
+
+---
+
+1. [Prisma with Express.js](https://www.prisma.io/express) - Official guide for using Prisma in Express.js applications.
