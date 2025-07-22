@@ -17,7 +17,7 @@ npm install pg # or mysql2 / sqlite3 depending on your database
 
 ## 2. Setting Up Knex
 
-```javascript title="knexfile.js"
+```js title="knexfile.js"
 module.exports = {
   development: {
     client: "pg", // or 'mysql', 'sqlite3', etc.
@@ -39,15 +39,15 @@ module.exports = {
 
 ## 3. Configuration
 
-```javascript
-const knex = require("knex");
-const config = require("./knexfile");
+```js
+import knex from "knex";
+import config from "./knexfile";
 const db = knex(config.development);
 ```
 
 ## 4. Creating a Connection
 
-```javascript
+```js
 const db = knex({
   client: "pg",
   connection: {
@@ -59,11 +59,16 @@ const db = knex({
 });
 ```
 
-## 5. Basic Queries
+## 5. CRUD Queries
 
-### Selecting
+```js
+db("users")
+  .insert({ name: "John Doe", age: 30 })
+  .then(() => console.log("User added"))
+  .catch((error) => console.error(error));
+```
 
-```javascript
+```js
 db("users")
   .select("*")
   .where({ id: 1 })
@@ -71,18 +76,7 @@ db("users")
   .catch((error) => console.error(error));
 ```
 
-### Inserting
-
-```javascript
-db("users")
-  .insert({ name: "John Doe", age: 30 })
-  .then(() => console.log("User added"))
-  .catch((error) => console.error(error));
-```
-
-### Updating
-
-```javascript
+```js
 db("users")
   .where({ id: 1 })
   .update({ age: 31 })
@@ -90,9 +84,7 @@ db("users")
   .catch((error) => console.error(error));
 ```
 
-### Deleting
-
-```javascript
+```js
 db("users")
   .where({ id: 1 })
   .del()
@@ -102,9 +94,9 @@ db("users")
 
 ## 6. Advanced Queries
 
-### Joins
+### Table Joins
 
-```javascript
+```js
 db("users")
   .join("orders", "users.id", "=", "orders.user_id")
   .select("users.name", "orders.amount")
@@ -114,7 +106,7 @@ db("users")
 
 ### Aggregations
 
-```javascript
+```js
 db("orders")
   .sum("amount as total_amount")
   .then((result) => console.log(result))
@@ -123,7 +115,7 @@ db("orders")
 
 ### Complex Conditions
 
-```javascript
+```js
 db("users")
   .where("age", ">", 25)
   .orWhere("status", "=", "active")
@@ -145,7 +137,7 @@ npx knex migrate:make migration_name
 
 ### Example Migration
 
-```javascript title="migrations/20220101010101_create_users_table.js"
+```js title="migrations/20220101010101_create_users_table.js"
 exports.up = function (knex) {
   return knex.schema.createTable("users", (table) => {
     table.increments("id");
@@ -162,21 +154,15 @@ exports.down = function (knex) {
 
 ### Running Migrations
 
-Run migrations with:
-
 ```bash
+# Run migrations with
 npx knex migrate:latest
-```
 
-Rollback with:
-
-```bash
+# Rollback with
 npx knex migrate:rollback
 ```
 
 ## 8. Seeding Data
-
-Seeds are useful for inserting sample data into your database.
 
 ### Creating a Seed
 
@@ -188,7 +174,7 @@ npx knex seed:make seed_name
 
 ### Example Seed
 
-```javascript title="seeds/initial_users.js"
+```js title="seeds/initial_users.js"
 exports.seed = function (knex) {
   return knex("users")
     .del()
@@ -211,7 +197,7 @@ npx knex seed:run
 
 Transactions allow you to execute a sequence of queries as a single operation. If any query fails, the entire transaction is rolled back.
 
-```javascript
+```js
 db.transaction((trx) => {
   return trx("users")
     .insert({ name: "Alice", age: 24 })
@@ -227,7 +213,7 @@ db.transaction((trx) => {
 
 Handle errors gracefully by using `.catch()` for promise chains, or `try/catch` blocks with async/await.
 
-```javascript
+```js
 async function getUser(id) {
   try {
     const user = await db("users").where({ id }).first();
@@ -248,4 +234,4 @@ async function getUser(id) {
 
 ## Reference
 
-- [Documents](https://www.npmjs.com/package/knex)
+- [Knex - Official Documents](https://www.npmjs.com/package/knex)
