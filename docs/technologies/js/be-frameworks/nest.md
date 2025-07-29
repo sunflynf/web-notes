@@ -280,6 +280,44 @@ graph TD
   B --> I[Database]
 ```
 
+## Nest CLI
+
+```bash
+# Project Initialization
+nest new <project-name>
+```
+
+```bash
+# Generate Components
+nest g <schematic> <name>
+# or
+nest generate <schematic> <name>
+```
+
+```bash
+# Main files: module, controller, service
+nest g module <module-name>
+nest g controller <controller-name>
+nest g service <service-name>
+
+# Structure files
+nest g middleware <middleware-name>
+nest g interceptor <interceptor-name>
+nest g pipe <pipe-name>
+nest g guard <guard-name>
+nest g filter <filter-name>
+
+# Generates a plain TypeScript class.
+nest g class <class-name>
+# Generates a TypeScript interface (useful for DTOs and data types).
+nest g interface <interface-name>
+
+# Gateway (for WebSockets)
+nest g gateway <gateway-name>
+# Resolver (for GraphQL)
+nest g resolver <resolver-name>
+```
+
 ## References
 
 - [NestJS documentation](https://docs.nestjs.com/).
