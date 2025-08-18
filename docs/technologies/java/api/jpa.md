@@ -12,15 +12,11 @@ tags:
 - **Hibernate**: A popular ORM framework implementing JPA, offering extra features like caching, batch processing, and more.
 - **Spring Data JPA**: A Spring module providing an abstraction layer for JPA, simplifying repository creation and data access patterns.
 
-## Setting Up JPA with Hibernate and Spring Data JPA
+## Setting Up JPA
 
 ### Adding Dependencies
 
-Add the necessary dependencies to your `pom.xml` (for Maven) or `build.gradle` (for Gradle):
-
-**For Maven:**
-
-```xml title="pom.xml"
+```xml title="Maven - pom.xml"
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -32,9 +28,7 @@ Add the necessary dependencies to your `pom.xml` (for Maven) or `build.gradle` (
 </dependency>
 ```
 
-**For Gradle:**
-
-```groovy title="build.gradle"
+```groovy title="Gradle - build.gradle"
 implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 runtimeOnly 'com.h2database:h2'
 ```
@@ -50,7 +44,56 @@ spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 spring.jpa.hibernate.ddl-auto=update
 ```
 
-## Creating Entities with JPA
+## Annotations
+
+### 1. Entity Mapping Annotations (JPA/Hibernate)
+
+| Annotation                         | Purpose                                                        | Example                                               |
+| ---------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------- |
+| `@Entity`                          | Marks a class as a JPA entity mapped to a database table.      | `@Entity public class User {}`                        |
+| `@Table(name = "users")`           | Specifies table name, schema, and constraints.                 | `@Table(name = "users", schema = "public")`           |
+| `@Id`                              | Defines the primary key.                                       | `@Id private Long id;`                                |
+| `@GeneratedValue`                  | Key generation strategy (`IDENTITY`, `SEQUENCE`, `AUTO`).      | `@GeneratedValue(strategy = GenerationType.IDENTITY)` |
+| `@Column`                          | Customizes column name, nullability, uniqueness, length, type. | `@Column(name = "full_name", length = 100)`           |
+| `@Transient`                       | Excludes a field from DB mapping.                              | `@Transient private String temp;`                     |
+| `@Enumerated`                      | Maps enums (`ORDINAL` or `STRING`).                            | `@Enumerated(EnumType.STRING)`                        |
+| `@Lob`                             | Maps large data types (BLOB/CLOB).                             | `@Lob private String content;`                        |
+| `@Temporal`                        | Specifies date/time type (`DATE`, `TIME`, `TIMESTAMP`).        | `@Temporal(TemporalType.TIMESTAMP)`                   |
+| `@CreationTimestamp` *(Hibernate)* | Auto-sets creation time.                                       | `@CreationTimestamp private LocalDateTime createdAt;` |
+| `@UpdateTimestamp` *(Hibernate)*   | Auto-sets update time.                                         | `@UpdateTimestamp private LocalDateTime updatedAt;`   |
+| `@Version`                         | Used for optimistic locking.                                   | `@Version private Long version;`                      |
+
+### 2. Relationship Mapping Annotations
+
+| Annotation    | Purpose                                  | Example                                                                                                                        |
+| ------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `@OneToOne`   | One-to-one relationship.                 | `@OneToOne(mappedBy = "profile")`                                                                                              |
+| `@OneToMany`  | One-to-many relationship.                | `@OneToMany(mappedBy = "user")`                                                                                                |
+| `@ManyToOne`  | Many-to-one relationship.                | `@ManyToOne @JoinColumn(name = "user_id")`                                                                                     |
+| `@ManyToMany` | Many-to-many relationship.               | `@ManyToMany @JoinTable(...)`                                                                                                  |
+| `@JoinColumn` | Defines foreign key column.              | `@JoinColumn(name = "profile_id")`                                                                                             |
+| `@JoinTable`  | Customizes join table for `@ManyToMany`. | `@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name="user_id"), inverseJoinColumns = @JoinColumn(name="role_id"))` |
+| `@MapsId`     | Shares primary key with another entity.  | `@OneToOne @MapsId`                                                                                                            |
+
+### 3. Repository & Query Annotations
+
+| Annotation       | Purpose                                                                                    | Example                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| `@Repository`    | Marks a class as a Spring Data repository; translates exceptions to `DataAccessException`. | `@Repository public interface UserRepository extends JpaRepository<User, Long>` |
+| `@Query`         | Defines custom JPQL/Native queries.                                                        | `@Query("SELECT u FROM User u WHERE u.email = :email")`                         |
+| `@Param`         | Passes parameters into a query.                                                            | `@Query("...") User findByEmail(@Param("email") String email);`                 |
+| `@Modifying`     | Marks an update/delete query.                                                              | `@Modifying @Query("UPDATE User u SET u.active = false")`                       |
+| `@Transactional` | Transaction management.                                                                    | `@Transactional(readOnly = true)`                                               |
+| `@EntityGraph`   | Defines fetch graph to avoid N+1 queries.                                                  | `@EntityGraph(attributePaths = {"roles"})`                                      |
+| `@Lock`          | Applies locking (`PESSIMISTIC_WRITE`, `OPTIMISTIC`).                                       | `@Lock(LockModeType.PESSIMISTIC_WRITE)`                                         |
+
+### 4. Other Useful Annotations
+
+- `@NamedQuery` / `@NamedNativeQuery`: Predefined JPQL/SQL queries.
+- `@SqlResultSetMapping`: Maps native query results.
+- `@Inheritance`, `@DiscriminatorColumn`: Entity inheritance mapping.
+
+## Creating Entities Examples
 
 ### Define JPA Entity Classes
 
@@ -99,7 +142,7 @@ public class Department {
 }
 ```
 
-## Using Spring Data JPA Repositories
+## Using Repositories
 
 ### Define Repository Interfaces
 
@@ -117,8 +160,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 For complex queries, use the `@Query` annotation with JPQL or native SQL.
 
-Example:
-
 ```java
 @Query("SELECT u FROM User u WHERE u.email = ?1")
 User findByEmail(String email);
@@ -126,29 +167,16 @@ User findByEmail(String email);
 
 ## Best Practices
 
-### Use DTOs for Data Transfer
+- Use DTOs for Data Transfer: to avoid returning entire entities and exposing database details, use Data Transfer Objects (DTOs) or projections.
+- Use Lazy Loading Appropriately: for relationships, use `@OneToMany(fetch = FetchType.LAZY)` and load data only when needed.
+- Optimize with **Batch Fetching**: prevent the N+1 select problem by setting batch fetching in `application.properties`:
 
-To avoid returning entire entities and exposing database details, use Data Transfer Objects (DTOs) or projections.
+    ```properties
+    spring.jpa.properties.hibernate.default_batch_fetch_size=10
+    ```
 
-### Use Lazy Loading Appropriately
-
-For relationships, use `@OneToMany(fetch = FetchType.LAZY)` and load data only when needed.
-
-### Optimize with Batch Fetching
-
-Prevent the N+1 select problem by setting batch fetching in `application.properties`:
-
-```properties
-spring.jpa.properties.hibernate.default_batch_fetch_size=10
-```
-
-### Avoid Long Transactions
-
-Limit transaction scope by keeping database interactions brief. Perform complex calculations outside the transaction boundary when possible.
-
-### Implement Proper Exception Handling
-
-Use `@Transactional` and `try-catch` blocks to manage exceptions effectively.
+- Avoid Long Transactions: limit transaction scope by keeping database interactions brief. Perform complex calculations outside the transaction boundary when possible.
+- Implement Proper Exception Handling: use `@Transactional` and `try-catch` blocks to manage exceptions effectively.
 
 ## Transaction Management
 
@@ -249,7 +277,3 @@ public class UserRepositoryTest {
     }
 }
 ```
-
-### Integration Testing with H2 Database
-
-Use H2 or an in-memory database for integration testing.
