@@ -113,6 +113,10 @@ System.out.println(Arrays.deepToString( myNumbers ));
 
 ## Collection Framework
 
+import ZoomBlock from "@site/src/components/ZoomBlock";
+
+<ZoomBlock>
+
 ```mermaid
 graph LR
     A[Java Collections Framework] -->|Root| B[Collection Interface<br><b>Note:</b> Root for most collections, defines add, remove, contains.]
@@ -139,7 +143,10 @@ graph LR
     N -->|Ordered| P[LinkedHashMap<br><b>Note:</b> Keeps insertion order, slower than HashMap.]
     N -->|Sorted| Q[TreeMap<br><b>Note:</b> Sorted by keys, red-black tree, no null keys.]
     N -->|Sync| R[Hashtable<br><b>Note:</b> Synchronized, legacy, no null keys/values.]
+
 ```
+
+</ZoomBlock>
 
 ### List Interface
 
