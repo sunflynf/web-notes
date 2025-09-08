@@ -1,5 +1,10 @@
 ## Data Types
 
+- Java is a statically typed language, which means that all variables must be declared with a data type before they can be used.
+- There are two main categories of data types in Java: primitive data types and reference data types.
+- Wrapper classes are provided for each primitive data type, allowing them to be treated as objects when needed.
+- Specific classes like `BigInteger` and `BigDecimal` are available for handling very large numbers and precise decimal values, respectively.
+
 ### Primitive
 
 | Type    | Describe                 | Range              |
@@ -27,6 +32,8 @@ double balanceAmount = -2000.277d;
 // The root class of the Java hierarchy. All classes inherit this
 Object obj = new Object();
 
+char letter = 'A';
+Character ch = 'A'; // Wrapper class of char
 String str = "Hello world!";
 int[] numbers = {1, 2, 3, 4, 5};
 float[] amounts = new float[5]; // arr with length = 5
