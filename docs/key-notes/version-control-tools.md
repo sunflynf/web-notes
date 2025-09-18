@@ -101,6 +101,7 @@ Each of these tools has its strengths and is suited to different types of users 
 
 ---
 
+- [Git Cheatsheet](https://education.github.com/git-cheat-sheet-education.pdf)
 - [GitHub Docs](https://docs.github.com/en)
 - [GitLab Features](https://about.gitlab.com/features/)
 - [Atlassian Bitbucket Documentation](https://support.atlassian.com/bitbucket-cloud/docs/)
