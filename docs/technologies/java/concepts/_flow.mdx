@@ -19,8 +19,8 @@ value = condition ? trueExpression : falseExpression;
 
 ```java
 enum Day { MON, TUE, WED, THUR, FRI, SAT, SUN }
-public static Boolean isWeekDay(Day day)
-{
+
+public static Boolean isWeekDay(Day day) {
     boolean result = false;
     switch(day) {
         case MON, TUE, WED, THUR, FRI:
@@ -102,7 +102,7 @@ for (int i = 0; i <= 5; i++) {
     inner_loop:
     for (int j = 0; j <= 5; j++) {
         // break; // breaks inner loop only
-        break outer_loop; 
+        break outer_loop;
     }
 }
 ```
