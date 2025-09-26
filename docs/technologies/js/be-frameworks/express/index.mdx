@@ -18,6 +18,33 @@ import MVC_FolderStructure from "./concepts/_mvc-folder-structure.mdx";
 <LargeAPI_FolderStructure />
 <MVC_FolderStructure />
 
+## Tips
+
+### Seeding Database
+
+```js title="user.model.js"
+import mongoose from "mongoose";
+
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+});
+
+const User = mongoose.model("User", userSchema);
+
+// Seed sample data if collection is empty
+User.countDocuments().then((count) => {
+  if (count === 0) {
+    User.insertMany([
+      { name: "Alice", email: "alice@example.com" },
+      { name: "Bob", email: "bob@example.com" },
+    ]).then(() => console.log("Sample users added"));
+  }
+});
+
+export default User;
+```
+
 ## Useful Packages
 
 | Layer                              | Package                                                              | Role in Project                              |
@@ -36,5 +63,6 @@ import MVC_FolderStructure from "./concepts/_mvc-folder-structure.mdx";
 
 - [Express homepage](https://expressjs.com/)
 - [Express - TypeScript](https://blog.logrocket.com/express-typescript-node/)
+- [MongoDB](/docs/technologies/database/no-sql/mongodb.md)
 - [View template engines](/docs/technologies/js/libraries/view-template-engines.md)
-- [Demo project - Natours](https://gitlab.com/fee-fight-learning-lab/nodejs/natours)
+- [Demo project - **Natours**](https://gitlab.com/fee-fight-learning-lab/nodejs/natours)

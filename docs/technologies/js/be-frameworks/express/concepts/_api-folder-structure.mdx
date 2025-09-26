@@ -137,6 +137,7 @@ project-root/
 
   const router = Router();
   router.get("/", userController.getUsers);
+  router.get("/:id", userController.getUserDetails);
   router.post("/", validateUser, userController.createUser);
 
   export default router;
