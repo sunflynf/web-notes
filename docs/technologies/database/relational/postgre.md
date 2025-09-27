@@ -7,8 +7,6 @@ tags:
 
 # PostgreSQL
 
-## Key Features
-
 | Feature                       | Description                                                                                                                                                                                          |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **ACID Compliance**           | Strong transactional integrity with multi-version concurrency control (MVCC).                                                                                                                        |

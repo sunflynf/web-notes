@@ -7,8 +7,6 @@ tags:
 
 # MySQL
 
-## Key Features
-
 | Feature                    | Description                                                                                      |
 | -------------------------- | ------------------------------------------------------------------------------------------------ |
 | **ACID Compliance**        | Ensures data consistency and reliability through atomic transactions (especially with InnoDB).   |
