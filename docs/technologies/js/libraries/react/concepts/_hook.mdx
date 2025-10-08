@@ -200,6 +200,28 @@ export default function App() {
 }
 ```
 
+```jsx
+// Ref with clean up event listener
+export default function App() {
+  return (
+    <div
+      ref={(node) => {
+        if (!node) return;
+
+        const handleClick = () => alert("Clicked!");
+        node.addEventListener("click", handleClick);
+
+        return () => {
+          node.removeEventListener("click", handleClick);
+        };
+      }}
+    >
+      Click me
+    </div>
+  );
+}
+```
+
 ### useEffect & useLayoutEffect
 
 - Perform side effect in component
