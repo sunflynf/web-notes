@@ -17,7 +17,6 @@ const config: Config = {
   // URL Configs
   trailingSlash: true,
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
 
   // TODO: Add Languages (VI)
   // i18n: {
@@ -135,7 +134,11 @@ const config: Config = {
   themes: ["@docusaurus/theme-mermaid"],
   markdown: {
     mermaid: true,
+    hooks: {
+      onBrokenMarkdownLinks: "warn",
+    },
   },
+
   future: {
     v4: {
       removeLegacyPostBuildHeadAttribute: true, // required
