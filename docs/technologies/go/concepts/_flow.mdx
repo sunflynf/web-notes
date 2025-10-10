@@ -10,12 +10,62 @@ if age > 18 {
 } else {
     fmt.Println("Child")
 }
+```
 
+```go
 switch day {
 case "Monday":
     fmt.Println("Start of the week")
+case "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday":
+    fmt.Println("Midweek")
+case "Sunday":
+    fmt.Println("End of the week")
 default:
-    fmt.Println("Other day")
+    fmt.Println("Not the day")
+}
+```
+
+```go
+// Switch with conditions - no need for break
+switch {
+case score >= 90:
+    fmt.Println("A")
+case score >= 80:
+    fmt.Println("B")
+default:
+    fmt.Println("C or below")
+}
+```
+
+```go
+// fallthrough - continue to next case
+// The fallthrough must be the last statement in the case block
+switch {
+case score >= 90:
+    fmt.Println("A")
+    fallthrough
+case score >= 80:
+    fmt.Println("B")
+    fallthrough
+default:
+    fmt.Println("C or below")
+}
+// If score is 95, output will be:
+// A
+// B
+// C or below
+```
+
+```go
+// Type switch
+var data interface{} = 42 // could be any type
+switch v := data.(type) {
+case int:
+    fmt.Println("Integer:", v)
+case string:
+    fmt.Println("String:", v)
+default:
+    fmt.Println("Unknown type")
 }
 ```
 
@@ -29,10 +79,23 @@ for i := 0; i < 5; i++ {
 
 // Infinity -> for condition {}
 for {
-    // do something and break
+    // do something and break or return
 }
+```
 
-// Use with switch
+```go
+// Iterate over collection
+for index, value := range collection {
+    fmt.Println(index, value)
+}
+// If index is not needed
+for _, value := range collection {
+    fmt.Println(value)
+}
+```
+
+```go
+// Nested loops with label, this can be used with break and continue
 outer:
     for userInput != 0 {
         switch userInput {
