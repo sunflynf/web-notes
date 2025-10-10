@@ -1,0 +1,59 @@
+## File handler
+
+```go
+import (
+    "fmt"
+    "os"
+)
+
+func main() {
+    // Create or open a file
+    file, err := os.OpenFile("example.txt", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+    if err != nil {
+        fmt.Println("Error opening file:", err)
+        return
+    }
+    defer file.Close() // ensure the file is closed when done
+
+    // Write to the file
+    _, err = file.WriteString("Hello, Go File Handling!\n")
+    if err != nil {
+        fmt.Println("Error writing to file:", err)
+        return
+    }
+
+    // Read from the file
+    data, err := os.ReadFile("example.txt")
+    if err != nil {
+        fmt.Println("Error reading file:", err)
+        return
+    }
+    fmt.Println("File content:\n", string(data))
+}
+```
+
+```go
+// Example with read, write numbers and use panic
+func getBalanceFromFile() float32 {
+    data, err := os.ReadFile("balance.txt")
+    if err != nil {
+        if os.IsNotExist(err) {
+            return 0 // file doesn't exist, return 0 balance
+        }
+        // Use this if you want to stop execution on error and see the error
+        // panic: example.txt: no such file or directory
+        panic(err) // unexpected error
+    }
+    var balance float32
+    fmt.Sscanf(string(data), "%f", &balance)
+    // balance, _ := strconv.parseFloat(string(data), 64) // alternative
+    return balance
+}
+
+func updateBalanceToFile(balance float32) {
+    err := os.WriteFile("balance.txt", []byte(fmt.Sprintf("%f", balance)), 0644)
+    if err != nil {
+        panic(err) // unexpected error
+    }
+}
+```
