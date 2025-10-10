@@ -1,22 +1,54 @@
 ## Setting
 
-- [Official page](https://go.dev/dl/)
-- Check version
+- [Official page - All Releases](https://go.dev/dl/)
+- [First Go program](#main-function)
 
-  ```bash
-  go version
-  ```
+### Installation
 
-- First Go program
+```bash
+go version # Check version
+go env # Check installation
 
-  ```go
-  package main
-  import "fmt"
-  func main() {
-      fmt.Println("Hello, World!")
-  }
-  ```
+# Update Go version - Windows (using winget)
+winget install -e --id GoLang.Go
 
-  ```bash
-  go run <filename>.go
-  ```
+# Update Go version - Linux (using snap)
+sudo snap install go --classic
+sudo snap refresh go
+```
+
+### Go commands
+
+```bash
+# Run the program without creating executable
+go run main.go
+
+# Run with module support
+go mod init example.com/hello # create go.mod
+go build         # this creates an executable file
+./hello          # run the executable
+# or simply
+go run .
+```
+
+```bash
+# Update code dependencies
+go get -u         # update all dependencies
+go mod tidy       # to clean up unused dependencies
+go mod vendor     # to create vendor folder
+go mod graph      # to view dependency graph
+go list -m all    # to list all dependencies
+
+# To format code
+go fmt ./...
+# To get help
+go help
+```
+
+```bash
+# To build for different OS/Arch
+# Resource: https://golang.org/doc/install/source#environment
+GOOS=linux GOARCH=amd64 go build -o hello-linux
+GOOS=windows GOARCH=amd64 go build -o hello-windows.exe
+GOOS=darwin GOARCH=arm64 go build -o hello-mac
+```
