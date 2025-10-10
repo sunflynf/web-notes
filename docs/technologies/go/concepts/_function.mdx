@@ -1,15 +1,28 @@
 ## Functions
 
+### Main function
+
+`main` function is the entry point of a Go program.
+
+```go
+// this function is required in every executable program
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello, Go!")
+}
+```
+
+### Defining Functions
+
 ```go
 func add(x int, y int) int {
     return x + y
 }
 
-func getUserInput(info string) (value float32) {
-    fmt.Print(info)
-    fmt.Scan(&value)
-    return value
-}
+var result int = add(3, 5) // result is 8
 ```
 
 ```go
@@ -18,12 +31,83 @@ func swap(a, b string) (string, string) {
     return b, a
 }
 
-// constraint variable's name
-func calculateFinancials(revenue float32, expenses float32, taxRate float32) (ebt float32, profit float32, ratio float32) {
+x, y := swap("first", "second") // x is "second", y is "first"
+```
+
+```go
+// Single return value with named return variable
+func getUserInput(info string) (value float32) {
+    fmt.Print(info)
+    fmt.Scan(&value)
+    return value
+}
+
+var input float32 = getUserInput("Enter a number: ")
+fmt.Println("You entered:", input) // e.g. You entered: 42.5
+```
+
+```go
+// Using named return values as documentation and to avoid using constraint variable's name
+func calculateFinancials(revenue float32, expenses float32, taxRate float32)
+    (ebt float32, profit float32, ratio float32) {
     ebt = revenue - expenses // Earn Before Tax
     profit = ebt * (1 - taxRate/100)
     ratio = ebt / profit
 
     return ebt, profit, ratio
 }
+
+ebt, profit, ratio := calculateFinancials(10000, 4000, 20)
+fmt.Println(ebt, profit, ratio) // 6000 4800 1.25
+```
+
+### Advanced Function Concepts
+
+```go
+// Variadic function (accepts variable number of arguments)
+func sum(numbers ...int) int {
+    total := 0
+    for _, num := range numbers {
+        total += num
+    }
+    return total
+}
+
+result := sum(1, 2, 3, 4, 5) // result is 15
+```
+
+```go
+// Anonymous function assigned to a variable
+multiply := func(a int, b int) int {
+    return a * b
+}
+
+result := multiply(4, 5) // result is 20
+```
+
+```go
+// Higher-order function (function that takes another function as an argument)
+func applyOperation(x int, y int, operation func(int, int) int) int {
+    return operation(x, y)
+}
+
+result := applyOperation(10, 5, func(a int, b int) int {
+    return a - b
+}) // result is 5
+```
+
+```go
+// Closure (function that captures variables from its surrounding scope)
+func counter() func() int {
+    count := 0
+    return func() int {
+        count++
+        return count
+    }
+}
+
+myCounter := counter()
+fmt.Println(myCounter()) // 1
+fmt.Println(myCounter()) // 2
+fmt.Println(myCounter()) // 3
 ```
