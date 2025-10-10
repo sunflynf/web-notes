@@ -1,20 +1,44 @@
 ## Variables & Data Types
 
-Go can automatically infer types with the short-hand declaration.
-
 ### Declare
 
 ```go
 var x int = 10
-y := 20 // short hand
+y := 20 // short hand - type inferred automatically
+
+// Multiple
+var a, b, c string = "foo", "bar", "baz"
+
+// Constants (immutable)
+const Pi = 3.14
+const (
+    StatusOK    = 200
+    StatusNotOK = 400
+)
 ```
 
-### Basic Types
+### Data Types
 
 ```go
-var age int = 30
-var name string = "John"
+// Basic types
+var age int
+var price float64
+var complexNum complex128 = 1 + 2i
 var isActive bool = true
+var name string
+
+// Parse to specific type
+var price int = 100
+var fine float32 = float32(price) * 0.05
+
+// Composite types
+var numbers []int = []int{1, 2, 3}
+
+// Other types
+var pointer *int = &age
+var person map[string]string = map[string]string{ "name": "Alice", "city": "NY" }
+var ch chan int = make(chan int)
+var anyType interface{} = "Could be any type"
 ```
 
 | Category            | Type          | Zero Value (null)        | Range                                                                            |
@@ -79,3 +103,25 @@ var isActive bool = true
    ```
 
 :::
+
+### Reading & Writing
+
+```go
+import "fmt"
+
+fmt.Print("Hello")           // Print without newline
+fmt.Println("Hello, World!") // Print with newline
+fmt.Printf("Age: %d", age)   // Formatted print
+fmt.Printf("Price: %.2f", price) // Format float with 2 decimal places
+fmt.Printf(`Lorem ipsum
+dolor sit amet`) // Multi-line string, special characters like \n are preserved
+
+var input string
+fmt.Scan(&input)              // Read input until space
+fmt.Scanln(&input)            // Read input until newline
+
+// Formatting & Errors
+formattedStr := fmt.Sprintf("Name: %s", name) // Format to string
+formattedErr := fmt.Errorf("Error: %s", "something went wrong") // Create error with formatted message
+fmt.Print(formattedStr, formattedErr)
+```
