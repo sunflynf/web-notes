@@ -1,0 +1,299 @@
+## Packages & Imports in Go
+
+```go
+// Single import
+import "fmt"
+
+// Multiple imports
+import (
+    "fmt"
+    "net/http"
+)
+
+// Alias import
+import h "net/http"
+
+// Dot import (pollutes namespace — avoid in real code)
+import . "fmt"
+
+// Blank import: execute package init() for side-effects (e.g., SQL drivers)
+import _ "github.com/lib/pq"
+```
+
+:::info Rules to remember
+
+- Imports must be compile-time constants (string literals).
+- Go auto-runs each imported package’s `init()` before `main()`.
+
+:::
+
+### Modules 101 (Go Modules on by default)
+
+```bash
+# 1) Start a module at repo root
+go mod init github.com/you/project
+
+# 2) Add a dependency (adds + pins in go.mod/go.sum)
+go get github.com/gorilla/mux@v1.8.1   # or @latest
+
+# 3) Clean up and resolve versions
+go mod tidy
+```
+
+:::info Semantic Import Versioning
+
+- For v0/v1: `module github.com/you/project`
+- For v2+: module path MUST include `/vN`, and you import with that:
+
+  - `module github.com/gorilla/mux/v2`
+  - `import "github.com/gorilla/mux/v2"`
+
+:::
+
+### Standard vs Third-Party
+
+```go
+import (
+    "context"                     // standard lib
+    "github.com/google/uuid"      // third-party module
+)
+```
+
+**Style**: group stdlib first, then third-party, blank line between.
+`go fmt` or your editor will sort/format for you.
+
+### Common Import Patterns
+
+**Alias to avoid name collisions**
+
+```go
+import jsoniter "github.com/json-iterator/go"
+```
+
+**Side-effect init (drivers, registers)**
+
+```go
+import _ "github.com/mattn/go-sqlite3"
+```
+
+**Platform/file-scoped imports**
+Use build tags or file suffixes instead of conditional imports:
+
+- `foo_linux.go`, `foo_windows.go`
+- `//go:build linux` at top of file
+
+### go.mod Essentials
+
+```mod
+module github.com/you/app
+
+go 1.22
+
+require (
+    github.com/gorilla/mux v1.8.1
+    github.com/google/uuid v1.6.0
+)
+
+replace example.com/old => ./local/old         # local path
+replace example.com/x    => example.com/y v0.5.0
+```
+
+**Handy ops**
+
+```bash
+go mod tidy           # prune/add deps based on imports
+go mod why -m <mod>   # why is this here?
+go list -m all        # list module graph
+```
+
+### Private Modules (GitHub/GitLab, etc.)
+
+```bash
+# Tell Go to bypass proxy + sumdb for your org
+go env -w GOPRIVATE=github.com/your-org/*
+
+# (Optional) disable checksums for private domain
+go env -w GONOSUMDB=github.com/your-org/*
+
+# Auth: ensure git can auth (SSH keys or PAT in credential helper)
+```
+
+Then import normally:
+
+```go
+import "github.com/your-org/secretpkg"
+```
+
+### Proxy & Caching
+
+```bash
+go env GOPROXY        # check current proxy (often https://proxy.golang.org,direct)
+go env -w GOPROXY=direct   # fetch straight from VCS (useful for private)
+```
+
+### Vendor Mode (pin + vendored source)
+
+```bash
+go mod vendor         # creates ./vendor with deps
+go build -mod=vendor  # prefer vendor over network
+```
+
+Good for hermetic builds or locked CI environments.
+
+### Multi-Module Repos (Monorepos)
+
+At root:
+
+```bash
+go work init ./svc-a ./svc-b
+go work use ./lib-common
+```
+
+Now each module can import others without publishing interim versions.
+
+:::tip Typical Errors & Quick Fixes
+
+- **`cannot find module providing package ...`**
+
+  - Run `go get <module>` or check the import path/version (e.g., missing `/v2`).
+
+- **Checksum mismatch (`verifies go.sum: mismatch`)**
+
+  - Clear cache if necessary: `go clean -modcache`; verify you’re not behind a MITM proxy; ensure `GOPRIVATE` is set for private modules.
+
+- **`import cycle not allowed`**
+
+  - Refactor shared types/funcs into a third package; avoid cross-layer imports.
+
+- **`no required module provides package` in a subdir**
+  - Run `go mod tidy` in the module root; ensure your file belongs to the intended module.
+
+:::
+
+### Quick Checklist (when something breaks)
+
+1. `go mod tidy`
+2. Check import path (esp. `/v2` or higher).
+3. Confirm `GOPRIVATE`, `GOPROXY`, auth.
+4. `go clean -modcache` (if checksums act up).
+5. If monorepo, ensure `go.work` includes all local modules.
+
+## Exports in Go
+
+### The Core Rule: Capitalization = Exported
+
+In Go, **visibility (exporting)** depends entirely on **the first letter** of the identifier.
+
+| Visibility     | Example               | Accessible From   |
+| -------------- | --------------------- | ----------------- |
+| **Exported**   | `Name`, `DoSomething` | Other packages    |
+| **Unexported** | `name`, `doSomething` | Same package only |
+
+```go title="greeting/greeting.go"
+package greeting
+
+// Exported (public)
+func SayHello() string {
+    return "Hello!"
+}
+
+// Unexported (private)
+func whisper() string {
+    return "psst..."
+}
+```
+
+```go title="main.go"
+package main
+
+import (
+    "fmt"
+    "example.com/app/greeting"
+)
+
+func main() {
+    fmt.Println(greeting.SayHello()) // ✅ works
+    // greeting.whisper() ❌ not accessible
+}
+```
+
+### Exporting Variables and Constants
+
+```go
+package mathx
+
+const Pi = 3.14159     // exported
+var Count = 42          // exported
+var hiddenValue = 99    // unexported
+```
+
+```go
+package main
+
+import "example.com/mathx"
+
+func main() {
+    fmt.Println(mathx.Pi)      // ✅
+    fmt.Println(mathx.Count)   // ✅
+    // fmt.Println(mathx.hiddenValue) ❌ private
+}
+```
+
+### Exporting Structs and Their Fields
+
+Struct visibility is **two-layered**:
+
+- The struct type must be exported to use it outside the package.
+- Its fields must also be exported if you want to access them externally.
+
+```go
+package model
+
+type User struct {
+    Name string  // exported field
+    age  int     // unexported field
+}
+
+func NewUser(name string, age int) User {
+    return User{Name: name, age: age}
+}
+```
+
+```go
+package main
+
+import (
+    "fmt"
+    "example.com/app/model"
+)
+
+func main() {
+    u := model.NewUser("Fee", 22)
+    fmt.Println(u.Name) // ✅
+    // fmt.Println(u.age) ❌ private
+}
+```
+
+### Exporting Interfaces
+
+```go
+package repo
+
+type Storable interface { // exported
+    Save() error
+}
+
+type private interface { // unexported
+    load()
+}
+```
+
+:::tip Good Practice Tips
+
+- **Capitalize intentionally.** Don’t export unless it’s part of your package’s public API.
+- **Group exports meaningfully.** If others will use it, add doc comments (`// SayHello ...`).
+- **Hide internals.** Keep helper functions and constants unexported.
+- **Use constructors.** For structs with unexported fields, expose a constructor (e.g., `NewUser`).
+- **Don’t overexpose.** Export only what’s needed for other packages to function cleanly.
+
+:::
