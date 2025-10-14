@@ -1,0 +1,66 @@
+## Struct
+
+```go
+// Structs are used to group related data together
+type Person struct {
+    Name string
+    Age  int
+}
+
+// Constructor function
+func NewPerson(name string, age int) Person {
+    return Person{Name: name, Age: age}
+}
+
+// Method associated with Person struct
+func (p Person) Greet() {
+    fmt.Println("Hello, my name is", p.Name)
+}
+
+// Update age method with pointer receiver
+func (p *Person) HaveBirthday() {
+    p.Age++ // (*p).Age++ also works
+}
+
+// Create instance
+p := Person{Name: "Alice", Age: 30}
+p.Greet() // Output: Hello, my name is Alice
+p.HaveBirthday()
+fmt.Println(p.Age) // Output: 31
+```
+
+```go
+// Struct Embedding
+type Address struct {
+    City, State string
+}
+
+type Employee struct {
+    Person          // Embedding Person struct
+    Address         // Embedding Address struct
+    Position string
+}
+
+e := Employee{
+    Person:   Person{Name: "Bob", Age: 25},
+    Address:  Address{City: "New York", State: "NY"},
+    Position: "Developer",
+}
+
+fmt.Println(e.Name)    // Access embedded field: Bob
+fmt.Println(e.City)    // Access embedded field: New York
+e.Greet()              // Call method from embedded struct
+```
+
+```go
+// Anonymous Struct
+anon := struct {
+    Title  string
+    Author string
+}{
+    Title:  "Go Programming",
+    Author: "John Doe",
+}
+
+fmt.Println(anon.Title) // Output: Go Programming
+```
