@@ -1,0 +1,82 @@
+## Pointers & Reference Types
+
+- Modify variables in functions without returning them
+- Efficiently pass large data structures (slices, maps, structs) without copying
+- Implement linked data structures (linked lists, trees)
+
+### Pointers Basics
+
+```go
+var a int = 42
+
+var p *int = &a // p holds the address of a
+fmt.Println(*p) // Dereference p to get value: 42
+
+*p = 100        // Change value at address p points to
+fmt.Println(a)  // a is now 100
+
+```
+
+```go
+var s []int = []int{1, 2, 3}
+var ps *[]int = &s // ps holds the address of slice s
+(*ps)[0] = 10      // Modify slice through pointer
+fmt.Println(s)     // Output: [10, 2, 3]
+
+var m map[string]int = map[string]int{"one": 1, "two": 2}
+var pm *map[string]int = &m // pm holds the address of map m
+(*pm)["one"] = 10            // Modify map through pointer
+fmt.Println(m)               // Output: map[one:10 two:2]
+```
+
+```go
+var f func(int) int = func(x int) int { return x * x }
+var pf *func(int) int = &f // pf holds the address of function f
+fmt.Println((*pf)(5))       // Call function through pointer: 25
+```
+
+```go
+// Pointer to struct
+type Point struct {
+    X, Y int
+}
+
+var pt Point = Point{X: 1, Y: 2}
+var ppt *Point = &pt // ppt holds the address of struct pt
+ppt.X = 10          // Modify struct field through pointer
+fmt.Println(pt)     // Output: {10 2}
+```
+
+### Pointer in Function Arguments
+
+```go
+func increment(x *int) {
+    *x = *x + 1 // Dereference pointer to modify original value
+}
+
+var num int = 5
+increment(&num) // Pass address of num
+fmt.Println(num) // Output: 6
+```
+
+### Nil Pointers
+
+- A pointer that does not point to any memory location
+
+```go
+var p *int = nil // nil pointer
+if p == nil {
+    fmt.Println("p is nil")
+}
+```
+
+### Unsafe Package
+
+- Allows low-level memory manipulation, but use with caution
+
+```go
+import "unsafe"
+var i int = 42
+var p unsafe.Pointer = unsafe.Pointer(&i)
+var b *byte = (*byte)(p) // Convert to pointer of different type
+```
