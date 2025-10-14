@@ -1,4 +1,4 @@
-## File handler
+## File & I/O
 
 ```go
 import (
@@ -55,5 +55,65 @@ func updateBalanceToFile(balance float32) {
     if err != nil {
         panic(err) // unexpected error
     }
+}
+```
+
+### Get huge user input
+
+```go
+import (
+    "bufio"
+    "fmt"
+    "os"
+    "strings"
+)
+
+func getUserInput() string {
+    reader := bufio.NewReader(os.Stdin)
+    fmt.Print("Enter text: ")
+    input, _ := reader.ReadString('\n')
+    return strings.TrimSpace(input)
+}
+```
+
+### Save and load JSON data
+
+```go
+import (
+    "encoding/json"
+    "fmt"
+    "os"
+    "time"
+)
+
+// json struct tags for custom field names. This feature is useful for APIs
+type User struct {
+    Name  string `json:"name"`
+    Email string `json:"email"`
+    CreateAt time.Time `json:"created_at"`
+}
+
+func saveUserToFile(user User) {
+    data, err := json.Marshal(user)
+    if err != nil {
+        panic(err)
+    }
+    err = os.WriteFile("user.json", data, 0644)
+    if err != nil {
+        panic(err)
+    }
+}
+
+func loadUserFromFile() User {
+    data, err := os.ReadFile("user.json")
+    if err != nil {
+        panic(err)
+    }
+    var user User
+    err = json.Unmarshal(data, &user)
+    if err != nil {
+        panic(err)
+    }
+    return user
 }
 ```
