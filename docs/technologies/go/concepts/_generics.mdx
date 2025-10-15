@@ -1,0 +1,198 @@
+## Generics
+
+- **Since Go 1.18**, Go supports generics: type parameters for functions, methods, and types.
+- Basically: "write once, use for any type.""
+
+### Generic Functions
+
+```go
+func PrintSlice[T any](s []T) {
+	for _, v := range s {
+		fmt.Println(v)
+	}
+}
+```
+
+```go
+PrintSlice([]int{1, 2, 3})
+PrintSlice([]string{"hi", "yo"})
+```
+
+:::info Breakdown
+
+- `T` → type parameter name (like a variable for a type).
+- `[T any]` → “for any type T”.
+- Inside the function, you can use `T` like a normal type.
+
+:::
+
+### Type Constraints
+
+- Type constraints define **which types** are allowed.
+- The simplest one is `any` (a.k.a. `interface{}`).
+- Only types supporting the used operator (`+`, `-`, etc.) can go in the constraint.
+
+```go
+type Number interface {
+	~int | ~float64
+}
+
+func Add[T Number](a, b T) T {
+	return a + b
+}
+```
+
+```go
+fmt.Println(Add(3, 5))         // int
+fmt.Println(Add(2.5, 3.1))     // float64
+// Add("hi", "bye") ❌ not allowed
+```
+
+### Generic Structs
+
+```go
+type Pair[T any, U any] struct {
+	First  T
+	Second U
+}
+
+func main() {
+	p := Pair[int, string]{First: 1, Second: "one"}
+	fmt.Println(p)
+}
+```
+
+### Generic Methods
+
+```go
+type Box[T any] struct {
+	value T
+}
+
+func (b Box[T]) Get() T {
+	return b.value
+}
+
+func (b *Box[T]) Set(v T) {
+	b.value = v
+}
+```
+
+```go
+b := Box[int]{value: 10}
+fmt.Println(b.Get()) // 10
+b.Set(20)
+```
+
+### Generic Interfaces
+
+```go
+type Container[T any] interface {
+	Get() T
+	Set(v T)
+}
+```
+
+```go
+// Or use "type approximation" (the `~` operator) for "underlying type" matching:
+type IntLike interface {
+	~int | ~int32 | ~int64
+}
+```
+
+### Instantiating Generics
+
+- You can **explicitly** specify type arguments, or let the compiler infer them:
+- Inference works in most cases unless ambiguity exists.
+
+```go
+Add[int](1, 2)   // explicit
+Add(1, 2)        // inferred
+```
+
+### Type Sets & Constraints Syntax
+
+| Symbol       | Meaning                | Example            |
+| :----------- | :--------------------- | :----------------- |
+| `any`        | any type               | `[T any]`          |
+| `\|`         | union (OR)             | `~int \| ~float64` |
+| `~`          | underlying type        | `~string`          |
+| `comparable` | supports `==` and `!=` | `[T comparable]`   |
+
+```go
+// Example using 'comparable'
+func Contains[T comparable](s []T, target T) bool {
+	for _, v := range s {
+		if v == target {
+			return true
+		}
+	}
+	return false
+}
+```
+
+### Generic Type Embedding
+
+```go
+// You can mix generics + embedding
+
+type Stack[T any] struct {
+	data []T
+}
+
+func (s *Stack[T]) Push(v T) {
+	s.data = append(s.data, v)
+}
+
+func (s *Stack[T]) Pop() T {
+	last := s.data[len(s.data)-1]
+	s.data = s.data[:len(s.data)-1]
+	return last
+}
+```
+
+```go
+s := Stack[string]{}
+s.Push("go")
+s.Push("rocks")
+fmt.Println(s.Pop()) // "rocks"
+```
+
+### Common Patterns
+
+```go
+// Map-like utility
+func Map[T any, U any](in []T, fn func(T) U) []U {
+	out := make([]U, len(in))
+	for i, v := range in {
+		out[i] = fn(v)
+	}
+	return out
+}
+```
+
+```go
+func Reduce[T any, U any](in []T, fn func(U, T) U, init U) U {
+	acc := init
+	for _, v := range in {
+		acc = fn(acc, v)
+	}
+	return acc
+}
+```
+
+### Tips and Pitfalls
+
+1. **No runtime type info** — generics are erased at compile time (no reflection magic).
+2. **Don’t overuse** — Go still favors simplicity. If interfaces or duplication are clearer, use them.
+3. **Performance** — generics are efficient; they’re compiled into specialized versions per type.
+4. **Exporting generic types** works the same as normal: start with uppercase.
+
+:::note When to Use Generics
+
+- Repeated logic across multiple types
+- Collections (slices, stacks, maps)
+- Utilities (Map, Filter, Reduce)
+- Strong typing over `interface{}`
+
+:::
