@@ -1,0 +1,151 @@
+## Interface in Go
+
+- Defines a set of method signatures (behavior)
+- Types implement interfaces implicitly (no `implements` keyword)
+- Enables polymorphism (different types can be treated uniformly)
+- Used for abstraction, decoupling, and mocking in tests
+- Can be composed (interfaces can embed other interfaces)
+
+### Defining and Implementing Interfaces
+
+```go
+type Shape interface {
+    Area() float64
+    Perimeter() float64
+}
+
+// Circle implements Shape because it has Area and Perimeter methods
+type Circle struct {
+    Radius float64
+}
+
+func (c Circle) Area() float64 {
+    return 3.14 * c.Radius * c.Radius
+}
+func (c Circle) Perimeter() float64 {
+    return 2 * 3.14 * c.Radius
+}
+```
+
+```go
+func PrintShapeInfo(s Shape) {
+    fmt.Printf("Area: %f, Perimeter: %f\n", s.Area(), s.Perimeter())
+}
+```
+
+```go
+c := Circle{Radius: 5}
+PrintShapeInfo(c) // Works because Circle implements Shape
+```
+
+### Interface Composition
+
+```go
+type Colored interface {
+    Color() string
+}
+type ColoredShape interface {
+    Shape
+    Colored
+}
+
+type Square struct {
+    Side  float64
+    ColorName string
+}
+func (s Square) Area() float64 {
+    return s.Side * s.Side
+}
+func (s Square) Perimeter() float64 {
+    return 4 * s.Side
+}
+func (s Square) Color() string {
+    return s.ColorName
+}
+```
+
+```go
+func PrintColoredShapeInfo(cs ColoredShape) {
+    fmt.Printf("Area: %f, Perimeter: %f, Color: %s\n", cs.Area(), cs.Perimeter(), cs.Color())
+}
+```
+
+```go
+sq := Square{Side: 4, ColorName: "Red"}
+PrintColoredShapeInfo(sq) // Works because Square implements ColoredShape
+```
+
+### Type Assertions and Type Switches
+
+```go
+func Describe(i interface{}) {
+    // val, ok := i.(int) // Type assertion, panics if wrong type
+    switch v := i.(type) {
+    case int:
+        fmt.Printf("Integer: %d\n", v)
+    case string:
+        fmt.Printf("String: %s\n", v)
+    case Shape:
+        fmt.Printf("Shape with Area: %f\n", v.Area())
+    default:
+        fmt.Println("Unknown type")
+    }
+}
+```
+
+```go
+Describe(42)          // Integer: 42
+Describe("hello")     // String: hello
+Describe(Circle{Radius: 3}) // Shape with Area: 28.260000
+```
+
+### Empty Interface
+
+```go
+func PrintAnything(i interface{}) {
+    fmt.Println(i)
+}
+```
+
+```go
+PrintAnything(123)          // 123
+PrintAnything("hello")      // hello
+PrintAnything([]int{1, 2, 3}) // [1 2 3]
+PrintAnything(map[string]int{"a": 1}) // map[a:1]
+```
+
+### Using Interfaces for Mocking in Tests
+
+```go
+type Database interface {
+    GetUser(id int) (User, error)
+}
+type UserService struct {
+    DB Database
+}
+func (us *UserService) GetUserName(id int) (string, error) {
+    user, err := us.DB.GetUser(id)
+    if err != nil {
+        return "", err
+    }
+    return user.Name, nil
+}
+```
+
+```go
+type MockDB struct{}
+func (mdb MockDB) GetUser(id int) (User, error) {
+    return User{ID: id, Name: "Mock User"}, nil
+}
+```
+
+```go
+func TestGetUserName(t *testing.T) {
+    mockDB := MockDB{}
+    userService := UserService{DB: mockDB}
+    name, err := userService.GetUserName(1)
+    if err != nil || name != "Mock User" {
+        t.Errorf("Expected 'Mock User', got '%s'", name)
+    }
+}
+```
