@@ -97,6 +97,17 @@ result := applyOperation(10, 5, func(a int, b int) int {
 ```
 
 ```go
+// Returning a function from another function
+func makeMultiplier(factor int) func(int) int {
+    return func(x int) int {
+        return x * factor
+    }
+}
+double := makeMultiplier(2)
+triple := makeMultiplier(3)
+fmt.Println(double(5)) // 10
+fmt.Println(triple(5)) // 15
+
 // Closure (function that captures variables from its surrounding scope)
 func counter() func() int {
     count := 0
