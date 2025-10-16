@@ -110,12 +110,80 @@ var anyType interface{} = "Could be any type"
 // Arrays are fixed-length, while Slices are dynamic
 var arr = [3]int{1, 2, 3}
 var slice = []int{1, 2, 3, 4, 5}
+
+// Updating
+arr[0] = 10
+
+// Slicing - if you change the original slice, the sub-slice also changes
+subSlice := slice[1:4] // Elements from index 1 to 3
+firstThree := slice[:3] // First 3 elements
+fromIndex := slice[2:] // From index 2 to end
+negativeIndex := slice[len(slice)-3:] // Last 3 elements
+
+// Methods
+append(slice, 6, 7)              // Append elements
+append(slice, anotherSlice...)   // Append another slice
+len(slice)             // Length of slice
+cap(slice)             // Capacity of slice, underlying array size
+
+// Cloning (deep copy), to avoid modifying original slice
+newSlice := make([]int, len(slice)) // Create new slice with same length
+copy(newSlice, slice) // Deep copy
 ```
 
 ### Map
 
 ```go
+// map[keyType]valueType
+
+// Creating
 m := map[string]int{"apple": 1, "banana": 2}
+// Empty map with initial capacity of 5 (optional)
+m := make(map[string]int, 5)
+
+// Methods
+len(m) // Number of key-value pairs
+
+// Updating
+m["orange"] = 3 // Add new key-value
+m["apple"] = 10 // Update existing key
+delete(m, "banana") // Delete key
+
+// Accessing
+fmt.Println(m["apple"]) // Get value by key
+value, exists := m["banana"] // Check if key exists
+
+for key, value := range m { // Iterate over map
+    fmt.Println(key, value)
+}
+
+// map with complex types
+complexMap := map[string][]int{
+    "primes": {2, 3, 5, 7},
+    "evens":  {2, 4, 6, 8},
+}
+complexMap["primes"][0] = 11 // Update first element of "primes" slice
+```
+
+### Type Alias
+
+```go
+type MyInt = int // MyInt is an alias for int
+var age MyInt = 30
+
+func printAge(a MyInt) {
+    fmt.Println(a)
+}
+
+printAge(age) // Works, since MyInt is an alias for int
+printAge(MyInt(25)) // Also works, explicit conversion
+printAge(25) // Error, int is not MyInt
+
+type bookMap = map[string]string // Alias for map type
+var books bookMap = map[string]string{
+    "978-3-16-148410-0": "The Go Programming Language",
+    "978-0-13-419044-0": "Introducing Go",
+}
 ```
 
 ### Reading & Writing
