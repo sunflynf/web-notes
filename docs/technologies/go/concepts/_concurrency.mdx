@@ -1,13 +1,350 @@
 ## Concurrency
 
-```go
-// Goroutine - Lightweight threads managed by Go
-go func() {
-    fmt.Println("Running in a goroutine")
-}()
+- **Goroutines**: super-light threads managed by the Go runtime.
+- **Channels**: typed pipes for communicating between goroutines.
+- **`select`**: wait on multiple channel ops.
+- **Context**: cancellation + deadlines across goroutines.
+- Prefer **sharing by communicating**; fall back to locks when state is truly shared.
 
-// Use channels to communicate between goroutines
-c := make(chan string)
-go func() { c <- "Hello from goroutine" }()
-fmt.Println(<-c)
+### 1. Goroutines
+
+- Goroutine exits when the function returns.
+- Don’t let `main` exit early—use `sync.WaitGroup`, `errgroup`, or channel signals.
+
+```go
+go fn()          // fire-and-forget
+go func(x int) { /* ... */ }(42)
 ```
+
+### 2. Channels
+
+```go
+ch := make(chan int)      // unbuffered: send/recv must rendezvous
+chB := make(chan int, 8)  // buffered: capacity 8
+```
+
+#### Send / Receive
+
+```go
+ch <- 10        // send
+v := <-ch       // receive
+v, ok := <-ch   // ok=false if channel closed and drained
+```
+
+#### Closing
+
+```go
+close(ch)       // sender closes to signal "no more values"
+for v := range ch { ... } // drains until closed
+```
+
+:::danger Rules
+
+- Only **senders** should close a channel.
+- Don’t close a channel twice; don’t send on a closed channel.
+
+:::
+
+### 3. `select` Basics
+
+Use `select` for timeouts, cancellation, multi-source fan-in, or avoiding deadlocks.
+
+```go
+select {
+case v := <-ch1:
+    // got value
+case ch2 <- x:
+    // sent value
+case <-time.After(200 * time.Millisecond):
+    // timeout
+default:
+    // non-blocking path
+}
+```
+
+### 4. WaitGroup (join goroutines)
+
+```go
+var wg sync.WaitGroup
+wg.Add(n)
+for i := 0; i < n; i++ {
+    go func(i int) {
+        defer wg.Done()
+        // work
+    }(i)
+}
+wg.Wait()
+```
+
+### 5. Mutex / RWMutex (shared state)
+
+```go
+type Counter struct {
+    mu sync.RWMutex
+    n  int
+}
+func (c *Counter) Inc() { c.mu.Lock(); c.n++; c.mu.Unlock() }
+func (c *Counter) Get() int { c.mu.RLock(); defer c.mu.RUnlock(); return c.n }
+```
+
+:::info Rule of thumb
+
+- Channels: ownership transfer / sequencing.
+- Mutexes: protect shared in-memory state.
+
+:::
+
+### 6. Context (timeouts & cancellation)
+
+Pass `ctx` as first param: `Func(ctx context.Context, ...)`.
+
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+defer cancel()
+
+select {
+case <-ctx.Done():
+    return ctx.Err()
+case v := <-ch:
+    _ = v
+}
+```
+
+### 7. errgroup (structured concurrency)
+
+- Cancels siblings on first error.
+- Cleaner than manual `WaitGroup` + error channels.
+
+```go
+g, ctx := errgroup.WithContext(context.Background())
+
+for _, url := range urls {
+    url := url
+    g.Go(func() error {
+        // respect ctx for cancellation
+        return fetch(ctx, url)
+    })
+}
+if err := g.Wait(); err != nil { /* handle */ }
+```
+
+### 8. Worker Pool (bounded parallelism)
+
+```go
+func workerPool[T any, U any](ctx context.Context, in <-chan T, n int, fn func(context.Context, T) (U, error)) (<-chan U, <-chan error) {
+    out := make(chan U)
+    errc := make(chan error, 1)
+
+    var wg sync.WaitGroup
+    wg.Add(n)
+
+    for i := 0; i < n; i++ {
+        go func() {
+            defer wg.Done()
+            for {
+                select {
+                case <-ctx.Done():
+                    return
+                case v, ok := <-in:
+                    if !ok { return }
+                    u, err := fn(ctx, v)
+                    if err != nil {
+                        select { case errc <- err: default: } // send first error
+                        return
+                    }
+                    select {
+                    case out <- u:
+                    case <-ctx.Done():
+                        return
+                    }
+                }
+            }
+        }()
+    }
+
+    go func() { wg.Wait(); close(out) }()
+
+    return out, errc
+}
+```
+
+### 9. Pipelines, Fan-out/Fan-in
+
+**Generator → Workers → Merge**
+
+```go
+func gen(nums ...int) <-chan int {
+    out := make(chan int)
+    go func() {
+        for _, n := range nums { out <- n }
+        close(out)
+    }()
+    return out
+}
+
+func sq(in <-chan int) <-chan int {
+    out := make(chan int)
+    go func() {
+        for v := range in { out <- v*v }
+        close(out)
+    }()
+    return out
+}
+
+func merge(cs ...<-chan int) <-chan int {
+    var wg sync.WaitGroup
+    out := make(chan int)
+
+    wg.Add(len(cs))
+    for _, c := range cs {
+        go func(c <-chan int) {
+            defer wg.Done()
+            for v := range c { out <- v }
+        }(c)
+    }
+    go func() { wg.Wait(); close(out) }()
+    return out
+}
+
+// usage
+in := gen(1,2,3,4)
+c1 := sq(in)
+c2 := sq(in) // fan-out across workers → careful: you can’t reuse drained channel; typically split upstream
+res := merge(c1, c2)
+for v := range res { fmt.Println(v) }
+```
+
+> In real fan-out, duplicate the work upstream or distribute work to multiple workers reading from the same `in`.
+
+### 10. Timeouts, Heartbeats, Rate Limit
+
+```go
+// Timeout per op
+ctx, cancel := context.WithTimeout(ctx, 500*time.Millisecond)
+defer cancel()
+select {
+case v := <-work:
+case <-ctx.Done():
+}
+```
+
+```go
+// Ticker heartbeat
+tick := time.NewTicker(1 * time.Second)
+defer tick.Stop()
+for {
+    select {
+    case <-tick.C: /* heartbeat */
+    case <-ctx.Done(): return
+    }
+}
+```
+
+```go
+// Semaphore (limit concurrency)
+sem := make(chan struct{}, 8) // capacity = max concurrency
+sem <- struct{}{}             // acquire
+// work
+<-sem                         // release
+```
+
+### 11. `sync/atomic` (lock-free counters/flags)
+
+- Keep atomic state **self-contained**; avoid mixing atomics and mutexes on same data.
+
+```go
+var ready atomic.Bool
+ready.Store(true)
+if ready.Load() { /* ... */ }
+
+var n atomic.Int64
+n.Add(1)
+v := n.Load()
+```
+
+### 12. Avoid Leaks & Deadlocks
+
+#### **Leaks** (goroutine stuck on send/recv):
+
+- Always select on `<-ctx.Done()` for long-lived goroutines.
+- Ensure **every send** has a receiver path (buffer or consumer).
+- Close channels from the **producer** side + drain consumers.
+
+#### **Deadlocks**
+
+- Don’t hold a mutex while doing channel send/recv or blocking calls.
+- Keep a strict lock ordering.
+
+### 13. Memory Model (quick hits)
+
+- **Happens-before** via:
+
+  - Channel send → receive
+  - Mutex unlock → lock
+  - `WaitGroup.Wait()` after `Done()`
+  - Atomic ops establish order on that variable
+
+- Without these, concurrent writes/reads are data races.
+
+### 14. Testing & Debugging
+
+- **Race detector**: `go test -race ./...` (or `go run -race .`)
+- **`-cpu`**: run tests on multiple P’s `go test -cpu=1,2,4`
+- **`pprof`**: identify goroutine leaks / blocking profiles
+- **`go vet`**: basic concurrency lint
+
+### 15. Patterns That Slap (and when to pick them)
+
+| Pattern          | When to use                                  |
+| ---------------- | -------------------------------------------- |
+| **Worker Pool**  | Many independent tasks; cap concurrency      |
+| **Pipeline**     | Staged processing with backpressure          |
+| **Fan-in**       | Merge results from multiple sources          |
+| **Errgroup**     | Structured tasks where any error cancels all |
+| **Semaphore**    | Throttle external I/O or CPU-heavy ops       |
+| **Ticker/Timer** | Heartbeats, timeouts, periodic jobs          |
+
+### 16. Compact Examples
+
+**Cancelable producer**
+
+```go
+func produce(ctx context.Context) <-chan int {
+    out := make(chan int)
+    go func() {
+        defer close(out)
+        for i := 0; ; i++ {
+            select {
+            case out <- i:
+            case <-ctx.Done():
+                return
+            }
+        }
+    }()
+    return out
+}
+```
+
+**Context-aware handler**
+
+```go
+func handle(ctx context.Context, jobs <-chan Job) error {
+    for {
+        select {
+        case <-ctx.Done():
+            return ctx.Err()
+        case j, ok := <-jobs:
+            if !ok { return nil }
+            if err := j.Do(ctx); err != nil { return err }
+        }
+    }
+}
+```
+
+### 17. Quick Checklist
+
+- Do you **propagate `context.Context`** everywhere async?
+- Are all long-running goroutines **selecting on `ctx.Done()`**?
+- Are **channels closed by producers** only?
+- Is **shared state protected** (mutex/atomic) or eliminated (ownership via channel)?
+- Did you run **`-race`**?
