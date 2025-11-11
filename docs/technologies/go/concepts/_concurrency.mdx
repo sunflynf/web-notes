@@ -69,7 +69,7 @@ var wg sync.WaitGroup
 wg.Add(n)
 for i := 0; i < n; i++ {
     go func(i int) {
-        defer wg.Done()
+        defer wg.Done() // execute when goroutine completes
         // work
     }(i)
 }
