@@ -321,6 +321,7 @@ nest g resolver <resolver-name>
 ## References
 
 - [NestJS documentation](https://docs.nestjs.com/).
+- [The NestJS Handbook](https://www.freecodecamp.org/news/the-nestjs-handbook-learn-to-use-nest-with-code-examples)
 - Using **TypeORM**
   - [MongoDB](/docs/technologies/database/no-sql/mongodb.md#nestjs-with-mongoose)
   - [MySQL](/docs/technologies/database/relational/mysql.md#nestjs-with-typeorm)
