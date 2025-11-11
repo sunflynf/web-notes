@@ -88,9 +88,9 @@ import (
 
 // json struct tags for custom field names. This feature is useful for APIs
 type User struct {
-    Name  string `json:"name"`
-    Email string `json:"email"`
-    CreateAt time.Time `json:"created_at"`
+    Name        string      `json:"name"`
+    Email       string      `json:"email"`
+    CreateAt    time.Time   `json:"created_at"`
 }
 
 func saveUserToFile(user User) {
