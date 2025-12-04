@@ -1,0 +1,74 @@
+## Python Modules
+
+A **module** is simply a Python file (`.py`) containing functions, classes, or variables that can be reused across different programs.
+
+### Example Module: `math_utils.py`
+
+```python
+# math_utils.py
+def add(a, b):
+return a + b
+def multiply(a, b):
+return a * b
+PI = 3.14159
+```
+
+### Using a Module
+
+```python
+import math_utils
+print(math_utils.add(2, 3))      # Output: 5
+print(math_utils.multiply(4, 5)) # Output: 20
+print(math_utils.PI)             # Output: 3.14159
+```
+
+## Python Packages
+
+A **package** is a collection of modules organized in a directory with a special file `__init__.py`, which tells Python that the directory should be treated as a package.
+
+### Example Package Structure
+
+```
+my_package/
+│
+├── __init__.py
+├── module1.py
+└── module2.py
+```
+
+### Importing Modules from a Package
+
+```python
+from my_package import module1
+from my_package.module2 import some_function
+module1.some_function()
+some_function()
+```
+
+### Key Differences
+
+| Feature    | Module                       | Package                                             |
+| ---------- | ---------------------------- | --------------------------------------------------- |
+| Definition | A single `.py` file          | A directory with multiple modules and `__init__.py` |
+| Usage      | Reusable code in small units | Groups related modules logically                    |
+| Structure  | Flat and simple              | Hierarchical and scalable                           |
+
+### Best Practices
+
+- Keep related functions and classes within the same module.
+- Group modules logically into packages for larger projects.
+- Use descriptive and consistent names for modules and packages.
+- Avoid circular imports to maintain clean dependency flows.
+
+### Standard Library Modules
+
+Python comes with a rich standard library of modules for various tasks:
+
+- `os`: Interact with the operating system
+- `sys`: Access system-specific parameters and functions
+- `math`: Mathematical functions
+- `datetime`: Work with dates and times
+- `json`: Handle JSON data
+- `re`: Regular expressions
+- `random`: Generate random numbers
+- `collections`: Specialized container datatypes
