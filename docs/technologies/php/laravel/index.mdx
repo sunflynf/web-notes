@@ -1,1 +1,625 @@
-# Laravel
+---
+title: Laravel
+---
+
+# Laravel Handbook — System Setup & Architecture Timeline
+
+![Image](https://i.sstatic.net/yD0eH.jpg)
+
+## 1. Project Initialization
+
+### 1.1 Environment Setup
+
+#### **Core Requirements**
+
+- PHP (version depends on your Laravel release — typically PHP 8+).
+- Required extensions:
+  `openssl`, `mbstring`, `pdo`, `tokenizer`, `xml`, `ctype`, `json`, `bcmath`, `curl`.
+- Composer (dependency manager).
+- Node.js + npm/pnpm/yarn (for asset bundlers like Vite).
+
+#### **Optional Dev Tools**
+
+- Laravel Installer:
+
+  ```bash
+  composer global require laravel/installer
+  ```
+
+- Laravel Valet (macOS), Homestead (Vagrant), Docker/Sail (cross-platform).
+- Database engines: MySQL/MariaDB, PostgreSQL, SQLite, SQL Server.
+
+### 1.2 Creating a New Laravel Project
+
+#### **Using Composer**
+
+```bash
+composer create-project laravel/laravel my-app
+```
+
+#### **Using Laravel Installer**
+
+```bash
+laravel new my-app
+```
+
+#### **Using Laravel Sail for Containerized Setup**
+
+```bash
+curl -s "https://laravel.build/my-app" | bash
+cd my-app
+./vendor/bin/sail up
+```
+
+### 1.3 Initial Directory Structure
+
+| Path          | Purpose                        |
+| ------------- | ------------------------------ |
+| `app/`        | Core application code          |
+| `app/Http/`   | Controllers, Middleware        |
+| `app/Models/` | Eloquent models                |
+| `bootstrap/`  | Framework bootstrap logic      |
+| `config/`     | All config files               |
+| `database/`   | Migrations, seeders, factories |
+| `public/`     | Web server entrypoint          |
+| `resources/`  | Blade views, JS/CSS            |
+| `routes/`     | Route definitions              |
+| `storage/`    | Logs, cached data              |
+| `vendor/`     | Composer dependencies          |
+
+### 1.4 Autoloading & Bootstrapping
+
+#### **Autoloading**
+
+- Composer autoload defined in `composer.json`.
+- PSR-4 mapping:
+  `"App\\": "app/"`
+
+#### **Entry Point**
+
+- All HTTP requests land at:
+
+  ```
+  public/index.php
+  ```
+
+#### **Bootstrapping Steps**
+
+1. Load Composer autoload.
+2. Boot the application (`bootstrap/app.php`).
+3. Resolve HTTP Kernel.
+4. Send request through middleware.
+5. Dispatch route.
+6. Return response.
+
+---
+
+## **2. Laravel Application Architecture**
+
+![Image](https://denkkraft.eu/wp-content/uploads/2017/06/dp-ioc-and-route-binding.jpg)
+![Image](https://phppot.com/wp-content/uploads/2021/07/php-laravel-request-lifecycle.jpg)
+
+### 2.1 MVC Structure
+
+#### **Model**
+
+- Eloquent ORM models representing DB tables.
+- Handles business logic & relationships.
+
+#### **View**
+
+- Blade templates in `resources/views`.
+
+#### **Controller**
+
+- Accepts requests, calls services/models, returns responses.
+
+### 2.2 Service Container
+
+#### **Purpose**
+
+- Dependency injection engine.
+- Manages class resolution & bindings.
+
+#### **Binding Example**
+
+```php
+app()->bind(
+    App\Contracts\Uploader::class,
+    App\Services\S3Uploader::class
+);
+```
+
+#### **Resolving**
+
+```php
+$uploader = app(App\Contracts\Uploader::class);
+```
+
+### 2.3 Service Providers
+
+#### **Roles**
+
+- Register services, event listeners, middleware.
+- Configure package services.
+
+#### **Lifecycle**
+
+- Registered in `config/app.php`.
+- `register()` → bindings
+- `boot()` → logic after registration
+
+### 2.4 Facades
+
+#### **Purpose**
+
+- Static interface → underlying service container objects.
+
+#### **Example**
+
+```php
+Cache::put('key', 'value', 3600);
+```
+
+#### **Behind the scenes**
+
+- Facade resolves real class via container binding.
+
+### 2.5 Application Lifecycle (Deep Dive)
+
+1. **Request hits `public/index.php`**
+2. Application bootstrapped
+3. Kernel resolves middleware stack
+4. Router examines URL/method
+5. Controller executes
+6. Response generated and returned
+7. Kernel terminates (closing tasks)
+
+---
+
+## **3. Database Layer**
+
+![Image](https://i.sstatic.net/zzXKS.jpg)
+![Image](https://media2.dev.to/dynamic/image/width%3D800%2Cheight%3D%2Cfit%3Dscale-down%2Cgravity%3Dauto%2Cformat%3Dauto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fj9eju0bhwob3kvxzc5uo.png)
+
+### 3.1 Environment & Config
+
+#### `.env`
+
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_DATABASE=appdb
+DB_USERNAME=root
+DB_PASSWORD=password
+```
+
+#### `config/database.php`
+
+- Maps drivers → PDO
+- Customize connections, replication, Redis, options
+
+### 3.2 Migrations
+
+#### **Create Migration**
+
+```bash
+php artisan make:migration create_users_table
+```
+
+#### **Running**
+
+```bash
+php artisan migrate
+php artisan migrate:rollback
+```
+
+#### **Structure Example**
+
+```php
+Schema::create('users', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->timestamps();
+});
+```
+
+### 3.3 Seeders & Factories
+
+#### **Seeder**
+
+```bash
+php artisan make:seeder UserSeeder
+```
+
+#### **Factory**
+
+```php
+User::factory()->count(10)->create();
+```
+
+### 3.4 Query Builder
+
+```php
+$users = DB::table('users')
+    ->where('active', true)
+    ->orderBy('id')
+    ->get();
+```
+
+### 3.5 Eloquent ORM
+
+#### **Basic Model**
+
+```php
+class User extends Model {
+    protected $fillable = ['name', 'email'];
+}
+```
+
+#### **Relationships**
+
+```php
+public function posts() {
+    return $this->hasMany(Post::class);
+}
+```
+
+#### **Accessors/Mutators**
+
+```php
+protected function name(): Attribute {
+    return Attribute::make(
+        get: fn ($value) => ucfirst($value),
+        set: fn ($value) => strtolower($value)
+    );
+}
+```
+
+---
+
+## **4. Request → Response Lifecycle**
+
+![Image](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/index/_static/request-delegate-pipeline.png?view=aspnetcore-10.0&utm_source=chatgpt.com)
+![Image](https://codemag.com/Article/Image/2301041/image1.jpg)
+
+### 4.1 HTTP Kernel
+
+Located at:
+
+```
+app/Http/Kernel.php
+```
+
+#### **Types of Middleware**
+
+- Global
+- Route group (e.g., `web`, `api`)
+- Route-specific
+
+### 4.2 Middleware Pipeline
+
+#### **Creating Middleware**
+
+```bash
+php artisan make:middleware EnsureRole
+```
+
+#### **Usage**
+
+```php
+Route::get('/admin', AdminController::class)
+    ->middleware('role:admin');
+```
+
+### 4.3 Routing
+
+#### **Web**
+
+```php
+Route::get('/', HomeController::class);
+```
+
+#### **API**
+
+```php
+Route::middleware('auth:sanctum')->get('/me', fn() => auth()->user());
+```
+
+#### **Route Model Binding**
+
+```php
+Route::get('/users/{user}', fn(User $user) => $user);
+```
+
+### 4.4 Controllers
+
+#### **Define**
+
+```bash
+php artisan make:controller UserController
+```
+
+#### **Usage**
+
+```php
+class UserController {
+    public function index() {
+        return User::all();
+    }
+}
+```
+
+### 4.5 Response Types
+
+- String
+- JSON (`return response()->json([...])`)
+- View
+- Stream
+- File/download
+- Custom response macro
+
+### 4.6 Exception Handling
+
+Located at:
+
+```
+app/Exceptions/Handler.php
+```
+
+Supports:
+
+- Custom render logic
+- Report filtering
+- Override exception types
+- API error formatting
+
+---
+
+## **5. Logging**
+
+### 5.1 Log Configuration
+
+#### `config/logging.php`
+
+Channels include:
+
+- `single`
+- `daily`
+- `stack`
+- `slack`
+- `papertrail`
+- Custom Monolog handlers
+
+### 5.2 Logging Usage
+
+```php
+Log::info('User logged in', ['user_id' => $user->id]);
+Log::error('Payment failed', compact('order'));
+```
+
+#### **Contextual Logging**
+
+```php
+Log::withContext(['request_id' => Str::uuid()]);
+```
+
+---
+
+## **6. Authentication & Authorization**
+
+### 6.1 Guards
+
+#### **Types**
+
+- `session` (web)
+- `token`
+- `sanctum`
+- `passport` (OAuth2)
+
+#### Configuration
+
+`config/auth.php`
+
+### 6.2 User Providers
+
+- Eloquent (default)
+- Database (query builder)
+
+### 6.3 Authentication Starter Kits
+
+#### **Breeze**
+
+- Simple, lightweight scaffolding.
+
+#### **Jetstream**
+
+- Teams, sessions, API tokens, optional Livewire/Inertia.
+
+#### **Sanctum**
+
+- SPA tokens, mobile tokens, simple API auth.
+
+#### **Passport**
+
+- Enterprise OAuth2 server.
+
+### 6.4 Gates
+
+```php
+Gate::define('edit-post', function ($user, Post $post) {
+    return $user->id === $post->user_id;
+});
+```
+
+### 6.5 Policies
+
+```bash
+php artisan make:policy PostPolicy --model=Post
+```
+
+---
+
+## **7. Additional Core Components**
+
+### 7.1 Queues
+
+#### **Creating Jobs**
+
+```bash
+php artisan make:job SendInvoiceEmail
+```
+
+#### **Dispatching**
+
+```php
+SendInvoiceEmail::dispatch($order);
+```
+
+#### Workers
+
+```bash
+php artisan queue:work
+```
+
+### 7.2 Events & Listeners
+
+#### **Create**
+
+```bash
+php artisan make:event OrderPaid
+php artisan make:listener SendReceipt
+```
+
+#### **Dispatching**
+
+```php
+event(new OrderPaid($order));
+```
+
+### 7.3 Scheduler
+
+#### **Define Tasks**
+
+In:
+
+```
+app/Console/Kernel.php
+```
+
+```php
+$schedule->command('orders:cleanup')->daily();
+```
+
+#### **CRON single entry**
+
+```cron
+* * * * * php /path/artisan schedule:run
+```
+
+### 7.4 Caching
+
+#### **Basic**
+
+```php
+Cache::put('key', 'value', 3600);
+```
+
+#### **Remember**
+
+```php
+Cache::remember('products', 3600, fn() => Product::all());
+```
+
+#### **Drivers**
+
+- file
+- redis
+- memcached
+- database
+
+---
+
+## **8. Testing**
+
+### 8.1 Feature Tests
+
+```bash
+php artisan make:test LoginTest
+```
+
+```php
+public function test_login() {
+    $this->post('/login', ['email' => 'test@example.com'])
+         ->assertRedirect('/dashboard');
+}
+```
+
+### 8.2 Unit Tests
+
+```php
+public function test_sum() {
+    $this->assertEquals(4, sum(2,2));
+}
+```
+
+### 8.3 HTTP Tests
+
+Laravel provides helpers:
+
+```php
+$this->get('/api/users')->assertJsonCount(5);
+```
+
+---
+
+## **9. DevOps, Deployment & Optimization**
+
+### 9.1 Environment Separation
+
+- `.env.local`, `.env.production`
+- Config caching:
+
+  ```bash
+  php artisan config:cache
+  php artisan route:cache
+  php artisan view:cache
+  ```
+
+### 9.2 Deployment Pipeline
+
+1. Pull code
+2. Install dependencies
+   `composer install --no-dev --optimize-autoloader`
+3. Run migrations
+4. Cache configs/routes/views
+5. Restart queue workers
+
+### 9.3 Optimization Commands
+
+```bash
+php artisan optimize
+php artisan cache:clear
+```
+
+---
+
+## **10. Appendix**
+
+### Artisan Cheat Sheet
+
+| Command           | Purpose           |
+| ----------------- | ----------------- |
+| `make:model`      | Create model      |
+| `make:controller` | Create controller |
+| `make:migration`  | Create migration  |
+| `migrate`         | Run migrations    |
+| `serve`           | Dev server        |
+| `queue:work`      | Run queue worker  |
+| `route:list`      | Display routes    |
+
+### Useful Links
+
+- [Laravel Official Docs](https://laravel.com/docs)
+- [Laracasts Tutorials](https://laracasts.com)
+- [Laravel News](https://laravel-news.com/)
