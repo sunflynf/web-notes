@@ -1,0 +1,226 @@
+## Basics
+
+### Syntax and Variables
+
+Python uses simple, clean syntax. Variables don't need explicit declarations.
+
+```python
+# Variable assignment
+x = 10
+y = 3.14
+name = "Alice"
+a, b = 5, "Hello"
+
+# Printing variables
+print(x, y, name)
+```
+
+### Control Flow
+
+```python
+x = 10
+if x > 5:
+    print("x is greater than 5")
+elif x == 5:
+    print("x is 5")
+else:
+    print("x is 5 or less")
+
+# Ternary operator
+sound = pet == "dog" if "bark" else "meow"
+
+# match-case example (Python 3.10+)
+match x:
+    case 1:
+        print("x is 1")
+    case 10:
+        print("x is 10")
+    case _: # like default
+        print("x is something else")
+```
+
+```python
+# Loops
+for i in range(5): # 0 to 4
+    print(i)
+else: # else block after for (Optional)
+    print("Loop finished")
+
+for char in "Hello":
+    print(char)
+
+for fruit in ["apple", "banana", "cherry"]:
+    print(fruit)
+
+for key, value in {"a": 1, "b": 2}.items():
+    print(key, value)
+
+# while loop, break, continue
+i = 0
+while i < 5:
+    if i == 3:
+        break
+    if i == 1:
+        i += 1
+        continue
+    print(i)
+    i += 1
+else:
+    print("While loop finished")
+
+# pass does nothing, used as a placeholder
+for _ in range(3):
+    pass
+```
+
+### Functions
+
+```python
+# Function definition
+def greet(name = "Guest"):
+    return f"Hello, {name}!"
+
+# Function call
+print(greet())        # Hello, Guest!
+print(greet("Alice")) # Hello, Alice!
+
+# Arbitrary arguments
+def add(*args):
+    return sum(args)
+print(add(1, 2, 3)) # 6
+
+# Keyword arguments
+def multiply(**kwargs):
+    result = 1
+    for value in kwargs.values():
+        result *= value
+    return result
+
+print(multiply(a=2, b=3, c=4)) # 24
+
+# List comprehension and lambda
+squares = [x**2 for x in range(5)]
+print(squares) # [0, 2, 4, 6, 8]
+
+# Anonymous function (lambda)
+double = lambda x: x * 2
+```
+
+### Data Structures
+
+```python title="LIST"
+my_list = [10, 20, 'apple', 3.14, 20]
+print(f"Original List: {my_list}") # [10, 20, 'apple', 3.14, 20]
+
+# Accessing elements (indexing)
+print(f"Element at position 1: {my_list[1]}") # 20
+
+# Slicing
+print(f"Slice from start up to position 3 (exclusive): {my_list[:3]}") # [10, 20, 'apple']
+
+# Modifying an element
+my_list[0] = 15
+print(f"List after changing the first element: {my_list}") # [15, 20, 'apple', 3.14, 20]
+
+# Adding an element
+my_list.append('banana')
+print(f"List after appending 'banana': {my_list}") # [15, 20, 'apple', 3.14, 20, 'banana']
+
+# Removing an element (by value)
+my_list.remove(20)
+print(f"List after removing the first occurrence of 20: {my_list}") # [15, 'apple', 3.14, 20, 'banana']
+
+# Iterating through a List
+print("Elements in the List:")
+for item in my_list:
+    print(item)
+```
+
+```python title="TUPLE"
+my_tuple = (1, 'two', 3, 'two', 5)
+print(f"Original Tuple: {my_tuple}") # (1, 'two', 3, 'two', 5)
+
+# Accessing elements (indexing)
+print(f"Element at position 2: {my_tuple[2]}") # 3
+
+# Slicing
+print(f"Slice from position 1 up to 4 (exclusive): {my_tuple[1:4]}") # ('two', 3, 'two')
+
+# **Note:** Cannot add, remove, or change elements after creation
+
+# Counting element occurrences
+print(f"Count of 'two': {my_tuple.count('two')}") # 2
+```
+
+```python title="SET"
+my_set = {100, 200, 300, 100, 400}
+print(f"Original Set (duplicate 100 removed): {my_set}") # {100, 200, 300, 400}
+
+# Adding an element
+my_set.add(500)
+print(f"Set after adding 500: {my_set}") # {100, 200, 300, 400, 500}
+
+# Removing an element
+my_set.discard(200) # .remove() raises an error if the element is not found
+print(f"Set after discarding 200: {my_set}") # {100, 300, 400, 500}
+
+# Basic Set Operations (Union, Intersection, Difference)
+set_A = {1, 2, 3, 4}
+set_B = {3, 4, 5, 6}
+print(f"Union (A U B): {set_A.union(set_B)}") # {1, 2, 3, 4, 5, 6}
+print(f"Intersection (A n B): {set_A.intersection(set_B)}") # {3, 4}
+print(f"Difference (A - B): {set_A.difference(set_B)}") # {1, 2}
+```
+
+```python title="DICTIONARY"
+my_dict = {
+    'name': 'Alice',
+    'age': 30,
+    'city': 'New York'
+}
+print(f"Original Dictionary: {my_dict}")
+# {'name': 'Alice', 'age': 30, 'city': 'New York'}
+
+# Accessing value by Key
+print(f"Name: {my_dict['name']}") # Alice
+
+# Modifying or adding a new Key-Value pair
+my_dict['age'] = 31 # Modifying
+my_dict['job'] = 'Engineer' # Adding new
+print(f"Dictionary after modification and addition: {my_dict}")
+# {'name': 'Alice', 'age': 31, 'city': 'New York', 'job': 'Engineer'}
+
+# Deleting a Key-Value pair
+del my_dict['city']
+print(f"Dictionary after deleting 'city': {my_dict}")
+# {'name': 'Alice', 'age': 31, 'job': 'Engineer'}
+
+# Iterating through the Dictionary
+print("Key and Value pairs:")
+for key, value in my_dict.items():
+    print(f"{key}: {value}")
+
+# Getting all Keys or Values
+print(f"Keys: {my_dict.keys()}")     # dict_keys(['name', 'age', 'job'])
+print(f"Values: {my_dict.values()}") # dict_values(['Alice', 31, 'Engineer'])
+```
+
+### Quick Summary Table
+
+| Collection     | Ordered            | Mutable | Duplicates Allowed       | Primary Use Case                                      |
+| :------------- | :----------------- | :------ | :----------------------- | :---------------------------------------------------- |
+| **List**       | Yes                | Yes     | Yes                      | General purpose ordered sequence of items             |
+| **Tuple**      | Yes                | No      | Yes                      | Immutable sequence for fixed data (e.g., coordinates) |
+| **Set**        | No                 | Yes     | No                       | Storing a collection of unique items                  |
+| **Dictionary** | Yes (since Py 3.7) | Yes     | No (Keys must be unique) | Storing data mappings as **Key: Value** pairs         |
+
+### Error Handling
+
+```python
+try:
+    x = int("not a number")
+except ValueError as e:
+    print(f"Error: {e}")
+finally: # always executes. Optional
+    print("Execution completed.")
+```
