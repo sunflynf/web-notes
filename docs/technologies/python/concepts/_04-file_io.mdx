@@ -1,0 +1,92 @@
+## File I/O
+
+```python
+# Writing to a file
+with open("test.txt", "w") as file:
+    file.write("Hello, World!")
+
+# Reading from a file
+with open("test.txt", "r") as file:
+    content = file.read()
+    print(content)
+```
+
+### File Modes
+
+- `"r"`: Read (default mode, file must exist)
+- `"w"`: Write (creates a new file or truncates existing file)
+- `"a"`: Append (creates a new file or appends to existing file)
+- `"b"`: Binary mode (e.g., `"rb"` or `"wb"`)
+- `"t"`: Text mode (default mode, e.g., `"rt"` or `"wt"`)
+
+### Working with File Paths
+
+```python
+import os
+# Get current working directory
+cwd = os.getcwd()
+print(f"Current Working Directory: {cwd}")
+
+# Join paths
+file_path = os.path.join(cwd, "test.txt")
+print(f"File Path: {file_path}")
+
+# Check if file exists
+exists = os.path.exists(file_path)
+print(f"File exists: {exists}")
+
+# Get file size
+size = os.path.getsize(file_path)
+print(f"File size: {size} bytes")
+```
+
+### Handling Large Files
+
+```python
+# Reading large files line by line
+with open("large_file.txt", "r") as file:
+    for line in file:
+        process(line)  # Replace with actual processing logic
+
+# Writing large files in chunks
+with open("large_output.txt", "w") as file:
+    for chunk in generate_large_data():  # Replace with actual data generation logic
+        file.write(chunk)
+```
+
+### CSV File Handling
+
+```python
+import csv
+# Writing to a CSV file
+with open("data.csv", "w", newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(["Name", "Age", "City"])
+    writer.writerow(["Alice", 30, "New York"])
+    writer.writerow(["Bob", 25, "Los Angeles"])
+
+# Reading from a CSV file
+with open("data.csv", "r") as csvfile:
+    reader = csv.reader(csvfile)
+    for row in reader:
+        print(row)
+```
+
+### JSON File Handling
+
+```python
+import json
+# Writing to a JSON file
+data = {
+    "name": "Alice",
+    "age": 30,
+    "city": "New York"
+}
+with open("data.json", "w") as jsonfile:
+    json.dump(data, jsonfile)
+
+# Reading from a JSON file
+with open("data.json", "r") as jsonfile:
+    data = json.load(jsonfile)
+    print(data)
+```
