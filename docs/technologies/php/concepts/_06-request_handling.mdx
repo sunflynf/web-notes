@@ -1,0 +1,57 @@
+## **6. Superglobals & Request Handling**
+
+### **6.1 Common Superglobals**
+
+- `$_GET`: URL parameters
+- `$_POST`: Form data (POST requests)
+- `$_SERVER`: Server and execution environment info
+- `$_SESSION`: Session variables
+- `$_COOKIE`: HTTP cookies
+- `$_FILES`: Uploaded files
+- `$_REQUEST`: Combined GET, POST, and COOKIE data (avoid)
+
+### **6.2 Form Handling Example**
+
+**HTML Form (form.html):**
+
+```html
+<form action="process.php" method="POST">
+  <input type="text" name="username" />
+  <input type="password" name="password" />
+  <button type="submit">Login</button>
+</form>
+```
+
+**PHP Processor (process.php):**
+
+```php
+<?php
+// Always validate and sanitize!
+$username = htmlspecialchars($_POST['username'] ?? '');
+$password = $_POST['password'] ?? '';
+
+// Validation
+if (empty($username)) {
+    die("Username is required");
+}
+
+// Process login (example only - use password_hash() in production)
+if ($username === "admin" && $password === "secret") {
+    session_start();
+    $_SESSION['user'] = $username;
+    echo "Welcome, $username!";
+} else {
+    http_response_code(401);
+    echo "Invalid credentials";
+}
+?>
+```
+
+**Security Best Practices:**
+
+- **Always validate** input on the server side.
+- **Sanitize output** with `htmlspecialchars()` for HTML context.
+- Use `filter_var()` for validation/filtering.
+- **Never trust user input!**
+
+---

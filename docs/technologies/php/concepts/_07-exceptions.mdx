@@ -1,0 +1,69 @@
+## **7. Error Handling & Exceptions**
+
+### **7.1 Basic Error Handling**
+
+- **Errors**: Traditional PHP errors (warnings, notices, fatals).
+- **Exceptions**: Object-oriented error handling (try/catch).
+
+**Code Snippet:**
+
+```php
+// Error reporting (development only!)
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Exceptions
+try {
+    $file = fopen("nonexistent.txt", "r");
+    if (!$file) {
+        throw new Exception("File not found");
+    }
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
+    // Log error
+    error_log($e->getMessage());
+} finally {
+    echo "Always executes";
+}
+```
+
+### **7.2 Custom Exceptions**
+
+**Code Snippet:**
+
+```php
+class ValidationException extends Exception {
+    public function __construct($message, $code = 0) {
+        parent::__construct($message, $code);
+    }
+}
+
+function validateEmail($email) {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new ValidationException("Invalid email");
+    }
+}
+
+try {
+    validateEmail("bad-email");
+} catch (ValidationException $e) {
+    echo "Validation failed: " . $e->getMessage();
+}
+```
+
+### **7.3 Basic Logging**
+
+**Code Snippet:**
+
+```php
+// PHP error log
+error_log("User login failed", 3, "/var/log/myapp.log");
+
+// Simple file logging
+$logMessage = date('Y-m-d H:i:s') . " - User logged in\n";
+file_put_contents('app.log', $logMessage, FILE_APPEND);
+```
+
+**Best Practice:** In production, log errors but don't display them to users.
+
+---

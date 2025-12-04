@@ -1,0 +1,65 @@
+## **3. Functions in PHP**
+
+### **3.1 Declaring Functions**
+
+- Use `function` keyword.
+- Parameters can have default values.
+- Return values with `return`.
+
+**Code Snippet:**
+
+```php
+function greet($name = "Guest") {
+    return "Hello, $name!";
+}
+echo greet("Alice"); // Hello, Alice!
+echo greet();        // Hello, Guest!
+
+// Type declarations (PHP 7+)
+function add(int $a, int $b): int {
+    return $a + $b;
+}
+```
+
+### **3.2 Variable Scope**
+
+- Variables inside functions are **local**.
+- Access global variables with `global` keyword or `$GLOBALS` (avoid when possible).
+- **Static variables** persist between function calls.
+
+**Code Snippet:**
+
+```php
+$globalVar = "I'm global";
+
+function testScope() {
+    global $globalVar; // Not recommended
+    $localVar = "I'm local";
+    static $count = 0;
+    $count++;
+    echo $count;
+}
+```
+
+### **3.3 Anonymous Functions & Closures**
+
+- Functions without a name, assigned to variables.
+
+**Code Snippet:**
+
+```php
+$add = function($a, $b) {
+    return $a + $b;
+};
+echo $add(2, 3); // 5
+
+// Closure with 'use' to inherit variables
+$multiplier = 2;
+$double = function($num) use ($multiplier) {
+    return $num * $multiplier;
+};
+```
+
+**Common Pitfall:** Overusing global variables leads to tightly coupled, hard-to-debug code.
+
+---

@@ -1,0 +1,107 @@
+## **5. Object-Oriented Programming (OOP)**
+
+### **5.1 Classes & Objects**
+
+- **Class**: Blueprint for objects.
+- **Properties**: Variables inside a class.
+- **Methods**: Functions inside a class.
+
+**Code Snippet:**
+
+```php
+class Car {
+    // Properties
+    public $brand;
+    private $mileage = 0;
+
+    // Constructor
+    public function __construct($brand) {
+        $this->brand = $brand;
+    }
+
+    // Method
+    public function drive($distance) {
+        $this->mileage += $distance;
+        echo "Driving $distance miles";
+    }
+
+    // Getter
+    public function getMileage(): int {
+        return $this->mileage;
+    }
+}
+
+$myCar = new Car("Toyota");
+$myCar->drive(100);
+echo $myCar->getMileage(); // 100
+```
+
+### **5.2 Inheritance**
+
+- Use `extends` keyword.
+
+**Code Snippet:**
+
+```php
+class Vehicle {
+    protected $wheels = 4;
+
+    public function honk() {
+        echo "Beep!";
+    }
+}
+
+class Motorcycle extends Vehicle {
+    public function __construct() {
+        $this->wheels = 2;
+    }
+}
+```
+
+### **5.3 Interfaces & Abstract Classes**
+
+- **Interface**: Defines a contract (methods without implementation).
+- **Abstract class**: Cannot be instantiated; may contain implementation.
+
+**Code Snippet:**
+
+```php
+interface Logger {
+    public function log($message);
+}
+
+abstract class Shape {
+    abstract public function area();
+
+    public function description() {
+        return "I'm a shape";
+    }
+}
+
+class Circle extends Shape implements Logger {
+    public function area() { /* ... */ }
+    public function log($message) { /* ... */ }
+}
+```
+
+### **5.4 Traits**
+
+- Mechanism for code reuse in single inheritance languages.
+
+**Code Snippet:**
+
+```php
+trait Loggable {
+    public function log($msg) {
+        echo "Logging: $msg";
+    }
+}
+
+class User {
+    use Loggable;
+}
+```
+
+**Common Pitfall:** Overusing inheritance; prefer composition where appropriate.
+
+---

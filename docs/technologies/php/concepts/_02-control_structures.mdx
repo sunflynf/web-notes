@@ -1,0 +1,68 @@
+## **2. Control Structures**
+
+### **2.1 Conditionals**
+
+- **if/elseif/else**
+- **switch** statement
+
+**Code Snippet:**
+
+```php
+// if/elseif/else
+$score = 85;
+if ($score >= 90) {
+    echo "Grade: A";
+} elseif ($score >= 80) {
+    echo "Grade: B"; // This will execute
+} else {
+    echo "Grade: C";
+}
+
+// switch
+$day = "Mon";
+switch ($day) {
+    case "Mon":
+        echo "Start of work week";
+        break;
+    case "Fri":
+        echo "Weekend is near";
+        break;
+    default:
+        echo "Regular day";
+}
+```
+
+### **2.2 Loops**
+
+- **while**, **do-while**, **for**, **foreach**
+
+**Code Snippet:**
+
+```php
+// while
+$i = 0;
+while ($i < 3) {
+    echo $i++; // 0, 1, 2
+}
+
+// for
+for ($j = 0; $j < 3; $j++) {
+    echo $j; // 0, 1, 2
+}
+
+// foreach (arrays)
+$colors = ["red", "green", "blue"];
+foreach ($colors as $color) {
+    echo $color; // red, green, blue
+}
+
+// foreach with keys
+$person = ["name" => "John", "age" => 25];
+foreach ($person as $key => $value) {
+    echo "$key: $value"; // name: John, age: 25
+}
+```
+
+**Best Practice:** Use `foreach` for arrays; avoid modifying array pointers manually.
+
+---

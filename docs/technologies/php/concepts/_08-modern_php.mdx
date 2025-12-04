@@ -1,0 +1,93 @@
+## **8. Modern PHP Features (7.x – 8.x)**
+
+### **8.1 PHP 7.x Features**
+
+**Type Declarations & Return Types:**
+
+```php
+function sum(float ...$numbers): float {
+    return array_sum($numbers);
+}
+echo sum(1, 2.5, 3); // 6.5
+```
+
+**Nullable Types:**
+
+```php
+function findUser(?int $id): ?string {
+    return $id ? "User $id" : null;
+}
+```
+
+**Spaceship Operator:**
+
+```php
+echo 1 <=> 1; // 0 (equal)
+echo 1 <=> 2; // -1 (less than)
+echo 2 <=> 1; // 1 (greater than)
+```
+
+### **8.2 PHP 8.x Features**
+
+**Union Types:**
+
+```php
+function display(int|string $value): void {
+    echo $value;
+}
+display(42);     // OK
+display("text"); // OK
+```
+
+**Named Arguments:**
+
+```php
+function createUser($name, $age = 30, $country = "US") {
+    return "$name from $country, age $age";
+}
+// Skip optional parameters
+echo createUser(name: "Alice", country: "UK");
+```
+
+**Match Expression:**
+
+```php
+$status = 200;
+$message = match($status) {
+    200, 201 => 'Success',
+    404 => 'Not Found',
+    500 => 'Server Error',
+    default => 'Unknown',
+};
+```
+
+**Attributes (Annotations):**
+
+```php
+#[Route('/api/users', methods: ['GET'])]
+class UserController {
+    #[Authorized(roles: ['admin'])]
+    public function listUsers() { /* ... */ }
+}
+```
+
+**Constructor Property Promotion:**
+
+```php
+class User {
+    public function __construct(
+        public string $name,
+        private int $age = 0
+    ) {}
+}
+// Equivalent to manually declaring properties and assigning in constructor
+```
+
+**Nullsafe Operator:**
+
+```php
+$country = $user?->getAddress()?->getCountry() ?? 'Unknown';
+// Instead of: $country = $user && $user->getAddress() ? $user->getAddress()->getCountry() : 'Unknown';
+```
+
+---

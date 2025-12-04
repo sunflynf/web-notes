@@ -1,0 +1,46 @@
+## **1. Introduction to PHP**
+
+### **1.1 What is PHP?**
+
+- **PHP (Hypertext Preprocessor)** is a server-side scripting language designed for web development.
+- It is embedded within HTML and executed on the server, generating HTML that is sent to the client.
+- **How it runs**: The PHP interpreter processes `.php` files, executing code between `<?php ... ?>` tags.
+- **Typical use cases**: Dynamic websites, web applications, REST APIs, command-line scripts, and content management systems (e.g., WordPress).
+
+### **1.2 Basic Syntax**
+
+- PHP files start with `<?php` and end with `?>` (closing tag optional in pure PHP files).
+- Statements end with a semicolon `;`.
+- Comments: `// Single-line`, `# Also single-line`, `/* Multi-line */`.
+
+### **1.3 Variables & Data Types**
+
+- Variables start with `$` followed by a name (case-sensitive).
+- **Loose typing**: Type is determined by context.
+- **Main data types**:
+  - Scalar: `string`, `int`, `float`, `bool`
+  - Compound: `array`, `object`, `callable`, `iterable`
+  - Special: `null`, `resource`
+
+**Code Snippet:**
+
+```php
+<?php
+$name = "Alice";       // String
+$age = 30;            // Integer
+$price = 19.99;       // Float
+$isActive = true;     // Boolean
+$items = [1, 2, 3];   // Array
+$nullVar = null;      // Null
+
+// Variable interpolation in strings
+echo "Hello, $name! You are $age years old.";
+?>
+```
+
+**Common Pitfalls:**
+
+- Variables must be defined before use (no default value).
+- Strings with variables require double quotes or concatenation.
+
+---

@@ -1,0 +1,63 @@
+## **4. Working with Arrays**
+
+### **4.1 Array Types**
+
+- **Indexed arrays**: Numeric keys starting from 0.
+- **Associative arrays**: String keys (key-value pairs).
+- **Multidimensional arrays**: Arrays containing other arrays.
+
+**Code Snippet:**
+
+```php
+// Indexed
+$fruits = ["Apple", "Banana", "Cherry"];
+
+// Associative
+$user = [
+    "name" => "John",
+    "email" => "john@example.com"
+];
+
+// Multidimensional
+$matrix = [
+    [1, 2, 3],
+    [4, 5, 6]
+];
+echo $matrix[1][2]; // 6
+```
+
+### **4.2 Array Functions**
+
+- PHP has 80+ built-in array functions.
+
+**Code Snippet:**
+
+```php
+$numbers = [1, 2, 3, 4];
+
+// Adding/removing
+array_push($numbers, 5);     // End
+array_pop($numbers);         // Remove last
+array_unshift($numbers, 0);  // Beginning
+array_shift($numbers);       // Remove first
+
+// Iteration
+array_map(function($n) {
+    return $n * 2;
+}, $numbers);
+
+// Filtering
+$evens = array_filter($numbers, function($n) {
+    return $n % 2 === 0;
+});
+
+// Searching
+$key = array_search(3, $numbers); // Returns key (2)
+
+// Merging
+$merged = array_merge([1, 2], [3, 4]);
+```
+
+**Best Practice:** Use array functions instead of manual loops for readability and performance.
+
+---
