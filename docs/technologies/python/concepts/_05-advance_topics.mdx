@@ -1,0 +1,162 @@
+## Advanced Python Concepts
+
+### 1. Iterators & Generators
+
+**Iterators** let you walk through data step-by-step.
+**Generators** yield values on demand, keeping things lightweight.
+
+```python
+def countdown(n):
+    while n > 0:
+        yield n
+        n -= 1
+
+for num in countdown(3):
+    print(num)
+```
+
+### 2. Decorators
+
+Decorators wrap extra behavior around functions without rewriting them.
+
+```python
+def log(fn):
+    def wrapper(*args, **kwargs):
+        print("Calling:", fn.__name__)
+        return fn(*args, **kwargs)
+    return wrapper
+
+@log
+def greet():
+    return "Hello!"
+
+print(greet())
+```
+
+### 3. Context Managers
+
+They handle setup + cleanup automatically.
+
+```python
+class FileManager:
+    def __init__(self, path):
+        self.path = path
+
+    def __enter__(self):
+        self.f = open(self.path, "w")
+        return self.f
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.f.close()
+
+with FileManager("demo.txt") as f:
+    f.write("Hello world!")
+```
+
+### 4. Metaclasses
+
+Metaclasses control how classes are created.
+
+```python
+class UpperAttrMeta(type):
+    def __new__(mcls, name, bases, attrs):
+        uppercase = {
+            k.upper(): v for k, v in attrs.items() if not k.startswith("__")
+        }
+        return super().__new__(mcls, name, bases, uppercase)
+
+class Demo(metaclass=UpperAttrMeta):
+    value = 10
+
+print(hasattr(Demo, "VALUE"))  # True
+```
+
+### 5. Async Programming
+
+`async` + `await` help Python handle I/O-bound tasks smoothly.
+
+```python
+import asyncio
+
+async def fetch_data():
+    await asyncio.sleep(1)
+    return "done"
+
+async def main():
+    result = await fetch_data()
+    print(result)
+
+asyncio.run(main())
+```
+
+### 6. Descriptors
+
+Descriptors let you customize attribute behavior.
+
+```python
+class Positive:
+    def __set__(self, instance, value):
+        if value < 0:
+            raise ValueError("Must be positive")
+        instance.__dict__["value"] = value
+
+    def __get__(self, instance, owner):
+        return instance.__dict__["value"]
+
+class Account:
+    value = Positive()
+
+a = Account()
+a.value = 50
+print(a.value)
+```
+
+### 7. Type Hints & Static Analysis
+
+Type hints make your intent clearer and help tools catch bugs early.
+
+```python
+from typing import List
+
+def average(nums: List[float]) -> float:
+    return sum(nums) / len(nums)
+
+print(average([1.0, 2.0, 3.0]))
+```
+
+### 8. Memory Management
+
+Python uses reference counting and garbage collection to manage memory automatically.
+
+```python
+import sys
+a = []
+print(sys.getrefcount(a))  # Reference count
+b = a
+print(sys.getrefcount(a))  # Increased reference count
+del b
+print(sys.getrefcount(a))  # Decreased reference count
+```
+
+### 9. Multi-threading vs Multi-processing
+
+- **Multi-threading**: Multiple threads within the same process share memory space. Good for I/O-bound tasks.
+- **Multi-processing**: Separate memory space for each process. Better for CPU-bound tasks.
+
+```python
+import threading
+def worker():
+    print("Worker thread")
+thread = threading.Thread(target=worker)
+thread.start()
+thread.join()
+```
+
+```python
+import multiprocessing
+def worker():
+    print("Worker process")
+process = multiprocessing.Process(target=worker)
+process.start()
+process.join()
+```
