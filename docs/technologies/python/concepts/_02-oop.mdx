@@ -1,0 +1,79 @@
+## Object-Oriented Programming (OOP)
+
+```python
+class Dog:
+   def __init__(self, name, age):
+       self.name = name
+       self.age = age
+
+# Creating instances of the Dog class
+dog1 = Dog("Buddy", 9)
+dog2 = Dog("Miles", 4)
+print(dog1.name) # Output: Buddy
+print(dog2.age) # Output: 4
+```
+
+```python title="Inheritance"
+class Animal:
+    def speak(self):
+        return "Animal speaks"
+
+class Cat(Animal):
+    def speak(self):
+        return "Meow"
+
+cat = Cat()
+print(cat.speak()) # Output: Meow
+```
+
+```python title="Encapsulation"
+class BankAccount:
+    def __init__(self, balance):
+        self.__balance = balance  # Private attribute
+    def deposit(self, amount):
+        if amount > 0:
+            self.__balance += amount
+    def get_balance(self):
+        return self.__balance
+
+account = BankAccount(1000)
+account.deposit(500)
+print(account.get_balance()) # Output: 1500
+```
+
+```python title="Polymorphism"
+class Bird:
+    def fly(self):
+        return "Bird is flying"
+
+class Airplane:
+    def fly(self):
+        return "Airplane is flying"
+
+def make_it_fly(flying_object):
+    print(flying_object.fly())
+
+bird = Bird()
+plane = Airplane()
+make_it_fly(bird)   # Output: Bird is flying
+make_it_fly(plane)  # Output: Airplane is flying
+```
+
+```python title="Abstraction"
+from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+class Rectangle(Shape):
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+    def area(self):
+        return self.width * self.height
+
+rect = Rectangle(5, 10)
+print(rect.area()) # Output: 50
+```
