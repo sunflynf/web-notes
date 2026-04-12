@@ -143,8 +143,7 @@ const config: Config = {
     v4: {
       removeLegacyPostBuildHeadAttribute: true, // required
     },
-    // Note: This is experimental and may change in future versions
-    experimental_faster: {
+    faster: {
       ssgWorkerThreads: true,
       rspackBundler: true,
       rspackPersistentCache: true,
