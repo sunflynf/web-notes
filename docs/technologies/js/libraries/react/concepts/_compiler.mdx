@@ -1,65 +1,87 @@
-## React Compiler (React v19)
+---
+description: Complete guide to React Compiler - automatic memoization and optimization for React applications
+tags:
+  - JavaScript
+  - TypeScript
+  - React
+  - Compiler
+  - Performance
+  - Optimization
+---
 
-[Documents](https://19.react.dev/learn/react-compiler#getting-started)
+## React Compiler
 
-### Configs
+React Compiler is stable and included with React 19. It works by:
 
-#### Existing project
+- **Automatic Memoization**: Inserts `useMemo` and `useCallback` where needed
+- **Zero-Config**: Works out of the box for most applications
+- **Type-Safe**: Fully compatible with TypeScript
+- **Incremental Adoption**: Can be adopted gradually in existing codebases
+- **Build-Time Only**: No runtime overhead, only compile-time analysis
 
-```jsx
-const ReactCompilerConfig = {
-  // specific directory
-  sources: (filename) => {
-    return filename.indexOf("src/path/to/dir") !== -1;
-  },
-  compilationMode: "annotation",
-};
+### Prerequisites
 
-// src/app.jsx
-export default function App() {
-  "use memo";
-  // ...
-}
+- React 17+ (React 19 recommended for best experience)
+- Modern build tools (Babel, Vite, Next.js, etc.)
+- For React 17/18: Additional `react-compiler-runtime` package
+
+### Installation
+
+Install React Compiler as a development dependency:
+
+```bash
+npm install -D babel-plugin-react-compiler@latest
+# or
+yarn add -D babel-plugin-react-compiler@latest
+# or
+pnpm install -D babel-plugin-react-compiler@latest
 ```
 
-#### New project
+For React 17/18 projects, also install the runtime:
+
+```bash
+npm install react-compiler-runtime@latest
+```
+
+### Configuration
+
+#### Basic Setup
+
+React Compiler works with most build tools. The plugin must run **first** in your Babel pipeline.
+
+##### Babel
 
 ```js title="babel.config.js"
-const ReactCompilerConfig = {
-  /* ... */
-};
-
-module.exports = function () {
-  return {
-    plugins: [
-      ["babel-plugin-react-compiler", ReactCompilerConfig], // must run first!
-      // ...
-    ],
-  };
+module.exports = {
+  plugins: [
+    "babel-plugin-react-compiler", // must run first!
+    // ... other plugins
+  ],
 };
 ```
 
-```js title="vite.config.js"
-const ReactCompilerConfig = {
-  /* ... */
-};
+##### Vite
 
-export default defineConfig(() => {
-  return {
-    plugins: [
-      react({
-        babel: {
-          plugins: [["babel-plugin-react-compiler", ReactCompilerConfig]],
-        },
-      }),
-    ],
-    // ...
-  };
+```js title="vite.config.js"
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig({
+  plugins: [
+    react({
+      babel: {
+        plugins: [["babel-plugin-react-compiler"]],
+      },
+    }),
+  ],
 });
 ```
 
+##### Next.js
+
+React Compiler is built into Next.js 15+:
+
 ```js title="next.config.js"
-// npm install next@canary babel-plugin-react-compiler
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -69,3 +91,221 @@ const nextConfig = {
 
 module.exports = nextConfig;
 ```
+
+For Next.js 14 or custom configuration:
+
+```js title="next.config.js"
+const ReactCompilerConfig = {
+  // optional configuration
+};
+
+module.exports = {
+  experimental: {
+    reactCompiler: ReactCompilerConfig,
+  },
+};
+```
+
+##### React Router (Vite)
+
+```js title="vite.config.js"
+import { defineConfig } from "vite";
+import babel from "vite-plugin-babel";
+import { reactRouter } from "@react-router/dev/vite";
+
+const ReactCompilerConfig = {
+  /* ... */
+};
+
+export default defineConfig({
+  plugins: [
+    reactRouter(),
+    babel({
+      filter: /\.[jt]sx?$/,
+      babelConfig: {
+        presets: ["@babel/preset-typescript"], // if using TypeScript
+        plugins: [["babel-plugin-react-compiler", ReactCompilerConfig]],
+      },
+    }),
+  ],
+});
+```
+
+#### Advanced Configuration
+
+##### Compilation Modes
+
+```js
+const config = {
+  // 'all': Compile all functions (default for React 19)
+  // 'annotation': Only compile functions with "use memo" directive
+  // 'infer': Intelligent detection (default for React 17/18)
+  compilationMode: "all",
+};
+```
+
+##### React Version Targeting
+
+```js
+const config = {
+  // For React 17/18 projects
+  target: "18", // or '17'
+};
+```
+
+##### Source Filtering
+
+```js
+const config = {
+  // Only compile specific directories
+  sources: (filename) => {
+    return filename.includes("src/components");
+  },
+};
+```
+
+##### Error Handling
+
+```js
+const config = {
+  // 'all': Fail build on any error (default)
+  // 'none': Skip problematic components
+  panicThreshold: "none",
+};
+```
+
+### ESLint Integration
+
+React Compiler includes ESLint rules to identify optimization opportunities:
+
+```bash
+npm install -D eslint-plugin-react-hooks@latest
+```
+
+Add to your ESLint config:
+
+```js title=".eslintrc.js"
+module.exports = {
+  plugins: ["react-hooks"],
+  extends: [
+    "plugin:react-hooks/recommended-latest", // includes compiler rules
+  ],
+};
+```
+
+### Verification
+
+#### React DevTools
+
+Components optimized by React Compiler show a "Memo ✨" badge in React DevTools.
+
+#### Build Output
+
+Check your compiled code for automatic memoization:
+
+```js
+// Compiled output includes:
+import { c as _c } from "react/compiler-runtime";
+```
+
+#### ESLint
+
+Run ESLint to see which components can be optimized:
+
+```bash
+npx eslint src/
+```
+
+### Opting Out
+
+#### Component Level
+
+Use the `"use no memo"` directive to skip optimization:
+
+```jsx
+function ProblematicComponent() {
+  "use no memo";
+  // Component code here
+}
+```
+
+#### File Level
+
+Add a comment at the top of the file:
+
+```jsx
+// eslint-disable-next-line react-hooks/rules-of-hooks
+```
+
+### Troubleshooting
+
+#### Common Issues
+
+- **Components not optimizing**: Check ESLint for Rules of React violations.
+- **Build errors**: Ensure the plugin runs first in your Babel config.
+- **React 17/18 issues**: Install `react-compiler-runtime` and set `target` config.
+- **TypeScript errors**: Update to latest TypeScript version.
+
+#### Debugging
+
+Enable verbose logging:
+
+```js
+const config = {
+  logger: {
+    logEvent(filename, event) {
+      console.log("Compiler event:", filename, event);
+    },
+  },
+};
+```
+
+### Migration Guide
+
+#### From Manual Memoization
+
+Remove unnecessary `useMemo`, `useCallback`, and `React.memo`:
+
+```jsx
+// Before
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+const memoizedCallback = useCallback(() => doSomething(a), [a, b]);
+
+// After - let the compiler handle it
+const value = computeExpensiveValue(a, b);
+const callback = () => doSomething(a);
+```
+
+#### Gradual Adoption
+
+Start with specific directories:
+
+```js
+const config = {
+  compilationMode: "annotation",
+  sources: (filename) => filename.includes("src/new-components"),
+};
+```
+
+Then add `"use memo"` directives to components you want optimized:
+
+```jsx
+function MyComponent() {
+  "use memo";
+  // Component code
+}
+```
+
+### Performance Benefits
+
+- **Automatic memoization** of expensive calculations
+- **Reduced re-renders** through intelligent dependency tracking
+- **Smaller bundle size** (no manual memoization code)
+- **Better developer experience** (less boilerplate)
+
+### Limitations
+
+- Only optimizes components following the [Rules of React](https://react.dev/reference/rules)
+- Cannot optimize code that violates React's constraints
+- Some advanced patterns may require manual memoization
+- Not a silver bullet for all performance issues (profiling still recommended)
