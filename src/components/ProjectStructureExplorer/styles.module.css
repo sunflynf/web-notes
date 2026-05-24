@@ -1,0 +1,296 @@
+.container {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) 1fr;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  margin: 20px 0;
+  padding: 20px;
+  min-height: 320px;
+  color: #0f172a;
+}
+
+.treePanel,
+.detailPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+
+.treePanel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+
+.panelHeader {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #172b4d;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.treeNodeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.childItem {
+  position: relative;
+}
+
+.childItem::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 18px;
+  bottom: 0;
+  width: 1px;
+  background: rgba(15, 23, 42, 0.12);
+}
+
+.toggleButton {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.toggleButton:hover {
+  background: rgba(9, 30, 66, 0.08);
+}
+
+.togglePlaceholder {
+  width: 24px;
+  display: inline-block;
+}
+
+.nodeIcon {
+  display: inline-block;
+  width: 24px;
+  text-align: center;
+  margin-right: 8px;
+  opacity: 0.8;
+}
+
+.nodeText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.nodeDescription {
+  margin-top: 2px;
+  color: rgba(15, 23, 42, 0.6);
+  font-size: 0.82rem;
+  line-height: 1.2;
+}
+
+.treeList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  padding-right: 4px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.detailContent {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 22px;
+  box-shadow: inset 0 0 0 1px rgba(16, 24, 40, 0.06);
+  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.treeList::-webkit-scrollbar,
+.detailContent::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.treeList::-webkit-scrollbar-track,
+.detailContent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.treeList::-webkit-scrollbar-thumb,
+.detailContent::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.16);
+  border-radius: 999px;
+}
+
+.treeList::-webkit-scrollbar-thumb:hover,
+.detailContent::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.24);
+}
+
+.treeList,
+.detailContent {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 23, 42, 0.16) transparent;
+}
+
+.treeItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.treeItem > .treeNodeRow {
+  position: relative;
+}
+
+.nodeButton {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #0f2940;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition:
+    background 0.16s ease,
+    color 0.16s ease;
+}
+
+.nodeButton {
+  display: flex;
+  align-items: center;
+}
+
+.nodeButton:hover {
+  background: rgba(9, 30, 66, 0.06);
+}
+
+.nodeButtonActive {
+  background: #0f2940;
+  color: #ffffff;
+}
+
+.detailContent {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 22px;
+  box-shadow: inset 0 0 0 1px rgba(16, 24, 40, 0.06);
+  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.detailTitle {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #102a43;
+}
+
+.detailDescription {
+  margin: 12px 0 18px;
+  line-height: 1.7;
+  color: #334e68;
+}
+
+.detailList {
+  margin: 0;
+  padding-left: 20px;
+  color: #334e68;
+}
+
+.detailList li {
+  margin-bottom: 10px;
+}
+
+.lightTheme {
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+}
+
+.lightTheme .panelHeader {
+  color: #172b4d;
+}
+
+.lightTheme .nodeButton {
+  color: #0f2940;
+}
+
+.lightTheme .nodeButton:hover,
+.lightTheme .toggleButton:hover {
+  background: rgba(9, 30, 66, 0.06);
+}
+
+.lightTheme .nodeButtonActive {
+  background: #0f2940;
+  color: #ffffff;
+}
+
+.lightTheme .detailContent {
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(16, 24, 40, 0.06);
+}
+
+.lightTheme .detailTitle {
+  color: #102a43;
+}
+
+.lightTheme .detailDescription,
+.lightTheme .detailList {
+  color: #334e68;
+}
+
+.lightTheme .nodeDescription {
+  color: #64748b;
+}
+
+.darkTheme {
+  background: rgba(15, 23, 42, 0.92);
+  color: #e2e8f0;
+}
+
+.darkTheme .panelHeader {
+  color: #cbd5e1;
+}
+
+.darkTheme .nodeButton {
+  color: #f8fafc;
+}
+
+.darkTheme .nodeButton:hover,
+.darkTheme .toggleButton:hover {
+  background: rgba(148, 163, 184, 0.16);
+}
+
+.darkTheme .nodeButtonActive {
+  background: #2563eb;
+  color: #f8fafc;
+}
+
+.darkTheme .detailContent {
+  background: rgba(15, 23, 42, 0.94);
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12);
+}
+
+.darkTheme .detailTitle {
+  color: #f8fafc;
+}
+
+.darkTheme .nodeDescription {
+  color: #94a3b8;
+}
+
+.darkTheme .detailDescription,
+.darkTheme .detailList {
+  color: #cbd5e1;
+}
