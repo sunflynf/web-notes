@@ -1,3 +1,13 @@
+---
+description: Practical Gin framework guide for building Go web APIs with routing, middleware, binding, and production patterns.
+tags:
+  - Go
+  - Gin
+  - Web Framework
+---
+
+import ProjectStructureExplorer from "@site/src/components/ProjectStructureExplorer";
+
 # Gin Framework
 
 ## 0. Install & Bootstrap
@@ -322,23 +332,131 @@ func TestPing(t *testing.T) {
 
 ## 16. Minimal Production Skeleton
 
-```txt
-cmd/app/main.go
-internal/httpserver/router.go
-internal/httpserver/middleware.go
-internal/handler/user.go
-internal/service/user.go
-internal/repo/user_repo.go
-internal/platform/db/postgres.go
-pkg/ (shared utilities)
-```
+<ProjectStructureExplorer
+  nodes={[
+    {
+      id: "cmd",
+      label: "cmd/",
+      isFolder: true,
+      description: "Service command entrypoint and application bootstrap.",
+      children: [
+        {
+          id: "cmd/app",
+          label: "app/",
+          isFolder: true,
+          description: "Main app binary folder for the Gin service.",
+          children: [
+            {
+              id: "cmd/app/main.go",
+              label: "main.go",
+              description: "Bootstraps the application, loads config, and starts the HTTP server.",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "internal",
+      label: "internal/",
+      isFolder: true,
+      description: "Private application implementation that is not importable by external modules.",
+      children: [
+        {
+          id: "internal/httpserver",
+          label: "httpserver/",
+          isFolder: true,
+          description: "HTTP routing, middleware wiring, and request handling setup.",
+          children: [
+            {
+              id: "internal/httpserver/router.go",
+              label: "router.go",
+              description: "Defines routes, groups, and mounts handlers for the Gin router.",
+            },
+            {
+              id: "internal/httpserver/middleware.go",
+              label: "middleware.go",
+              description: "Registers shared middleware such as logging, recovery, and auth.",
+            },
+          ],
+        },
+        {
+          id: "internal/handler",
+          label: "handler/",
+          isFolder: true,
+          description: "HTTP handlers that translate requests into service calls.",
+          children: [
+            {
+              id: "internal/handler/user.go",
+              label: "user.go",
+              description: "User-related request handlers for CRUD and API endpoints.",
+            },
+          ],
+        },
+        {
+          id: "internal/service",
+          label: "service/",
+          isFolder: true,
+          description: "Business logic and use-case orchestration.",
+          children: [
+            {
+              id: "internal/service/user.go",
+              label: "user.go",
+              description: "User domain service coordinating repositories and validation.",
+            },
+          ],
+        },
+        {
+          id: "internal/repo",
+          label: "repo/",
+          isFolder: true,
+          description: "Repository implementations and database access.",
+          children: [
+            {
+              id: "internal/repo/user_repo.go",
+              label: "user_repo.go",
+              description: "Data persistence logic for user entities.",
+            },
+          ],
+        },
+        {
+          id: "internal/platform",
+          label: "platform/",
+          isFolder: true,
+          description: "Platform adapters for DB, config, and infra integration.",
+          children: [
+            {
+              id: "internal/platform/db",
+              label: "db/",
+              isFolder: true,
+              description: "Database connection and adapter code.",
+              children: [
+                {
+                  id: "internal/platform/db/postgres.go",
+                  label: "postgres.go",
+                  description: "Postgres connection pool and query adapter.",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "pkg",
+      label: "pkg/",
+      isFolder: true,
+      description: "Shared utilities and reusable packages used by the service.",
+    },
+  ]}
+  maxHeight="360px"
+/>
 
 * Wire dependencies once in `main`.
 * Keep handlers thin; push logic into services.
 
 ## 17. Handy Snippets
 
-### **Pagination parsing**
+### Pagination parsing
 
 ```go
 page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
@@ -346,13 +464,13 @@ size, _ := strconv.Atoi(c.DefaultQuery("size", "20"))
 if size > 100 { size = 100 }
 ```
 
-### **Download file**
+### Download file
 
 ```go
 c.FileAttachment("./reports/a.csv", "report.csv")
 ```
 
-### **Streaming**
+### Streaming
 
 ```go
 c.Stream(func(w io.Writer) bool {
