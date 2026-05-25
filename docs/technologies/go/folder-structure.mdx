@@ -1,0 +1,463 @@
+# Folder Structure
+
+import ProjectStructureExplorer from "@site/src/components/ProjectStructureExplorer";
+
+## Option A — Domain-Oriented (recommended for growing apps)
+
+<ProjectStructureExplorer
+  nodes={[
+    {
+      id: "cmd",
+      label: "cmd/",
+      isFolder: true,
+      description:
+        "Entry points for each service binary, including the API command.",
+      children: [
+        {
+          id: "cmd/api",
+          label: "api/",
+          isFolder: true,
+          description:
+            "API service entrypoint folder containing startup and config files.",
+          children: [
+            {
+              id: "cmd/api/main.go",
+              label: "main.go",
+              description:
+                "Application bootstrap and HTTP server startup for the API service.",
+            },
+            {
+              id: "cmd/api/config.yaml",
+              label: "config.yaml",
+              description:
+                "Runtime configuration values for local and deployed environments.",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "internal",
+      label: "internal/",
+      isFolder: true,
+      description:
+        "Private app code that cannot be imported by external packages.",
+      children: [
+        {
+          id: "internal/platform",
+          label: "platform/",
+          isFolder: true,
+          description:
+            "Infrastructure plumbing for server, database, config, logging, and observability.",
+          children: [
+            {
+              id: "httpserver",
+              label: "httpserver/",
+              isFolder: true,
+              description:
+                "HTTP server implementation, route registration, and request lifecycle handling.",
+            },
+            {
+              id: "db",
+              label: "db/",
+              isFolder: true,
+              description:
+                "Database connection, pooling, and persistence adapters.",
+            },
+            {
+              id: "config",
+              label: "config/",
+              isFolder: true,
+              description:
+                "Configuration loading, validation, and environment-specific overrides.",
+            },
+            {
+              id: "logger",
+              label: "logger/",
+              isFolder: true,
+              description:
+                "Structured logging setup, formatters, and helper wrappers.",
+            },
+            {
+              id: "observability",
+              label: "observability/",
+              isFolder: true,
+              description:
+                "Metrics, tracing, health checks, and runtime observability tooling.",
+            },
+          ],
+        },
+        {
+          id: "internal/domain",
+          label: "domain/",
+          isFolder: true,
+          description:
+            "Business domains and feature boundaries that define core application behavior.",
+          children: [
+            {
+              id: "internal/domain/user",
+              label: "user/",
+              isFolder: true,
+              description:
+                "User domain implementation including entities, services, and transports.",
+              children: [
+                {
+                  id: "user/entity.go",
+                  label: "entity.go",
+                  description:
+                    "User domain entity definitions and shared value objects.",
+                },
+                {
+                  id: "user/repo.go",
+                  label: "repo.go",
+                  description:
+                    "Repository interfaces for user persistence and retrieval.",
+                },
+                {
+                  id: "user/service.go",
+                  label: "service.go",
+                  description:
+                    "User use case orchestration and business rule implementation.",
+                },
+                {
+                  id: "user/transport",
+                  label: "transport/",
+                  isFolder: true,
+                  description:
+                    "Transport adapters for exposing user features over HTTP or gRPC.",
+                  children: [
+                    {
+                      id: "user/transport/http",
+                      label: "http/",
+                      isFolder: true,
+                      description:
+                        "HTTP transport routes, handlers, and request mapping.",
+                    },
+                    {
+                      id: "user/transport/grpc",
+                      label: "grpc/",
+                      isFolder: true,
+                      description:
+                        "gRPC service implementation and protobuf-based handlers.",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              id: "internal/domain/auth",
+              label: "auth/",
+              isFolder: true,
+              description: "Authentication domain logic and interfaces.",
+            },
+          ],
+        },
+        {
+          id: "internal/app",
+          label: "app/",
+          isFolder: true,
+          description:
+            "Composition root and dependency wiring for the application.",
+          children: [
+            {
+              id: "wiring",
+              label: "wiring.go",
+              description:
+                "Compose services, repositories, and platform components into the final app.",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "migrations",
+      label: "migrations/",
+      isFolder: true,
+      description: "Database migrations and schema evolution scripts.",
+    },
+    {
+      id: "pkg",
+      label: "pkg/",
+      isFolder: true,
+      description: "Reusable packages and library code shared across binaries.",
+    },
+    {
+      id: "scripts",
+      label: "scripts/",
+      isFolder: true,
+      description:
+        "Operational scripts for builds, container images, and deployment.",
+    },
+    {
+      id: "deployments",
+      label: "deployments/",
+      isFolder: true,
+      description:
+        "Deployment manifests and environment-specific infrastructure configs.",
+    },
+    {
+      id: "docs",
+      label: "docs/",
+      isFolder: true,
+      description:
+        "Documentation, runbooks, and onboarding notes for the project.",
+    },
+    {
+      id: "Makefile",
+      label: "Makefile",
+      description:
+        "Convenience commands for build, test, lint, and deployment workflows.",
+    },
+    {
+      id: "go.mod",
+      label: "go.mod",
+      description: "Go module definition and dependency constraints.",
+    },
+    {
+      id: "github",
+      label: ".github/",
+      isFolder: true,
+      description:
+        "Repository automation, CI workflows, and GitHub configuration.",
+      children: [
+        {
+          id: "workflows",
+          label: "workflows/",
+          isFolder: true,
+          description: "GitHub Actions workflow definitions.",
+          children: [
+            {
+              id: "ci.yml",
+              label: "ci.yml",
+              description: "Continuous integration pipeline configuration.",
+            },
+          ],
+        },
+      ],
+    },
+  ]}
+  maxHeight="420px"
+/>
+
+:::info Why this works
+
+- **Encapsulation**: `internal/` keeps internals private so only your service packages can import them.
+- **Bounded contexts**: each domain owns its own models, interfaces, repositories, services, and transports, which reduces cross-cutting dependencies.
+- **Testability**: domain code stays close to the behavior it implements, making unit tests and integration tests easier to write and maintain.
+- **Maintainability**: feature boundaries are explicit, so you can evolve one domain without destabilizing others.
+- **Scalability**: this structure supports multiple teams and multiple services by keeping domain responsibilities isolated.
+
+:::
+
+## Option B — Layered (simple start, okay for small apps)
+
+<ProjectStructureExplorer
+  nodes={[
+    {
+      id: "cmd/api",
+      label: "cmd/api/",
+      isFolder: true,
+      description: "Single API command entrypoint for the service.",
+      children: [
+        {
+          id: "main.go",
+          label: "main.go",
+          description:
+            "Bootstraps the service, HTTP server, and dependency graph.",
+        },
+      ],
+    },
+    {
+      id: "internal",
+      label: "internal/",
+      isFolder: true,
+      description:
+        "Private implementation details that are hidden from imports outside the service.",
+      children: [
+        {
+          id: "internal/handler",
+          label: "handler/",
+          isFolder: true,
+          description:
+            "HTTP handlers and adapters that expose business features.",
+        },
+        {
+          id: "internal/service",
+          label: "service/",
+          isFolder: true,
+          description: "Application business logic and use case coordination.",
+        },
+        {
+          id: "internal/repo",
+          label: "repo/",
+          isFolder: true,
+          description: "Repository interfaces and persistence wiring.",
+        },
+        {
+          id: "internal/entity",
+          label: "entity/",
+          isFolder: true,
+          description: "Domain entities, models, and shared data structures.",
+        },
+        {
+          id: "internal/platform",
+          label: "platform/",
+          isFolder: true,
+          description:
+            "Platform adapters for database, logging, and external systems.",
+        },
+      ],
+    },
+    {
+      id: "migrations",
+      label: "migrations/",
+      isFolder: true,
+      description: "Database migration scripts for schema changes.",
+    },
+  ]}
+  maxHeight="260px"
+/>
+
+:::info When to use
+
+- Quick prototypes, small APIs, or services where speed of delivery matters more than long-term structure.
+- Good when your team is small and the domain is not yet fully understood.
+- Works well for a first iteration, with the option to refactor into domain-oriented layout once the product matures.
+- Keep the migration path in mind: move feature folders into `internal/` and adopt domain boundaries when the service grows.
+
+:::
+
+---
+
+## Minimal wiring ([Gin](/docs/technologies/go/frameworks/gin.md) + pgx) — where things live
+
+```go title="cmd/api/main.go"
+func main() {
+    cfg := config.Load()                    // internal/platform/config
+    log := logger.New(cfg.Log)              // internal/platform/logger
+    db  := db.NewPool(cfg.DB)               // internal/platform/db (pgxpool)
+    srv := httpserver.New(cfg.HTTP)         // internal/platform/httpserver
+
+    container := app.Wire(cfg, log, db)     // internal/app/wiring.go
+    router := httpserver.BuildRouter(container) // registers domain routes
+
+    srv.Start(router)                       // graceful shutdown inside
+}
+```
+
+```go title="internal/app/wiring.go"
+type Container struct {
+    UserService *user.Service
+    AuthService *auth.Service
+    // ...
+}
+
+func Wire(cfg config.Config, log *slog.Logger, pool *pgxpool.Pool) *Container {
+    userRepo := userpg.New(pool)            // internal/domain/user/repo/pg
+    userSvc  := user.NewService(userRepo)   // internal/domain/user/service.go
+
+    authRepo := authpg.New(pool)
+    authSvc  := auth.NewService(authRepo, userRepo)
+
+    return &Container{UserService: userSvc, AuthService: authSvc}
+}
+```
+
+```go title="internal/domain/user/transport/http/routes.go"
+func Register(r *gin.RouterGroup, svc *user.Service) {
+    r.GET("/users/:id", getUser(svc))
+    r.POST("/users", createUser(svc))
+}
+```
+
+---
+
+## Testing layout
+
+```txt
+internal/
+└─ domain/
+   └─ user/
+      ├─ service_test.go        # unit tests (use memory repo)
+      ├─ repo/
+      │  └─ memory/
+      │     └─ repo.go
+      └─ transport/http/
+         └─ handler_test.go     # httptest + gin engine
+```
+
+- Enable race detector in CI: `go test -race ./...`
+- Add integration tests hitting a test DB (spin with docker-compose).
+
+---
+
+## Config strategy
+
+- **12-factor**: env vars first, file as default.
+- Validate on boot; fail fast.
+- Consider `koanf` or `viper` if you need merges.
+
+```env
+CONFIG_*
+DB_DSN=postgres://...
+HTTP_ADDR=:8080
+LOG_LEVEL=info
+```
+
+---
+
+## Migrations
+
+- Keep SQL in `/migrations`.
+- Tooling options: `golang-migrate`, `goose`, `atlas`.
+- Run on boot (optional) or via Make target.
+
+```cmd
+make migrate-up
+make migrate-down
+```
+
+---
+
+## Observability
+
+- **Logging**: structured (slog/zap).
+- **Metrics**: Prometheus `/metrics` endpoint.
+- **Tracing**: OpenTelemetry exporters (OTLP).
+- **pprof**: gated in non-prod or behind auth.
+
+---
+
+## Makefile (starter)
+
+```makefile
+.PHONY: run test lint tidy migrate-up
+run:    ## Start API
+\tgo run ./cmd/api
+test:   ## Run tests with race
+\tgo test -race ./...
+lint:   ## Static checks
+\tgolangci-lint run
+tidy:
+\tgo mod tidy
+migrate-up:
+\tmigrate -path migrations -database $$DB_DSN up
+```
+
+---
+
+## Naming & import boundaries (rules that save you later)
+
+- Domains **never** import each other’s `transport/http` or `repo/pg` packages.
+  They talk via **interfaces** in their own domain (e.g., `user/repo.go`).
+- Cross-domain collaboration happens in **services**; if a cycle appears, extract an interface into a neutral place or create a new domain for shared concerns.
+- Keep handlers **thin** (bind/validate → call service → present response).
+  Keep repositories **dumb** (SQL only), no business logic.
+
+---
+
+## Quick picks
+
+- **New service, long runway** → **Option A** (domain-oriented)
+- **Tiny API / short-lived** → Option B (layered)
+- **Monorepo with multiple services** → keep each service under `cmd/<svc>` with its own wiring; share platform libs under `internal/platform` or a dedicated shared module.
