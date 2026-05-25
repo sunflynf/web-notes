@@ -1,3 +1,11 @@
+---
+description: Overview of Go web frameworks, comparison, and guidance for selecting the right backend toolkit.
+tags:
+  - Go
+  - Web Framework
+  - Backend
+---
+
 # Web Framework
 
 A “framework” in Go generally provides:

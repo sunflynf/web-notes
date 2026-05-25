@@ -1,3 +1,11 @@
+---
+description: Go database connection patterns and abstraction layers covering database/sql, drivers, query builders, and ORMs.
+tags:
+  - Go
+  - Database
+  - Persistence
+---
+
 # Database Connection
 
 In Go, you generally have **three layers of abstraction** to connect with databases:
