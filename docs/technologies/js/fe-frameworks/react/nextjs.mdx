@@ -1,0 +1,430 @@
+---
+description: Frontend / Fullstack Frameworks for SEO & SSR
+tags:
+  - Frontend
+  - JavaScript
+  - TypeScript
+  - React
+---
+
+# Next.js
+
+import ProjectStructureExplorer from "@site/src/components/ProjectStructureExplorer";
+
+## Features
+
+- Hybrid rendering = Server-side rendering + Static site generation
+- Automatic Code Splitting
+- Built-in CSS and SASS support + TypeScript support
+- Image Optimization
+- Edge & Middleware support
+- Hot reloading
+- SEO Friendly
+- Incremental Static Regeneration
+- Easy deployment with **Vercel**
+- API Routes with folder's structure
+  - `[dynamic id]`
+  - `[...multiple match]`
+  - `(collocation)`
+  - `_private`
+
+### Use cases
+
+- E-commerce websites
+- Blogs and content-driven sites
+- Dashboard and admin panels
+- Marketing and landing pages
+- Applications requiring dynamic and static content mix
+
+## Install & Setup
+
+```bash
+# Create a new Next.js app
+npx create-next-app@latest my-next-app
+cd my-next-app
+
+# Start the development server
+npm run dev
+```
+
+### Project Structures
+
+<ProjectStructureExplorer
+  nodes={[
+    {
+      id: "node_modules",
+      label: "node_modules/",
+      isFolder: true,
+      description: "Dependencies installed by npm/yarn.",
+    },
+    {
+      id: "public",
+      label: "public/",
+      isFolder: true,
+      description: "Static files served at the root (images, favicon).",
+    },
+    {
+      id: "app",
+      label: "app/",
+      isFolder: true,
+      description:
+        "App directory for server and client components, routes and layouts.",
+      children: [
+        {
+          id: "app/layout.tsx",
+          label: "layout.tsx",
+          description: "Top-level layout and shared UI.",
+        },
+        {
+          id: "app/page.tsx",
+          label: "page.tsx",
+          description: "Default route rendered at `/`.",
+        },
+      ],
+    },
+    {
+      id: "styles",
+      label: "styles/",
+      isFolder: true,
+      description: "Global CSS and style utilities.",
+    },
+    {
+      id: ".gitignore",
+      label: ".gitignore",
+      description: "Files and folders excluded from VCS.",
+    },
+    {
+      id: "package.json",
+      label: "package.json",
+      description: "Project scripts and dependencies.",
+    },
+    {
+      id: "README.md",
+      label: "README.md",
+      description: "Project README and instructions.",
+    },
+  ]}
+  maxHeight="320px"
+  defaultExpanded={false}
+/>
+
+## Fundamental
+
+### Routing
+
+<ProjectStructureExplorer
+  nodes={[
+    {
+      id: "app",
+      label: "app/",
+      isFolder: true,
+      description:
+        "Next.js App Router structure with routes, layouts, and nested folders.",
+      children: [
+        {
+          id: "app/components",
+          label: "components/",
+          isFolder: true,
+          description: "Reusable UI components that are not route files.",
+        },
+        {
+          id: "app/(auth)",
+          label: "(auth)/",
+          isFolder: true,
+          description:
+            "Optional auth route group that does not change the URL.",
+          children: [
+            {
+              id: "app/(auth)/login",
+              label: "login/",
+              isFolder: true,
+              description: "Login route folder.",
+              children: [
+                {
+                  id: "app/(auth)/login/page.tsx",
+                  label: "page.tsx",
+                  description: "Page route for `/login`.",
+                },
+                {
+                  id: "app/(auth)/login/template.tsx",
+                  label: "template.tsx",
+                  description: "Optional route template.",
+                },
+              ],
+            },
+            {
+              id: "app/(auth)/register",
+              label: "register/",
+              isFolder: true,
+              description: "Register route folder.",
+              children: [
+                {
+                  id: "app/(auth)/register/page.tsx",
+                  label: "page.tsx",
+                  description: "Page route for `/register`.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "app/dashboard",
+          label: "dashboard/",
+          isFolder: true,
+          description: "Dashboard route with parallel UI segments.",
+          children: [
+            {
+              id: "app/dashboard/page.tsx",
+              label: "page.tsx",
+              description: "Main dashboard page.",
+            },
+            {
+              id: "app/dashboard/@notification",
+              label: "@notification/",
+              isFolder: true,
+              description: "Parallel route area for notifications.",
+              children: [
+                {
+                  id: "app/dashboard/@notification/page.tsx",
+                  label: "page.tsx",
+                  description: "Notification slot page.",
+                },
+              ],
+            },
+            {
+              id: "app/dashboard/@users",
+              label: "@users/",
+              isFolder: true,
+              description: "Parallel route area for user content.",
+              children: [
+                {
+                  id: "app/dashboard/@users/page.tsx",
+                  label: "page.tsx",
+                  description: "Users slot page.",
+                },
+                {
+                  id: "app/dashboard/@users/archive",
+                  label: "archive/",
+                  isFolder: true,
+                  description: "Archive nested route.",
+                  children: [
+                    {
+                      id: "app/dashboard/@users/archive/page.tsx",
+                      label: "page.tsx",
+                      description: "Archive page.",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "app/intercepting",
+          label: "intercepting/",
+          isFolder: true,
+          description: "Intercepting route folder for navigation flows.",
+          children: [
+            {
+              id: "app/intercepting/thing",
+              label: "thing/",
+              isFolder: true,
+              description: "Intercepting route node.",
+              children: [
+                {
+                  id: "app/intercepting/thing/page.tsx",
+                  label: "page.tsx",
+                  description: "Route for `/intercepting/thing`.",
+                },
+              ],
+            },
+            {
+              id: "app/intercepting/(.)thing",
+              label: "(.)thing/",
+              isFolder: true,
+              description: "Intercepting rootless route folder.",
+              children: [
+                {
+                  id: "app/intercepting/(.)thing/page.tsx",
+                  label: "page.tsx",
+                  description: "Route for a refresh-style transition.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "app/hello",
+          label: "hello/",
+          isFolder: true,
+          description: "Nested hello route examples.",
+          children: [
+            {
+              id: "app/hello/page.tsx",
+              label: "page.tsx",
+              description: "Route for `/hello`.",
+            },
+            {
+              id: "app/hello/bros",
+              label: "bros/",
+              isFolder: true,
+              description: "Nested hello bros route.",
+              children: [
+                {
+                  id: "app/hello/bros/page.tsx",
+                  label: "page.tsx",
+                  description: "Route for `/hello/bros`.",
+                },
+              ],
+            },
+            {
+              id: "app/hello/[username]",
+              label: "[username]/",
+              isFolder: true,
+              description: "Dynamic username route folder.",
+              children: [
+                {
+                  id: "app/hello/[username]/page.tsx",
+                  label: "page.tsx",
+                  description: "Route for `/hello/:username`.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "app/[...slugs]",
+          label: "[...slugs]/",
+          isFolder: true,
+          description: "Catch-all route folder for arbitrary nested paths.",
+          children: [
+            {
+              id: "app/[...slugs]/page.tsx",
+              label: "page.tsx",
+              description: "Route for `/topics1/sub-topic2/something`.",
+            },
+          ],
+        },
+        {
+          id: "app/_secret",
+          label: "_secret/",
+          isFolder: true,
+          description: "Hidden route folder excluded from routing.",
+          children: [
+            {
+              id: "app/_secret/page.tsx",
+              label: "page.tsx",
+              description: "Non-routed secret page.",
+            },
+          ],
+        },
+        {
+          id: "app/layout.tsx",
+          label: "layout.tsx",
+          description: "Shared layout for the app router.",
+        },
+        {
+          id: "app/page.tsx",
+          label: "page.tsx",
+          description: "Root page for the app.",
+        },
+        {
+          id: "app/not-found.tsx",
+          label: "not-found.tsx",
+          description: "Custom not-found page.",
+        },
+      ],
+    },
+  ]}
+  maxHeight="520px"
+  defaultExpanded={false}
+/>
+
+```tsx title="app/hello/[username]/page.tsx"
+import { useRouter } from "next/router";
+
+export default function HelloUser() {
+  const router = useRouter();
+  const { username } = router.query;
+  return <p>Hello {username}!</p>;
+}
+```
+
+```tsx title="app/dashboard/page.tsx"
+export function Dashboard({
+  children: React.Node,
+  notifications: React.Node,
+  users: React.Node
+}) {
+  return (
+    <div>
+      {children}
+      {notifications}
+      {users}
+    </div>
+  );
+}
+```
+
+### Server Component
+
+```tsx title='app/components/ServerComponent.tsx'
+async function ServerComponent() {
+  const data = await fetch("https://api.example.com/data");
+  const result = await data.json();
+
+  return (
+    <div>
+      {result.map((item) => (
+        <p key={item.id}>{item.name}</p>
+      ))}
+    </div>
+  );
+}
+
+// Using like normal components
+<ServerComponent />;
+```
+
+### Metadata
+
+- Good for **SEO**
+- Use with file `[layout|page].[js|jsx|ts|tsx]`
+
+```tsx title='app/layout.tsx'
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "...",
+  description: "...",
+};
+
+export default function Page() {}
+```
+
+## Notes
+
+- **Fetch options**
+  - Data on server-components has catching, put `{ cache: 'no-store' }`
+  - To revidate on n seconds, put `{ next: { revalidate: time } }`
+- **Component**
+  - All components of Next is **server-components**
+  - To make **client-components**, put `'use-client'` on top of file
+
+    ```tsx
+    "use-client";
+
+    export function ClientComponent() {}
+    ```
+
+  - Hooks can only use in **client-components**
+  - Package catching type of component: `client-only` & `server-only`
+  - When to use
+    - **Client**: actions | themes | user's behaviors
+    - **Server**: fetching, work with file + data
+
+## References
+
+- [React](../../libraries/react/index.mdx)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Lightning-Fast Development with Turbo](https://turbo.build/) - 10x faster
