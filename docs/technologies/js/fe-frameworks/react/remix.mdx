@@ -1,0 +1,355 @@
+---
+description: Frontend / Fullstack Frameworks for SEO & SSR
+tags:
+  - Frontend
+  - JavaScript
+  - TypeScript
+  - React
+---
+
+# Remix
+
+import ProjectStructureExplorer from "@site/src/components/ProjectStructureExplorer";
+
+## Features
+
+- Built for the Modern Web
+  - **Progressive enhancement** >> limited JavaScript
+  - **Native APIs** >> relies heavily on native browser features
+- Data Loading Optimization
+- Full-Stack Capabilities
+- Nested Routes
+- Excellent Developer Experience
+  - TypeScript-first
+  - Fast Refresh
+  - Error boundaries
+- Server-Side rendering & Streaming
+- Simple form handling
+- **Zero Client-side javascript required**
+- Built-in Asset Optimization
+- SEO & Accessibility
+- Deployment Flexibility
+
+### Use cases
+
+- Content-heavy applications: Blogs, news sites, documentation.
+- E-commerce platforms: Where fast page loads and dynamic data fetching are critical.
+- Progressive Web Apps (PWAs): Remix’s offline-first and performance-focused design make it ideal.
+- Dashboards: Nested routes and SSR make it great for admin tools.
+
+## Install & Setup
+
+```bash
+npx create-remix@latest my-remix-app
+cd my-remix-app
+
+npm install
+npm run dev
+```
+
+### Project structures
+
+<ProjectStructureExplorer
+  nodes={[
+    {
+      id: "node_modules",
+      label: "node_modules/",
+      isFolder: true,
+      description: "Installed package dependencies (ignored in VCS).",
+    },
+    {
+      id: "public",
+      label: "public/",
+      isFolder: true,
+      description: "Static assets served at the root of the site.",
+    },
+    {
+      id: "app",
+      label: "app/",
+      isFolder: true,
+      description: "Application source: components, nested routes, and root.",
+      children: [
+        {
+          id: "app/components",
+          label: "components/",
+          isFolder: true,
+          description: "Reusable UI components for the app.",
+        },
+        {
+          id: "app/routes",
+          label: "routes/",
+          isFolder: true,
+          description: "Route modules and nested route folders.",
+          children: [
+            {
+              id: "app/routes/_index.tsx",
+              label: "_index.tsx",
+              description: "Root index route.",
+            },
+            {
+              id: "app/routes/home.tsx",
+              label: "home.tsx",
+              description: "Home page route.",
+            },
+            {
+              id: "app/routes/about.tsx",
+              label: "about.tsx",
+              description: "About page route.",
+            },
+          ],
+        },
+        {
+          id: "app/root.tsx",
+          label: "root.tsx",
+          description: "Top-level layout and error boundary.",
+        },
+      ],
+    },
+    {
+      id: "package.json",
+      label: "package.json",
+      description: "Project metadata, scripts and dependencies.",
+    },
+    {
+      id: "tsconfig.json",
+      label: "tsconfig.json",
+      description: "TypeScript compiler options and paths.",
+    },
+  ]}
+  maxHeight="320px"
+  defaultExpanded={false}
+/>
+
+## Fundamental
+
+### Routing
+
+<ProjectStructureExplorer
+  nodes={[
+    {
+      id: "app",
+      label: "app/",
+      isFolder: true,
+      description: "Application source files and route definitions.",
+      children: [
+        {
+          id: "app/components",
+          label: "components/",
+          isFolder: true,
+          description:
+            "Reusable UI components that do not participate in routing.",
+        },
+        {
+          id: "app/routes",
+          label: "routes/",
+          isFolder: true,
+          description: "Remix route modules that build the URL tree.",
+          children: [
+            {
+              id: "app/routes/_index.tsx",
+              label: "_index.tsx",
+              description: "Root route for `/`.",
+            },
+            {
+              id: "app/routes/about.tsx",
+              label: "about.tsx",
+              description: "Static about page route.",
+            },
+            {
+              id: "app/routes/concert._index.tsx",
+              label: "concert._index.tsx",
+              description: "Nested `/concert` layout route.",
+            },
+            {
+              id: "app/routes/concert.trending.tsx",
+              label: "concert.trending.tsx",
+              description: "Nested `/concert/trending` route.",
+            },
+            {
+              id: "app/routes/concert.$city.tsx",
+              label: "concert.$city.tsx",
+              description: "Dynamic `/concert/:city` route.",
+            },
+            {
+              id: "app/routes/concert.tsx",
+              label: "concert.tsx",
+              description: "Concert route layout or parent route.",
+            },
+          ],
+        },
+        {
+          id: "app/root.tsx",
+          label: "root.tsx",
+          description:
+            "Top-level layout, error boundary, and shared document markup.",
+        },
+      ],
+    },
+  ]}
+  maxHeight="360px"
+  defaultExpanded={false}
+/>
+
+<ProjectStructureExplorer
+  nodes={[
+    {
+      id: "app",
+      label: "app/",
+      isFolder: true,
+      description: "Folder that contains route folders and the root app shell.",
+      children: [
+        {
+          id: "app/routes",
+          label: "routes/",
+          isFolder: true,
+          description: "Route directory with nested route folder conventions.",
+          children: [
+            {
+              id: "app/routes/_index",
+              label: "_index/",
+              isFolder: true,
+              description: "Index route folder for the root path.",
+              children: [
+                {
+                  id: "app/routes/_index/signup-form.tsx",
+                  label: "signup-form.tsx",
+                  description: "Nested signup subroute.",
+                },
+                {
+                  id: "app/routes/_index/route.tsx",
+                  label: "route.tsx",
+                  description: "Route entry for `_index` folder.",
+                },
+              ],
+            },
+            {
+              id: "app/routes/about",
+              label: "about/",
+              isFolder: true,
+              description: "Grouped route folder for about page content.",
+              children: [
+                {
+                  id: "app/routes/about/header.tsx",
+                  label: "header.tsx",
+                  description: "Header UI for the about page.",
+                },
+                {
+                  id: "app/routes/about/route.tsx",
+                  label: "route.tsx",
+                  description: "Page route implementation.",
+                },
+              ],
+            },
+            {
+              id: "app/routes/concerts",
+              label: "concerts/",
+              isFolder: true,
+              description: "Grouped route folder for concerts.",
+              children: [
+                {
+                  id: "app/routes/concerts/favorites-cookie.tsx",
+                  label: "favorites-cookie.tsx",
+                  description: "Nested route for favorites cookie tracking.",
+                },
+                {
+                  id: "app/routes/concerts/route.tsx",
+                  label: "route.tsx",
+                  description: "Route file for the concerts folder.",
+                },
+              ],
+            },
+            {
+              id: "app/routes/concerts.$city",
+              label: "concerts.$city/",
+              isFolder: true,
+              description: "Dynamic route folder for city-specific concerts.",
+              children: [
+                {
+                  id: "app/routes/concerts.$city/route.tsx",
+                  label: "route.tsx",
+                  description: "Handles `/concerts/:city` routes.",
+                },
+              ],
+            },
+            {
+              id: "app/routes/concerts._index",
+              label: "concerts._index/",
+              isFolder: true,
+              description: "Index route folder for concerts landing.",
+              children: [
+                {
+                  id: "app/routes/concerts._index/featured.tsx",
+                  label: "featured.tsx",
+                  description: "Featured concerts route fragment.",
+                },
+                {
+                  id: "app/routes/concerts._index/route.tsx",
+                  label: "route.tsx",
+                  description: "Index layout route for concerts.",
+                },
+              ],
+            },
+            {
+              id: "app/routes/concerts.trending",
+              label: "concerts.trending/",
+              isFolder: true,
+              description: "Trending concerts route folder.",
+              children: [
+                {
+                  id: "app/routes/concerts.trending/card.tsx",
+                  label: "card.tsx",
+                  description: "UI card for trending concerts.",
+                },
+                {
+                  id: "app/routes/concerts.trending/route.tsx",
+                  label: "route.tsx",
+                  description: "Route entry for trending concerts.",
+                },
+                {
+                  id: "app/routes/concerts.trending/sponsored.tsx",
+                  label: "sponsored.tsx",
+                  description: "Sponsored route variation.",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "app/root.tsx",
+          label: "root.tsx",
+          description: "Application shell and error handling.",
+        },
+      ],
+    },
+  ]}
+  maxHeight="420px"
+  defaultExpanded={false}
+/>
+
+### Examples
+
+```tsx title="concerts._index.tsx"
+export default function Concerts() {
+  return <>Waiting here!</>;
+}
+```
+
+```tsx title="concerts.$concertId.tsx"
+import type { LoaderFunctionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  return json({ concertId: params.concertId });
+};
+
+export default function Concert() {
+  const { concertId } = useLoaderData<typeof loader>();
+  return <>Your id: {concertId}</>;
+}
+```
+
+## References
+
+- [Remix & Next](https://www.learnremix.io/why-remix/comparing-remix-to-other-frameworks/remix-vs-next.js)
+- [Documents](https://remix.run/docs/en/main)
