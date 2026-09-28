@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Web Notes">
+  <!-- Notebook page in ballpoint blue: three lines of notes, indented like code,
+       with the middle line struck through with a highlighter. -->
+  <rect width="32" height="32" rx="7" fill="#2A4BB0"/>
+  <rect x="5.5" y="6.5" width="13" height="3.5" rx="1.75" fill="#FFFFFF"/>
+  <path d="M9 12.3 L27.5 11.7 L26.9 19.9 L8.4 20.3 Z" fill="#FFE536"/>
+  <rect x="11" y="14.2" width="13" height="3.6" rx="1.8" fill="#1C2230"/>
+  <rect x="5.5" y="22.5" width="9" height="3.5" rx="1.75" fill="#FFFFFF"/>
+</svg>
