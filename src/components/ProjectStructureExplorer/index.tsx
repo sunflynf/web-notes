@@ -173,7 +173,7 @@ const ProjectStructureExplorer: React.FC<ProjectStructureExplorerProps> = ({
               </div>
             </button>
           </div>
-          {hasChildren && expanded
+          {hasChildren && expanded && node.children
             ? renderTree(node.children, depth + 1)
             : null}
         </div>

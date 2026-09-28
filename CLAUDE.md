@@ -1,24 +1,26 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) and other coding agents when working with code in this repository. It is the primary source of repository guidelines; `AGENTS.md` points here.
 
 ## Project Overview
 
-This is a Docusaurus-based documentation website called "Web Notes" - a personal knowledge base covering web development technologies, cloud computing, databases, and programming languages. The site is deployed to GitHub Pages at https://sunflynf.github.io/web-notes/.
+This is a Docusaurus-based documentation website called "Web Notes" - a personal knowledge base covering web development technologies, cloud computing, databases, and programming languages. The site is deployed to GitHub Pages at <https://sunflynf.github.io/web-notes/>.
 
 ## Development Commands
+
+Use Yarn (`yarn.lock` must stay committed).
 
 ### Local Development
 ```bash
 yarn start              # Start dev server at localhost:3000
-yarn build             # Build production site
-yarn typecheck         # Run TypeScript type checking
+yarn build             # Build production site into build/
+yarn typecheck         # Run TypeScript type checking (tsc)
 yarn serve             # Serve production build locally
 ```
 
 ### Other Commands
 ```bash
-yarn clear             # Clear Docusaurus cache
+yarn clear             # Clear Docusaurus cache when generated state is stale
 yarn swizzle           # Customize Docusaurus theme components
 yarn write-translations    # Extract i18n translations
 yarn write-heading-ids    # Add heading IDs to markdown files
@@ -27,9 +29,9 @@ yarn write-heading-ids    # Add heading IDs to markdown files
 ## Architecture
 
 ### Tech Stack
-- **Framework**: Docusaurus 3.8+ with TypeScript
+- **Framework**: Docusaurus 3.10+ with TypeScript
 - **Bundler**: Rspack (via `@docusaurus/faster`)
-- **Rendering**: React 18
+- **Rendering**: React 19, TypeScript 7 (editor-only)
 - **Deployment**: GitHub Actions → GitHub Pages
 - **Search**: Algolia DocSearch integration
 
@@ -41,15 +43,16 @@ web-notes/
 │   ├── technologies/       # Programming languages, frameworks
 │   ├── key-notes/         # Best practices, patterns, interviews
 │   ├── cloud-computing/   # Cloud platforms and services
-│   └── _test-features/    # Feature testing area
-├── blog/                  # Blog posts
+│   ├── assets/            # Images shared by docs pages
+│   └── _test-features/    # Feature testing area (not published)
+├── blog/                  # Blog posts, date-prefixed (e.g. 2025-07-07-install-sdkman-windows.mdx)
 ├── src/
 │   ├── components/        # Custom React components
 │   │   ├── DockTabs/              # Tab navigation component
 │   │   ├── ProjectStructureExplorer/  # Interactive file tree explorer
 │   │   ├── HomepageFeatures/      # Homepage feature cards
 │   │   ├── Highlight.tsx          # Text highlighting utility
-│   │   └── ZoomBlock/             # Image zoom component
+│   │   └── ZoomBlock/             # Zoom in/out wrapper for wide content
 │   ├── css/              # Global and component styles
 │   └── pages/            # Custom pages (React + MDX)
 ├── static/               # Static assets (images, fonts, etc.)
@@ -57,13 +60,15 @@ web-notes/
 └── sidebars.ts          # Auto-generated sidebar config
 ```
 
+Never edit generated output in `build/` or `.docusaurus/`; update source files instead.
+
 ### Key Configuration
 
 **docusaurus.config.ts**:
 - Deployment: `baseUrl: "/web-notes/"`, `organizationName: "sunflynf"`, `projectName: "web-notes"`
 - Uses auto-generated sidebars from folder structure
 - Mermaid diagram support enabled via `@docusaurus/theme-mermaid`
-- Extensive Prism language support (30+ languages including Solidity, Zig, Cypher)
+- Extra Prism languages via `prism.additionalLanguages` (including Solidity, Zig, Cypher)
 - Algolia search with app ID `ZE2R3K1GKF`, index `sunflynfio`
 - Future flags enabled: v4 prep, Rspack bundler, SSG worker threads
 
@@ -84,10 +89,16 @@ web-notes/
 - Props: `nodes`, `initialSelectedId`, `maxHeight`, `defaultExpanded`
 - Used for visualizing project structures in documentation
 
+**Highlight** (`src/components/Highlight.tsx`):
+- Colored inline text: `variant` of `Y`/`O`/`G`/`C`/`P`, or custom `bgColor`/`color`
+
+**ZoomBlock** (`src/components/ZoomBlock/`):
+- Wraps wide content (diagrams, images) with zoom in/out/reset buttons
+
 ### Content Organization
 
 - Documentation is organized by topic (technologies, key-notes, cloud-computing)
-- Each folder uses `_category_.json` for metadata
+- Folders use `_category_.json` (or `_category_.yml`) for label and ordering
 - Markdown/MDX files support:
   - Mermaid diagrams
   - Custom React components
@@ -103,7 +114,7 @@ web-notes/
 4. Deploys artifact to GitHub Pages (`gh-pages` branch)
 5. Environment variable: `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true`
 
-**Important**: The build must pass before merge. Test with `yarn build` and `yarn typecheck` locally.
+**PR check** (`.github/workflows/test-deploy.yml`): runs `yarn install --frozen-lockfile && yarn build` on PRs to `main` with Node 24 — keep both workflows on the same Node version.
 
 ## Development Guidelines
 
@@ -112,7 +123,9 @@ web-notes/
 1. Create `.md` or `.mdx` files in appropriate `docs/` subdirectory
 2. Sidebar updates automatically (autogenerated from folder structure)
 3. For category metadata, add `_category_.json` with `label` and `position`
-4. Use `editUrl` in frontmatter to link to GitHub source
+4. Put shared images in `docs/assets/` (or `static/` for site-wide assets)
+5. Keep headings descriptive and stable — Docusaurus uses them for anchors
+6. Keep generated documentation modular and Docusaurus-friendly
 
 ### Custom Components
 
@@ -125,21 +138,42 @@ import Highlight from '@site/src/components/Highlight';
 <Highlight color="#25c2a0">Highlighted text</Highlight>
 ```
 
+Write components in TypeScript (`.tsx`) and keep component folders self-contained (see `src/components/ZoomBlock/`).
+
 ### Styling
 
 - Global styles: `src/css/custom.css`
-- Component-specific: Use CSS Modules (`.module.css`)
+- Component-specific: Use CSS Modules (`styles.module.css` or `Component.module.css`)
 - Theme variables defined in `custom.css` under `:root` and `[data-theme='dark']`
 
 ### Adding New Languages to Prism
 
-Edit `docusaurus.config.ts` → `prism.additionalLanguages` array. Current supported languages include: bash, csharp, cypher, dart, docker, ejs, handlebars, java, less, markdown, mermaid, mongodb, php, powershell, properties, sass, scss, solidity, sql, yaml, zig.
+Add to `prism.additionalLanguages` in `docusaurus.config.ts` (check the existing list there before using an unusual code-fence language).
+
+## Gotchas
+
+- **`.md` is compiled as MDX** (`markdown.format` defaults to `mdx`): bare `<`, `{`, `}` in prose break the build. Wrap them in backticks or escape them.
+- **`_`-prefixed files/folders are excluded** from docs (`_test-features/`, `database/_graph/`, `database/_in-memory/`). Rename without `_` to publish.
+- **Broken links fail the build** (`onBrokenLinks: "throw"`). With `trailingSlash: true`, prefer relative file links (`./foo.md`) over URL paths.
+- **`yarn.lock` must be committed**: CI uses `--frozen-lockfile`.
+
+## Testing
+
+There is no unit test framework. `yarn typecheck` and `yarn build` are the required validation suite — run both before opening a PR.
+
+- Content changes: confirm links, imports, frontmatter, Mermaid diagrams, and custom MDX components compile.
+- UI/style changes: check the affected page in `yarn start` in both light and dark themes.
+
+## Commits & Pull Requests
+
+- Concise, imperative subjects starting with `Add`, `Update`, `Fix`, or `Refactor` plus the topic, e.g. `Add documentation for Spring AI integration and usage examples`.
+- PRs include a short description, changed documentation areas, validation performed (`yarn build`, `yarn typecheck`), screenshots for visible UI/layout changes, and linked issues when available.
 
 ## Notes
 
-- Node.js >= 18.0 required
-- Use Yarn for package management (lockfile present)
-- TypeScript is configured but minimal (editor support only, uses `@docusaurus/tsconfig`)
+- Node.js >= 20.0 required (Docusaurus 3.10+ minimum; CI uses Node 24)
+- TypeScript 7 (strict by default) is used for editor support and `yarn typecheck` only. `tsconfig.json` inlines `@docusaurus/tsconfig` minus `baseUrl` (removed in TS 7); switch back to `extends` once upstream drops it
 - Broken links throw errors (`onBrokenLinks: "throw"`), broken markdown links warn
 - Dark mode respects system preference (`respectPrefersColorScheme: true`)
 - Algolia search API key is public (read-only search key)
+- Custom agents are indexed in `.github/AGENTS.md`

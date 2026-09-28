@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import "./ZoomBlock.css";
 import ButtonControl from "./ButtonControl";
 
@@ -6,7 +6,7 @@ const STEP = 50;
 const MAX_WIDTH = 250;
 const MIN_WIDTH = 50;
 
-const ZoomBlock = ({ children }) => {
+const ZoomBlock = ({ children }: { children: ReactNode }) => {
   const [width, setWidth] = useState(100);
 
   const increase = () => {

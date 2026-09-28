@@ -10,7 +10,7 @@ const variantColor = {
 
 type HighlightProps = {
   children: any;
-  variant?: string;
+  variant?: keyof typeof variantColor;
   bgColor?: string;
   color?: string;
 };
