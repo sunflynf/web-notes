@@ -1,23 +1,104 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
-.heroBanner {
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+/* Hero: faint graph-paper dots under the headline and topic index */
+.hero {
+  padding: 4.5rem 0 3.5rem;
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--wn-graphite) 22%, transparent) 1px,
+    transparent 1.2px
+  );
+  background-size: 22px 22px;
+  background-position: -11px -11px;
+  border-bottom: 1px solid var(--wn-rule);
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.title {
+  max-width: 17ch;
+  margin: 0 0 1.25rem;
+  color: var(--wn-ink);
+  font-size: clamp(2.6rem, 6.4vw, 5.2rem);
+  font-weight: 700;
+  font-variation-settings: "wdth" 86, "opsz" 96;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
 }
 
-.buttons {
+.lede {
+  max-width: 58ch;
+  margin: 0 0 2rem;
+  color: var(--wn-graphite);
+  font-size: 1.2rem;
+  line-height: 1.55;
+}
+
+.actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  gap: 0.75rem 1rem;
+  margin-bottom: 3.5rem;
+}
+
+.searchHint {
+  margin: 0 0 0 0.5rem;
+  color: var(--wn-graphite);
+  font-size: 0.95rem;
+}
+
+.searchHint kbd {
+  font-size: 0.8rem;
+}
+
+.index {
+  border-bottom: 1px solid var(--wn-rule);
+}
+
+.section {
+  padding: 4.5rem 0 1rem;
+}
+
+.section:last-child {
+  padding-bottom: 5rem;
+}
+
+.sectionHead {
+  max-width: 60ch;
+  margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.sectionLede {
+  margin: 0;
+  color: var(--wn-graphite);
+  font-size: 1.05rem;
+}
+
+@media (max-width: 720px) {
+  .hero {
+    padding: 2.75rem 0 2rem;
+  }
+
+  .lede {
+    font-size: 1.05rem;
+  }
+
+  .actions {
+    margin-bottom: 2.25rem;
+  }
+
+  .actions :global(.button) {
+    flex: 1 1 auto;
+  }
+
+  .searchHint {
+    display: none;
+  }
+
+  .section {
+    padding-top: 3rem;
+  }
 }
