@@ -1,0 +1,102 @@
+.dock {
+  display: grid;
+  grid-template-columns: minmax(8rem, 13rem) minmax(0, 1fr);
+  margin: 1.5rem 0;
+  border: 1px solid var(--wn-rule);
+  border-radius: 10px;
+  background: var(--wn-paper-raised);
+  overflow: hidden;
+}
+
+.bar {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+  border-right: 1px solid var(--wn-rule);
+  background: var(--wn-paper);
+}
+
+.tab {
+  position: relative;
+  padding: 0.55rem 1rem 0.55rem 1.1rem;
+  border: 0;
+  background: transparent;
+  color: var(--wn-graphite);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--wn-ink);
+}
+
+/* The active tab reads as a page tab: inked text, a ballpoint edge,
+   and the raised paper colour running into the panel. */
+.tab[aria-selected="true"] {
+  color: var(--ifm-color-primary);
+  background: var(--wn-paper-raised);
+  margin-right: -1px;
+}
+
+.tab[aria-selected="true"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: currentColor;
+}
+
+.tab:focus-visible,
+.panel:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: -2px;
+}
+
+.panel {
+  min-width: 0;
+  padding: 1rem 1.25rem;
+}
+
+.panel > :last-child,
+.panel > :last-child > :last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .dock {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bar {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0 0.5rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--wn-rule);
+    scrollbar-width: thin;
+  }
+
+  .tab {
+    flex: none;
+    padding: 0.7rem 0.8rem;
+  }
+
+  .tab[aria-selected="true"] {
+    margin: 0 0 -1px;
+  }
+
+  .tab[aria-selected="true"]::before {
+    top: auto;
+    left: 0.6rem;
+    right: 0.6rem;
+    bottom: 0;
+    width: auto;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+  }
+}

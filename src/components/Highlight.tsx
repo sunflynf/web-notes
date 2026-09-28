@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
 
 const variantColor = {
   Y: "#ffe536", // Yellow
@@ -8,8 +8,17 @@ const variantColor = {
   P: "#8036ff", // Purple -> Sweet Escape
 };
 
+// Text color that stays readable on each marker, in light and dark mode
+const variantInk: Record<keyof typeof variantColor, string> = {
+  Y: "var(--wn-marker-ink)",
+  O: "var(--wn-marker-ink)",
+  G: "var(--wn-marker-ink)",
+  C: "var(--wn-marker-ink)",
+  P: "#ffffff",
+};
+
 type HighlightProps = {
-  children: any;
+  children: ReactNode;
   variant?: keyof typeof variantColor;
   bgColor?: string;
   color?: string;
@@ -22,15 +31,19 @@ const Highlight: FC<HighlightProps> = ({
   color,
 }) => {
   return (
-    <span
+    <mark
       style={{
         backgroundColor: bgColor || variantColor[variant],
-        color: color || "#333",
-        padding: 3,
+        color: color || variantInk[variant],
+        padding: "0.05em 0.3em",
+        margin: "0 -0.05em",
+        borderRadius: "0.3em 0.15em 0.35em 0.2em",
+        boxDecorationBreak: "clone",
+        WebkitBoxDecorationBreak: "clone",
       }}
     >
       {children}
-    </span>
+    </mark>
   );
 };
 

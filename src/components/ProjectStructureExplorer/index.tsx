@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import { useColorMode } from "@docusaurus/theme-common";
 import styles from "./styles.module.css";
 
 type ProjectNode = {
@@ -60,6 +59,21 @@ const defaultNodes: ProjectNode[] = [
   },
 ];
 
+const NodeIcon = ({ folder }: { folder?: boolean }) => (
+  <svg
+    className={styles.nodeIcon}
+    viewBox="0 0 16 16"
+    aria-hidden="true"
+    focusable="false"
+  >
+    {folder ? (
+      <path d="M1.5 3.5h4.2l1.4 1.6h7.4v7.4H1.5z" />
+    ) : (
+      <path d="M3.5 1.5h6l3 3v10h-9zM9.5 1.5v3h3" />
+    )}
+  </svg>
+);
+
 const sortNodes = (nodes: ProjectNode[]): ProjectNode[] => {
   return [...nodes]
     .map((node) => ({
@@ -108,7 +122,6 @@ const ProjectStructureExplorer: React.FC<ProjectStructureExplorerProps> = ({
   maxHeight = "520px",
   defaultExpanded = false,
 }) => {
-  const { colorMode } = useColorMode();
   const sortedNodes = useMemo(() => sortNodes(nodes), [nodes]);
   const [selectedId, setSelectedId] = useState(
     initialSelectedId || sortedNodes[0]?.id || "",
@@ -139,7 +152,7 @@ const ProjectStructureExplorer: React.FC<ProjectStructureExplorerProps> = ({
         <div
           key={node.id}
           className={`${styles.treeItem} ${depth > 0 ? styles.childItem : ""}`}
-          style={{ paddingLeft: depth * 16 }}
+          style={{ paddingLeft: depth > 0 ? 16 : 0 }}
         >
           <div className={styles.treeNodeRow}>
             {hasChildren ? (
@@ -147,6 +160,7 @@ const ProjectStructureExplorer: React.FC<ProjectStructureExplorerProps> = ({
                 type="button"
                 className={styles.toggleButton}
                 onClick={() => toggleNode(node.id)}
+                aria-expanded={expanded}
                 aria-label={
                   expanded ? `Collapse ${node.label}` : `Expand ${node.label}`
                 }
@@ -163,11 +177,10 @@ const ProjectStructureExplorer: React.FC<ProjectStructureExplorerProps> = ({
                   : styles.nodeButton
               }
               onClick={() => setSelectedId(node.id)}
+              aria-current={node.id === selectedId ? "true" : undefined}
               type="button"
             >
-              <span className={styles.nodeIcon}>
-                {hasChildren || isFolderOnly ? "📁" : "📄"}
-              </span>
+              <NodeIcon folder={hasChildren || isFolderOnly} />
               <div className={styles.nodeText}>
                 <span>{node.label}</span>
               </div>
@@ -181,16 +194,13 @@ const ProjectStructureExplorer: React.FC<ProjectStructureExplorerProps> = ({
     });
   };
 
-  const themeClass =
-    colorMode === "dark" ? styles.darkTheme : styles.lightTheme;
-
   const resolvedMaxHeight =
     typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight;
 
   return (
-    <div className={`${styles.container} ${themeClass}`}>
+    <div className={styles.container}>
       <section className={styles.treePanel}>
-        <div className={styles.panelHeader}>Project structure</div>
+        <h4 className={styles.panelHeader}>Project structure</h4>
         <div
           className={styles.treeList}
           style={{ maxHeight: resolvedMaxHeight }}
@@ -200,18 +210,18 @@ const ProjectStructureExplorer: React.FC<ProjectStructureExplorerProps> = ({
       </section>
 
       <section className={styles.detailPanel}>
-        <div className={styles.panelHeader}>Details</div>
+        <h4 className={styles.panelHeader}>Details</h4>
         <div
           className={styles.detailContent}
           style={{ maxHeight: resolvedMaxHeight }}
         >
-          <h2 className={styles.detailTitle}>{selectedNode?.label}</h2>
+          <p className={styles.detailTitle}>{selectedNode?.label}</p>
           <p className={styles.detailDescription}>
             {selectedNode?.description || "No description available."}
           </p>
           {selectedNode?.children && selectedNode.children.length > 0 && (
             <div>
-              <h3>Contains</h3>
+              <p className={styles.detailSubhead}>Contains</p>
               <ul className={styles.detailList}>
                 {selectedNode.children.map((child) => (
                   <li key={child.id}>

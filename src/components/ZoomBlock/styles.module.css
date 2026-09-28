@@ -1,0 +1,67 @@
+.zoom {
+  margin: 1.5rem 0;
+  border: 1px solid var(--wn-rule);
+  border-radius: 10px;
+  background: var(--wn-paper-raised);
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid var(--wn-rule);
+  background: var(--wn-paper);
+}
+
+.button {
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--wn-ink);
+  font: inherit;
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  border-color: var(--wn-rule);
+  background: var(--wn-paper-raised);
+}
+
+.button:disabled {
+  color: var(--wn-graphite);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.reset {
+  margin-left: 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.level {
+  min-width: 3.2rem;
+  color: var(--wn-graphite);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.viewport {
+  overflow-x: auto;
+  padding: 1rem;
+}
+
+.button:focus-visible,
+.viewport:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: -2px;
+}
