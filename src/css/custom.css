@@ -1,32 +1,85 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * Global styles. The classic template bundles Infima; its variables are
+ * overridden here. Site-specific tokens use the `--wn-` prefix.
+ *
+ * Visual idea: a developer's notebook — ballpoint-blue ink on cool paper,
+ * with the highlighter colors from <Highlight> marking topics.
  */
 
-/* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
-  --dock-tab-active-color: #eee;
+  /* Paper & ink */
+  --wn-paper: #f6f7f9;
+  --wn-paper-raised: #ffffff;
+  --wn-ink: #1c2230;
+  --wn-graphite: #5a6273;
+  --wn-rule: #dce0e7;
+
+  /* Highlighter markers — shared with <Highlight variant="…"> */
+  --wn-marker-y: #ffe536;
+  --wn-marker-o: #ff8036;
+  --wn-marker-g: #b5ff36;
+  --wn-marker-c: #36b5ff;
+  --wn-marker-p: #8036ff;
+  --wn-marker-ink: #1c2230;
+
+  --wn-font-display:
+    "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Ballpoint blue */
+  --ifm-color-primary: #2a4bb0;
+  --ifm-color-primary-dark: #26449e;
+  --ifm-color-primary-darker: #244096;
+  --ifm-color-primary-darkest: #1d347b;
+  --ifm-color-primary-light: #2e52c2;
+  --ifm-color-primary-lighter: #3056ca;
+  --ifm-color-primary-lightest: #4368d6;
+
+  --ifm-background-color: var(--wn-paper);
+  --ifm-navbar-background-color: var(--wn-paper-raised);
+  --ifm-footer-background-color: #1c2230;
+  --ifm-heading-font-family: var(--wn-font-display);
+  --ifm-font-family-monospace:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ifm-code-font-size: 92%;
+  --docusaurus-highlighted-code-line-bg: rgba(42, 75, 176, 0.1);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme="dark"] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
-  --dock-tab-active-color: #111;
+html[data-theme="dark"] {
+  --wn-paper: #151922;
+  --wn-paper-raised: #1c212c;
+  --wn-ink: #e6e9ef;
+  --wn-graphite: #9aa3b5;
+  --wn-rule: #2b3140;
+
+  --ifm-color-primary: #93aeff;
+  --ifm-color-primary-dark: #7597ff;
+  --ifm-color-primary-darker: #668bff;
+  --ifm-color-primary-darkest: #3867ff;
+  --ifm-color-primary-light: #b1c5ff;
+  --ifm-color-primary-lighter: #c0d0ff;
+  --ifm-color-primary-lightest: #eef2ff;
+
+  --ifm-background-color: var(--wn-paper);
+  --ifm-navbar-background-color: var(--wn-paper-raised);
+  --ifm-footer-background-color: #0f1218;
+  --docusaurus-highlighted-code-line-bg: rgba(147, 174, 255, 0.14);
+}
+
+body {
+  background-color: var(--wn-paper);
+}
+
+h1,
+h2,
+h3 {
+  font-variation-settings: "wdth" 92;
+  letter-spacing: -0.01em;
+}
+
+/* Navbar wordmark set in the display face, to match the logo */
+.navbar__title {
+  font-family: var(--wn-font-display);
+  font-weight: 700;
+  font-variation-settings: "wdth" 88;
+  letter-spacing: -0.01em;
 }

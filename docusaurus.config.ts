@@ -5,6 +5,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 const config: Config = {
   title: "Web Notes",
   tagline: "Phi note everything about Web (anything he see)!",
+  // .ico fallback here; the SVG icon for modern browsers is in headTags
   favicon: "img/favicon.ico",
   url: "https://github.com",
 
@@ -17,6 +18,32 @@ const config: Config = {
   // URL Configs
   trailingSlash: true,
   onBrokenLinks: "throw",
+
+  headTags: [
+    {
+      tagName: "link",
+      attributes: {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/web-notes/img/favicon.svg",
+      },
+    },
+    {
+      tagName: "link",
+      attributes: { rel: "preconnect", href: "https://fonts.googleapis.com" },
+    },
+    {
+      tagName: "link",
+      attributes: {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossorigin: "anonymous",
+      },
+    },
+  ],
+  stylesheets: [
+    "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Noto+Sans:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;600&display=swap",
+  ],
 
   // TODO: Add Languages (VI)
   // i18n: {
@@ -58,7 +85,7 @@ const config: Config = {
     navbar: {
       title: "FI-FINE",
       logo: {
-        alt: "Docusaurus Logo",
+        alt: "Web Notes logo",
         src: "img/logo.svg",
       },
       items: [
