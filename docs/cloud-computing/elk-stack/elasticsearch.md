@@ -1,187 +1,118 @@
-# Elasticsearch
+# Elasticsearch Integration Guide
 
-ElasticSearch is a powerful, distributed search and analytics engine designed for working with large datasets. It's commonly used for log and event data, full-text search, and analytics. To use it effectively, you need to understand how to interact with its RESTful API, structure your data properly, and optimize your queries. Here's a step-by-step guide on getting started:
+Elasticsearch is the storage and query engine in the ELK stack. Developers integrate with it by sending JSON documents, defining index mappings, and querying data through REST APIs or official client libraries.
 
-## Install
+## When to Use It
 
-- **Single Node Installation**: If you're testing locally, you can download and run ElasticSearch directly on your machine.
-  - Download it from the [official Elastic website](https://www.elastic.co/downloads/elasticsearch).
-  - Unzip the downloaded file and run it with `bin/elasticsearch` (Linux/Mac) or `bin\elasticsearch.bat` (Windows).
-- **Docker Installation**: For a more isolated setup, you can use Docker:
+- Full-text search for documents, products, notes, or knowledge bases.
+- Centralized log and event search from application services.
+- Aggregations for metrics, reporting, and operational troubleshooting.
+- Fast filtering over large semi-structured JSON datasets.
 
-  ```bash
-  docker pull docker.elastic.co/elasticsearch/elasticsearch:8.0.0
-  docker run -p 9200:9200 -e "discovery.type=single-node" elasticsearch:8.0.0
-  ```
+## Local Setup
 
-## Understand the Core Concepts
+Use Docker for repeatable development:
 
-- **Index**: Like a database table, where you store documents of similar nature.
-- **Document**: A single record or JSON object stored in an index.
-- **Field**: Each attribute within a document, like a column in a relational database.
-- **Cluster and Node**: ElasticSearch can run as a single node or a cluster with multiple nodes for better scalability.
+```bash
+docker network create elk
+docker run --name elasticsearch --net elk -p 9200:9200 \
+  -e discovery.type=single-node \
+  -e xpack.security.enabled=false \
+  docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+```
 
-## Indexing Data (Storing Data)
+Check the node:
 
-ElasticSearch stores data in JSON format. Here’s an example of indexing (adding) a document to an index:
+```bash
+curl http://localhost:9200
+```
 
-- **Create or Use an Index**:
+For production-like environments, keep security enabled and connect with HTTPS, API keys, or service credentials.
 
-  ```json
-  PUT /my_index
-  ```
+## Index Design
 
-- **Add a Document**:
+Create indices around access patterns, not only source systems. Logs commonly use time-based names:
 
-  ```json
-  POST /my_index/_doc/1
-  {
-    "title": "The Great Gatsby",
-    "author": "F. Scott Fitzgerald",
-    "published_year": 1925
-  }
-  ```
+```text
+logs-api-dev-2026.06.11
+orders-search-v1
+audit-events-prod-2026.06
+```
 
-## Querying Data
-
-ElasticSearch offers several types of queries:
-
-- **Match Query**: Searches for documents that contain specific terms in a field.
-
-  ```json
-  GET /my_index/_search
-  {
-    "query": {
-      "match": { "title": "Gatsby" }
-    }
-  }
-  ```
-
-- **Term Query**: Looks for exact matches, often used for fields with exact values (like IDs).
-
-  ```json
-  GET /my_index/_search
-  {
-    "query": {
-      "term": { "author": "F. Scott Fitzgerald" }
-    }
-  }
-  ```
-
-- **Range Query**: Searches within a numeric or date range.
-
-  ```json
-  GET /my_index/_search
-  {
-    "query": {
-      "range": {
-        "published_year": { "gte": 1900, "lte": 1950 }
-      }
-    }
-  }
-  ```
-
-## Updating Documents
-
-You can update existing documents using the `update` API:
+Define mappings before indexing important data. Use `keyword` for exact filters, `text` for full-text search, `date` for timestamps, and numeric types for metrics.
 
 ```json
-POST /my_index/_update/1
+PUT /logs-api-dev
 {
-  "doc": {
-    "title": "The Great Gatsby - Updated"
+  "mappings": {
+    "properties": {
+      "@timestamp": { "type": "date" },
+      "level": { "type": "keyword" },
+      "service.name": { "type": "keyword" },
+      "trace.id": { "type": "keyword" },
+      "duration_ms": { "type": "long" },
+      "message": { "type": "text" }
+    }
   }
 }
 ```
 
-## Deleting Documents
+## Indexing Documents
 
-- **Delete a Document**:
-
-  ```json
-  DELETE /my_index/_doc/1
-  ```
-
-- **Delete an Index**:
-
-  ```json
-  DELETE /my_index
-  ```
-
-## Analyzing Data
-
-ElasticSearch has an analysis engine for handling text searches, including tokenizers, analyzers, and filters to process text data.
-
-- **Analyzers**: These break text into terms and normalize it, enabling full-text search.
-- **Aggregation Queries**: Useful for analytics and reporting, aggregations allow you to group and analyze data, such as counting, averaging, and histogram creation.
+Send structured JSON. Avoid free-form logs as the only source of truth.
 
 ```json
-GET /my_index/_search
+POST /logs-api-dev/_doc
 {
+  "@timestamp": "2026-06-11T10:30:00Z",
+  "level": "ERROR",
+  "service": { "name": "checkout-api" },
+  "trace": { "id": "7d9f2a" },
+  "duration_ms": 842,
+  "message": "Payment provider timeout"
+}
+```
+
+## Query Patterns
+
+Use `match` for analyzed text and `term` for exact keyword values.
+
+```json
+GET /logs-api-dev/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "service.name": "checkout-api" } },
+        { "range": { "@timestamp": { "gte": "now-1h" } } }
+      ],
+      "must": [
+        { "match": { "message": "timeout" } }
+      ]
+    }
+  }
+}
+```
+
+Aggregate fields for dashboards and alerts:
+
+```json
+GET /logs-api-dev/_search
+{
+  "size": 0,
   "aggs": {
-    "by_author": {
-      "terms": { "field": "author.keyword" }
+    "errors_by_service": {
+      "terms": { "field": "service.name" }
     }
   }
 }
 ```
 
-## Monitoring and Scaling
+## Developer Checklist
 
-- **Kibana**: ElasticSearch integrates well with Kibana, which provides a dashboard and data visualization features.
-- **Scaling**: ElasticSearch is designed to scale horizontally, meaning you can add nodes to distribute the data and load across the cluster.
-
-## Use Cases
-
-ElasticSearch is highly flexible and supports various applications:
-
-- **Log and Event Data Analysis**: Storing and analyzing logs from applications.
-- **Real-time Data Analysis**: Aggregating and analyzing data in real time, e.g., monitoring performance metrics.
-- **E-commerce Search**: Enabling fast, accurate product searches with filters, faceting, and auto-suggestions.
-- **Full-text Search**: Implementing search functionality for websites, blogs, or documents.
-
-## Sample Walkthrough
-
-Here's a simple sequence that combines multiple operations:
-
-1. **Create an index**:
-
-   ```json
-   PUT /library
-   ```
-
-2. **Index a book**:
-
-   ```json
-   POST /library/_doc/1
-   {
-     "title": "1984",
-     "author": "George Orwell",
-     "year": 1949
-   }
-   ```
-
-3. **Search by author**:
-
-   ```json
-   GET /library/_search
-   {
-     "query": {
-       "match": { "author": "Orwell" }
-     }
-   }
-   ```
-
-4. **Aggregate by publication year**:
-
-   ```json
-   GET /library/_search
-   {
-     "size": 0,
-     "aggs": {
-       "years": {
-         "terms": { "field": "year" }
-       }
-     }
-   }
-   ```
+- Use stable field names across services.
+- Create mappings before high-volume indexing starts.
+- Store secrets outside documents; redact tokens and passwords before ingestion.
+- Add correlation fields such as `trace.id`, `request.id`, and `user.id` when allowed.
+- Test queries with expected production filters: service, environment, timestamp, level, and tenant.
+- Monitor index size, shard count, rejected writes, and slow queries.
