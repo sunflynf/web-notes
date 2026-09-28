@@ -50,7 +50,7 @@ web-notes/
 │   ├── components/        # Custom React components
 │   │   ├── DockTabs/              # Tab navigation component
 │   │   ├── ProjectStructureExplorer/  # Interactive file tree explorer
-│   │   ├── HomepageFeatures/      # Homepage feature cards
+│   │   ├── HomepageIndex/         # Home page topic index (topics.ts = curated list)
 │   │   ├── Highlight.tsx          # Text highlighting utility
 │   │   └── ZoomBlock/             # Zoom in/out wrapper for wide content
 │   ├── css/              # Global and component styles
@@ -82,7 +82,7 @@ Never edit generated output in `build/` or `.docusaurus/`; update source files i
 **DockTabs** (`src/components/DockTabs/`):
 - Tab navigation for multi-content sections
 - Usage: `<DockTabs tabs={[{key, label, title?, content}]} />`
-- Styles: `src/css/dock-tabs.module.css`
+- Accessible tabs (arrow keys, ARIA); styles in `DockTabs/styles.module.css`
 
 **ProjectStructureExplorer** (`src/components/ProjectStructureExplorer/`):
 - Interactive file tree with expandable folders
@@ -91,6 +91,9 @@ Never edit generated output in `build/` or `.docusaurus/`; update source files i
 
 **Highlight** (`src/components/Highlight.tsx`):
 - Colored inline text: `variant` of `Y`/`O`/`G`/`C`/`P`, or custom `bgColor`/`color`
+
+**HomepageIndex** (`src/components/HomepageIndex/`):
+- Home page topic index; edit `topics.ts` to add topics. Links and note counts resolve from real doc ids, so a missing id is skipped instead of breaking the build
 
 **ZoomBlock** (`src/components/ZoomBlock/`):
 - Wraps wide content (diagrams, images) with zoom in/out/reset buttons
@@ -142,9 +145,12 @@ Write components in TypeScript (`.tsx`) and keep component folders self-containe
 
 ### Styling
 
+- Visual system: "developer's notebook" — ballpoint-blue primary, `Highlight` marker colors (Y/O/G/C/P) as accents, Noto Sans body (`--ifm-font-family-base`), Bricolage Grotesque headings, JetBrains Mono code (Google Fonts via `stylesheets` in `docusaurus.config.ts`)
+- Use the `--wn-*` tokens in `custom.css` (`--wn-paper`, `--wn-ink`, `--wn-graphite`, `--wn-rule`, `--wn-marker-*`) instead of hard-coded colors; they switch for dark mode
+- Dark overrides must use `html[data-theme="dark"]` — Infima's own selector outranks plain `[data-theme="dark"]`
 - Global styles: `src/css/custom.css`
 - Component-specific: Use CSS Modules (`styles.module.css` or `Component.module.css`)
-- Theme variables defined in `custom.css` under `:root` and `[data-theme='dark']`
+- Theme variables defined in `custom.css` under `:root` and `html[data-theme="dark"]`
 
 ### Adding New Languages to Prism
 
