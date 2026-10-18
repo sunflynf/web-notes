@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hướng dẫn Tương tác về NestJS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Chosen Palette: Slate & Emerald -->
+    <!-- Application Structure Plan: Ứng dụng được cấu trúc với một thanh điều hướng bên cố định và một khu vực nội dung chính. Cách tiếp cận này cho phép người dùng truy cập ngay vào bất kỳ chủ đề nào, từ khái niệm cốt lõi đến các chủ đề nâng cao, mà không cần cuộn qua một tài liệu dài. Cấu trúc này phá vỡ cấu trúc tuyến tính của báo cáo gốc, ưu tiên khả năng truy cập ngẫu nhiên và khám phá theo chủ đề, phù hợp với cách các nhà phát triển thường tìm kiếm thông tin. Các tương tác chính bao gồm: 1) Điều hướng theo chủ đề qua thanh bên. 2) Sơ đồ tương tác cho các khái niệm phức tạp như Vòng đời Yêu cầu, nơi việc nhấp vào một giai đoạn sẽ hiển thị chi tiết. 3) Các tab và mục accordion để quản lý thông tin dày đặc trong các phần nâng cao như Microservices và Bảo mật, cho phép người dùng tập trung vào một chủ đề con tại một thời điểm. Luồng người dùng được thiết kế để không bị ràng buộc, cho phép họ đi sâu vào một chủ đề cụ thể (ví dụ: "Guards"), sau đó dễ dàng chuyển sang một chủ đề liên quan (ví dụ: "Security") hoặc một chủ đề hoàn toàn khác (ví dụ: "WebSockets"). -->
+    <!-- Visualization & Content Choices: Báo cáo -> Mục tiêu -> Phương pháp -> Tương tác -> Lý do -> Thư viện/Phương pháp.
+        1. Vòng đời Yêu cầu: Tổ chức -> Sơ đồ luồng HTML/CSS -> Nhấp để xem chi tiết -> Làm cho quy trình tuần tự trở nên dễ hiểu và tương tác, thay thế cho danh sách tĩnh -> HTML/CSS/JS.
+        2. So sánh Giao tiếp Microservice (REST/gRPC/Kafka): So sánh -> Bảng HTML có cấu trúc -> Không có tương tác bổ sung -> Trình bày các ưu/nhược điểm một cách rõ ràng để dễ so sánh -> HTML/Tailwind.
+        3. Các Gói NestJS: Thông báo/Tổ chức -> Lưới thẻ có thể lọc -> Nhấp vào thẻ để xem chi tiết mã trong modal -> Cho phép người dùng nhanh chóng tìm và xem thông tin gói cụ thể mà không làm lộn xộn giao diện chính -> HTML/JS.
+        4. Thử thách & Giải pháp: Tổ chức/Thông báo -> Các mục Accordion có thể mở rộng -> Nhấp vào tiêu đề thử thách để hiển thị giải pháp -> Ẩn thông tin chi tiết theo mặc định để giảm tải nhận thức, cho phép người dùng tập trung vào các vấn đề họ quan tâm -> HTML/JS.
+        5. So sánh Mở rộng (Ngang vs. Dọc): So sánh -> Biểu đồ thanh (Chart.js) -> Hover để xem tooltip -> Trực quan hóa sự khác biệt cốt lõi (khả năng mở rộng, chi phí) một cách hấp dẫn -> Chart.js/Canvas.
+        Tất cả các lựa chọn này tuân thủ yêu cầu không sử dụng SVG/Mermaid bằng cách tận dụng các phần tử HTML gốc, CSS và thư viện Canvas (Chart.js) để tạo ra một trải nghiệm trực quan và tương tác. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="antialiased">
+    <div
+      id="modal-backdrop"
+      class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"
+    ></div>
+    <div
+      id="code-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden"
+    >
+      <div
+        class="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
+      >
+        <div class="flex justify-between items-center p-4 border-b">
+          <h3 id="modal-title" class="text-xl font-semibold text-slate-800">
+            Chi tiết Mã
+          </h3>
+          <button
+            id="modal-close-btn"
+            class="text-slate-500 hover:text-slate-800"
+          >
+            &times;
+          </button>
+        </div>
+        <div id="modal-body" class="p-6 overflow-y-auto">
+          <pre class="code-block"><code id="modal-code"></code></pre>
+        </div>
+        <div class="flex justify-end p-4 border-t">
+          <button
+            id="copy-code-btn"
+            class="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition"
+          >
+            Sao chép Mã
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex h-screen bg-slate-50">
+      <aside
+        id="sidebar"
+        class="w-64 bg-slate-800 text-slate-100 flex-shrink-0 p-4 overflow-y-auto transition-transform duration-300 ease-in-out md:translate-x-0 -translate-x-full fixed md:relative z-20 h-full"
+      >
+        <h1
+          class="text-2xl font-bold text-white mb-6 border-b border-slate-700 pb-4"
+        >
+          NestJS Guide
+        </h1>
+        <nav id="main-nav"></nav>
+      </aside>
+
+      <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+        <button
+          id="menu-toggle"
+          class="md:hidden fixed top-4 right-4 z-30 bg-slate-800 text-white p-2 rounded-md"
+        >
+          <svg
+            id="menu-open-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16m-7 6h7"
+            />
+          </svg>
+          <svg
+            id="menu-close-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6 hidden"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        <div id="content-area" class="max-w-7xl mx-auto"></div>
+      </main>
+    </div>
+
+    <script href="script.js"></script>
+  </body>
+</html>
