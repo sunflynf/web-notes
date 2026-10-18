@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cẩm nang Nginx Tương tác</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: The application is structured as a task-oriented interactive hub with a vertical sidebar for navigation. This design moves away from the linear report format, grouping content by user goals (e.g., Core Configs, Deployment, Security). This makes it easier for users to find solutions to specific problems (e.g., "How do I configure a reverse proxy for React?") without reading through irrelevant sections. Key interactions include dynamic code generators, visual diagrams for concepts, and interactive comparison tables, designed to enhance learning and usability. -->
+    <!-- Visualization & Content Choices: The report's content is transformed into interactive elements. (1) Goal: Compare Proxy Configs -> Method: Interactive code selector -> Interaction: User clicks a button (React, Next.js) to dynamically see the relevant config and explanation. Justification: More direct and less cluttered than a long list. Library: Vanilla JS. (2) Goal: Explain Load Balancing -> Method: Animated HTML/CSS diagram and a Chart.js bar chart -> Interaction: Buttons to switch between methods, updating both the diagram and chart. Justification: Visualizes abstract data flow, making it easier to understand. Library: JS, Chart.js. (3) Goal: Compare Deployment/Tools -> Method: Styled cards instead of a plain table -> Interaction: Hover effects and clean layout. Justification: Improves readability and visual appeal. Library: Tailwind CSS. (4) Goal: Inform on popularity -> Method: Chart.js Doughnut chart. Justification: Quick visual impact. Library: Chart.js. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfbf7;
+            color: #4a4a4a;
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link.active {
+            background-color: #eaddd7;
+            color: #8c6d5d;
+            border-right: 4px solid #8c6d5d;
+        }
+        .nav-link:hover {
+            background-color: #f3ece8;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .interactive-code-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .interactive-code-btn.active {
+            background-color: #8c6d5d;
+            color: white;
+        }
+        pre {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        .lb-animation {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            min-height: 150px;
+            background-color: #f3ece8;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+        .lb-server {
+            width: 80px;
+            height: 80px;
+            background-color: #eaddd7;
+            border: 2px solid #c9bbae;
+            border-radius: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        .lb-request {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background-color: #8c6d5d;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            animation: moveRequest 1.5s forwards;
+        }
+        @keyframes moveRequest {
+            0% { top: -40px; opacity: 0; }
+            20% { opacity: 1; }
+            100% { top: 20px; opacity: 1; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar" class="w-full md:w-64 bg-[#f8f5f2] border-r border-gray-200 flex-shrink-0">
+            <div class="p-6">
+                <h1 class="text-xl font-bold text-[#8c6d5d]">Cẩm nang Nginx</h1>
+                <p class="text-sm text-gray-500">Hướng dẫn tương tác</p>
+            </div>
+            <ul class="mt-2 space-y-1">
+                <li><a href="#intro" class="nav-link block p-4 text-gray-700 font-medium active">Giới thiệu</a></li>
+                <li><a href="#core-config" class="nav-link block p-4 text-gray-700 font-medium">Cấu hình Cốt lõi</a></li>
+                <li><a href="#deployment" class="nav-link block p-4 text-gray-700 font-medium">Triển khai</a></li>
+                <li><a href="#security" class="nav-link block p-4 text-gray-700 font-medium">Bảo mật</a></li>
+                <li><a href="#optimization" class="nav-link block p-4 text-gray-700 font-medium">Tối ưu hóa</a></li>
+                <li><a href="#tools" class="nav-link block p-4 text-gray-700 font-medium">Công cụ Quản lý</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 sm:p-6 md:p-10 bg-[#fdfbf7]">
+            <!-- Introduction Section -->
+            <section id="intro" class="content-section active">
+                <h2 class="text-3xl font-bold text-[#8c6d5d] mb-4">Giới thiệu về Nginx</h2>
+                <p class="text-lg mb-6 text-gray-600">
+                    Chào mừng bạn đến với cẩm nang tương tác về Nginx. Ứng dụng này sẽ giúp bạn khám phá sức mạnh của Nginx, từ một máy chủ web hiệu suất cao đến một reverse proxy, bộ cân bằng tải và hơn thế nữa. Thay vì đọc một tài liệu dài, bạn có thể tương tác trực tiếp với các ví dụ, so sánh các cấu hình và hiểu rõ hơn về cách Nginx hoạt động trong các kịch bản thực tế.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">Kiến trúc Hướng sự kiện</h3>
+                        <p class="mb-4">
+                            Nginx nổi bật với kiến trúc hướng sự kiện, bất đồng bộ. Thay vì tạo một tiến trình mới cho mỗi yêu cầu, Nginx sử dụng một tiến trình `master` để quản lý các tiến trình `worker`. Mỗi `worker` có thể xử lý hàng ngàn kết nối đồng thời một cách hiệu quả, giúp tiết kiệm tài nguyên và đạt hiệu suất vượt trội.
+                        </p>
+                         <div class="p-6 bg-white rounded-lg shadow-md border border-gray-200">
+                            <div class="flex items-center space-x-4">
+                                <div class="text-center">
+                                    <div class="p-4 bg-red-100 text-red-700 rounded-lg font-bold">Master</div>
+                                    <p class="text-sm mt-1">Quản lý</p>
+                                </div>
+                                <div class="text-5xl text-gray-300 font-light">→</div>
+                                <div class="flex space-x-2">
+                                    <div class="text-center">
+                                        <div class="p-4 bg-blue-100 text-blue-700 rounded-lg font-bold">Worker</div>
+                                        <p class="text-sm mt-1">Xử lý Req</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="p-4 bg-blue-100 text-blue-700 rounded-lg font-bold">Worker</div>
+                                        <p class="text-sm mt-1">Xử lý Req</p>
+                                    </div>
+                                    <div class="text-center hidden sm:block">
+                                        <div class="p-4 bg-blue-100 text-blue-700 rounded-lg font-bold">...</div>
+                                        <p class="text-sm mt-1">Xử lý Req</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-3">Mức độ phổ biến</h3>
+                        <p class="mb-4">
+                           Nginx là một trong những máy chủ web phổ biến nhất thế giới, được tin dùng bởi các trang web có lưu lượng truy cập lớn nhất. Biểu đồ dưới đây minh họa thị phần của các máy chủ web hàng đầu (dữ liệu mang tính minh họa).
+                        </p>
+                        <div class="chart-container">
+                            <canvas id="popularityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Core Configuration Section -->
+            <section id="core-config" class="content-section">
+                <h2 class="text-3xl font-bold text-[#8c6d5d] mb-4">Cấu hình Cốt lõi</h2>
+                <p class="text-lg mb-8 text-gray-600">
+                    Đây là trái tim của Nginx. Tìm hiểu cách thiết lập Nginx làm Reverse Proxy để bảo vệ và định tuyến các ứng dụng của bạn, và cách sử dụng Load Balancer để mở rộng quy mô và tăng tính sẵn sàng. Hãy chọn loại ứng dụng bạn quan tâm để xem cấu hình Nginx tương ứng.
+                </p>
+
+                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <h3 class="text-2xl font-semibold mb-4">Reverse Proxy theo loại ứng dụng</h3>
+                    <div class="mb-4 flex flex-wrap gap-2">
+                        <button class="interactive-code-btn active px-4 py-2 bg-gray-200 text-gray-700 rounded-md" data-target="react">React (Static)</button>
+                        <button class="interactive-code-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-md" data-target="nextjs">Next.js (SSR)</button>
+                        <button class="interactive-code-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-md" data-target="nodejs">Node.js API</button>
+                        <button class="interactive-code-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-md" data-target="springboot">Spring Boot API</button>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2" id="code-title"></h4>
+                            <pre><code id="code-snippet"></code></pre>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-lg mb-2">Giải thích</h4>
+                            <div id="code-explanation" class="prose prose-sm text-gray-600 bg-gray-100 p-4 rounded-md"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-10 bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <h3 class="text-2xl font-semibold mb-4">Load Balancer: Phân phối lưu lượng</h3>
+                     <div class="mb-4 flex flex-wrap gap-2">
+                        <button class="lb-method-btn interactive-code-btn active px-4 py-2 bg-gray-200 text-gray-700 rounded-md" data-lb="round-robin">Round Robin</button>
+                        <button class="lb-method-btn interactive-code-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-md" data-lb="least-conn">Least Connections</button>
+                        <button class="lb-method-btn interactive-code-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-md" data-lb="ip-hash">IP Hash</button>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6 items-center">
+                        <div>
+                             <h4 class="font-semibold text-lg mb-2" id="lb-title">Round Robin</h4>
+                             <p class="text-gray-600 mb-4" id="lb-explanation">Phân phối request lần lượt đến từng server. Đơn giản và hiệu quả khi các server có cấu hình tương đương.</p>
+                             <div class="relative lb-animation" id="lb-animation-container">
+                                <div class="lb-server">Server 1<span id="server1-conn" class="text-xs text-gray-500">(0 conn)</span></div>
+                                <div class="lb-server">Server 2<span id="server2-conn" class="text-xs text-gray-500">(0 conn)</span></div>
+                                <div class="lb-server">Server 3<span id="server3-conn" class="text-xs text-gray-500">(0 conn)</span></div>
+                             </div>
+                        </div>
+                        <div class="chart-container h-64">
+                            <canvas id="lbChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Deployment Section -->
+            <section id="deployment" class="content-section">
+                <h2 class="text-3xl font-bold text-[#8c6d5d] mb-4">Triển khai Nginx</h2>
+                <p class="text-lg mb-8 text-gray-600">
+                    Việc triển khai Nginx có thể được thực hiện theo nhiều cách, từ cài đặt thủ công trên một máy chủ ảo đến việc sử dụng các công nghệ container hóa hiện đại như Docker. Phần này so sánh các phương pháp phổ biến để giúp bạn chọn lựa cách tiếp cận phù hợp nhất với dự án của mình.
+                </p>
+                <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="font-semibold text-xl mb-3">Ubuntu Server (Thủ công)</h3>
+                        <p class="text-gray-600 mb-4">Kiểm soát hoàn toàn, hiệu suất có thể được tối ưu sâu. Phù hợp cho các hệ thống đơn giản hoặc khi cần tùy chỉnh ở mức hệ điều hành.</p>
+                        <span class="text-sm font-medium bg-red-100 text-red-800 px-3 py-1 rounded-full">Nhược điểm: Phức tạp, khó nhất quán</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="font-semibold text-xl mb-3">Docker (Dockerfile)</h3>
+                        <p class="text-gray-600 mb-4">Đóng gói Nginx và cấu hình, đảm bảo tính nhất quán và dễ di chuyển. Lý tưởng để triển khai Nginx như một service độc lập.</p>
+                        <span class="text-sm font-medium bg-blue-100 text-blue-800 px-3 py-1 rounded-full">Ưu điểm: Nhất quán, di động</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="font-semibold text-xl mb-3">Docker Compose</h3>
+                        <p class="text-gray-600 mb-4">Quản lý toàn bộ stack ứng dụng (frontend, backend, Nginx, DB). Phù hợp nhất cho các ứng dụng microservices hoặc full-stack.</p>
+                        <span class="text-sm font-medium bg-green-100 text-green-800 px-3 py-1 rounded-full">Ưu điểm: Quản lý toàn diện</span>
+                    </div>
+                </div>
+                <div class="mt-10 bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                    <h3 class="text-2xl font-semibold mb-4">Ví dụ: Docker Compose cho Full-Stack App</h3>
+                    <p class="mb-4 text-gray-600">Đây là một ví dụ về file `docker-compose.yml` định nghĩa một stack ứng dụng gồm frontend, backend và Nginx làm reverse proxy. Nginx sẽ định tuyến request đến `frontend` hoặc `backend` dựa trên đường dẫn.</p>
+                    <pre><code>version: '3.8'
+services:
+  frontend:
+    build: ./frontend
+    # ...
+  backend:
+    build: ./backend
+    # ...
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
+</code></pre>
+                </div>
+            </section>
+
+            <!-- Security Section -->
+            <section id="security" class="content-section">
+                 <h2 class="text-3xl font-bold text-[#8c6d5d] mb-4">Bảo mật với Nginx</h2>
+                 <p class="text-lg mb-8 text-gray-600">
+                    Bảo mật không chỉ là một tính năng, mà là một yêu cầu bắt buộc. Nginx cung cấp một loạt các công cụ mạnh mẽ để bảo vệ ứng dụng của bạn. Phần này tập trung vào hai khía cạnh quan trọng nhất: thiết lập kết nối mã hóa HTTPS và cấu hình các HTTP Security Headers để chống lại các cuộc tấn công phổ biến.
+                </p>
+                <div class="grid md:grid-cols-2 gap-8">
+                     <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="text-2xl font-semibold mb-4">HTTPS với Let's Encrypt</h3>
+                        <p class="mb-4 text-gray-600">Sử dụng công cụ `certbot` để tự động hóa việc lấy và gia hạn chứng chỉ SSL miễn phí, đảm bảo mọi dữ liệu truyền đi đều được mã hóa.</p>
+                        <p class="font-mono bg-gray-100 p-3 rounded-md text-sm text-gray-800">sudo certbot --nginx -d your_domain.com</p>
+                        <p class="mt-4 text-gray-600">Và đừng quên chuyển hướng tất cả traffic HTTP sang HTTPS:</p>
+                        <pre class="mt-2"><code>server {
+    listen 80;
+    server_name your_domain.com;
+    return 301 https://$host$request_uri;
+}</code></pre>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="text-2xl font-semibold mb-4">HTTP Security Headers</h3>
+                        <p class="mb-4 text-gray-600">Thêm các lớp phòng thủ bổ sung bằng cách chỉ dẫn trình duyệt cách xử lý nội dung của bạn một cách an toàn.</p>
+                        <ul class="space-y-3">
+                            <li class="font-mono text-sm">
+                                <strong class="text-gray-800">HSTS:</strong> Buộc dùng HTTPS.
+                                <div class="text-gray-500">add_header Strict-Transport-Security ...</div>
+                            </li>
+                             <li class="font-mono text-sm">
+                                <strong class="text-gray-800">X-Frame-Options:</strong> Chống clickjacking.
+                                <div class="text-gray-500">add_header X-Frame-Options "SAMEORIGIN";</div>
+                            </li>
+                             <li class="font-mono text-sm">
+                                <strong class="text-gray-800">X-Content-Type-Options:</strong> Ngăn "sniffing" MIME.
+                                <div class="text-gray-500">add_header X-Content-Type-Options "nosniff";</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Optimization Section -->
+            <section id="optimization" class="content-section">
+                <h2 class="text-3xl font-bold text-[#8c6d5d] mb-4">Tối ưu hóa Hiệu suất</h2>
+                <p class="text-lg mb-8 text-gray-600">
+                    Trong môi trường production, mỗi mili giây đều có giá trị. Nginx cung cấp nhiều chỉ thị mạnh mẽ để bạn tinh chỉnh và tối ưu hóa hiệu suất, đảm bảo ứng dụng của bạn hoạt động nhanh chóng và ổn định ngay cả dưới tải cao. Khám phá các kỹ thuật caching, nén dữ liệu và giới hạn request để khai thác tối đa sức mạnh của Nginx.
+                </p>
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="font-semibold text-xl mb-2">Tối ưu Caching</h3>
+                        <p class="text-gray-600">Lưu trữ các phản hồi thường xuyên được yêu cầu để giảm tải cho backend và tăng tốc độ cho người dùng. Cấu hình với `proxy_cache_path` và `proxy_cache`.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="font-semibold text-xl mb-2">Nén Gzip</h3>
+                        <p class="text-gray-600">Giảm kích thước file HTML, CSS, JS trước khi gửi đến trình duyệt, giúp tiết kiệm băng thông và tăng tốc độ tải trang. Bật với `gzip on;` và cấu hình `gzip_types`.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="font-semibold text-xl mb-2">Giới hạn Request (Rate Limiting)</h3>
+                        <p class="text-gray-600">Bảo vệ ứng dụng khỏi các cuộc tấn công brute-force hoặc sử dụng tài nguyên quá mức. Cấu hình với `limit_req_zone` và `limit_req`.</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                        <h3 class="font-semibold text-xl mb-2">Tinh chỉnh Worker</h3>
+                        <p class="text-gray-600">Điều chỉnh `worker_processes` (thường bằng số lõi CPU) và `worker_connections` để tối ưu hóa khả năng xử lý kết nối đồng thời của Nginx.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tools Section -->
+            <section id="tools" class="content-section">
+                <h2 class="text-3xl font-bold text-[#8c6d5d] mb-4">Công cụ Quản lý</h2>
+                 <p class="text-lg mb-8 text-gray-600">
+                    Mặc dù cấu hình Nginx qua file văn bản rất mạnh mẽ, các giao diện đồ họa (GUI) có thể giúp đơn giản hóa việc quản lý, đặc biệt cho người mới bắt đầu hoặc khi quản lý nhiều host. Dưới đây là các công cụ phổ biến giúp bạn tương tác với Nginx và môi trường container một cách trực quan hơn.
+                </p>
+                <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 flex flex-col">
+                        <h3 class="font-semibold text-xl mb-3">Nginx Proxy Manager</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Giao diện web chuyên dụng để quản lý reverse proxy Nginx. Cực kỳ dễ sử dụng, tích hợp sẵn Let's Encrypt để quản lý SSL chỉ bằng vài cú nhấp chuột.</p>
+                        <div class="mt-auto pt-4 border-t border-gray-200">
+                             <span class="text-sm font-medium bg-green-100 text-green-800 px-3 py-1 rounded-full">Tốt nhất cho: Quản lý Proxy</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 flex flex-col">
+                        <h3 class="font-semibold text-xl mb-3">Portainer</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Một công cụ quản lý UI mạnh mẽ cho môi trường Docker. Giúp bạn xem logs, quản lý containers, images, volumes và networks một cách trực quan.</p>
+                        <div class="mt-auto pt-4 border-t border-gray-200">
+                           <span class="text-sm font-medium bg-blue-100 text-blue-800 px-3 py-1 rounded-full">Tốt nhất cho: Quản lý Docker</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 flex flex-col">
+                        <h3 class="font-semibold text-xl mb-3">Webmin</h3>
+                        <p class="text-gray-600 mb-4 flex-grow">Control panel quản trị toàn diện cho server Linux. Cung cấp module để quản lý Nginx, cùng với nhiều dịch vụ hệ thống khác như user, firewall, v.v.</p>
+                        <div class="mt-auto pt-4 border-t border-gray-200">
+                            <span class="text-sm font-medium bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">Tốt nhất cho: Quản trị Server</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const navLinks = document.querySelectorAll('.nav-link');
+    const contentSections = document.querySelectorAll('.content-section');
+
+    function switchTab(hash) {
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === hash) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+
+        contentSections.forEach(section => {
+            if ('#' + section.id === hash) {
+                section.classList.add('active');
+            } else {
+                section.classList.remove('active');
+            }
+        });
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            window.location.hash = targetId;
+        });
+    });
+    
+    window.addEventListener('hashchange', () => {
+        const hash = window.location.hash || '#intro';
+        switchTab(hash);
+    });
+
+    // Initial load
+    const initialHash = window.location.hash || '#intro';
+    switchTab(initialHash);
+
+    // Popularity Chart
+    const popularityCtx = document.getElementById('popularityChart')?.getContext('2d');
+    if (popularityCtx) {
+        new Chart(popularityCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Nginx', 'Apache', 'Cloudflare Server', 'Others'],
+                datasets: [{
+                    label: 'Thị phần máy chủ web',
+                    data: [34.1, 21.5, 21.4, 23],
+                    backgroundColor: [
+                        '#8c6d5d',
+                        '#c9bbae',
+                        '#eaddd7',
+                        '#f3ece8'
+                    ],
+                    borderColor: '#fdfbf7',
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: false,
+                        text: 'Thị phần máy chủ web (Minh họa)'
+                    }
+                }
+            }
+        });
+    }
+
+    // Interactive Code Snippet Logic
+    const codeData = {
+        react: {
+            title: "Cấu hình cho React (Static Build)",
+            config: `server {
+    listen 80;
+    server_name your_react_app.com;
+
+    root /var/www/your_react_app/build;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}`,
+            explanation: "Chỉ thị quan trọng là <strong>try_files $uri $uri/ /index.html;</strong>. Nó đảm bảo rằng mọi yêu cầu không khớp với file hoặc thư mục tĩnh sẽ được chuyển hướng về <code>index.html</code>, cho phép React Router xử lý việc định tuyến phía client."
+        },
+        nextjs: {
+            title: "Cấu hình cho Next.js (SSR)",
+            config: `server {
+    listen 80;
+    server_name your_nextjs_app.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}`,
+            explanation: "Sử dụng <strong>proxy_pass</strong> để chuyển tiếp các yêu cầu đến server Next.js đang chạy trên port 3000. Các chỉ thị <strong>proxy_set_header</strong> rất quan trọng để server backend nhận được thông tin chính xác về request gốc từ client."
+        },
+        nodejs: {
+            title: "Cấu hình cho Node.js API",
+            config: `server {
+    listen 80;
+    server_name api.your_domain.com;
+
+    location / {
+        proxy_pass http://localhost:5000; # Port của API
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        # ... các header khác
+    }
+}`,
+            explanation: "Tương tự như Next.js, Nginx hoạt động như một cổng vào (gateway), chuyển tiếp các yêu cầu API đến ứng dụng Node.js. Điều này giúp tận dụng các tính năng mạnh mẽ của Nginx như SSL termination, rate limiting, và caching."
+        },
+        springboot: {
+            title: "Cấu hình cho Spring Boot API",
+            config: `server {
+    listen 80;
+    server_name api.your_domain.com;
+
+    location / {
+        proxy_pass http://localhost:8080; # Port mặc định
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        # ... các header khác
+    }
+}`,
+            explanation: "Cấu hình này chuyển tiếp các request đến ứng dụng Spring Boot chạy trên port 8080. Nginx giúp các ứng dụng Java dễ dàng tích hợp vào hệ thống, quản lý SSL tập trung và tăng cường bảo mật."
+        }
+    };
+
+    const codeBtns = document.querySelectorAll('.interactive-code-btn');
+    const codeTitleEl = document.getElementById('code-title');
+    const codeSnippetEl = document.getElementById('code-snippet');
+    const codeExplanationEl = document.getElementById('code-explanation');
+
+    function updateCode(target) {
+        const data = codeData[target];
+        if (data) {
+            codeTitleEl.textContent = data.title;
+            codeSnippetEl.textContent = data.config;
+            codeExplanationEl.innerHTML = data.explanation;
+        }
+    }
+    
+    codeBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            codeBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const target = this.getAttribute('data-target');
+            if (target) updateCode(target);
+        });
+    });
+
+    updateCode('react');
+
+
+    // Load Balancer Visualization
+    const lbMethodBtns = document.querySelectorAll('.lb-method-btn');
+    const lbTitleEl = document.getElementById('lb-title');
+    const lbExplanationEl = document.getElementById('lb-explanation');
+    const lbAnimationContainer = document.getElementById('lb-animation-container');
+    const lbChartCtx = document.getElementById('lbChart')?.getContext('2d');
+    
+    let lbChart;
+    let requestCounter = 0;
+    let serverConnections = [0, 0, 0];
+
+    const lbData = {
+        'round-robin': {
+            title: 'Round Robin',
+            explanation: 'Phân phối request lần lượt đến từng server. Đơn giản và hiệu quả khi các server có cấu hình tương đương.',
+            logic: (reqCount) => reqCount % 3
+        },
+        'least-conn': {
+            title: 'Least Connections',
+            explanation: 'Chuyển request đến server có ít kết nối active nhất. Hữu ích khi thời gian xử lý các request khác nhau.',
+            logic: () => serverConnections.indexOf(Math.min(...serverConnections))
+        },
+        'ip-hash': {
+            title: 'IP Hash',
+            explanation: 'Request từ cùng một client (IP) luôn được gửi đến cùng một server. Quan trọng cho các ứng dụng cần "session persistence".',
+            logic: () => 0 
+        }
+    };
+    
+    let currentLbMethod = 'round-robin';
+    
+    function updateLbChart() {
+        lbChart.data.datasets[0].data = serverConnections;
+        lbChart.update();
+        document.getElementById('server1-conn').textContent = `(${serverConnections[0]} conn)`;
+        document.getElementById('server2-conn').textContent = `(${serverConnections[1]} conn)`;
+        document.getElementById('server3-conn').textContent = `(${serverConnections[2]} conn)`;
+    }
+
+    function simulateRequest() {
+        requestCounter++;
+        
+        const targetServerIndex = lbData[currentLbMethod].logic(requestCounter);
+
+        serverConnections[targetServerIndex]++;
+        updateLbChart();
+        
+        const servers = lbAnimationContainer.querySelectorAll('.lb-server');
+        const targetServer = servers[targetServerIndex];
+
+        const requestEl = document.createElement('div');
+        requestEl.className = 'lb-request';
+        requestEl.textContent = 'Req';
+        
+        targetServer.style.backgroundColor = '#8c6d5d';
+        setTimeout(() => {
+            targetServer.style.backgroundColor = '';
+        }, 1500);
+
+        lbAnimationContainer.appendChild(requestEl);
+
+        setTimeout(() => {
+            requestEl.remove();
+            if (currentLbMethod === 'least-conn' || currentLbMethod === 'round-robin') {
+              // Simulate connection finishing
+              if(serverConnections[targetServerIndex] > 0) serverConnections[targetServerIndex]--;
+              updateLbChart();
+            }
+        }, 2000 + Math.random() * 1000);
+    }
+    
+    function resetLbSimulation() {
+        requestCounter = 0;
+        serverConnections = [0, 0, 0];
+        updateLbChart();
+    }
+
+
+    if (lbChartCtx) {
+        lbChart = new Chart(lbChartCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Server 1', 'Server 2', 'Server 3'],
+                datasets: [{
+                    label: 'Số kết nối',
+                    data: serverConnections,
+                    backgroundColor: ['#c9bbae', '#eaddd7', '#f3ece8'],
+                    borderColor: '#8c6d5d',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Phân phối kết nối'
+                    }
+                }
+            }
+        });
+        
+        setInterval(simulateRequest, 2500);
+
+        lbMethodBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                lbMethodBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentLbMethod = this.getAttribute('data-lb');
+                const data = lbData[currentLbMethod];
+                lbTitleEl.textContent = data.title;
+                lbExplanationEl.textContent = data.explanation;
+                resetLbSimulation();
+            });
+        });
+    }
+});
+</script>
+</body>
+</html>
