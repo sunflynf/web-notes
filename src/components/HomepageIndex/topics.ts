@@ -108,6 +108,7 @@ export const areas: Area[] = [
     marker: "c",
     topics: [
       { label: "Docker", doc: "technologies/docker-knowledge" },
+      { label: "Nginx", doc: "technologies/nginx" },
       { label: "ELK stack", doc: "cloud-computing/elk-stack/index" },
       { label: "Serverless", doc: "cloud-computing/serverless" },
       { label: "Cloud platforms", doc: "cloud-computing/cloud-platforms" },
