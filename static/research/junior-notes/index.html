@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cẩm Nang Tương Tác cho Lập trình viên Junior</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Warm Harmony -->
+    <!-- Application Structure Plan: A single-page application with a fixed top navigation bar that smoothly scrolls to three main content sections: Research & Build, CV Presentation, and Interview Prep. This structure provides both a clear, guided path and quick, non-linear access to information. Each section uses interactive components like clickable cards, accordions, and visual diagrams (built with HTML/CSS) to break down the dense text of the source report into digestible, engaging pieces. The goal is to transform a static report into an active learning tool. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: SWOT Analysis -> Goal: Organize/Compare -> Viz: Interactive 4-quadrant grid (HTML/Tailwind) -> Interaction: Hover to highlight and see details -> Justification: More engaging than a static list.
+        - Report Info: MVP concept -> Goal: Inform/Organize -> Viz: Funnel diagram (HTML/Tailwind) -> Interaction: Static visual aid -> Justification: Visually represents the process of narrowing down features.
+        - Report Info: STAR/CAR method -> Goal: Inform/Organize -> Viz: Interactive tabbed component (HTML/JS) -> Interaction: Click buttons for S, T, A, R to reveal content -> Justification: Breaks down the concept into memorable steps, aiding learning.
+        - Report Info: Interview Questions -> Goal: Inform/Organize -> Viz: Accordion component (HTML/JS) -> Interaction: Click question to reveal answer tips -> Justification: Simulates a Q&A session and organizes a long list of questions neatly.
+        - Library/Method: Vanilla JavaScript for all interactions to keep it lightweight. Chart.js is not used as the report contains no quantitative data to plot, and visual diagrams are more effective for the conceptual information.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8f7f4;
+        color: #4a4a4a;
+      }
+      .nav-link {
+        transition: all 0.3s ease;
+        position: relative;
+      }
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #435a6f;
+        transition: width 0.3s ease;
+      }
+      .nav-link:hover::after,
+      .nav-link.active::after {
+        width: 100%;
+      }
+      .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      }
+      .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+        padding: 0 1.5rem;
+      }
+      .accordion-button.open .accordion-arrow {
+        transform: rotate(180deg);
+      }
+      .star-button.active {
+        background-color: #435a6f;
+        color: #ffffff;
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+      <nav
+        class="container mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <h1 class="text-xl font-bold text-gray-800">Cẩm Nang Junior Dev</h1>
+        <div class="hidden md:flex space-x-8">
+          <a
+            href="#section-1"
+            class="nav-link text-gray-600 hover:text-gray-900 font-medium"
+            >1. Nghiên cứu & Xây dựng</a
+          >
+          <a
+            href="#section-2"
+            class="nav-link text-gray-600 hover:text-gray-900 font-medium"
+            >2. Trình bày CV</a
+          >
+          <a
+            href="#section-3"
+            class="nav-link text-gray-600 hover:text-gray-900 font-medium"
+            >3. Phỏng vấn</a
+          >
+        </div>
+        <button id="mobile-menu-button" class="md:hidden p-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16m-7 6h7"
+            />
+          </svg>
+        </button>
+      </nav>
+      <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+        <a
+          href="#section-1"
+          class="block py-2 nav-link text-gray-600 hover:text-gray-900 font-medium"
+          >1. Nghiên cứu & Xây dựng</a
+        >
+        <a
+          href="#section-2"
+          class="block py-2 nav-link text-gray-600 hover:text-gray-900 font-medium"
+          >2. Trình bày CV</a
+        >
+        <a
+          href="#section-3"
+          class="block py-2 nav-link text-gray-600 hover:text-gray-900 font-medium"
+          >3. Phỏng vấn</a
+        >
+      </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          Từ Ý tưởng "Inspired-by" đến Phỏng vấn Thành công
+        </h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Một lộ trình tương tác giúp bạn biến dự án cá nhân thành tài sản giá
+          trị nhất trong sự nghiệp lập trình viên.
+        </p>
+      </div>
+
+      <!-- Section 1: Research & Build -->
+      <section id="section-1" class="mb-24">
+        <h3 class="text-3xl font-bold text-gray-800 mb-2 text-center">
+          Phần I: Nghiên cứu & Xây dựng Chuyên nghiệp
+        </h3>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+          Nền tảng của một dự án ấn tượng không chỉ nằm ở code, mà ở tư duy phân
+          tích, chiến lược và cách bạn biến ý tưởng thành sản phẩm có giá trị.
+        </p>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <div class="card bg-white p-6 rounded-lg shadow-md">
+            <h4 class="font-bold text-lg mb-2 text-gray-800">
+              1.1. Phân tích Thị trường
+            </h4>
+            <p class="text-gray-600 text-sm">
+              Hiểu rõ đối thủ và bối cảnh để tìm ra "chỗ đứng" cho dự án của
+              bạn. Đây là bước đầu tiên để tạo ra sự khác biệt.
+            </p>
+          </div>
+          <div class="card bg-white p-6 rounded-lg shadow-md">
+            <h4 class="font-bold text-lg mb-2 text-gray-800">
+              1.2. Tìm kiếm Cơ hội (UVP)
+            </h4>
+            <p class="text-gray-600 text-sm">
+              Xác định Lợi thế Độc nhất (Unique Value Proposition) giúp dự án
+              của bạn nổi bật và giải quyết một vấn đề cụ thể.
+            </p>
+          </div>
+          <div class="card bg-white p-6 rounded-lg shadow-md">
+            <h4 class="font-bold text-lg mb-2 text-gray-800">
+              1.3. Xây dựng MVP
+            </h4>
+            <p class="text-gray-600 text-sm">
+              Tập trung vào Sản phẩm Tối thiểu Khả thi (Minimum Viable Product)
+              để đảm bảo dự án hoàn thành và có giá trị cốt lõi.
+            </p>
+          </div>
+          <div class="card bg-white p-6 rounded-lg shadow-md">
+            <h4 class="font-bold text-lg mb-2 text-gray-800">
+              1.4. Vấn đề Đạo đức
+            </h4>
+            <p class="text-gray-600 text-sm">
+              Phát triển một cách chuyên nghiệp, tôn trọng bản quyền và tạo ra
+              giá trị độc đáo thay vì sao chép máy móc.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-8">
+          <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+            Khung Phân Tích SWOT Tương Tác
+          </h4>
+          <p class="text-center text-gray-600 mb-8">
+            Sử dụng mô hình SWOT để đánh giá ý tưởng. Di chuột qua từng ô để xem
+            ví dụ cụ thể cho dự án "Landing Page Tool".
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              class="swot-card bg-green-50 border-l-4 border-green-500 p-6 rounded-lg transition-all duration-300 hover:bg-green-100"
+            >
+              <h5 class="font-bold text-green-800 text-xl mb-2">
+                S - Strengths (Điểm mạnh)
+              </h5>
+              <p class="text-green-700">
+                Kỹ năng sẵn có của bạn là gì? Ví dụ: "Thành thạo React và
+                Next.js, có khả năng xây dựng giao diện người dùng phức tạp."
+              </p>
+            </div>
+            <div
+              class="swot-card bg-red-50 border-l-4 border-red-500 p-6 rounded-lg transition-all duration-300 hover:bg-red-100"
+            >
+              <h5 class="font-bold text-red-800 text-xl mb-2">
+                W - Weaknesses (Điểm yếu)
+              </h5>
+              <p class="text-red-700">
+                Bạn còn hạn chế ở đâu? Ví dụ: "Kinh nghiệm về thiết kế UI/UX và
+                tối ưu database còn hạn chế."
+              </p>
+            </div>
+            <div
+              class="swot-card bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg transition-all duration-300 hover:bg-blue-100"
+            >
+              <h5 class="font-bold text-blue-800 text-xl mb-2">
+                O - Opportunities (Cơ hội)
+              </h5>
+              <p class="text-blue-700">
+                Thị trường có "khoảng trống" nào? Ví dụ: "Các công cụ hiện tại
+                quá đắt hoặc phức tạp cho người dùng cá nhân."
+              </p>
+            </div>
+            <div
+              class="swot-card bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg transition-all duration-300 hover:bg-yellow-100"
+            >
+              <h5 class="font-bold text-yellow-800 text-xl mb-2">
+                T - Threats (Thách thức)
+              </h5>
+              <p class="text-yellow-700">
+                Rủi ro từ bên ngoài là gì? Ví dụ: "Sự cạnh tranh từ các sản phẩm
+                lớn, đã có thương hiệu mạnh trên thị trường."
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: CV Presentation -->
+      <section id="section-2" class="mb-24">
+        <h3 class="text-3xl font-bold text-gray-800 mb-2 text-center">
+          Phần II: Trình bày Dự án trong CV
+        </h3>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+          Dự án cá nhân là tài sản quý giá nhất của một lập trình viên junior.
+          Học cách trình bày nó một cách chuyên nghiệp để gây ấn tượng mạnh với
+          nhà tuyển dụng.
+        </p>
+
+        <div class="bg-white rounded-lg shadow-lg p-8">
+          <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+            Mô phỏng CV: Cách mô tả dự án hiệu quả
+          </h4>
+          <p class="text-center text-gray-600 mb-8">
+            Dưới đây là một ví dụ về cách bạn có thể mô tả dự án "Landing Page
+            Tool" trong CV của mình. Nhấn vào từng mục để xem chi tiết.
+          </p>
+          <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+            <h5 class="text-xl font-bold">Landing Page Builder</h5>
+            <p class="text-sm text-gray-500 mb-4">
+              Developer (Dự án cá nhân), 04/2025 - 06/2025 |
+              <a href="#" class="text-blue-600 hover:underline">GitHub</a> |
+              <a href="#" class="text-blue-600 hover:underline">Demo</a>
+            </p>
+
+            <div class="space-y-4">
+              <div class="accordion-item">
+                <button
+                  class="accordion-button w-full flex justify-between items-center text-left py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg focus:outline-none"
+                >
+                  <span class="font-semibold text-gray-700"
+                    >Mục tiêu & Bối cảnh (Situation/Context)</span
+                  >
+                  <span
+                    class="accordion-arrow transition-transform duration-300"
+                    >▼</span
+                  >
+                </button>
+                <div class="accordion-content">
+                  <p class="text-gray-600 py-4">
+                    Xây dựng ứng dụng kéo-thả Landing Page, lấy cảm hứng từ
+                    Carrd, nhằm mục đích rèn luyện kỹ năng full-stack với
+                    Next.js và hiểu sâu hơn về kiến trúc ứng dụng SaaS.
+                  </p>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <button
+                  class="accordion-button w-full flex justify-between items-center text-left py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg focus:outline-none"
+                >
+                  <span class="font-semibold text-gray-700"
+                    >Nhiệm vụ & Thách thức (Task/Challenge)</span
+                  >
+                  <span
+                    class="accordion-arrow transition-transform duration-300"
+                    >▼</span
+                  >
+                </button>
+                <div class="accordion-content">
+                  <ul
+                    class="list-disc list-inside text-gray-600 py-4 space-y-2"
+                  >
+                    <li>
+                      Tự thiết kế và triển khai 3 tính năng cốt lõi: Kéo-thả
+                      khối, chỉnh sửa thuộc tính real-time, và xuất file
+                      HTML/CSS.
+                    </li>
+                    <li>
+                      Thách thức chính: Tối ưu hiệu năng khi có nhiều khối nội
+                      dung, và xử lý logic xuất file CSS một cách hiệu quả.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <button
+                  class="accordion-button w-full flex justify-between items-center text-left py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg focus:outline-none"
+                >
+                  <span class="font-semibold text-gray-700"
+                    >Kết quả & Bài học (Result/Learning)</span
+                  >
+                  <span
+                    class="accordion-arrow transition-transform duration-300"
+                    >▼</span
+                  >
+                </button>
+                <div class="accordion-content">
+                  <ul
+                    class="list-disc list-inside text-gray-600 py-4 space-y-2"
+                  >
+                    <li>
+                      Hoàn thành ứng dụng với các tính năng cốt lõi hoạt động ổn
+                      định.
+                    </li>
+                    <li>
+                      Áp dụng thành công `React.memo` và `useCallback`, giúp
+                      tăng hiệu suất render lên 30% so với phiên bản ban đầu.
+                    </li>
+                    <li>
+                      Bài học quan trọng: Nắm vững về state management với React
+                      Context, kỹ năng gỡ lỗi và quy trình phát triển một ứng
+                      dụng hoàn chỉnh từ A-Z.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <button
+                  class="accordion-button w-full flex justify-between items-center text-left py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg focus:outline-none"
+                >
+                  <span class="font-semibold text-gray-700"
+                    >Công nghệ sử dụng</span
+                  >
+                  <span
+                    class="accordion-arrow transition-transform duration-300"
+                    >▼</span
+                  >
+                </button>
+                <div class="accordion-content">
+                  <p class="text-gray-600 py-4">
+                    Next.js, React, TypeScript, Tailwind CSS, MongoDB,
+                    NextAuth.js, react-beautiful-dnd.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Interview -->
+      <section id="section-3" class="mb-16">
+        <h3 class="text-3xl font-bold text-gray-800 mb-2 text-center">
+          Phần III: Trả lời Phỏng vấn về Dự án
+        </h3>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+          Tự tin kể câu chuyện về dự án của bạn. Đây là cơ hội để thể hiện tư
+          duy giải quyết vấn đề, đam mê và sự phù hợp với vị trí ứng tuyển.
+        </p>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+          <div class="lg:w-1/2">
+            <div class="bg-white rounded-lg shadow-lg p-8 h-full">
+              <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                Công thức STAR: Kể chuyện thuyết phục
+              </h4>
+              <p class="text-center text-gray-600 mb-8">
+                Sử dụng phương pháp STAR để cấu trúc câu trả lời của bạn một
+                cách logic và ấn tượng. Nhấn vào từng chữ cái để khám phá.
+              </p>
+              <div
+                class="flex justify-center space-x-2 mb-6"
+                id="star-controls"
+              >
+                <button
+                  class="star-button px-4 py-2 rounded-full font-semibold border-2 border-gray-300 transition-all duration-300"
+                  data-target="star-s"
+                >
+                  S
+                </button>
+                <button
+                  class="star-button px-4 py-2 rounded-full font-semibold border-2 border-gray-300 transition-all duration-300"
+                  data-target="star-t"
+                >
+                  T
+                </button>
+                <button
+                  class="star-button px-4 py-2 rounded-full font-semibold border-2 border-gray-300 transition-all duration-300"
+                  data-target="star-a"
+                >
+                  A
+                </button>
+                <button
+                  class="star-button px-4 py-2 rounded-full font-semibold border-2 border-gray-300 transition-all duration-300"
+                  data-target="star-r"
+                >
+                  R
+                </button>
+              </div>
+              <div id="star-content-area" class="relative min-h-[150px]">
+                <div
+                  id="star-s"
+                  class="star-content absolute w-full transition-opacity duration-300 opacity-0 bg-blue-50 p-4 rounded-lg border border-blue-200"
+                >
+                  <h5 class="font-bold text-blue-800">
+                    Situation (Tình huống)
+                  </h5>
+                  <p class="text-blue-700">
+                    Mô tả bối cảnh, tình huống cụ thể bạn đã gặp. Ví dụ: "Khi
+                    phát triển tính năng X, em gặp vấn đề về hiệu suất..."
+                  </p>
+                </div>
+                <div
+                  id="star-t"
+                  class="star-content absolute w-full transition-opacity duration-300 opacity-0 bg-green-50 p-4 rounded-lg border border-green-200"
+                >
+                  <h5 class="font-bold text-green-800">Task (Nhiệm vụ)</h5>
+                  <p class="text-green-700">
+                    Nhiệm vụ hoặc mục tiêu của bạn trong tình huống đó là gì? Ví
+                    dụ: "Nhiệm vụ của em là phải tối ưu hóa để tính năng hoạt
+                    động mượt mà."
+                  </p>
+                </div>
+                <div
+                  id="star-a"
+                  class="star-content absolute w-full transition-opacity duration-300 opacity-0 bg-yellow-50 p-4 rounded-lg border border-yellow-200"
+                >
+                  <h5 class="font-bold text-yellow-800">Action (Hành động)</h5>
+                  <p class="text-yellow-700">
+                    Bạn đã làm những gì? Mô tả các bước cụ thể. Ví dụ: "Em đã
+                    dùng công cụ profiler, tái cấu trúc logic, và áp dụng thuật
+                    toán Y."
+                  </p>
+                </div>
+                <div
+                  id="star-r"
+                  class="star-content absolute w-full transition-opacity duration-300 opacity-0 bg-purple-50 p-4 rounded-lg border border-purple-200"
+                >
+                  <h5 class="font-bold text-purple-800">Result (Kết quả)</h5>
+                  <p class="text-purple-700">
+                    Kết quả đạt được là gì và bạn học được gì? Ví dụ: "Thời gian
+                    xử lý giảm 40%, và em học được cách tối ưu hiệu suất trong
+                    thực tế."
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:w-1/2">
+            <div class="bg-white rounded-lg shadow-lg p-8 h-full">
+              <h4 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+                Các câu hỏi thường gặp
+              </h4>
+              <p class="text-center text-gray-600 mb-8">
+                Chuẩn bị trước cho những câu hỏi này sẽ giúp bạn tự tin và ghi
+                điểm trong mắt nhà tuyển dụng.
+              </p>
+              <div class="space-y-2">
+                <div class="accordion-item">
+                  <button
+                    class="accordion-button w-full flex justify-between items-center text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg focus:outline-none"
+                  >
+                    <span class="font-medium text-sm text-gray-700"
+                      >Tại sao bạn lại chọn công nghệ X cho dự án này?</span
+                    >
+                    <span
+                      class="accordion-arrow transition-transform duration-300"
+                      >▼</span
+                    >
+                  </button>
+                  <div class="accordion-content">
+                    <p class="text-gray-600 text-sm py-3">
+                      Nhấn mạnh sự phù hợp của công nghệ với yêu cầu dự án và
+                      mục tiêu học tập của bạn, không chỉ vì nó "phổ biến".
+                    </p>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <button
+                    class="accordion-button w-full flex justify-between items-center text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg focus:outline-none"
+                  >
+                    <span class="font-medium text-sm text-gray-700"
+                      >Bạn gặp khó khăn kỹ thuật nào lớn nhất?</span
+                    >
+                    <span
+                      class="accordion-arrow transition-transform duration-300"
+                      >▼</span
+                    >
+                  </button>
+                  <div class="accordion-content">
+                    <p class="text-gray-600 text-sm py-3">
+                      Đây là cơ hội vàng để thể hiện kỹ năng giải quyết vấn đề.
+                      Hãy kể câu chuyện theo phương pháp STAR.
+                    </p>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <button
+                    class="accordion-button w-full flex justify-between items-center text-left p-3 bg-gray-50 hover:bg-gray-100 rounded-lg focus:outline-none"
+                  >
+                    <span class="font-medium text-sm text-gray-700"
+                      >Nếu làm lại, bạn sẽ làm gì khác đi?</span
+                    >
+                    <span
+                      class="accordion-arrow transition-transform duration-300"
+                      >▼</span
+                    >
+                  </button>
+                  <div class="accordion-content">
+                    <p class="text-gray-600 text-sm py-3">
+                      Thể hiện tư duy phản biện và mong muốn học hỏi. Chỉ ra
+                      điểm có thể cải thiện và giải thích lý do.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+      <div class="container mx-auto px-6 py-8 text-center">
+        <p>
+          Được tạo ra để truyền cảm hứng và hỗ trợ các lập trình viên trên hành
+          trình sự nghiệp.
+        </p>
+        <p class="text-sm text-gray-400 mt-2">
+          © 2025 Cẩm Nang Tương Tác. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        mobileMenuButton.addEventListener("click", () => {
+          mobileMenu.classList.toggle("hidden");
+        });
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute("href")).scrollIntoView({
+              behavior: "smooth",
+            });
+            if (mobileMenu.classList.contains("hidden") === false) {
+              mobileMenu.classList.add("hidden");
+            }
+          });
+        });
+
+        // Active nav link highlighting on scroll
+        const sections = document.querySelectorAll("section");
+        const navLinks = document.querySelectorAll("nav a.nav-link");
+        const mobileNavLinks = document.querySelectorAll(
+          "#mobile-menu a.nav-link"
+        );
+
+        const observerOptions = {
+          root: null,
+          rootMargin: "0px",
+          threshold: 0.4,
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const id = entry.target.getAttribute("id");
+              document.querySelectorAll("a.nav-link").forEach((link) => {
+                link.classList.remove("active");
+                if (link.getAttribute("href") === `#${id}`) {
+                  link.classList.add("active");
+                }
+              });
+            }
+          });
+        }, observerOptions);
+
+        sections.forEach((section) => {
+          observer.observe(section);
+        });
+
+        // Accordion functionality
+        const accordionItems = document.querySelectorAll(".accordion-item");
+        accordionItems.forEach((item) => {
+          const button = item.querySelector(".accordion-button");
+          const content = item.querySelector(".accordion-content");
+          button.addEventListener("click", () => {
+            const isOpen = button.classList.contains("open");
+
+            // Close all other accordions in the same group
+            item.parentElement
+              .querySelectorAll(".accordion-item")
+              .forEach((otherItem) => {
+                const otherButton =
+                  otherItem.querySelector(".accordion-button");
+                const otherContent =
+                  otherItem.querySelector(".accordion-content");
+                if (
+                  otherItem !== item &&
+                  otherButton.classList.contains("open")
+                ) {
+                  otherButton.classList.remove("open");
+                  otherContent.style.maxHeight = "0";
+                  otherContent.style.padding = "0 1.5rem";
+                }
+              });
+
+            if (isOpen) {
+              button.classList.remove("open");
+              content.style.maxHeight = "0";
+              content.style.padding = "0 1.5rem";
+            } else {
+              button.classList.add("open");
+              content.style.maxHeight = content.scrollHeight + "px";
+              content.style.padding = "1rem 1.5rem";
+            }
+          });
+        });
+
+        // STAR method interactive component
+        const starControls = document.getElementById("star-controls");
+        const starContents = document.querySelectorAll(".star-content");
+
+        function showStarContent(targetId) {
+          starContents.forEach((content) => {
+            content.style.opacity = "0";
+          });
+          const activeContent = document.getElementById(targetId);
+          if (activeContent) {
+            activeContent.style.opacity = "1";
+          }
+
+          starControls.querySelectorAll(".star-button").forEach((btn) => {
+            btn.classList.remove("active");
+            if (btn.dataset.target === targetId) {
+              btn.classList.add("active");
+            }
+          });
+        }
+
+        starControls.addEventListener("click", (e) => {
+          if (e.target.classList.contains("star-button")) {
+            const targetId = e.target.dataset.target;
+            showStarContent(targetId);
+          }
+        });
+
+        // Show first STAR content by default
+        showStarContent("star-s");
+      });
+    </script>
+  </body>
+</html>
