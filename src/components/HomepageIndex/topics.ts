@@ -123,6 +123,7 @@ export const areas: Area[] = [
       { label: "REST responses", doc: "key-notes/rest-api-response" },
       { label: "Authentication", doc: "key-notes/authentication" },
       { label: "API versioning", doc: "key-notes/api-versioning" },
+      { label: "Developer mindset", doc: "key-notes/developer-mindset" },
       { label: "Naming", doc: "key-notes/naming" },
       { label: "Version control", doc: "key-notes/version-control-tools" },
       { label: "Microservices", doc: "key-notes/microservices" },
