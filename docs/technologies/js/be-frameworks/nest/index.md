@@ -318,6 +318,10 @@ nest g gateway <gateway-name>
 nest g resolver <resolver-name>
 ```
 
+## Further Reading
+
+- [NestJS chuyên sâu](./in-depth.mdx) (Vietnamese): request lifecycle, DI scopes, microservices, WebSocket scaling, security.
+
 ## References
 
 - [NestJS documentation](https://docs.nestjs.com/).

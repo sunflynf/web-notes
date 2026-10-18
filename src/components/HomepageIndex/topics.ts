@@ -54,7 +54,7 @@ export const areas: Area[] = [
       },
       {
         label: "NestJS",
-        doc: "technologies/js/be-frameworks/nest",
+        doc: "technologies/js/be-frameworks/nest/index",
       },
       {
         label: "Express",
