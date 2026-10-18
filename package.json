@@ -32,6 +32,9 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "typescript": "^7.0.2"
   },
+  "resolutions": {
+    "katex": "0.19.0"
+  },
   "browserslist": {
     "production": [
       ">0.5%",
