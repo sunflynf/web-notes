@@ -2,6 +2,7 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Chosen Palette: Calm Harmony -->
     <!-- Application Structure Plan: Báo cáo gốc có cấu trúc tuyến tính, phù hợp cho việc đọc tuần tự nhưng có thể gây choáng ngợp. Tôi đã thiết kế lại thành một ứng dụng SPA với 5 phần chính có thể điều hướng tự do: 1. Tổng quan (giới thiệu & so sánh cấp cao), 2. WebSocket Chuyên sâu (giải thích cơ chế cốt lõi), 3. Sức mạnh của Socket.IO (làm nổi bật các tính năng), 4. Kiến trúc & Mở rộng (trực quan hóa các khái niệm nâng cao), 5. Thực hành (ý tưởng dự án & code mẫu). Cấu trúc này cho phép người dùng học theo tốc độ riêng, tập trung vào các chủ đề họ quan tâm nhất, và tương tác trực tiếp với nội dung, giúp tăng cường sự hiểu biết và khả năng ghi nhớ so với việc chỉ đọc văn bản. -->
@@ -13,8 +14,7 @@
         - Tất cả các phương pháp đều tuân thủ yêu cầu sử dụng Canvas hoặc HTML/CSS, không dùng SVG hay Mermaid. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <title>Khám phá WebSocket & Socket.IO</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../vendor/chart.umd.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,6 +22,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="tailwind.css" />
   </head>
   <body class="antialiased">
     <div class="container mx-auto px-4 py-8">

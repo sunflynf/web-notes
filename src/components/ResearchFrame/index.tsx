@@ -11,7 +11,15 @@ export default function ResearchFrame({ slug, title }: ResearchFrameProps) {
 
   return (
     <figure className={styles.frame}>
-      <iframe className={styles.view} src={src} title={title} />
+      {/* Opaque-origin sandbox: page scripts run but cannot reach the parent site. */}
+      <iframe
+        className={styles.view}
+        src={src}
+        title={title}
+        sandbox="allow-scripts"
+        referrerPolicy="no-referrer"
+        loading="lazy"
+      />
       <a className={styles.open} href={src}>
         Open full page
       </a>
