@@ -112,6 +112,7 @@ export const areas: Area[] = [
       { label: "ELK stack", doc: "cloud-computing/elk-stack/index" },
       { label: "Serverless", doc: "cloud-computing/serverless" },
       { label: "Cloud platforms", doc: "cloud-computing/cloud-platforms" },
+      { label: "Ubuntu server", doc: "cloud-computing/ubuntu-server-setup" },
       { label: "Azure Blob", doc: "technologies/dotnet/azure-blob-sdk" },
     ],
   },
