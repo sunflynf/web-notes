@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cẩm nang Tương tác Kiến trúc Laravel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Calm Harmony Neutrals -->
+    <!-- Application Structure Plan: A task-oriented, guided path structure. The main sections are: Architectural Overview, Request Lifecycle, Core Component Comparison, Feature Construction, and Best Practices. This structure transforms the dense report into an interactive learning tool, guiding the user through building an application conceptually. The flow is designed to be intuitive for a developer, starting from high-level architecture and drilling down into specific implementations with interactive diagrams and charts, which is more engaging and effective for understanding complex systems than static text. -->
+    <!-- Visualization & Content Choices: 
+        - Architectural Overview: Goal=Organize. Method=Interactive HTML/CSS diagram. Interaction=Click to reveal details. Justification=Visually separates layers for clarity.
+        - Request Lifecycle: Goal=Show Process. Method=HTML/CSS/JS flowchart. Interaction=Hover to highlight and get info. Justification=Best way to illustrate a sequential flow.
+        - Component Comparison: Goal=Compare. Method=Interactive cards. Justification=Directly addresses user's background (Spring Boot) in a structured way.
+        - Feature Construction: Goal=Inform/Analyze. Method=Donut Chart (Chart.js) showing logic distribution (Controller/Service/Repo). Interaction=Hover on slices. Justification=Visually reinforces the 'Thin Controller, Fat Service' principle. Also uses HTML diagrams for DB tables.
+        - Best Practices: Goal=Inform. Method=Interactive checklist. Justification=More engaging than a static list.
+        - Library/Method: Chart.js for the donut chart. All other visuals are pure HTML/CSS/JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8f5f2;
+        color: #4a4a4a;
+      }
+      .nav-link {
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+      }
+      .nav-link.active {
+        color: #e57373;
+        background-color: #f8f5f2;
+        border-left-color: #e57373;
+      }
+      .nav-link:hover {
+        background-color: #f8f5f2;
+        color: #e57373;
+      }
+      .content-section {
+        display: none;
+      }
+      .content-section.active {
+        display: block;
+      }
+      .card {
+        background-color: #ffffff;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -2px rgb(0 0 0 / 0.1);
+      }
+      .btn-primary {
+        background-color: #4db6ac;
+        color: white;
+        transition: background-color 0.3s;
+      }
+      .btn-primary:hover {
+        background-color: #26a69a;
+      }
+      .btn-secondary {
+        background-color: #e0e0e0;
+        color: #4a4a4a;
+        transition: background-color 0.3s;
+      }
+      .btn-secondary.active {
+        background-color: #e57373;
+        color: white;
+      }
+      .flowchart-node {
+        border: 2px solid #4db6ac;
+        background-color: #ffffff;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .flowchart-node:hover {
+        background-color: #e0f2f1;
+        border-color: #26a69a;
+      }
+      .flowchart-arrow {
+        position: relative;
+        width: 2px;
+        background-color: #4db6ac;
+        margin: 0.5rem auto;
+      }
+      .flowchart-arrow::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 8px solid #4db6ac;
+      }
+      .tooltip {
+        visibility: hidden;
+        width: 220px;
+        background-color: #4a4a4a;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px;
+        position: absolute;
+        z-index: 10;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -110px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .flowchart-node:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 300px;
+        max-height: 400px;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 350px;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex flex-col md:flex-row min-h-screen">
+      <!-- Sidebar Navigation -->
+      <aside
+        id="sidebar"
+        class="w-full md:w-64 bg-white md:bg-[#ECE7E1] text-gray-700 flex-shrink-0"
+      >
+        <div class="p-6">
+          <h1 class="text-2xl font-bold text-gray-800">Kiến trúc Laravel</h1>
+          <p class="text-sm mt-1">Cẩm nang Tương tác</p>
+        </div>
+        <nav
+          id="main-nav"
+          class="mt-4 flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible"
+        >
+          <a
+            href="#overview"
+            class="nav-link block p-4 font-semibold whitespace-nowrap"
+            >Tổng quan Kiến trúc</a
+          >
+          <a
+            href="#lifecycle"
+            class="nav-link block p-4 font-semibold whitespace-nowrap"
+            >Luồng Yêu cầu</a
+          >
+          <a
+            href="#components"
+            class="nav-link block p-4 font-semibold whitespace-nowrap"
+            >So sánh Thành phần</a
+          >
+          <a
+            href="#features"
+            class="nav-link block p-4 font-semibold whitespace-nowrap"
+            >Xây dựng Chức năng</a
+          >
+          <a
+            href="#practices"
+            class="nav-link block p-4 font-semibold whitespace-nowrap"
+            >Thực tiễn Tốt nhất</a
+          >
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-4 sm:p-6 lg:p-10">
+        <!-- Section: Architectural Overview -->
+        <section id="overview" class="content-section">
+          <h2 class="text-3xl font-bold mb-2">Tổng quan Kiến trúc Phân tầng</h2>
+          <p class="text-lg mb-8 text-gray-600">
+            Kiến trúc Laravel hiện đại thường áp dụng các mẫu Service và
+            Repository để phân tách rõ ràng các mối quan tâm, giúp ứng dụng dễ
+            bảo trì và mở rộng. Hãy nhấp vào từng tầng để xem vai trò và trách
+            nhiệm của nó.
+          </p>
+          <div class="lg:flex lg:space-x-8">
+            <div class="lg:w-1/2 space-y-4">
+              <div
+                class="arch-layer card p-6 cursor-pointer border-l-4 border-transparent hover:border-[#4DB6AC]"
+                data-target="info-controller"
+              >
+                <h3 class="font-bold text-xl">Controller</h3>
+                <p class="text-sm">Tầng Giao tiếp HTTP</p>
+              </div>
+              <div class="text-center text-2xl font-bold text-gray-400">↓</div>
+              <div
+                class="arch-layer card p-6 cursor-pointer border-l-4 border-transparent hover:border-[#4DB6AC]"
+                data-target="info-service"
+              >
+                <h3 class="font-bold text-xl">Service</h3>
+                <p class="text-sm">Tầng Logic Nghiệp vụ</p>
+              </div>
+              <div class="text-center text-2xl font-bold text-gray-400">↓</div>
+              <div
+                class="arch-layer card p-6 cursor-pointer border-l-4 border-transparent hover:border-[#4DB6AC]"
+                data-target="info-repository"
+              >
+                <h3 class="font-bold text-xl">Repository</h3>
+                <p class="text-sm">Tầng Trừu tượng Dữ liệu</p>
+              </div>
+              <div class="text-center text-2xl font-bold text-gray-400">↓</div>
+              <div
+                class="arch-layer card p-6 cursor-pointer border-l-4 border-transparent hover:border-[#4DB6AC]"
+                data-target="info-model"
+              >
+                <h3 class="font-bold text-xl">Model (Eloquent)</h3>
+                <p class="text-sm">Tầng Tương tác CSDL</p>
+              </div>
+            </div>
+            <div class="lg:w-1/2 mt-8 lg:mt-0">
+              <div id="arch-info" class="card p-8 min-h-[300px]">
+                <div id="info-controller" class="arch-info-content hidden">
+                  <h4 class="font-bold text-2xl mb-4 text-[#E57373]">
+                    Controller
+                  </h4>
+                  <p>
+                    <strong>Vai trò:</strong> Nhận yêu cầu HTTP từ Router và trả
+                    về phản hồi HTTP.
+                  </p>
+                  <p class="mt-2"><strong>Trách nhiệm:</strong></p>
+                  <ul class="list-disc list-inside mt-2 space-y-1">
+                    <li>Điều phối luồng xử lý.</li>
+                    <li>
+                      Gọi đến các lớp Service để thực thi logic nghiệp vụ.
+                    </li>
+                    <li>
+                      Xác thực dữ liệu đầu vào (thường qua Form Requests).
+                    </li>
+                    <li>
+                      Chuẩn bị dữ liệu và truyền cho View hoặc trả về JSON.
+                    </li>
+                    <li>
+                      <strong>Nguyên tắc:</strong> Giữ cho Controller "mỏng" -
+                      không chứa logic nghiệp vụ phức tạp.
+                    </li>
+                  </ul>
+                </div>
+                <div id="info-service" class="arch-info-content hidden">
+                  <h4 class="font-bold text-2xl mb-4 text-[#E57373]">
+                    Service Layer
+                  </h4>
+                  <p>
+                    <strong>Vai trò:</strong> Đóng gói và thực thi logic nghiệp
+                    vụ của ứng dụng.
+                  </p>
+                  <p class="mt-2"><strong>Trách nhiệm:</strong></p>
+                  <ul class="list-disc list-inside mt-2 space-y-1">
+                    <li>
+                      Thực hiện các quy trình nghiệp vụ phức tạp (ví dụ: xử lý
+                      đơn hàng, tính toán khuyến mãi).
+                    </li>
+                    <li>
+                      Điều phối hoạt động giữa nhiều Model hoặc Repository.
+                    </li>
+                    <li>
+                      Tương tác với các dịch vụ bên ngoài (API thanh toán, vận
+                      chuyển).
+                    </li>
+                    <li>
+                      Giúp Controller gọn nhẹ và logic nghiệp vụ có thể tái sử
+                      dụng.
+                    </li>
+                    <li>
+                      <strong>Nguyên tắc:</strong> Đây là nơi logic nghiệp vụ
+                      "sống".
+                    </li>
+                  </ul>
+                </div>
+                <div id="info-repository" class="arch-info-content hidden">
+                  <h4 class="font-bold text-2xl mb-4 text-[#E57373]">
+                    Repository Pattern
+                  </h4>
+                  <p>
+                    <strong>Vai trò:</strong> Tạo một lớp trừu tượng giữa logic
+                    nghiệp vụ và nguồn dữ liệu.
+                  </p>
+                  <p class="mt-2"><strong>Trách nhiệm:</strong></p>
+                  <ul class="list-disc list-inside mt-2 space-y-1">
+                    <li>
+                      Cung cấp một giao diện (Interface) nhất quán để truy vấn
+                      dữ liệu (`find`, `create`, `update`).
+                    </li>
+                    <li>Đóng gói các truy vấn Eloquent phức tạp.</li>
+                    <li>
+                      Cho phép dễ dàng thay đổi nguồn dữ liệu (ví dụ: từ MySQL
+                      sang một API khác).
+                    </li>
+                    <li>
+                      Tăng khả năng kiểm thử (testing) bằng cách mock
+                      repository.
+                    </li>
+                    <li>
+                      <strong>Lưu ý:</strong> Là một lựa chọn kiến trúc, không
+                      bắt buộc, nhưng rất hữu ích cho các dự án lớn.
+                    </li>
+                  </ul>
+                </div>
+                <div id="info-model" class="arch-info-content hidden">
+                  <h4 class="font-bold text-2xl mb-4 text-[#E57373]">
+                    Model (Eloquent)
+                  </h4>
+                  <p>
+                    <strong>Vai trò:</strong> Đại diện cho một bảng trong cơ sở
+                    dữ liệu và cung cấp các phương thức tương tác với nó (Active
+                    Record Pattern).
+                  </p>
+                  <p class="mt-2"><strong>Trách nhiệm:</strong></p>
+                  <ul class="list-disc list-inside mt-2 space-y-1">
+                    <li>
+                      Định nghĩa mối quan hệ (relationships) với các model khác
+                      (`hasMany`, `belongsTo`).
+                    </li>
+                    <li>
+                      Định nghĩa `fillable`/`guarded` attributes cho mass
+                      assignment.
+                    </li>
+                    <li>
+                      Cung cấp `accessors` & `mutators` để định dạng dữ liệu.
+                    </li>
+                    <li>
+                      Định nghĩa `local scopes` cho các truy vấn tái sử dụng.
+                    </li>
+                    <li>
+                      Thực hiện các thao tác CRUD cơ bản (`save`, `delete`,
+                      `update`).
+                    </li>
+                  </ul>
+                </div>
+                <div id="info-default" class="arch-info-content">
+                  <h4 class="font-bold text-2xl mb-4">Khám phá các tầng</h4>
+                  <p>
+                    Nhấp vào một tầng ở bên trái để xem chi tiết vai trò và
+                    trách nhiệm của nó trong một ứng dụng Laravel được cấu trúc
+                    tốt.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Request Lifecycle -->
+        <section id="lifecycle" class="content-section">
+          <h2 class="text-3xl font-bold mb-2">
+            Luồng Xử lý Yêu cầu (Request Lifecycle)
+          </h2>
+          <p class="text-lg mb-8 text-gray-600">
+            Mọi yêu cầu đến ứng dụng Laravel đều đi qua một chuỗi các bước được
+            xác định rõ ràng. Di chuột qua từng bước để xem mô tả chi tiết.
+          </p>
+          <div class="max-w-md mx-auto">
+            <div class="flowchart-node">
+              <span class="font-semibold">1. Public/index.php</span>
+              <div class="tooltip">
+                Điểm vào duy nhất cho tất cả các yêu cầu. Tải autoloader của
+                Composer và khởi tạo ứng dụng.
+              </div>
+            </div>
+            <div class="flowchart-arrow h-8"></div>
+            <div class="flowchart-node">
+              <span class="font-semibold">2. HTTP Kernel</span>
+              <div class="tooltip">
+                Xử lý yêu cầu HTTP. Bọc yêu cầu trong một đối tượng Request và
+                gửi nó qua một chuỗi các middleware toàn cục.
+              </div>
+            </div>
+            <div class="flowchart-arrow h-8"></div>
+            <div class="flowchart-node">
+              <span class="font-semibold">3. Service Providers</span>
+              <div class="tooltip">
+                Khởi tạo và đăng ký tất cả các dịch vụ cốt lõi của framework như
+                Router, Database, và các dịch vụ của ứng dụng.
+              </div>
+            </div>
+            <div class="flowchart-arrow h-8"></div>
+            <div class="flowchart-node">
+              <span class="font-semibold">4. Router Dispatch</span>
+              <div class="tooltip">
+                Router tìm kiếm một route phù hợp với URI của yêu cầu. Nếu tìm
+                thấy, nó sẽ gửi yêu cầu qua các middleware được gán cho route
+                đó.
+              </div>
+            </div>
+            <div class="flowchart-arrow h-8"></div>
+            <div class="flowchart-node">
+              <span class="font-semibold">5. Controller / Closure</span>
+              <div class="tooltip">
+                Route được điều phối đến một phương thức Controller hoặc một
+                Closure để xử lý logic, tương tác với Model/Service.
+              </div>
+            </div>
+            <div class="flowchart-arrow h-8"></div>
+            <div class="flowchart-node">
+              <span class="font-semibold">6. Response</span>
+              <div class="tooltip">
+                Controller/Closure trả về một đối tượng Response (thường là một
+                View hoặc JSON).
+              </div>
+            </div>
+            <div class="flowchart-arrow h-8"></div>
+            <div class="flowchart-node">
+              <span class="font-semibold">7. Send Response</span>
+              <div class="tooltip">
+                Response được gửi ngược lại qua chuỗi middleware (cho các xử lý
+                sau cùng) và sau đó được gửi đến trình duyệt của người dùng.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Component Comparison -->
+        <section id="components" class="content-section">
+          <h2 class="text-3xl font-bold mb-2">
+            So sánh các Thành phần Cốt lõi
+          </h2>
+          <p class="text-lg mb-8 text-gray-600">
+            Đối với lập trình viên Spring Boot, việc ánh xạ các khái niệm của
+            Laravel sang những gì bạn đã biết sẽ giúp tăng tốc quá trình học
+            tập.
+          </p>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="card p-6">
+              <h3 class="font-bold text-xl mb-2">Routing</h3>
+              <p>
+                <strong class="text-[#4DB6AC]">Laravel:</strong> Các tệp routes
+                tập trung (`routes/web.php`). Cú pháp Fluent. Hỗ trợ Route Model
+                Binding, Resource Controllers.
+              </p>
+              <hr class="my-3" />
+              <p>
+                <strong class="text-[#E57373]">Spring Boot:</strong> Annotation
+                trong Controller (`@GetMapping`, `@PostMapping`). Phi tập trung,
+                gắn liền với logic xử lý.
+              </p>
+            </div>
+            <div class="card p-6">
+              <h3 class="font-bold text-xl mb-2">Middleware</h3>
+              <p>
+                <strong class="text-[#4DB6AC]">Laravel:</strong> Các lớp PHP đơn
+                giản, đăng ký trong `Kernel.php`. Tích hợp chặt chẽ với Router.
+              </p>
+              <hr class="my-3" />
+              <p>
+                <strong class="text-[#E57373]">Spring Boot:</strong> Tương đương
+                với Servlet Filters và `HandlerInterceptor`. Phân tầng và mạnh
+                mẽ hơn nhưng có thể phức tạp hơn.
+              </p>
+            </div>
+            <div class="card p-6">
+              <h3 class="font-bold text-xl mb-2">Dependency Injection</h3>
+              <p>
+                <strong class="text-[#4DB6AC]">Laravel:</strong> Service
+                Container. Tự động resolve (Zero Config Resolution). Binding
+                trong Service Providers.
+              </p>
+              <hr class="my-3" />
+              <p>
+                <strong class="text-[#E57373]">Spring Boot:</strong>
+                `ApplicationContext`. Dựa trên Annotation (`@Autowired`,
+                `@Service`). Cần khai báo tường minh hơn.
+              </p>
+            </div>
+            <div class="card p-6">
+              <h3 class="font-bold text-xl mb-2">ORM</h3>
+              <p>
+                <strong class="text-[#4DB6AC]">Laravel Eloquent:</strong> Mẫu
+                Active Record. Model gắn liền với bảng và logic bền vững
+                (`$user->save()`).
+              </p>
+              <hr class="my-3" />
+              <p>
+                <strong class="text-[#E57373]">Spring Data JPA:</strong> Mẫu
+                Repository. Entity là POJO. Logic truy cập dữ liệu nằm trong
+                Repository interface.
+              </p>
+            </div>
+            <div class="card p-6">
+              <h3 class="font-bold text-xl mb-2">Validation</h3>
+              <p>
+                <strong class="text-[#4DB6AC]">Laravel:</strong> Form Request
+                class để đóng gói validation & authorization, giúp Controller
+                gọn gàng. API linh hoạt.
+              </p>
+              <hr class="my-3" />
+              <p>
+                <strong class="text-[#E57373]">Spring Boot:</strong> Bean
+                Validation (JSR 380). Annotation trên DTO/Model (`@NotNull`,
+                `@Size`).
+              </p>
+            </div>
+            <div class="card p-6">
+              <h3 class="font-bold text-xl mb-2">Templating Engine</h3>
+              <p>
+                <strong class="text-[#4DB6AC]">Laravel Blade:</strong> Cú pháp
+                đơn giản, gần gũi PHP. Được biên dịch và cache, hiệu năng cao.
+              </p>
+              <hr class="my-3" />
+              <p>
+                <strong class="text-[#E57373]">Spring Boot Thymeleaf:</strong>
+                "Natural Templating" (HTML hợp lệ). Dùng thuộc tính `th:*`. Tích
+                hợp tốt với Spring Security.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Building Features -->
+        <section id="features" class="content-section">
+          <h2 class="text-3xl font-bold mb-2">
+            Xây dựng Chức năng Thương mại Điện tử
+          </h2>
+          <p class="text-lg mb-8 text-gray-600">
+            Chọn một chức năng để xem phân tích chi tiết về các thành phần liên
+            quan, luồng logic và các gói thư viện được đề xuất.
+          </p>
+
+          <div class="flex flex-wrap gap-2 mb-8">
+            <button
+              class="feature-btn btn-secondary py-2 px-4 rounded-full active"
+              data-feature="orders"
+            >
+              Quản lý Đơn hàng
+            </button>
+            <button
+              class="feature-btn btn-secondary py-2 px-4 rounded-full"
+              data-feature="products"
+            >
+              Quản lý Sản phẩm
+            </button>
+            <button
+              class="feature-btn btn-secondary py-2 px-4 rounded-full"
+              data-feature="users"
+            >
+              Quản lý Người dùng
+            </button>
+          </div>
+
+          <div id="feature-content" class="space-y-8">
+            <!-- Order Management Content -->
+            <div class="feature-pane active" data-feature="orders">
+              <h3 class="text-2xl font-bold mb-4">
+                Phân tích: Quản lý Đơn hàng
+              </h3>
+              <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h4 class="font-semibold text-lg mb-2">
+                    Luồng Logic Tạo Đơn hàng
+                  </h4>
+                  <ol class="list-decimal list-inside space-y-2">
+                    <li>
+                      <strong>Controller</strong> nhận yêu cầu từ trang
+                      checkout.
+                    </li>
+                    <li>
+                      Controller gọi <strong>OrderService</strong> với dữ liệu
+                      đã được xác thực.
+                    </li>
+                    <li>
+                      <strong>OrderService</strong>:
+                      <ul class="list-disc list-inside ml-4">
+                        <li>Lấy chi tiết giỏ hàng.</li>
+                        <li>
+                          Tạo bản ghi `Order` & `OrderItem` qua
+                          <strong>OrderRepository</strong>.
+                        </li>
+                        <li>
+                          Cập nhật tồn kho sản phẩm qua
+                          <strong>ProductRepository</strong>.
+                        </li>
+                        <li>Kích hoạt sự kiện <strong>OrderPlaced</strong>.</li>
+                      </ul>
+                    </li>
+                    <li>
+                      <strong>Listener</strong> `SendOrderConfirmationEmail`
+                      nhận sự kiện và gửi email cho khách hàng (thông qua
+                      Queue).
+                    </li>
+                    <li>Controller trả về view xác nhận đơn hàng.</li>
+                  </ol>
+                  <h4 class="font-semibold text-lg mt-6 mb-2">
+                    Các Gói Thư viện Đề xuất
+                  </h4>
+                  <ul class="list-disc list-inside space-y-1">
+                    <li>
+                      <strong>Giỏ hàng:</strong> `gloudemans/shoppingcart`
+                    </li>
+                    <li>
+                      <strong>Trạng thái Model:</strong>
+                      `spatie/laravel-model-states` (để quản lý các trạng thái:
+                      pending, processing, shipped...)
+                    </li>
+                    <li>
+                      <strong>Thanh toán:</strong> `stripe/stripe-php`,
+                      `srmklive/laravel-paypal`
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-lg mb-2 text-center">
+                    Phân bổ Logic theo Tầng (Ước tính)
+                  </h4>
+                  <div class="chart-container">
+                    <canvas id="orderLogicChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Product Management Content -->
+            <div class="feature-pane hidden" data-feature="products">
+              <h3 class="text-2xl font-bold mb-4">
+                Phân tích: Quản lý Sản phẩm
+              </h3>
+              <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h4 class="font-semibold text-lg mb-2">
+                    Các Chức năng Cốt lõi
+                  </h4>
+                  <ul class="list-disc list-inside space-y-2">
+                    <li>
+                      <strong>CRUD Sản phẩm & Danh mục:</strong> Sử dụng
+                      Resource Controllers và Form Requests.
+                    </li>
+                    <li>
+                      <strong>Xử lý Hình ảnh:</strong> Tải lên, thay đổi kích
+                      thước, tạo thumbnail. Gói `spatie/laravel-medialibrary` là
+                      lựa chọn hàng đầu.
+                    </li>
+                    <li>
+                      <strong>Biến thể Sản phẩm:</strong> Quản lý các thuộc tính
+                      (Màu sắc, Kích thước) và các biến thể cụ thể (Áo thun đỏ,
+                      size M) với SKU và tồn kho riêng. Điều này đòi hỏi thiết
+                      kế CSDL cẩn thận với các bảng `attributes`,
+                      `attribute_values`, `product_variants`.
+                    </li>
+                  </ul>
+                  <h4 class="font-semibold text-lg mt-6 mb-2">
+                    Bảng Quản trị (Admin Panel)
+                  </h4>
+                  <p>
+                    Sử dụng một gói Admin Panel như
+                    <strong>Filament</strong> hoặc
+                    <strong>Laravel Nova</strong> để tăng tốc đáng kể việc xây
+                    dựng giao diện CRUD cho sản phẩm, danh mục và đơn hàng.
+                  </p>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-lg mb-2 text-center">
+                    Các Bảng CSDL Liên quan
+                  </h4>
+                  <div class="grid grid-cols-2 gap-2 text-center text-sm">
+                    <div
+                      class="p-3 bg-teal-50 rounded-lg border border-teal-200"
+                    >
+                      products
+                    </div>
+                    <div
+                      class="p-3 bg-teal-50 rounded-lg border border-teal-200"
+                    >
+                      categories
+                    </div>
+                    <div
+                      class="p-3 bg-teal-50 rounded-lg border border-teal-200"
+                    >
+                      category_product
+                    </div>
+                    <div
+                      class="p-3 bg-teal-50 rounded-lg border border-teal-200"
+                    >
+                      product_images (hoặc `media`)
+                    </div>
+                    <div
+                      class="p-3 bg-teal-50 rounded-lg border border-teal-200"
+                    >
+                      attributes
+                    </div>
+                    <div
+                      class="p-3 bg-teal-50 rounded-lg border border-teal-200"
+                    >
+                      attribute_values
+                    </div>
+                    <div
+                      class="p-3 bg-teal-50 rounded-lg border border-teal-200"
+                    >
+                      product_variants
+                    </div>
+                    <div
+                      class="p-3 bg-teal-50 rounded-lg border border-teal-200"
+                    >
+                      attribute_value_product_variant
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- User Management Content -->
+            <div class="feature-pane hidden" data-feature="users">
+              <h3 class="text-2xl font-bold mb-4">
+                Phân tích: Quản lý Người dùng
+              </h3>
+              <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h4 class="font-semibold text-lg mb-2">
+                    Xác thực (Authentication)
+                  </h4>
+                  <p class="mb-2">
+                    Laravel cung cấp các "starter kit" để thiết lập nhanh chóng:
+                  </p>
+                  <ul class="list-disc list-inside space-y-1">
+                    <li>
+                      <strong>Laravel Breeze:</strong> Tối giản, sử dụng Blade.
+                      Lựa chọn tốt để bắt đầu.
+                    </li>
+                    <li>
+                      <strong>Laravel Jetstream:</strong> Nâng cao hơn, với
+                      Livewire/Inertia, 2FA.
+                    </li>
+                    <li>
+                      <strong>API Auth (Sanctum):</strong> Dành cho SPA hoặc ứng
+                      dụng di động.
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-lg mb-2">
+                    Ủy quyền (Authorization)
+                  </h4>
+                  <p class="mb-2">Kiểm soát quyền truy cập của người dùng:</p>
+                  <ul class="list-disc list-inside space-y-1">
+                    <li>
+                      <strong>Gates & Policies:</strong> Tích hợp sẵn, phù hợp
+                      cho các quy tắc đơn giản hoặc theo model.
+                    </li>
+                    <li>
+                      <strong>`spatie/laravel-permission`:</strong> Gói thư viện
+                      mạnh mẽ để xây dựng hệ thống phân quyền dựa trên vai trò
+                      (RBAC) một cách có cấu trúc (vd: admin, customer).
+                    </li>
+                  </ul>
+                  <div
+                    class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg"
+                  >
+                    <p>
+                      <strong>Ví dụ:</strong> Chỉ người dùng có vai trò `admin`
+                      hoặc quyền `manage products` mới có thể truy cập trang
+                      quản lý sản phẩm.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Best Practices -->
+        <section id="practices" class="content-section">
+          <h2 class="text-3xl font-bold mb-2">Thực tiễn Tốt nhất</h2>
+          <p class="text-lg mb-8 text-gray-600">
+            Tuân thủ các nguyên tắc này sẽ giúp ứng dụng của bạn dễ bảo trì, mở
+            rộng và có hiệu năng cao.
+          </p>
+          <div class="space-y-4">
+            <div class="practice-item flex items-start space-x-3">
+              <input
+                type="checkbox"
+                class="mt-1 h-5 w-5 text-[#4DB6AC] rounded border-gray-300 focus:ring-[#4DB6AC]"
+              />
+              <div>
+                <h4 class="font-semibold">Sử dụng Eager Loading (`with()`)</h4>
+                <p class="text-sm text-gray-600">
+                  Tránh vấn đề N+1 query bằng cách tải trước các mối quan hệ
+                  Eloquent cần thiết.
+                </p>
+              </div>
+            </div>
+            <div class="practice-item flex items-start space-x-3">
+              <input
+                type="checkbox"
+                class="mt-1 h-5 w-5 text-[#4DB6AC] rounded border-gray-300 focus:ring-[#4DB6AC]"
+              />
+              <div>
+                <h4 class="font-semibold">Sử dụng Queues cho các tác vụ dài</h4>
+                <p class="text-sm text-gray-600">
+                  Đưa các tác vụ tốn thời gian (gửi email, xử lý ảnh) vào hàng
+                  đợi để không làm chậm phản hồi của người dùng.
+                </p>
+              </div>
+            </div>
+            <div class="practice-item flex items-start space-x-3">
+              <input
+                type="checkbox"
+                class="mt-1 h-5 w-5 text-[#4DB6AC] rounded border-gray-300 focus:ring-[#4DB6AC]"
+              />
+              <div>
+                <h4 class="font-semibold">Validation qua Form Requests</h4>
+                <p class="text-sm text-gray-600">
+                  Đóng gói logic validation và authorization vào các lớp riêng,
+                  giữ cho controller sạch sẽ.
+                </p>
+              </div>
+            </div>
+            <div class="practice-item flex items-start space-x-3">
+              <input
+                type="checkbox"
+                class="mt-1 h-5 w-5 text-[#4DB6AC] rounded border-gray-300 focus:ring-[#4DB6AC]"
+              />
+              <div>
+                <h4 class="font-semibold">Events và Listeners</h4>
+                <p class="text-sm text-gray-600">
+                  Tách rời các hành động phụ (gửi thông báo, cập nhật tồn kho)
+                  khỏi luồng logic chính.
+                </p>
+              </div>
+            </div>
+            <div class="practice-item flex items-start space-x-3">
+              <input
+                type="checkbox"
+                class="mt-1 h-5 w-5 text-[#4DB6AC] rounded border-gray-300 focus:ring-[#4DB6AC]"
+              />
+              <div>
+                <h4 class="font-semibold">Caching chiến lược</h4>
+                <p class="text-sm text-gray-600">
+                  Cache các truy vấn CSDL tốn kém hoặc dữ liệu ít thay đổi để
+                  tăng tốc độ ứng dụng.
+                </p>
+              </div>
+            </div>
+            <div class="practice-item flex items-start space-x-3">
+              <input
+                type="checkbox"
+                class="mt-1 h-5 w-5 text-[#4DB6AC] rounded border-gray-300 focus:ring-[#4DB6AC]"
+              />
+              <div>
+                <h4 class="font-semibold">Viết Test</h4>
+                <p class="text-sm text-gray-600">
+                  Viết Unit Test và Feature Test để đảm bảo chất lượng code và
+                  sự ổn định của ứng dụng.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const navLinks = document.querySelectorAll(".nav-link");
+        const sections = document.querySelectorAll(".content-section");
+        const archLayers = document.querySelectorAll(".arch-layer");
+        const archInfoContainer = document.getElementById("arch-info");
+        const archInfoContents =
+          document.querySelectorAll(".arch-info-content");
+        const featureBtns = document.querySelectorAll(".feature-btn");
+        const featurePanes = document.querySelectorAll(".feature-pane");
+        let orderLogicChart = null;
+
+        function navigateTo(hash) {
+          navLinks.forEach((link) => {
+            if (link.getAttribute("href") === hash) {
+              link.classList.add("active");
+            } else {
+              link.classList.remove("active");
+            }
+          });
+
+          sections.forEach((section) => {
+            if ("#" + section.id === hash) {
+              section.classList.add("active");
+            } else {
+              section.classList.remove("active");
+            }
+          });
+
+          // Special handling for chart rendering
+          if (hash === "#features" && !orderLogicChart) {
+            renderOrderLogicChart();
+          }
+        }
+
+        navLinks.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const targetHash = this.getAttribute("href");
+            window.location.hash = targetHash;
+          });
+        });
+
+        window.addEventListener("hashchange", () => {
+          const hash = window.location.hash || "#overview";
+          navigateTo(hash);
+        });
+
+        // Initial load
+        const initialHash = window.location.hash || "#overview";
+        navigateTo(initialHash);
+
+        // Architecture section logic
+        archLayers.forEach((layer) => {
+          layer.addEventListener("click", function () {
+            const targetId = this.dataset.target;
+
+            archLayers.forEach((l) => l.classList.remove("bg-teal-50"));
+            this.classList.add("bg-teal-50");
+
+            archInfoContents.forEach((content) => {
+              if (content.id === targetId) {
+                content.classList.remove("hidden");
+              } else {
+                content.classList.add("hidden");
+              }
+            });
+          });
+        });
+        // Set default info on load for architecture
+        document.querySelector("#info-default").classList.remove("hidden");
+
+        // Features section logic
+        featureBtns.forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const feature = this.dataset.feature;
+
+            featureBtns.forEach((b) =>
+              b.classList.remove("active", "btn-primary")
+            );
+            this.classList.add("active", "btn-primary");
+
+            featurePanes.forEach((pane) => {
+              if (pane.dataset.feature === feature) {
+                pane.classList.remove("hidden");
+                pane.classList.add("active");
+              } else {
+                pane.classList.remove("active");
+                pane.classList.add("hidden");
+              }
+            });
+          });
+        });
+
+        function renderOrderLogicChart() {
+          const ctx = document
+            .getElementById("orderLogicChart")
+            .getContext("2d");
+          orderLogicChart = new Chart(ctx, {
+            type: "doughnut",
+            data: {
+              labels: [
+                "Service Layer",
+                "Repository",
+                "Controller",
+                "Events/Listeners",
+              ],
+              datasets: [
+                {
+                  label: "Phân bổ Logic",
+                  data: [60, 20, 15, 5],
+                  backgroundColor: [
+                    "rgba(229, 115, 115, 0.8)", // Terracotta for Service
+                    "rgba(77, 182, 172, 0.8)", // Teal for Repository
+                    "rgba(255, 183, 77, 0.8)", // Amber
+                    "rgba(129, 212, 250, 0.8)", // Light Blue
+                  ],
+                  borderColor: [
+                    "rgba(229, 115, 115, 1)",
+                    "rgba(77, 182, 172, 1)",
+                    "rgba(255, 183, 77, 1)",
+                    "rgba(129, 212, 250, 1)",
+                  ],
+                  borderWidth: 1,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "top",
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      let label = context.label || "";
+                      if (label) {
+                        label += ": ";
+                      }
+                      if (context.parsed !== null) {
+                        label += context.parsed + "%";
+                      }
+                      return label;
+                    },
+                  },
+                },
+              },
+            },
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
