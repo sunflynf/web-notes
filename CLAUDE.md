@@ -163,7 +163,6 @@ Add to `prism.additionalLanguages` in `docusaurus.config.ts` (check the existing
 - **Broken links fail the build** (`onBrokenLinks: "throw"`). With `trailingSlash: true`, prefer relative file links (`./foo.md`) over URL paths.
 - **`yarn.lock` must be committed**: CI uses `--frozen-lockfile`.
 - **Mermaid in dark mode**: `src/theme/Mermaid/` wraps the theme component and remounts it per color mode. Without it, a dark-mode first load leaves most diagrams empty. Keep it until upstream fixes the render race.
-- **Research pages** (`static/research/<slug>/`, embedded by `ResearchFrame` in a sandboxed iframe) use precompiled `tailwind.css` and the vendored `static/research/vendor/chart.umd.min.js`, with a CSP meta tag. Never add CDN `<script>` tags; run `yarn research:css` after editing a page's classes.
 
 ## Testing
 
