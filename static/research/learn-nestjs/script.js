@@ -768,12 +768,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function handleNavigation() {
     const hash = window.location.hash.slice(1);
-    const [sectionId, subSectionId] = hash.split("/");
+    const [rawSectionId, rawSubSectionId] = hash.split("/");
 
-    const targetSection = sectionId || "welcome";
-    const targetSubSection =
-      subSectionId ||
-      appData.navigation.find((s) => s.id === targetSection)?.sub?.[0].id;
+    const defaultSection = "welcome";
+    const sectionEntry = appData.navigation.find((s) => s.id === rawSectionId);
+    const targetSection = sectionEntry ? sectionEntry.id : defaultSection;
+
+    const activeSectionEntry =
+      appData.navigation.find((s) => s.id === targetSection) || {};
+    const allowedSubIds = (activeSectionEntry.sub || []).map((sub) => sub.id);
+    const targetSubSection = allowedSubIds.includes(rawSubSectionId)
+      ? rawSubSectionId
+      : activeSectionEntry.sub?.[0]?.id;
 
     renderContent(targetSection, targetSubSection);
     updateActiveLinks(targetSection, targetSubSection);
