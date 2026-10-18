@@ -18,3 +18,7 @@ programming:
   label: Programming
   permalink: /programming
   description: Anything in dev life
+research:
+  label: Research
+  permalink: /research
+  description: Interactive guides moved from the Research vault
