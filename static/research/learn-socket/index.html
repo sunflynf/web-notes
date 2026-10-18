@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: Báo cáo gốc có cấu trúc tuyến tính, phù hợp cho việc đọc tuần tự nhưng có thể gây choáng ngợp. Tôi đã thiết kế lại thành một ứng dụng SPA với 5 phần chính có thể điều hướng tự do: 1. Tổng quan (giới thiệu & so sánh cấp cao), 2. WebSocket Chuyên sâu (giải thích cơ chế cốt lõi), 3. Sức mạnh của Socket.IO (làm nổi bật các tính năng), 4. Kiến trúc & Mở rộng (trực quan hóa các khái niệm nâng cao), 5. Thực hành (ý tưởng dự án & code mẫu). Cấu trúc này cho phép người dùng học theo tốc độ riêng, tập trung vào các chủ đề họ quan tâm nhất, và tương tác trực tiếp với nội dung, giúp tăng cường sự hiểu biết và khả năng ghi nhớ so với việc chỉ đọc văn bản. -->
+    <!-- Visualization & Content Choices: 
+        - So sánh WebSocket/Socket.IO: Goal=So sánh. Method=Biểu đồ cột ngang (Chart.js) để so sánh trực quan các đặc tính như độ phức tạp, tính năng. Justification=Nhanh chóng nắm bắt sự khác biệt cốt lõi.
+        - Sơ đồ Handshake WebSocket: Goal=Tổ chức & Thông báo. Method=Sơ đồ khối tương tác bằng HTML/CSS. Interaction=Click vào các bước để hiển thị giải thích chi tiết. Justification=Trực quan hóa một quy trình kỹ thuật phức tạp, dễ hiểu hơn văn bản thuần túy.
+        - Sơ đồ phát sự kiện Socket.IO: Goal=Giải thích mối quan hệ. Method=Sơ đồ client-server bằng HTML/CSS. Interaction=Click các nút (`io.emit`, `broadcast`) để xem luồng dữ liệu tương ứng được tô sáng. Justification=Làm rõ phạm vi của các lệnh phát sóng khác nhau.
+        - Sơ đồ kiến trúc mở rộng: Goal=So sánh. Method=Sơ đồ HTML/CSS cho kiến trúc đơn và đa node (với Redis). Justification=Giúp người dùng hình dung các mô hình triển khai phức tạp.
+        - Tất cả các phương pháp đều tuân thủ yêu cầu sử dụng Canvas hoặc HTML/CSS, không dùng SVG hay Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <title>Khám phá WebSocket & Socket.IO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="antialiased">
+    <div class="container mx-auto px-4 py-8">
+      <header class="text-center mb-10">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800">
+          Khám phá WebSocket & Socket.IO
+        </h1>
+        <p class="mt-4 text-lg text-gray-600">
+          Một hành trình tương tác để làm chủ công nghệ real-time
+        </p>
+      </header>
+
+      <nav class="bg-white rounded-lg shadow-sm mb-10 sticky top-4 z-10">
+        <ul
+          class="flex flex-wrap justify-center items-center p-4 gap-4 md:gap-8"
+        >
+          <li>
+            <a
+              href="#overview"
+              class="nav-link px-3 py-2 text-gray-700 font-medium active"
+              >Tổng Quan</a
+            >
+          </li>
+          <li>
+            <a
+              href="#websocket"
+              class="nav-link px-3 py-2 text-gray-700 font-medium"
+              >WebSocket Chuyên Sâu</a
+            >
+          </li>
+          <li>
+            <a
+              href="#socketio"
+              class="nav-link px-3 py-2 text-gray-700 font-medium"
+              >Sức Mạnh của Socket.IO</a
+            >
+          </li>
+          <li>
+            <a
+              href="#scaling"
+              class="nav-link px-3 py-2 text-gray-700 font-medium"
+              >Kiến Trúc & Mở Rộng</a
+            >
+          </li>
+          <li>
+            <a
+              href="#practice"
+              class="nav-link px-3 py-2 text-gray-700 font-medium"
+              >Thực Hành</a
+            >
+          </li>
+        </ul>
+      </nav>
+
+      <main>
+        <!-- Section 1: Overview -->
+        <section id="overview" class="content-section active">
+          <div class="card p-6 md:p-8 mb-8">
+            <h2 class="text-3xl font-bold mb-4 text-cyan-700">
+              Tại sao cần Real-time?
+            </h2>
+            <p class="text-gray-600 leading-relaxed">
+              Trong thế giới web hiện đại, các ứng dụng không còn chỉ hiển thị
+              thông tin tĩnh. Từ tin nhắn tức thời, thông báo đơn hàng mới, đến
+              việc theo dõi giá cổ phiếu hay cộng tác trên cùng một tài liệu,
+              người dùng mong đợi trải nghiệm liền mạch và cập nhật ngay lập
+              tức. Giao thức HTTP truyền thống, với mô hình yêu cầu-phản hồi,
+              không được thiết kế cho mục đích này. Đây là lúc công nghệ giao
+              tiếp thời gian thực (real-time) như WebSocket và các thư viện như
+              Socket.IO tỏa sáng, mở ra một kỷ nguyên mới cho các ứng dụng web
+              tương tác.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <div class="card p-6">
+              <h3 class="text-2xl font-semibold mb-3">So sánh Công nghệ</h3>
+              <p class="text-gray-600 mb-4">
+                Biểu đồ dưới đây tóm tắt các đặc tính chính của WebSocket và
+                Socket.IO, giúp bạn nhanh chóng quyết định công nghệ nào phù hợp
+                hơn cho dự án của mình. WebSocket cung cấp hiệu năng thô và tuân
+                thủ chuẩn, trong khi Socket.IO mang lại sự tiện lợi, độ tin cậy
+                và nhiều tính năng tích hợp sẵn.
+              </p>
+              <div class="chart-container">
+                <canvas id="techComparisonChart"></canvas>
+              </div>
+            </div>
+            <div class="card p-6">
+              <h3 class="text-2xl font-semibold mb-3">
+                Khi nào nên dùng WebSocket?
+              </h3>
+              <p class="text-gray-600 mb-4">
+                WebSocket là lựa chọn lý tưởng khi bạn cần giao tiếp hai chiều,
+                độ trễ thấp và hiệu quả. Nó là nền tảng cho nhiều ứng dụng mà
+                chúng ta sử dụng hàng ngày.
+              </p>
+              <ul class="space-y-3">
+                <li class="flex items-start">
+                  <span class="text-cyan-500 mr-3 mt-1">💬</span>
+                  <div>
+                    <strong class="font-semibold">Ứng dụng Chat:</strong> Gửi và
+                    nhận tin nhắn gần như ngay lập tức.
+                  </div>
+                </li>
+                <li class="flex items-start">
+                  <span class="text-cyan-500 mr-3 mt-1">🎮</span>
+                  <div>
+                    <strong class="font-semibold">Game Online:</strong> Đồng bộ
+                    hóa hành động của nhiều người chơi.
+                  </div>
+                </li>
+                <li class="flex items-start">
+                  <span class="text-cyan-500 mr-3 mt-1">📈</span>
+                  <div>
+                    <strong class="font-semibold">Theo dõi Dữ liệu:</strong> Cập
+                    nhật giá cổ phiếu, vị trí xe trên bản đồ.
+                  </div>
+                </li>
+                <li class="flex items-start">
+                  <span class="text-cyan-500 mr-3 mt-1">🔔</span>
+                  <div>
+                    <strong class="font-semibold">Thông báo trực tiếp:</strong>
+                    Nhận thông báo mà không cần làm mới trang.
+                  </div>
+                </li>
+                <li class="flex items-start">
+                  <span class="text-cyan-500 mr-3 mt-1">🤝</span>
+                  <div>
+                    <strong class="font-semibold">Công cụ cộng tác:</strong>
+                    Nhiều người cùng chỉnh sửa một tài liệu.
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2: WebSocket Deep Dive -->
+        <section id="websocket" class="content-section">
+          <div class="card p-6 md:p-8">
+            <h2 class="text-3xl font-bold mb-4 text-cyan-700">
+              WebSocket: Giao thức Cốt lõi
+            </h2>
+            <p class="text-gray-600 leading-relaxed mb-6">
+              WebSocket là một giao thức truyền thông cung cấp kênh giao tiếp
+              hai chiều (full-duplex) trên một kết nối TCP duy nhất. Khác với
+              HTTP, nó cho phép cả client và server gửi dữ liệu bất cứ lúc nào,
+              giảm thiểu độ trễ và chi phí (overhead). Phần này sẽ giải thích cơ
+              chế hoạt động bên trong của WebSocket, từ quá trình "bắt tay" ban
+              đầu đến cách dữ liệu được truyền đi.
+            </p>
+
+            <h3 class="text-2xl font-semibold mb-4">Quy trình Hoạt động</h3>
+            <div class="flex flex-col md:flex-row md:space-x-8">
+              <div class="md:w-1/2 space-y-4">
+                <div
+                  id="step-handshake"
+                  class="diagram-box interactive-step selected"
+                >
+                  <strong class="text-lg">1. Handshake (Bắt tay)</strong>
+                  <p class="text-sm text-gray-500 mt-1">
+                    Click để xem chi tiết
+                  </p>
+                </div>
+                <div class="flex justify-center">
+                  <div
+                    class="diagram-arrow transform rotate-90 w-12 -my-6"
+                  ></div>
+                </div>
+                <div id="step-transfer" class="diagram-box interactive-step">
+                  <strong class="text-lg"
+                    >2. Data Transfer (Truyền dữ liệu)</strong
+                  >
+                  <p class="text-sm text-gray-500 mt-1">
+                    Click để xem chi tiết
+                  </p>
+                </div>
+                <div class="flex justify-center">
+                  <div
+                    class="diagram-arrow transform rotate-90 w-12 -my-6"
+                  ></div>
+                </div>
+                <div id="step-close" class="diagram-box interactive-step">
+                  <strong class="text-lg">3. Closing (Đóng kết nối)</strong>
+                  <p class="text-sm text-gray-500 mt-1">
+                    Click để xem chi tiết
+                  </p>
+                </div>
+              </div>
+              <div class="md:w-1/2 mt-6 md:mt-0 bg-gray-50 p-6 rounded-lg">
+                <div id="step-explanation">
+                  <!-- Content will be populated by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: The Power of Socket.IO -->
+        <section id="socketio" class="content-section">
+          <div class="card p-6 md:p-8 mb-8">
+            <h2 class="text-3xl font-bold mb-4 text-cyan-700">
+              Socket.IO: Hơn cả một WebSocket
+            </h2>
+            <p class="text-gray-600 leading-relaxed mb-6">
+              Trong khi WebSocket cung cấp nền tảng giao tiếp, Socket.IO là một
+              thư viện mạnh mẽ xây dựng trên nó, giúp việc phát triển ứng dụng
+              real-time trở nên dễ dàng và đáng tin cậy hơn rất nhiều. Nó trừu
+              tượng hóa sự phức tạp và cung cấp các tính năng thiết yếu mà bạn
+              thường phải tự xây dựng. Phần này khám phá những "siêu năng lực"
+              mà Socket.IO mang lại.
+            </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div class="bg-cyan-50 p-5 rounded-lg border border-cyan-200">
+                <h4 class="font-bold text-lg text-cyan-800">
+                  Tự động kết nối lại
+                </h4>
+                <p class="text-sm text-cyan-700">
+                  Client tự động thử kết nối lại khi bị mất mạng, đảm bảo trải
+                  nghiệm liền mạch.
+                </p>
+              </div>
+              <div class="bg-cyan-50 p-5 rounded-lg border border-cyan-200">
+                <h4 class="font-bold text-lg text-cyan-800">
+                  Fallback Transport
+                </h4>
+                <p class="text-sm text-cyan-700">
+                  Nếu WebSocket bị chặn, tự động chuyển sang HTTP Long-Polling
+                  để đảm bảo kết nối.
+                </p>
+              </div>
+              <div class="bg-cyan-50 p-5 rounded-lg border border-cyan-200">
+                <h4 class="font-bold text-lg text-cyan-800">
+                  Rooms & Namespaces
+                </h4>
+                <p class="text-sm text-cyan-700">
+                  Dễ dàng gửi tin nhắn đến một nhóm client cụ thể (phòng chat,
+                  kênh thông báo).
+                </p>
+              </div>
+              <div class="bg-cyan-50 p-5 rounded-lg border border-cyan-200">
+                <h4 class="font-bold text-lg text-cyan-800">Broadcasting</h4>
+                <p class="text-sm text-cyan-700">
+                  Gửi sự kiện đến tất cả client, hoặc tất cả trừ người gửi, chỉ
+                  với một dòng lệnh.
+                </p>
+              </div>
+              <div class="bg-cyan-50 p-5 rounded-lg border border-cyan-200">
+                <h4 class="font-bold text-lg text-cyan-800">
+                  Acknowledgements
+                </h4>
+                <p class="text-sm text-cyan-700">
+                  Cơ chế xác nhận tin nhắn, cho phép tạo ra các kịch bản
+                  request-response dễ dàng.
+                </p>
+              </div>
+              <div class="bg-cyan-50 p-5 rounded-lg border border-cyan-200">
+                <h4 class="font-bold text-lg text-cyan-800">
+                  Message Buffering
+                </h4>
+                <p class="text-sm text-cyan-700">
+                  Các tin nhắn được đệm lại khi mất kết nối và sẽ được gửi đi
+                  khi kết nối lại.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card p-6 md:p-8">
+            <h3 class="text-2xl font-semibold mb-4">
+              Minh họa các lệnh Phát sóng (Emit)
+            </h3>
+            <p class="text-gray-600 mb-6">
+              Tương tác với các nút bên dưới để xem cách các lệnh `emit` khác
+              nhau của Socket.IO gửi dữ liệu đến các client. Sơ đồ này giúp bạn
+              hình dung rõ ràng phạm vi ảnh hưởng của từng lệnh.
+            </p>
+            <div class="flex flex-col lg:flex-row items-center gap-8">
+              <div class="lg:w-2/3">
+                <svg
+                  id="event-emitter-diagram"
+                  viewBox="0 0 400 250"
+                  class="w-full h-auto"
+                >
+                  <!-- Server -->
+                  <rect
+                    x="150"
+                    y="10"
+                    width="100"
+                    height="40"
+                    rx="5"
+                    class="highlight-box"
+                    fill="#f0f9ff"
+                  />
+                  <text
+                    x="200"
+                    y="35"
+                    text-anchor="middle"
+                    font-size="12"
+                    font-weight="bold"
+                    fill="#0c4a6e"
+                  >
+                    Server
+                  </text>
+
+                  <!-- Clients -->
+                  <rect
+                    x="10"
+                    y="200"
+                    width="80"
+                    height="30"
+                    rx="5"
+                    id="client1"
+                    class="highlight-box"
+                    fill="#f0fdf4"
+                  />
+                  <text
+                    x="50"
+                    y="220"
+                    text-anchor="middle"
+                    font-size="10"
+                    fill="#14532d"
+                  >
+                    Client A (Sender)
+                  </text>
+                  <rect
+                    x="110"
+                    y="200"
+                    width="80"
+                    height="30"
+                    rx="5"
+                    id="client2"
+                    class="highlight-box"
+                    fill="#f0fdf4"
+                  />
+                  <text
+                    x="150"
+                    y="220"
+                    text-anchor="middle"
+                    font-size="10"
+                    fill="#14532d"
+                  >
+                    Client B
+                  </text>
+                  <rect
+                    x="210"
+                    y="200"
+                    width="80"
+                    height="30"
+                    rx="5"
+                    id="client3"
+                    class="highlight-box"
+                    fill="#fffbeb"
+                  />
+                  <text
+                    x="250"
+                    y="220"
+                    text-anchor="middle"
+                    font-size="10"
+                    fill="#78350f"
+                  >
+                    Client C (Room 2)
+                  </text>
+                  <rect
+                    x="310"
+                    y="200"
+                    width="80"
+                    height="30"
+                    rx="5"
+                    id="client4"
+                    class="highlight-box"
+                    fill="#f0fdf4"
+                  />
+                  <text
+                    x="350"
+                    y="220"
+                    text-anchor="middle"
+                    font-size="10"
+                    fill="#14532d"
+                  >
+                    Client D
+                  </text>
+
+                  <!-- Room Labels -->
+                  <text
+                    x="115"
+                    y="185"
+                    text-anchor="middle"
+                    font-size="10"
+                    font-style="italic"
+                    fill="#166534"
+                  >
+                    Room 1
+                  </text>
+                  <path
+                    d="M 5 195 C 50 170, 180 170, 200 195"
+                    stroke="#a7f3d0"
+                    fill="none"
+                    stroke-width="20"
+                    stroke-opacity="0.5"
+                  />
+
+                  <!-- Lines -->
+                  <line
+                    x1="200"
+                    y1="50"
+                    x2="50"
+                    y2="200"
+                    id="line1"
+                    class="highlight-line"
+                  />
+                  <line
+                    x1="200"
+                    y1="50"
+                    x2="150"
+                    y2="200"
+                    id="line2"
+                    class="highlight-line"
+                  />
+                  <line
+                    x1="200"
+                    y1="50"
+                    x2="250"
+                    y2="200"
+                    id="line3"
+                    class="highlight-line"
+                  />
+                  <line
+                    x1="200"
+                    y1="50"
+                    x2="350"
+                    y2="200"
+                    id="line4"
+                    class="highlight-line"
+                  />
+                </svg>
+              </div>
+              <div class="lg:w-1/3 w-full space-y-3">
+                <button
+                  data-emit-type="io.emit"
+                  class="w-full text-left p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
+                >
+                  <strong class="text-gray-800">`io.emit()`</strong>
+                  <p class="text-sm text-gray-600">Gửi đến tất cả client.</p>
+                </button>
+                <button
+                  data-emit-type="socket.broadcast.emit"
+                  class="w-full text-left p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
+                >
+                  <strong class="text-gray-800"
+                    >`socket.broadcast.emit()`</strong
+                  >
+                  <p class="text-sm text-gray-600">
+                    Gửi đến tất cả client TRỪ người gửi (Client A).
+                  </p>
+                </button>
+                <button
+                  data-emit-type="io.to(room).emit"
+                  class="w-full text-left p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
+                >
+                  <strong class="text-gray-800"
+                    >`io.to('Room 1').emit()`</strong
+                  >
+                  <p class="text-sm text-gray-600">
+                    Gửi đến tất cả client trong 'Room 1'.
+                  </p>
+                </button>
+                <button
+                  data-emit-type="reset"
+                  class="w-full text-left p-3 bg-red-100 hover:bg-red-200 rounded-lg transition"
+                >
+                  <strong class="text-red-800">Reset</strong>
+                  <p class="text-sm text-red-600">Xóa các đường highlight.</p>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: Scaling -->
+        <section id="scaling" class="content-section">
+          <div class="card p-6 md:p-8">
+            <h2 class="text-3xl font-bold mb-4 text-cyan-700">
+              Kiến trúc và Khả năng Mở rộng
+            </h2>
+            <p class="text-gray-600 leading-relaxed mb-8">
+              Khi ứng dụng của bạn phát triển từ vài người dùng lên hàng ngàn,
+              thậm chí hàng triệu, việc mở rộng quy mô trở thành một thách thức
+              lớn. Một server đơn lẻ sẽ không đủ sức chịu tải. Phần này giải
+              thích cách mở rộng ứng dụng Socket.IO theo chiều ngang (horizontal
+              scaling) và các khái niệm quan trọng đi kèm như Sticky Sessions và
+              Adapters.
+            </p>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+              <div>
+                <h3 class="text-2xl font-semibold mb-4 text-center">
+                  Mô hình Đơn giản (Single Node)
+                </h3>
+                <div class="p-4 border-2 border-gray-200 rounded-lg bg-gray-50">
+                  <div class="text-center font-bold mb-4">Clients</div>
+                  <div class="flex justify-around mb-2">
+                    <span>👤</span><span>👤</span><span>👤</span><span>👤</span>
+                  </div>
+                  <div class="flex justify-center">
+                    <div class="h-10 w-0.5 bg-gray-400"></div>
+                  </div>
+                  <div class="diagram-box mx-auto max-w-xs">
+                    Socket.IO Server
+                  </div>
+                </div>
+                <p class="mt-4 text-gray-600">
+                  Trong mô hình này, tất cả client kết nối đến một server duy
+                  nhất. Server quản lý tất cả các kết nối và trạng thái trong bộ
+                  nhớ của nó. Mô hình này đơn giản để triển khai nhưng không thể
+                  mở rộng và có điểm yếu duy nhất (single point of failure).
+                </p>
+              </div>
+
+              <div>
+                <h3 class="text-2xl font-semibold mb-4 text-center">
+                  Mô hình Mở rộng (Multi-node)
+                </h3>
+                <div class="p-4 border-2 border-gray-200 rounded-lg bg-gray-50">
+                  <div class="text-center font-bold mb-4">Clients</div>
+                  <div class="flex justify-around mb-2">
+                    <span>👤</span><span>👤</span><span>👤</span><span>👤</span>
+                  </div>
+                  <div class="flex justify-center">
+                    <div class="h-10 w-0.5 bg-gray-400"></div>
+                  </div>
+                  <div class="diagram-box mx-auto max-w-xs mb-4">
+                    Load Balancer (+ Sticky Sessions)
+                  </div>
+                  <div class="flex justify-center">
+                    <div class="h-10 w-0.5 bg-gray-400"></div>
+                  </div>
+                  <div class="flex justify-around items-start">
+                    <div class="diagram-box text-sm">Server 1</div>
+                    <div class="diagram-box text-sm">Server 2</div>
+                    <div class="diagram-box text-sm">Server N</div>
+                  </div>
+                  <div class="flex justify-around my-4">
+                    <div class="h-0.5 w-1/4 bg-gray-400"></div>
+                    <div class="h-0.5 w-1/4 bg-gray-400"></div>
+                  </div>
+                  <div
+                    class="diagram-box mx-auto max-w-xs bg-red-100 border-red-300"
+                  >
+                    Redis Adapter (Pub/Sub)
+                  </div>
+                </div>
+                <p class="mt-4 text-gray-600">
+                  Để xử lý tải lớn, chúng ta dùng nhiều server.
+                  <strong class="text-gray-800">Load Balancer</strong> phân phối
+                  kết nối.
+                  <strong class="text-gray-800">Sticky Sessions</strong> đảm bảo
+                  client luôn kết nối tới cùng một server.
+                  <strong class="text-red-700">Redis Adapter</strong> sử dụng cơ
+                  chế Pub/Sub để các server có thể giao tiếp và phát sóng sự
+                  kiện cho nhau, đảm bảo tính nhất quán trên toàn hệ thống.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 5: Practice -->
+        <section id="practice" class="content-section">
+          <div class="card p-6 md:p-8 mb-8">
+            <h2 class="text-3xl font-bold mb-4 text-cyan-700">
+              Dự án Thực hành
+            </h2>
+            <p class="text-gray-600 leading-relaxed mb-6">
+              Lý thuyết là nền tảng, nhưng thực hành mới là cách tốt nhất để
+              thực sự làm chủ một công nghệ. Dưới đây là một số ý tưởng dự án
+              bạn có thể xây dựng để áp dụng kiến thức về Socket.IO, cùng với
+              một đoạn code mẫu cho ứng dụng chat cơ bản để bạn bắt đầu.
+            </p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div class="border p-4 rounded-lg bg-gray-50">
+                <h4 class="font-semibold text-lg">Ứng dụng Chat</h4>
+                <p class="text-sm text-gray-600">
+                  Xây dựng phòng chat 1-1 hoặc nhóm, với tính năng hiển thị
+                  người dùng online, thông báo "đang gõ".
+                </p>
+              </div>
+              <div class="border p-4 rounded-lg bg-gray-50">
+                <h4 class="font-semibold text-lg">Bảng Kanban Real-time</h4>
+                <p class="text-sm text-gray-600">
+                  Tạo một bảng công việc giống Trello, nơi các thay đổi (kéo-thả
+                  thẻ) được cập nhật ngay lập tức cho mọi người.
+                </p>
+              </div>
+              <div class="border p-4 rounded-lg bg-gray-50">
+                <h4 class="font-semibold text-lg">Dashboard Thống kê</h4>
+                <p class="text-sm text-gray-600">
+                  Hiển thị các biểu đồ dữ liệu được cập nhật trực tiếp từ server
+                  mà không cần làm mới trang.
+                </p>
+              </div>
+              <div class="border p-4 rounded-lg bg-gray-50">
+                <h4 class="font-semibold text-lg">Game Multiplayer Đơn giản</h4>
+                <p class="text-sm text-gray-600">
+                  Làm một game như Pong hoặc Snake, nơi vị trí của người chơi
+                  được đồng bộ hóa qua Socket.IO.
+                </p>
+              </div>
+              <div class="border p-4 rounded-lg bg-gray-50">
+                <h4 class="font-semibold text-lg">Hệ thống Thông báo</h4>
+                <p class="text-sm text-gray-600">
+                  Tạo hệ thống thông báo đẩy (push notification) khi có sự kiện
+                  mới, ví dụ có đơn hàng mới.
+                </p>
+              </div>
+              <div class="border p-4 rounded-lg bg-gray-50">
+                <h4 class="font-semibold text-lg">Công cụ Vẽ Cộng tác</h4>
+                <p class="text-sm text-gray-600">
+                  Một bảng trắng nơi nhiều người có thể cùng vẽ và thấy nét vẽ
+                  của nhau trong thời gian thực.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card p-6 md:p-8">
+            <h3 class="text-2xl font-semibold mb-4">
+              Code mẫu: Server Chat cơ bản (Node.js)
+            </h3>
+            <p class="text-gray-600 mb-4">
+              Đây là đoạn mã server tối thiểu cho một ứng dụng chat. Nó khởi tạo
+              một server, lắng nghe kết nối mới, nhận tin nhắn từ một client và
+              phát lại tin nhắn đó cho tất cả các client khác.
+            </p>
+            <div class="code-block">
+              <pre><code>
+const { Server } = require("socket.io");
+
+const io = new Server(3000, {
+  cors: { origin: "*" }
+});
+
+io.on("connection", (socket) => {
+  console.log(`Một client đã kết nối: ${socket.id}`);
+
+  // Gửi tin nhắn chào mừng đến client vừa kết nối
+  socket.emit("welcome", "Chào mừng bạn đến với chat!");
+
+  // Lắng nghe sự kiện 'chat message' từ client
+  socket.on("chat message", (msg) => {
+    // Phát lại tin nhắn này đến tất cả client, trừ người gửi
+    socket.broadcast.emit("chat message", { 
+        user: socket.id, 
+        message: msg 
+    });
+  });
+
+  // Xử lý khi client ngắt kết nối
+  socket.on("disconnect", () => {
+    console.log(`Client đã ngắt kết nối: ${socket.id}`);
+    io.emit("user disconnected", socket.id);
+  });
+});
+</code></pre>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
