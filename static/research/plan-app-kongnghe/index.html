@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bảng Điều Khiển Kiến Trúc Hệ Thống Thương Mại Điện Tử</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: Một ứng dụng một trang (SPA) theo kiểu bảng điều khiển với thanh điều hướng cố định ở trên cùng để chuyển đổi giữa các phần chính: Tổng quan, Backend, Frontend, Mobile, và Vận hành. Cấu trúc theo chủ đề này giúp chia nhỏ một tài liệu kỹ thuật phức tạp thành các phần dễ quản lý và khám phá, cải thiện khả năng sử dụng so với việc đọc tuần tự. Người dùng có thể truy cập trực tiếp vào lớp kiến trúc mà họ quan tâm. Tính tương tác được thực hiện thông qua các tab, danh sách có thể mở rộng và các sơ đồ có thể tương tác khi di chuột để hiển thị chi tiết theo yêu cầu, tránh quá tải thông tin. -->
+    <!-- Visualization & Content Choices: 
+        - Sơ đồ Kiến trúc: HTML/CSS (divs) để hiển thị mối quan hệ giữa các thành phần. Mục tiêu: Sắp xếp. Tương tác: Đánh dấu khi di chuột. Lý do: Cung cấp cái nhìn tổng quan trực quan mà không cần SVG.
+        - Ngăn xếp Công nghệ: Bảng HTML. Mục tiêu: Thông báo.
+        - Endpoint API: Danh sách có thể mở rộng (Accordion) bằng HTML. Mục tiêu: Sắp xếp/Thông báo. Tương tác: Nhấp để mở rộng. Lý do: Rút gọn danh sách dài các endpoint.
+        - Lược đồ Cơ sở dữ liệu: Bố cục lưới HTML. Mục tiêu: Sắp xếp. Lý do: Trình bày trực quan rõ ràng các bảng.
+        - Luồng Bảo mật: Sơ đồ HTML/CSS. Mục tiêu: Hiển thị Thay đổi/Quy trình. Tương tác: Sơ đồ tĩnh. Lý do: Đơn giản hóa luồng JWT phức tạp.
+        - So sánh Quản lý Trạng thái: Biểu đồ thanh ngang Chart.js. Mục tiêu: So sánh. Tương tác: Tooltips. Lý do: So sánh trực quan các thư viện dựa trên các tiêu chí chính.
+        - Kim tự tháp Kiểm thử: Biểu đồ Donut Chart.js. Mục tiêu: Thông báo/Sắp xếp. Tương tác: Tooltips. Lý do: Hình dung cổ điển cho chiến lược kiểm thử.
+        - OWASP Top 10: Danh sách HTML tương tác. Mục tiêu: Thông báo. Tương tác: Nhấp để hiển thị chi tiết. Lý do: Làm cho danh sách trở nên hấp dẫn hơn. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+      body {
+        font-family: "Be Vietnam Pro", sans-serif;
+        background-color: #f8f7f4; /* Warm Neutral Background */
+        color: #333;
+      }
+      .nav-link {
+        transition: color 0.3s, border-bottom-color 0.3s;
+        border-bottom: 2px solid transparent;
+      }
+      .nav-link.active,
+      .nav-link:hover {
+        color: #007a7a; /* Accent Color */
+        border-bottom-color: #007a7a;
+      }
+      .card {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+      }
+      .tab-button {
+        transition: all 0.3s;
+      }
+      .tab-button.active {
+        background-color: #007a7a;
+        color: #ffffff;
+        font-weight: 600;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 350px;
+        max-height: 400px;
+      }
+      @media (min-width: 768px) {
+        .chart-container {
+          height: 400px;
+        }
+      }
+      .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out;
+      }
+      .accordion-content.open {
+        max-height: 1000px; /* Large enough to fit content */
+      }
+      .arch-diagram-item {
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      .arch-diagram-item:hover {
+        background-color: #e0f2f1;
+        transform: scale(1.03);
+      }
+      .arch-diagram-line {
+        background-color: #9ca3af;
+        position: absolute;
+        z-index: -1;
+      }
+    </style>
+  </head>
+  <body class="text-gray-800">
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+      <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex-shrink-0">
+            <h1 class="text-xl font-bold text-[#005A5A]">Kiến Trúc Hệ Thống</h1>
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a
+                href="#overview"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium"
+                >Tổng quan</a
+              >
+              <a
+                href="#backend"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium"
+                >Backend</a
+              >
+              <a
+                href="#frontend"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium"
+                >Frontend</a
+              >
+              <a
+                href="#mobile"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium"
+                >Mobile</a
+              >
+              <a
+                href="#operations"
+                class="nav-link px-3 py-2 rounded-md text-sm font-medium"
+                >Vận hành</a
+              >
+            </div>
+          </div>
+          <div class="-mr-2 flex md:hidden">
+            <button
+              id="mobile-menu-button"
+              type="button"
+              class="bg-gray-100 inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-[#007A7A]"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+            >
+              <span class="sr-only">Open main menu</span>
+              <svg
+                class="block h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+              <svg
+                class="hidden h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </nav>
+      <div class="md:hidden hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <a
+            href="#overview"
+            class="nav-link block px-3 py-2 rounded-md text-base font-medium"
+            >Tổng quan</a
+          >
+          <a
+            href="#backend"
+            class="nav-link block px-3 py-2 rounded-md text-base font-medium"
+            >Backend</a
+          >
+          <a
+            href="#frontend"
+            class="nav-link block px-3 py-2 rounded-md text-base font-medium"
+            >Frontend</a
+          >
+          <a
+            href="#mobile"
+            class="nav-link block px-3 py-2 rounded-md text-base font-medium"
+            >Mobile</a
+          >
+          <a
+            href="#operations"
+            class="nav-link block px-3 py-2 rounded-md text-base font-medium"
+            >Vận hành</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <!-- Section 1: Overview -->
+      <section id="overview" class="mb-16">
+        <h2 class="text-3xl font-bold mb-2 text-center text-[#005A5A]">
+          Tổng quan Kiến trúc Hệ thống
+        </h2>
+        <p class="max-w-3xl mx-auto text-center text-gray-600 mb-12">
+          Hệ thống được thiết kế theo kiến trúc Client-Server, tách biệt rõ ràng
+          giữa giao diện người dùng và logic nghiệp vụ. Chúng tôi đề xuất bắt
+          đầu với một khối Monolith module hóa để tăng tốc độ phát triển ban
+          đầu, nhưng có định hướng rõ ràng để chuyển đổi sang Microservices
+          trong tương lai.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+          <div class="card p-6 rounded-lg shadow-lg">
+            <h3 class="text-xl font-semibold mb-4 text-center">
+              Sơ đồ Kiến trúc Cấp cao
+            </h3>
+            <div
+              class="relative p-4 min-h-[400px] flex flex-col justify-around items-center space-y-4"
+            >
+              <!-- Clients -->
+              <div class="flex justify-around w-full">
+                <div
+                  class="arch-diagram-item text-center p-3 border-2 border-[#007A7A] rounded-lg shadow-md w-1/3"
+                >
+                  <span class="text-4xl">📱</span>
+                  <p class="font-semibold">React Native App</p>
+                </div>
+                <div
+                  class="arch-diagram-item text-center p-3 border-2 border-[#007A7A] rounded-lg shadow-md w-1/3"
+                >
+                  <span class="text-4xl">💻</span>
+                  <p class="font-semibold">React Web App</p>
+                </div>
+              </div>
+
+              <!-- API Gateway / Backend -->
+              <div
+                class="arch-diagram-item text-center p-4 border-2 border-dashed border-[#E9967A] rounded-lg shadow-md w-3/4"
+              >
+                <p class="font-bold text-lg">Backend API</p>
+                <p class="text-sm">(Spring Boot)</p>
+              </div>
+
+              <!-- Databases & Services -->
+              <div class="grid grid-cols-3 gap-3 w-full text-center">
+                <div
+                  class="arch-diagram-item p-3 border border-gray-300 rounded-lg"
+                >
+                  <span class="text-3xl">🗃️</span>
+                  <p class="font-semibold text-sm">MySQL</p>
+                  <p class="text-xs text-gray-500">Dữ liệu chính</p>
+                </div>
+                <div
+                  class="arch-diagram-item p-3 border border-gray-300 rounded-lg"
+                >
+                  <span class="text-3xl">🍃</span>
+                  <p class="font-semibold text-sm">MongoDB</p>
+                  <p class="text-xs text-gray-500">Logs, Lịch sử</p>
+                </div>
+                <div
+                  class="arch-diagram-item p-3 border border-gray-300 rounded-lg"
+                >
+                  <span class="text-3xl">⚡️</span>
+                  <p class="font-semibold text-sm">Redis</p>
+                  <p class="text-xs text-gray-500">Cache, Giỏ hàng</p>
+                </div>
+              </div>
+
+              <!-- External Services -->
+              <div
+                class="arch-diagram-item text-center p-3 border border-gray-300 rounded-lg w-full"
+              >
+                <p class="font-semibold text-sm">
+                  Dịch vụ Ngoài (AWS S3, FCM, Payment Gateway)
+                </p>
+              </div>
+            </div>
+            <p class="text-xs text-center text-gray-500 mt-4">
+              Di chuột qua các thành phần để xem chi tiết. Sơ đồ này được tạo
+              bằng HTML và Tailwind CSS.
+            </p>
+          </div>
+
+          <div class="card p-6 rounded-lg shadow-lg">
+            <h3 class="text-xl font-semibold mb-4 text-center">
+              Ngăn xếp Công nghệ Chính
+            </h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Thành phần
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Công nghệ
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="tech-stack-table"
+                  class="bg-white divide-y divide-gray-200"
+                ></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Backend -->
+      <section id="backend" class="mb-16">
+        <h2 class="text-3xl font-bold mb-2 text-center text-[#005A5A]">
+          Phát triển Backend (Spring Boot)
+        </h2>
+        <p class="max-w-3xl mx-auto text-center text-gray-600 mb-12">
+          Trái tim của hệ thống, xử lý toàn bộ logic nghiệp vụ, quản lý dữ liệu
+          và bảo mật.
+        </p>
+
+        <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+          <div class="mb-4 border-b border-gray-200">
+            <nav
+              id="backend-tabs"
+              class="flex flex-wrap -mb-px"
+              aria-label="Tabs"
+            >
+              <button class="tab-button active" data-tab="api-design">
+                Thiết kế API
+              </button>
+              <button class="tab-button" data-tab="database">
+                Lược đồ CSDL
+              </button>
+              <button class="tab-button" data-tab="security">Bảo mật</button>
+            </nav>
+          </div>
+          <div id="backend-tabs-content" class="pt-4">
+            <div id="api-design-content">
+              <h3 class="text-lg font-semibold mb-4">
+                Các Endpoint REST Cốt lõi
+              </h3>
+              <div id="api-accordion" class="space-y-2"></div>
+            </div>
+            <div id="database-content" class="hidden">
+              <h3 class="text-lg font-semibold mb-4">
+                Mô hình Dữ liệu (MySQL, MongoDB, Redis)
+              </h3>
+              <p class="text-gray-600 mb-6">
+                MySQL lưu trữ dữ liệu quan hệ cốt lõi, MongoDB cho dữ liệu linh
+                hoạt như logs, và Redis để tăng tốc hiệu suất.
+              </p>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4 class="font-semibold text-md mb-2">
+                    MySQL: Bảng Quan hệ Chính
+                  </h4>
+                  <div id="mysql-schema" class="grid grid-cols-2 gap-4"></div>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-md mb-2">
+                    MongoDB & Redis: Các trường hợp sử dụng
+                  </h4>
+                  <div class="space-y-4">
+                    <div
+                      class="p-4 bg-green-50 rounded-lg border border-green-200"
+                    >
+                      <h5 class="font-bold text-green-800">MongoDB</h5>
+                      <p class="text-sm text-green-700">
+                        Lưu trữ lịch sử tìm kiếm, logs hệ thống và dữ liệu cho
+                        gợi ý sản phẩm.
+                      </p>
+                    </div>
+                    <div class="p-4 bg-red-50 rounded-lg border border-red-200">
+                      <h5 class="font-bold text-red-800">Redis</h5>
+                      <p class="text-sm text-red-700">
+                        Caching sản phẩm, quản lý session và xử lý giỏ hàng thời
+                        gian thực.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="security-content" class="hidden">
+              <h3 class="text-lg font-semibold mb-4">
+                Luồng Xác thực với JWT & Refresh Token
+              </h3>
+              <div
+                class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 p-4"
+              >
+                <div
+                  class="arch-diagram-item p-4 rounded-lg text-center border-2 border-blue-300"
+                >
+                  <p class="font-bold">1. Đăng nhập</p>
+                  <p class="text-sm">User gửi username/password</p>
+                </div>
+                <div class="text-2xl font-bold text-blue-500">&rarr;</div>
+                <div
+                  class="arch-diagram-item p-4 rounded-lg text-center border-2 border-blue-300"
+                >
+                  <p class="font-bold">2. Nhận Tokens</p>
+                  <p class="text-sm">Server trả về Access & Refresh Token</p>
+                </div>
+                <div class="text-2xl font-bold text-blue-500">&rarr;</div>
+                <div
+                  class="arch-diagram-item p-4 rounded-lg text-center border-2 border-blue-300"
+                >
+                  <p class="font-bold">3. Gửi Yêu cầu</p>
+                  <p class="text-sm">Client gửi Access Token trong header</p>
+                </div>
+                <div class="text-2xl font-bold text-blue-500">&rarr;</div>
+                <div
+                  class="arch-diagram-item p-4 rounded-lg text-center border-2 border-blue-300"
+                >
+                  <p class="font-bold">4. Làm mới Token</p>
+                  <p class="text-sm">
+                    Khi Access Token hết hạn, dùng Refresh Token để lấy token
+                    mới
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Frontend -->
+      <section id="frontend" class="mb-16">
+        <h2 class="text-3xl font-bold mb-2 text-center text-[#005A5A]">
+          Phát triển Frontend (React)
+        </h2>
+        <p class="max-w-3xl mx-auto text-center text-gray-600 mb-12">
+          Xây dựng giao diện người dùng hiện đại, đáp ứng nhanh cho cả khách
+          hàng và trang quản trị, sử dụng TypeScript để đảm bảo chất lượng code.
+        </p>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="card p-6 rounded-lg shadow-lg">
+            <h3 class="text-xl font-semibold mb-4">
+              So sánh Giải pháp Quản lý Trạng thái
+            </h3>
+            <div class="chart-container">
+              <canvas id="stateManagementChart"></canvas>
+            </div>
+          </div>
+          <div class="card p-6 rounded-lg shadow-lg">
+            <h3 class="text-xl font-semibold mb-4">Cấu trúc Thư mục Đề xuất</h3>
+            <div
+              class="bg-gray-800 text-white p-4 rounded-md font-mono text-sm overflow-auto max-h-96"
+            >
+              <pre><code>src/
+├── api/
+├── assets/
+├── components/
+│   ├── common/
+│   └── layout/
+├── features/
+│   ├── auth/
+│   ├── cart/
+│   └── product/
+├── hooks/
+├── pages/
+├── store/
+├── types/
+└── utils/
+</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Mobile -->
+      <section id="mobile" class="mb-16">
+        <h2 class="text-3xl font-bold mb-2 text-center text-[#005A5A]">
+          Phát triển Mobile App (React Native)
+        </h2>
+        <p class="max-w-3xl mx-auto text-center text-gray-600 mb-12">
+          Mang trải nghiệm mua sắm đến tận tay người dùng trên cả iOS và
+          Android, chia sẻ logic với backend chung.
+        </p>
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="card p-6 rounded-lg shadow-lg text-center">
+            <span class="text-5xl">🧭</span>
+            <h3 class="text-lg font-semibold mt-4 mb-2">Điều hướng</h3>
+            <p class="text-sm text-gray-600">
+              Sử dụng React Navigation với Stack, Tab và Drawer Navigator để tạo
+              luồng người dùng mượt mà.
+            </p>
+          </div>
+          <div class="card p-6 rounded-lg shadow-lg text-center">
+            <span class="text-5xl">🔐</span>
+            <h3 class="text-lg font-semibold mt-4 mb-2">Lưu trữ An toàn</h3>
+            <p class="text-sm text-gray-600">
+              Sử dụng Keychain (iOS) và Keystore (Android) để lưu trữ JWT an
+              toàn, thay vì AsyncStorage.
+            </p>
+          </div>
+          <div class="card p-6 rounded-lg shadow-lg text-center">
+            <span class="text-5xl">🔔</span>
+            <h3 class="text-lg font-semibold mt-4 mb-2">Thông báo Đẩy</h3>
+            <p class="text-sm text-gray-600">
+              Tích hợp Firebase Cloud Messaging (FCM) để gửi thông báo về đơn
+              hàng và khuyến mãi.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Operations -->
+      <section id="operations" class="mb-16">
+        <h2 class="text-3xl font-bold mb-2 text-center text-[#005A5A]">
+          Vận hành & Thực tiễn Tốt nhất
+        </h2>
+        <p class="max-w-3xl mx-auto text-center text-gray-600 mb-12">
+          Đảm bảo hệ thống vận hành ổn định, bảo mật và dễ bảo trì thông qua các
+          quy trình DevOps, kiểm thử và tuân thủ các tiêu chuẩn bảo mật.
+        </p>
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="card p-6 rounded-lg shadow-lg">
+            <h3 class="text-xl font-semibold mb-4">Kim tự tháp Kiểm thử</h3>
+            <div class="chart-container h-80 md:h-96">
+              <canvas id="testingPyramidChart"></canvas>
+            </div>
+          </div>
+          <div class="card p-6 rounded-lg shadow-lg">
+            <h3 class="text-xl font-semibold mb-4">
+              Bảo mật theo OWASP Top 10
+            </h3>
+            <ul id="owasp-list" class="space-y-2">
+              <!-- OWASP items will be injected by JS -->
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+      <div
+        class="container mx-auto py-4 px-4 sm:px-6 lg:px-8 text-center text-sm"
+      >
+        <p>
+          Bảng điều khiển tương tác được tạo từ Báo cáo Kỹ thuật Hệ thống Thương
+          mại Điện tử.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // --- Data from Report ---
+        const techStackData = [
+          { component: "Backend API", tech: "Spring Boot (Java)" },
+          { component: "Frontend Web", tech: "React (TypeScript)" },
+          { component: "Ứng dụng Di động", tech: "React Native (TypeScript)" },
+          { component: "CSDL Chính", tech: "MySQL" },
+          { component: "CSDL Phụ", tech: "MongoDB" },
+          { component: "Cache/Session", tech: "Redis" },
+          { component: "Lưu trữ Ảnh", tech: "AWS S3 / Cloudinary" },
+          { component: "Thông báo Đẩy", tech: "Firebase Cloud Messaging" },
+        ];
+
+        const apiEndpoints = {
+          "Xác thực": ["POST /register", "POST /login", "POST /refresh-token"],
+          "Quản lý Sản phẩm": [
+            "GET /api/products",
+            "GET /api/products/{id}",
+            "POST /api/admin/products",
+            "PUT /api/admin/products/{id}",
+          ],
+          "Quản lý Đơn hàng": [
+            "POST /api/orders",
+            "GET /api/orders/my-orders",
+            "GET /api/admin/orders",
+            "PUT /api/admin/orders/{id}/status",
+          ],
+          "Quản lý Giỏ hàng": [
+            "GET /api/cart",
+            "POST /api/cart/items",
+            "DELETE /api/cart/items/{id}",
+          ],
+        };
+
+        const mysqlSchema = [
+          { name: "User", icon: "👤" },
+          { name: "Product", icon: "💻" },
+          { name: "Category", icon: "🗂️" },
+          { name: "Order", icon: "📦" },
+          { name: "OrderItem", icon: "📑" },
+          { name: "Voucher", icon: "🎟️" },
+        ];
+
+        const stateManagementLibs = {
+          labels: [
+            "Redux Toolkit",
+            "Zustand",
+            "Context API",
+            "React Query/SWR",
+          ],
+          datasets: [
+            {
+              label: "Độ phức tạp/Boilerplate",
+              data: [7, 3, 2, 4],
+              backgroundColor: "rgba(233, 150, 122, 0.6)",
+              borderColor: "rgba(233, 150, 122, 1)",
+              borderWidth: 1,
+            },
+            {
+              label: "Hiệu suất / Tối ưu hóa",
+              data: [8, 9, 5, 10],
+              backgroundColor: "rgba(0, 122, 122, 0.6)",
+              borderColor: "rgba(0, 122, 122, 1)",
+              borderWidth: 1,
+            },
+          ],
+        };
+
+        const owaspTop10 = [
+          "Broken Access Control",
+          "Cryptographic Failures",
+          "Injection",
+          "Insecure Design",
+          "Security Misconfiguration",
+          "Vulnerable and Outdated Components",
+          "Identification and Authentication Failures",
+          "Software and Data Integrity Failures",
+          "Security Logging and Monitoring Failures",
+          "Server-Side Request Forgery (SSRF)",
+        ];
+
+        // --- Populate Content ---
+
+        function populateTechStack() {
+          const tableBody = document.getElementById("tech-stack-table");
+          tableBody.innerHTML = techStackData
+            .map(
+              (item) => `
+            <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.component}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.tech}</td>
+            </tr>
+        `
+            )
+            .join("");
+        }
+
+        function populateApiEndpoints() {
+          const accordion = document.getElementById("api-accordion");
+          accordion.innerHTML = Object.keys(apiEndpoints)
+            .map(
+              (key, index) => `
+            <div class="border border-gray-200 rounded-md">
+                <button class="accordion-trigger w-full text-left p-4 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition">
+                    <span class="font-semibold text-gray-700">${key}</span>
+                    <svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div class="accordion-content">
+                    <ul class="p-4 border-t border-gray-200">
+                        ${apiEndpoints[key]
+                          .map(
+                            (endpoint) =>
+                              `<li class="font-mono text-sm text-gray-600 py-1">${endpoint}</li>`
+                          )
+                          .join("")}
+                    </ul>
+                </div>
+            </div>
+        `
+            )
+            .join("");
+        }
+
+        function populateMysqlSchema() {
+          const container = document.getElementById("mysql-schema");
+          container.innerHTML = mysqlSchema
+            .map(
+              (table) => `
+            <div class="p-3 bg-gray-50 rounded-lg flex items-center space-x-3 border border-gray-200">
+                <span class="text-2xl">${table.icon}</span>
+                <span class="font-medium text-gray-700">${table.name}</span>
+            </div>
+        `
+            )
+            .join("");
+        }
+
+        function populateOwaspList() {
+          const list = document.getElementById("owasp-list");
+          list.innerHTML = owaspTop10
+            .map(
+              (item) => `
+            <li class="p-3 bg-gray-50 rounded-md border border-gray-200 text-sm text-gray-700 cursor-pointer hover:bg-gray-100 transition">
+                ${item}
+            </li>
+        `
+            )
+            .join("");
+        }
+
+        // --- Charting ---
+
+        function createStateManagementChart() {
+          const ctx = document
+            .getElementById("stateManagementChart")
+            .getContext("2d");
+          new Chart(ctx, {
+            type: "bar",
+            data: stateManagementLibs,
+            options: {
+              indexAxis: "y",
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: "So sánh giải pháp Quản lý Trạng thái",
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      let label = context.dataset.label || "";
+                      if (label) {
+                        label += ": ";
+                      }
+                      if (context.parsed.x !== null) {
+                        label += context.parsed.x + " / 10";
+                      }
+                      return label;
+                    },
+                  },
+                },
+              },
+              scales: {
+                x: {
+                  beginAtZero: true,
+                  max: 10,
+                  title: { display: true, text: "Điểm đánh giá" },
+                },
+                y: { grid: { display: false } },
+              },
+            },
+          });
+        }
+
+        function createTestingPyramidChart() {
+          const ctx = document
+            .getElementById("testingPyramidChart")
+            .getContext("2d");
+          new Chart(ctx, {
+            type: "doughnut",
+            data: {
+              labels: [
+                "Unit Tests (Nhanh, Rẻ)",
+                "Integration Tests",
+                "E2E Tests (Chậm, Đắt)",
+              ],
+              datasets: [
+                {
+                  label: "Tỷ trọng kiểm thử",
+                  data: [70, 20, 10],
+                  backgroundColor: [
+                    "rgba(0, 122, 122, 0.7)",
+                    "rgba(233, 150, 122, 0.7)",
+                    "rgba(100, 100, 100, 0.7)",
+                  ],
+                  borderColor: "#FFFFFF",
+                  borderWidth: 2,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                title: { display: false },
+                legend: { position: "bottom" },
+              },
+              cutout: "30%",
+            },
+          });
+        }
+
+        // --- Interactivity ---
+
+        // Mobile Menu
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        mobileMenuButton.addEventListener("click", () => {
+          mobileMenu.classList.toggle("hidden");
+          mobileMenuButton
+            .querySelector("svg.block")
+            .classList.toggle("hidden");
+          mobileMenuButton
+            .querySelector("svg.hidden")
+            .classList.toggle("hidden");
+        });
+
+        // Backend Tabs
+        const backendTabsContainer = document.getElementById("backend-tabs");
+        const backendTabsContent = document.getElementById(
+          "backend-tabs-content"
+        );
+        backendTabsContainer.addEventListener("click", (e) => {
+          if (e.target.tagName === "BUTTON") {
+            backendTabsContainer
+              .querySelectorAll("button")
+              .forEach((btn) => btn.classList.remove("active"));
+            e.target.classList.add("active");
+
+            backendTabsContent
+              .querySelectorAll('div[id$="-content"]')
+              .forEach((content) => content.classList.add("hidden"));
+            const tabId = e.target.getAttribute("data-tab");
+            document
+              .getElementById(`${tabId}-content`)
+              .classList.remove("hidden");
+          }
+        });
+
+        // API Accordion
+        document
+          .getElementById("api-accordion")
+          .addEventListener("click", (e) => {
+            const trigger = e.target.closest(".accordion-trigger");
+            if (trigger) {
+              const content = trigger.nextElementSibling;
+              const icon = trigger.querySelector("svg");
+              content.classList.toggle("open");
+              icon.classList.toggle("rotate-180");
+            }
+          });
+
+        // Smooth scrolling & active nav link
+        const navLinks = document.querySelectorAll(".nav-link");
+        const sections = document.querySelectorAll("section");
+
+        function changeNavOnScroll() {
+          let index = sections.length;
+          while (--index && window.scrollY + 100 < sections[index].offsetTop) {}
+
+          navLinks.forEach((link) => link.classList.remove("active"));
+          const activeLink = document.querySelector(
+            `.nav-link[href="#${sections[index].id}"]`
+          );
+          if (activeLink) {
+            activeLink.classList.add("active");
+          }
+        }
+
+        window.addEventListener("scroll", changeNavOnScroll);
+
+        navLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            if (mobileMenu.classList.contains("block")) {
+              mobileMenu.classList.add("hidden");
+            }
+          });
+        });
+
+        // --- Initial population ---
+        populateTechStack();
+        populateApiEndpoints();
+        populateMysqlSchema();
+        populateOwaspList();
+        createStateManagementChart();
+        createTestingPyramidChart();
+        changeNavOnScroll(); // Set initial active link
+      });
+    </script>
+  </body>
+</html>
