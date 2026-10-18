@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Khám Phá Tư Duy Lập Trình Cốt Lõi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Application Structure Plan: The application uses a thematic, single-page structure with a sticky top navigation for easy access to key sections: Core Mindsets, Development Roadmap, Training & Motivation, and Common Mistakes. This structure is chosen over a linear report format to promote non-linear exploration and user engagement. Key interactions include: clickable cards for detailed information on mindsets, a tab-based level selector that dynamically updates both descriptive text and a radar chart for the development roadmap, and an accordion layout for organizing common mistakes. This design prioritizes usability by breaking down dense information into manageable, interactive chunks, allowing users to focus on the topics most relevant to them. -->
+    <!-- Visualization & Content Choices:
+    - Core Mindsets: Goal=Inform/Organize -> Method=Interactive HTML/Tailwind cards -> Interaction=Click to expand -> Justification=Reduces initial cognitive load, allows focused reading -> Library=Vanilla JS for interaction.
+    - Development Roadmap: Goal=Compare/Change -> Method=Radar Chart -> Interaction=Tabs select different levels (Beginner-Senior) to update chart data -> Justification=Visually compelling way to show multi-dimensional growth across career levels -> Library=Chart.js.
+    - Common Mistakes: Goal=Organize/Inform -> Method=HTML/Tailwind accordion -> Interaction=Click to expand categories -> Justification=Organizes a large amount of text into logical groups, preventing an overwhelming wall of text -> Library=Vanilla JS for interaction.
+    - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Be Vietnam Pro", sans-serif;
+      }
+      .chart-container {
+        position: relative;
+        margin: auto;
+        height: 60vh;
+        max-height: 450px;
+        width: 100%;
+        max-width: 600px;
+      }
+      .section-fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      }
+      .section-fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body class="bg-stone-50 text-slate-800">
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+      <nav
+        class="container mx-auto px-6 py-3 flex justify-between items-center"
+      >
+        <h1 class="text-xl md:text-2xl font-bold text-indigo-600">
+          Tư Duy Lập Trình
+        </h1>
+        <div class="hidden md:flex space-x-6">
+          <a
+            href="#mindsets"
+            class="text-slate-600 hover:text-indigo-600 font-medium transition-colors"
+            >Tư Duy Cốt Lõi</a
+          >
+          <a
+            href="#roadmap"
+            class="text-slate-600 hover:text-indigo-600 font-medium transition-colors"
+            >Lộ Trình</a
+          >
+          <a
+            href="#training"
+            class="text-slate-600 hover:text-indigo-600 font-medium transition-colors"
+            >Rèn Luyện</a
+          >
+          <a
+            href="#mistakes"
+            class="text-slate-600 hover:text-indigo-600 font-medium transition-colors"
+            >Sai Lầm</a
+          >
+        </div>
+        <button
+          id="mobile-menu-button"
+          class="md:hidden p-2 rounded-md text-slate-600 hover:bg-stone-100 focus:outline-none"
+        >
+          <span
+            class="block w-6 h-0.5 bg-current transform transition duration-300 ease-in-out"
+          ></span>
+          <span
+            class="block w-6 h-0.5 bg-current mt-1.5 transform transition duration-300 ease-in-out"
+          ></span>
+          <span
+            class="block w-6 h-0.5 bg-current mt-1.5 transform transition duration-300 ease-in-out"
+          ></span>
+        </button>
+      </nav>
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden px-6 pb-4 flex flex-col space-y-3"
+      >
+        <a
+          href="#mindsets"
+          class="text-slate-600 hover:text-indigo-600 font-medium transition-colors"
+          >Tư Duy Cốt Lõi</a
+        >
+        <a
+          href="#roadmap"
+          class="text-slate-600 hover:text-indigo-600 font-medium transition-colors"
+          >Lộ Trình</a
+        >
+        <a
+          href="#training"
+          class="text-slate-600 hover:text-indigo-600 font-medium transition-colors"
+          >Rèn Luyện</a
+        >
+        <a
+          href="#mistakes"
+          class="text-slate-600 hover:text-indigo-600 font-medium transition-colors"
+          >Sai Lầm</a
+        >
+      </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-12">
+      <section id="hero" class="text-center mb-16 md:mb-24 section-fade-in">
+        <h2 class="text-3xl md:text-5xl font-bold text-slate-900 mb-4">
+          Phát Triển Tư Duy Lập Trình Cốt Lõi
+        </h2>
+        <p class="max-w-3xl mx-auto text-lg text-slate-600">
+          Nền tảng cho sự nghiệp bền vững trong ngành Công nghệ Thông tin. Khám
+          phá các kỹ năng, lộ trình phát triển và chiến lược để thành công.
+        </p>
+      </section>
+
+      <section id="mindsets" class="mb-16 md:mb-24 py-12 section-fade-in">
+        <div class="text-center mb-12">
+          <h3 class="text-3xl md:text-4xl font-bold text-slate-900">
+            Các Tư Duy Cốt Lõi
+          </h3>
+          <p class="mt-4 text-lg max-w-2xl mx-auto text-slate-600">
+            Đây là những trụ cột nền tảng định hình nên một lập trình viên xuất
+            sắc. Việc hiểu và rèn luyện chúng không chỉ giúp giải quyết vấn đề
+            hiệu quả mà còn tạo đà cho sự sáng tạo và phát triển không ngừng.
+          </p>
+        </div>
+        <div
+          id="mindset-grid"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        ></div>
+      </section>
+
+      <section id="roadmap" class="mb-16 md:mb-24 py-12 section-fade-in">
+        <div class="text-center mb-12">
+          <h3 class="text-3xl md:text-4xl font-bold text-slate-900">
+            Lộ Trình Phát Triển
+          </h3>
+          <p class="mt-4 text-lg max-w-2xl mx-auto text-slate-600">
+            Sự nghiệp của lập trình viên là một hành trình phát triển liên tục.
+            Mỗi cấp độ đòi hỏi sự trưởng thành về tư duy và trách nhiệm. Hãy
+            chọn một cấp độ để khám phá chi tiết và xem sự phát triển năng lực
+            qua biểu đồ.
+          </p>
+        </div>
+        <div
+          class="flex justify-center flex-wrap gap-2 md:gap-4 mb-8"
+          id="level-selector"
+        ></div>
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
+          <div
+            id="roadmap-content"
+            class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md transition-all duration-500"
+          ></div>
+          <div class="lg:col-span-3">
+            <div class="chart-container">
+              <canvas id="roadmapChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="training" class="mb-16 md:mb-24 py-12 section-fade-in">
+        <div class="text-center mb-12">
+          <h3 class="text-3xl md:text-4xl font-bold text-slate-900">
+            Rèn Luyện & Duy Trì Động Lực
+          </h3>
+          <p class="mt-4 text-lg max-w-2xl mx-auto text-slate-600">
+            Thành công không đến từ tài năng bẩm sinh mà từ quá trình rèn luyện
+            bền bỉ và khả năng duy trì ngọn lửa đam mê. Dưới đây là các phương
+            pháp hiệu quả và chiến lược để bạn luôn tiến về phía trước.
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div>
+            <h4 class="text-2xl font-semibold text-slate-800 mb-6 text-center">
+              Phương Pháp Luyện Tập Hiệu Quả
+            </h4>
+            <div id="training-methods" class="space-y-6"></div>
+          </div>
+          <div>
+            <h4 class="text-2xl font-semibold text-slate-800 mb-6 text-center">
+              Chiến Lược Duy Trì Động Lực
+            </h4>
+            <div id="motivation-strategies" class="space-y-6"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="mistakes" class="py-12 section-fade-in">
+        <div class="text-center mb-12">
+          <h3 class="text-3xl md:text-4xl font-bold text-slate-900">
+            Sai Lầm Thường Gặp & Cách Khắc Phục
+          </h3>
+          <p class="mt-4 text-lg max-w-2xl mx-auto text-slate-600">
+            Nhận diện và học hỏi từ những sai lầm là cách nhanh nhất để trưởng
+            thành. Dưới đây là những cạm bẫy phổ biến mà lập trình viên mới
+            thường mắc phải và gợi ý cách vượt qua chúng.
+          </p>
+        </div>
+        <div id="mistakes-accordion" class="max-w-4xl mx-auto space-y-4"></div>
+      </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white mt-16">
+      <div class="container mx-auto px-6 py-8 text-center">
+        <p>
+          Một sản phẩm tương tác dựa trên báo cáo "Phát Triển Tư Duy Lập Trình
+          Cốt Lõi".
+        </p>
+        <p class="text-sm text-slate-400 mt-2">
+          Được tạo ra để thúc đẩy việc học hỏi và phát triển trong cộng đồng
+          CNTT.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const db = {
+          mindsets: [
+            {
+              title: "Tư duy Logic",
+              icon: "🧠",
+              summary:
+                "Khả năng phân tích vấn đề một cách có cấu trúc và khoa học, là nền tảng của mọi loại tư duy phức tạp hơn.",
+              details: [
+                {
+                  q: "Tầm quan trọng:",
+                  a: "Là cơ sở để viết mã nguồn hiệu quả, sắp xếp và tối ưu hóa code, tăng hiệu suất và tiết kiệm thời gian.",
+                },
+                {
+                  q: "Phương pháp rèn luyện:",
+                  a: "Chia nhỏ vấn đề, thực hành liên tục, giải toán logic, và học sâu về cấu trúc dữ liệu.",
+                },
+              ],
+            },
+            {
+              title: "Tư duy Giải quyết Vấn đề",
+              icon: "💡",
+              summary:
+                "Khả năng xác định, phân tích và đưa ra các giải pháp hiệu quả cho các thách thức kỹ thuật.",
+              details: [
+                {
+                  q: "Tầm quan trọng:",
+                  a: "Giúp xử lý các thách thức mới nhanh chóng, thích ứng tốt với công nghệ mới và nâng cao sự tự tin.",
+                },
+                {
+                  q: "Quy trình:",
+                  a: "1. Mô tả vấn đề. 2. Phân tích nguyên nhân. 3. Đề xuất giải pháp. 4. Triển khai. 5. Kiểm tra & Đánh giá. 6. Ghi chép.",
+                },
+              ],
+            },
+            {
+              title: "Tư duy Thuật toán",
+              icon: "⚙️",
+              summary:
+                "Tiếp cận giải pháp thông qua việc định nghĩa các bước cụ thể, rõ ràng để giải quyết một vấn đề lặp đi lặp lại.",
+              details: [
+                {
+                  q: "Tầm quan trọng:",
+                  a: 'Cung cấp một "ngôn ngữ" chính xác để truyền đạt ý tưởng cho máy tính, giúp giải pháp trở nên rõ ràng và dễ chuyển thành code.',
+                },
+                {
+                  q: "Ví dụ phổ biến:",
+                  a: "Thuật toán tìm kiếm (Binary Search), sắp xếp (Quick Sort, Merge Sort), và lập trình động.",
+                },
+              ],
+            },
+            {
+              title: "Tư duy Hướng đối tượng (OOT)",
+              icon: "🧱",
+              summary:
+                "Mô hình hóa những thứ phức tạp trong thế giới thực thành các cấu trúc đối tượng đơn giản, dễ quản lý trong code.",
+              details: [
+                {
+                  q: "4 Tính chất cốt lõi:",
+                  a: "Tính Đóng gói (Encapsulation), Kế thừa (Inheritance), Đa hình (Polymorphism), và Trừu tượng (Abstraction).",
+                },
+                {
+                  q: "Lợi ích:",
+                  a: "Tái sử dụng code, dễ bảo trì và mở rộng, tăng tính bảo mật, và mô hình hóa thế giới thực hiệu quả.",
+                },
+              ],
+            },
+            {
+              title: "Tư duy Hệ thống",
+              icon: "🌐",
+              summary:
+                "Xem xét các vấn đề như một phần của một tổng thể lớn, tập trung vào mối quan hệ và tương tác giữa các bộ phận.",
+              details: [
+                {
+                  q: "Tầm quan trọng:",
+                  a: 'Giúp "nhìn thấy bức tranh toàn cảnh", dự đoán tác động của thay đổi, và đưa ra các quyết định thiết kế tốt hơn trong các hệ thống phức tạp.',
+                },
+                {
+                  q: "Lợi ích:",
+                  a: "Hiểu rõ kiến trúc, giảm rủi ro khi thay đổi, nâng cao hiệu quả và cải thiện sự cộng tác trong nhóm.",
+                },
+              ],
+            },
+            {
+              title: "Phân tích lỗi & Debugging",
+              icon: "🐞",
+              summary:
+                "Quá trình xác định, phân tích và sửa lỗi (bug) trong mã nguồn. Một kỹ năng không thể thiếu của lập trình viên.",
+              details: [
+                {
+                  q: "Tầm quan trọng:",
+                  a: "Giúp loại bỏ lỗi, hiểu rõ hơn về cách chương trình hoạt động, và kiểm soát mã nguồn tốt hơn.",
+                },
+                {
+                  q: "Phương pháp hiệu quả:",
+                  a: "Sử dụng debugger, logging, printing, và nhờ người khác review. Quan trọng nhất là phải tuân theo một quy trình có hệ thống.",
+                },
+              ],
+            },
+          ],
+          roadmap: {
+            levels: ["Beginner", "Junior", "Middle", "Senior"],
+            data: {
+              Beginner: {
+                title: "Beginner / Fresher (0-1 năm)",
+                desc: "Người mới bắt đầu, chủ yếu học hỏi và thực hiện các tác vụ cơ bản dưới sự giám sát chặt chẽ. Mục tiêu là làm quen với ngôn ngữ, công cụ và quy trình.",
+                focus: [
+                  "Tư duy logic cơ bản",
+                  "Giải quyết vấn đề nhỏ",
+                  "Làm quen thuật toán",
+                  "Học cách debug cơ bản",
+                ],
+                chartData: [2, 1, 1, 1, 2],
+              },
+              Junior: {
+                title: "Junior (1-3 năm)",
+                desc: "Có khả năng làm việc độc lập hơn với các tác vụ đã định nghĩa rõ. Bắt đầu đóng góp giá trị thực sự cho dự án, viết unit test và sửa các lỗi phức tạp hơn.",
+                focus: [
+                  "Tư duy logic vững vàng",
+                  "OOP cơ bản",
+                  "Áp dụng CSDL & Thuật toán",
+                  "Bắt đầu có tư duy hệ thống",
+                ],
+                chartData: [3, 2, 2, 2, 3],
+              },
+              Middle: {
+                title: "Middle (3-5 năm)",
+                desc: "Làm việc độc lập cao, xử lý các tác vụ phức tạp và tham gia vào thiết kế. Bắt đầu sở hữu (ownership) một phần sản phẩm và hướng dẫn các Junior.",
+                focus: [
+                  "Thiết kế module",
+                  "OOP & Design Patterns",
+                  "Tối ưu hóa hiệu năng",
+                  "Tư duy hệ thống rõ ràng",
+                ],
+                chartData: [4, 4, 4, 3, 4],
+              },
+              Senior: {
+                title: "Senior (5+ năm)",
+                desc: "Dẫn dắt kỹ thuật, thiết kế kiến trúc hệ thống phức tạp và cố vấn cho đội nhóm. Có khả năng định hình vấn đề từ các yêu cầu mơ hồ.",
+                focus: [
+                  "Thiết kế kiến trúc hệ thống",
+                  "Giải quyết vấn đề chiến lược",
+                  "Dẫn dắt và mentoring",
+                  "Ra quyết định công nghệ",
+                ],
+                chartData: [5, 5, 5, 5, 5],
+              },
+            },
+            chartLabels: [
+              "Kỹ năng kỹ thuật",
+              "Tự chủ",
+              "Tư duy Hệ thống",
+              "Mentoring",
+              "Giải quyết Vấn đề",
+            ],
+          },
+          training: [
+            {
+              title: "Luyện tập trên LeetCode/Codeforces",
+              desc: "Rèn luyện tư duy thuật toán, giải quyết vấn đề và chuẩn bị cho các cuộc phỏng vấn kỹ thuật.",
+              icon: "🏆",
+            },
+            {
+              title: "Xây dựng dự án cá nhân",
+              desc: "Áp dụng kiến thức vào thực tế, học công nghệ mới và xây dựng portfolio ấn tượng.",
+              icon: "🚀",
+            },
+            {
+              title: "Học theo mô hình phân tầng",
+              desc: "Nắm vững các nguyên lý nền tảng trước khi đi sâu vào các framework cụ thể để có kiến thức bền vững.",
+              icon: "📚",
+            },
+            {
+              title: "Nghiên cứu mã nguồn mở",
+              desc: "Học hỏi các giải pháp thực tế, phong cách code tốt và cách cấu trúc dự án từ những người giỏi hơn.",
+              icon: "📖",
+            },
+            {
+              title: "Dạy lại cho người khác",
+              desc: "Viết blog hoặc chia sẻ kiến thức giúp hệ thống hóa lại những gì đã học và hiểu sâu hơn vấn đề.",
+              icon: "✍️",
+            },
+          ],
+          motivation: [
+            {
+              title: "Vượt qua Burnout",
+              desc: "Nhận diện dấu hiệu kiệt sức, nghỉ ngơi hợp lý, chăm sóc sức khỏe thể chất và tinh thần.",
+              icon: "🧘",
+            },
+            {
+              title: "Nuôi dưỡng đam mê học hỏi",
+              desc: "Nhớ lại lý do bắt đầu, chấp nhận thử thách, và kết nối với cộng đồng để giữ lửa đam mê.",
+              icon: "🔥",
+            },
+            {
+              title: "Kết nối với mục tiêu nghề nghiệp",
+              desc: "Đặt mục tiêu rõ ràng (SMART) giúp việc học trở nên có định hướng và ý nghĩa hơn.",
+              icon: "🎯",
+            },
+            {
+              title: "Xây dựng môi trường tích cực",
+              desc: "Tạo không gian làm việc thoải mái, xây dựng mối quan hệ hỗ trợ và chủ động chia sẻ kiến thức.",
+              icon: "🤝",
+            },
+          ],
+          mistakes: [
+            {
+              category: "Định hướng & Phương pháp học tập",
+              items: [
+                {
+                  q: 'Sai lầm: Chỉ xem video, không thực hành ("Tutorial Hell").',
+                  a: "Khắc phục: Luôn kết hợp học đi đôi với hành. Áp dụng kiến thức vào các dự án cá nhân ngay lập tức.",
+                },
+                {
+                  q: "Sai lầm: Học quá nhiều thứ cùng lúc.",
+                  a: "Khắc phục: Tập trung làm chủ một hoặc hai công nghệ cốt lõi trước khi mở rộng sang lĩnh vực khác.",
+                },
+                {
+                  q: "Sai lầm: Bỏ qua kiến thức nền tảng.",
+                  a: "Khắc phục: Luôn ưu tiên học các nguyên lý cơ bản (CSDL&GT, OOP, Mạng máy tính) để có nền tảng vững chắc.",
+                },
+              ],
+            },
+            {
+              category: "Kỹ thuật & Thực hành viết mã",
+              items: [
+                {
+                  q: "Sai lầm: Đặt tên biến, hàm không rõ ràng.",
+                  a: "Khắc phục: Luôn đặt tên có ý nghĩa, mô tả rõ chức năng. Tuân thủ coding convention.",
+                },
+                {
+                  q: "Sai lầm: Lặp lại code (Không tuân thủ DRY).",
+                  a: "Khắc phục: Sử dụng hàm, lớp, hoặc module để tái sử dụng các đoạn logic chung.",
+                },
+                {
+                  q: "Sai lầm: Bỏ qua việc kiểm thử (testing).",
+                  a: "Khắc phục: Coi việc viết test là một phần không thể thiếu của quy trình phát triển để đảm bảo chất lượng.",
+                },
+                {
+                  q: "Sai lầm: Sao chép code mà không hiểu rõ.",
+                  a: "Khắc phục: Luôn cố gắng hiểu bản chất của đoạn code trước khi sử dụng. Xem nó như một tài liệu tham khảo, không phải giải pháp cuối cùng.",
+                },
+              ],
+            },
+            {
+              category: "Kỹ năng mềm & Phát triển cá nhân",
+              items: [
+                {
+                  q: "Sai lầm: Bỏ bê kỹ năng mềm.",
+                  a: "Khắc phục: Chủ động rèn luyện giao tiếp, làm việc nhóm, quản lý thời gian vì chúng quan trọng không kém kỹ năng cứng.",
+                },
+                {
+                  q: "Sai lầm: Sợ đặt câu hỏi và sợ thất bại.",
+                  a: "Khắc phục: Coi thất bại là cơ hội học hỏi. Đừng ngại hỏi, một môi trường tốt sẽ luôn khuyến khích điều đó.",
+                },
+                {
+                  q: "Sai lầm: Tự cô lập, không tham gia cộng đồng.",
+                  a: "Khắc phục: Tích cực tham gia các diễn đàn, hội thảo để học hỏi, kết nối và nhận được sự hỗ trợ.",
+                },
+              ],
+            },
+          ],
+        };
+
+        const mindsetGrid = document.getElementById("mindset-grid");
+        db.mindsets.forEach((mindset) => {
+          const card = document.createElement("div");
+          card.className =
+            "bg-white p-6 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer";
+          card.innerHTML = `
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">${mindset.icon}</span>
+                        <h4 class="text-xl font-semibold text-slate-800">${
+                          mindset.title
+                        }</h4>
+                    </div>
+                    <p class="text-slate-600 mb-4">${mindset.summary}</p>
+                    <div class="details hidden text-sm space-y-2 pt-2 border-t border-stone-200">
+                        ${mindset.details
+                          .map(
+                            (d) =>
+                              `<p><strong class="font-medium text-slate-700">${d.q}</strong> ${d.a}</p>`
+                          )
+                          .join("")}
+                    </div>
+                `;
+          mindsetGrid.appendChild(card);
+          card.addEventListener("click", () => {
+            card.querySelector(".details").classList.toggle("hidden");
+          });
+        });
+
+        const levelSelector = document.getElementById("level-selector");
+        const roadmapContent = document.getElementById("roadmap-content");
+        let roadmapChart;
+
+        function updateRoadmap(levelKey) {
+          const levelData = db.roadmap.data[levelKey];
+
+          levelSelector.querySelectorAll("button").forEach((btn) => {
+            if (btn.dataset.level === levelKey) {
+              btn.classList.remove("bg-stone-200", "text-slate-600");
+              btn.classList.add("bg-indigo-600", "text-white", "shadow-lg");
+            } else {
+              btn.classList.add("bg-stone-200", "text-slate-600");
+              btn.classList.remove("bg-indigo-600", "text-white", "shadow-lg");
+            }
+          });
+
+          roadmapContent.innerHTML = `
+                    <h4 class="text-2xl font-bold text-slate-900 mb-3">${
+                      levelData.title
+                    }</h4>
+                    <p class="text-slate-600 mb-4">${levelData.desc}</p>
+                    <ul class="space-y-2">
+                        ${levelData.focus
+                          .map(
+                            (f) =>
+                              `<li class="flex items-start"><span class="text-indigo-500 mr-2 mt-1">✓</span><span>${f}</span></li>`
+                          )
+                          .join("")}
+                    </ul>
+                `;
+
+          if (roadmapChart) {
+            roadmapChart.data.datasets[0].data = levelData.chartData;
+            roadmapChart.update();
+          }
+        }
+
+        function createRoadmapChart() {
+          const ctx = document.getElementById("roadmapChart").getContext("2d");
+          roadmapChart = new Chart(ctx, {
+            type: "radar",
+            data: {
+              labels: db.roadmap.chartLabels,
+              datasets: [
+                {
+                  label: "Mức độ năng lực",
+                  data: [],
+                  backgroundColor: "rgba(79, 70, 229, 0.2)",
+                  borderColor: "rgb(79, 70, 229)",
+                  pointBackgroundColor: "rgb(79, 70, 229)",
+                  pointBorderColor: "#fff",
+                  pointHoverBackgroundColor: "#fff",
+                  pointHoverBorderColor: "rgb(79, 70, 229)",
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                r: {
+                  beginAtZero: true,
+                  max: 5,
+                  pointLabels: {
+                    font: {
+                      size: 13,
+                    },
+                    color: "#475569",
+                  },
+                  ticks: {
+                    stepSize: 1,
+                    backdropColor: "transparent",
+                  },
+                  grid: {
+                    color: "rgba(0, 0, 0, 0.08)",
+                  },
+                  angleLines: {
+                    color: "rgba(0, 0, 0, 0.08)",
+                  },
+                },
+              },
+              plugins: {
+                legend: {
+                  display: false,
+                },
+              },
+            },
+          });
+        }
+
+        db.roadmap.levels.forEach((level) => {
+          const button = document.createElement("button");
+          button.textContent = level;
+          button.dataset.level = level;
+          button.className =
+            "px-4 py-2 rounded-lg font-medium transition-all duration-300";
+          levelSelector.appendChild(button);
+          button.addEventListener("click", () => updateRoadmap(level));
+        });
+
+        createRoadmapChart();
+        updateRoadmap("Beginner");
+
+        const trainingMethodsContainer =
+          document.getElementById("training-methods");
+        db.training.forEach((method) => {
+          trainingMethodsContainer.innerHTML += `
+                    <div class="bg-white p-5 rounded-lg shadow-sm flex items-start">
+                        <span class="text-2xl mr-4">${method.icon}</span>
+                        <div>
+                            <h5 class="font-semibold text-slate-800">${method.title}</h5>
+                            <p class="text-sm text-slate-600">${method.desc}</p>
+                        </div>
+                    </div>
+                `;
+        });
+
+        const motivationStrategiesContainer = document.getElementById(
+          "motivation-strategies"
+        );
+        db.motivation.forEach((strategy) => {
+          motivationStrategiesContainer.innerHTML += `
+                     <div class="bg-white p-5 rounded-lg shadow-sm flex items-start">
+                        <span class="text-2xl mr-4">${strategy.icon}</span>
+                        <div>
+                            <h5 class="font-semibold text-slate-800">${strategy.title}</h5>
+                            <p class="text-sm text-slate-600">${strategy.desc}</p>
+                        </div>
+                    </div>
+                `;
+        });
+
+        const mistakesAccordion = document.getElementById("mistakes-accordion");
+        db.mistakes.forEach((category) => {
+          const item = document.createElement("div");
+          item.className = "bg-white rounded-xl shadow-sm overflow-hidden";
+          item.innerHTML = `
+                    <button class="w-full text-left p-5 flex justify-between items-center hover:bg-stone-50 transition-colors focus:outline-none">
+                        <span class="text-lg font-semibold text-slate-800">${
+                          category.category
+                        }</span>
+                        <span class="transform transition-transform duration-300 text-indigo-500 text-2xl font-light">+</span>
+                    </button>
+                    <div class="content hidden p-5 pt-0">
+                        <div class="border-t border-stone-200 pt-4 space-y-3">
+                        ${category.items
+                          .map(
+                            (i) => `
+                            <div>
+                                <p class="font-medium text-slate-700">${i.q}</p>
+                                <p class="text-slate-600 pl-4">${i.a}</p>
+                            </div>
+                        `
+                          )
+                          .join("")}
+                        </div>
+                    </div>
+                `;
+          mistakesAccordion.appendChild(item);
+
+          const button = item.querySelector("button");
+          const content = item.querySelector(".content");
+          const icon = button.querySelector("span:last-child");
+          button.addEventListener("click", () => {
+            const isHidden = content.classList.contains("hidden");
+            if (isHidden) {
+              content.classList.remove("hidden");
+              icon.classList.add("rotate-45");
+            } else {
+              content.classList.add("hidden");
+              icon.classList.remove("rotate-45");
+            }
+          });
+        });
+
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const mobileMenuSpans = mobileMenuButton.querySelectorAll("span");
+
+        mobileMenuButton.addEventListener("click", () => {
+          const isOpen = mobileMenu.classList.toggle("hidden");
+          if (!isOpen) {
+            mobileMenuSpans[0].classList.add("rotate-45", "translate-y-2");
+            mobileMenuSpans[1].classList.add("opacity-0");
+            mobileMenuSpans[2].classList.add("-rotate-45", "-translate-y-2");
+          } else {
+            mobileMenuSpans[0].classList.remove("rotate-45", "translate-y-2");
+            mobileMenuSpans[1].classList.remove("opacity-0");
+            mobileMenuSpans[2].classList.remove("-rotate-45", "-translate-y-2");
+          }
+        });
+
+        mobileMenu.addEventListener("click", (e) => {
+          if (e.target.tagName === "A") {
+            mobileMenu.classList.add("hidden");
+            mobileMenuSpans[0].classList.remove("rotate-45", "translate-y-2");
+            mobileMenuSpans[1].classList.remove("opacity-0");
+            mobileMenuSpans[2].classList.remove("-rotate-45", "-translate-y-2");
+          }
+        });
+
+        const sections = document.querySelectorAll(".section-fade-in");
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+          }
+        );
+        sections.forEach((section) => {
+          observer.observe(section);
+        });
+      });
+    </script>
+  </body>
+</html>
