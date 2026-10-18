@@ -1,0 +1,96 @@
+.simulator {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid var(--wn-rule);
+  border-radius: 10px;
+  background: var(--wn-paper-raised);
+}
+
+.methods,
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.method,
+.action {
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--wn-rule);
+  border-radius: 6px;
+  background: var(--wn-paper);
+  color: var(--wn-ink);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.method:hover,
+.action:hover {
+  border-color: var(--ifm-color-primary);
+}
+
+.method[aria-pressed="true"],
+.action[aria-pressed="true"] {
+  border-color: var(--ifm-color-primary);
+  background: var(--ifm-color-primary);
+  color: var(--wn-paper-raised);
+}
+
+.summary {
+  margin: 0.75rem 0 1rem;
+  color: var(--wn-graphite);
+}
+
+.servers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.server {
+  padding: 0.75rem;
+  border: 1px solid var(--wn-rule);
+  border-radius: 8px;
+  background: var(--wn-paper);
+}
+
+.serverHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.track {
+  height: 0.5rem;
+  margin: 0.5rem 0;
+  border-radius: 999px;
+  background: var(--wn-rule);
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: var(--ifm-color-primary);
+  transition: width 0.3s ease;
+}
+
+.muted {
+  color: var(--wn-graphite);
+  font-size: 0.85rem;
+}
+
+.log {
+  min-height: 2rem;
+  margin: 1rem 0;
+  padding-left: 0;
+  list-style: none;
+  font-size: 0.875rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    transition: none;
+  }
+}

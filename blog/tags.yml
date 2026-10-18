@@ -21,4 +21,8 @@ programming:
 research:
   label: Research
   permalink: /research
-  description: Interactive guides moved from the Research vault
+  description: Notes moved from the Research vault
+project-plan:
+  label: Project plan
+  permalink: /project-plan
+  description: Learning roadmaps for building complete applications, stage by stage

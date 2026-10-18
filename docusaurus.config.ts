@@ -145,6 +145,7 @@ const config: Config = {
         "markdown",
         "mermaid",
         "mongodb",
+        "nginx",
         "php",
         "powershell",
         "properties",
