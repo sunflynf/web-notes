@@ -124,6 +124,7 @@ export const areas: Area[] = [
       { label: "API versioning", doc: "key-notes/api-versioning" },
       { label: "Naming", doc: "key-notes/naming" },
       { label: "Version control", doc: "key-notes/version-control-tools" },
+      { label: "Microservices", doc: "key-notes/microservices" },
       { label: "Interviews", doc: "key-notes/interviews/index" },
     ],
   },
