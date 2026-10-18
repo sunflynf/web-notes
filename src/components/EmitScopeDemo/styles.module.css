@@ -1,0 +1,92 @@
+.demo {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid var(--wn-rule);
+  border-radius: 10px;
+  background: var(--wn-paper-raised);
+}
+
+.scopes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.scope {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--wn-rule);
+  border-radius: 6px;
+  background: var(--wn-paper);
+  color: var(--wn-ink);
+  cursor: pointer;
+}
+
+.scope code {
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: 0.85rem;
+}
+
+.scope:hover {
+  border-color: var(--ifm-color-primary);
+}
+
+.scope[aria-pressed="true"] {
+  border-color: var(--ifm-color-primary);
+  background: var(--ifm-color-primary);
+  color: var(--wn-paper-raised);
+}
+
+.server {
+  width: fit-content;
+  margin: 0 auto 1rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--ifm-color-primary);
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.clients {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.client {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem;
+  border: 1px solid var(--wn-rule);
+  border-left-width: 4px;
+  border-radius: 8px;
+  background: var(--wn-paper);
+  color: var(--wn-graphite);
+  transition: border-color 0.2s ease;
+}
+
+.client[data-receives="true"] {
+  border-left-color: var(--wn-marker-g);
+  color: var(--wn-ink);
+}
+
+.meta,
+.status {
+  font-size: 0.85rem;
+}
+
+.summary {
+  margin-top: 1rem;
+  color: var(--wn-graphite);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .client {
+    transition: none;
+  }
+}
