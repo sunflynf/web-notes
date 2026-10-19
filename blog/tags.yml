@@ -18,11 +18,3 @@ programming:
   label: Programming
   permalink: /programming
   description: Anything in dev life
-research:
-  label: Research
-  permalink: /research
-  description: Notes moved from the Research vault
-project-plan:
-  label: Project plan
-  permalink: /project-plan
-  description: Learning roadmaps for building complete applications, stage by stage

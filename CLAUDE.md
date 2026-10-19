@@ -43,6 +43,7 @@ web-notes/
 │   ├── technologies/       # Programming languages, frameworks
 │   ├── key-notes/         # Best practices, patterns, interviews
 │   ├── cloud-computing/   # Cloud platforms and services
+│   ├── projects/          # Project blueprints (plan, architecture, roadmap)
 │   ├── assets/            # Images shared by docs pages
 │   └── _test-features/    # Feature testing area (not published)
 ├── blog/                  # Blog posts, date-prefixed (e.g. 2025-07-07-install-sdkman-windows.mdx)
@@ -100,7 +101,7 @@ Never edit generated output in `build/` or `.docusaurus/`; update source files i
 
 ### Content Organization
 
-- Documentation is organized by topic (technologies, key-notes, cloud-computing)
+- Documentation is organized by topic (technologies, key-notes, cloud-computing, projects)
 - Folders use `_category_.json` (or `_category_.yml`) for label and ordering
 - Markdown/MDX files support:
   - Mermaid diagrams

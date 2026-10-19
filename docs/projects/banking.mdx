@@ -1,10 +1,8 @@
 ---
 title: "Lộ trình xây dựng ứng dụng ngân hàng"
-authors: [phi]
-tags: [research, project-plan]
 description: "Dự án học tập React + Spring Boot qua 3 giai đoạn: monolith với giao dịch ACID, bảo mật nâng cao, rồi microservices với transactional outbox và saga."
-date: "2025-06-12T22:19:52"
-slug: plan-app-banking
+sidebar_label: "Ngân hàng"
+sidebar_position: 1
 ---
 
 import Tabs from "@theme/Tabs";
@@ -12,7 +10,6 @@ import TabItem from "@theme/TabItem";
 
 Một dự án học tập xây ứng dụng ngân hàng với **React + Spring Boot**, đi từ monolith đến microservices qua 3 giai đoạn. Ngân hàng là đề tài tốt để luyện những thứ khó nhất của backend: giao dịch tiền phải đúng tuyệt đối, bảo mật nhiều lớp, và nhất quán dữ liệu khi hệ thống bị tách nhỏ.
 
-{/* truncate */}
 
 ## Lộ trình 3 giai đoạn
 
@@ -25,7 +22,7 @@ Một dự án học tập xây ứng dụng ngân hàng với **React + Spring 
 | **DevOps** | Docker, Docker Compose | CI/CD với GitHub Actions, môi trường staging | Logging và monitoring tập trung (ELK, Prometheus) |
 | **Học được** | Tích hợp React với Spring Boot, giao dịch ACID, Docker | Bảo mật web, CI/CD, sinh dữ liệu giả | Thiết kế microservices, message queue, giám sát hệ phân tán |
 
-Monolith chia module ở giai đoạn 1–2 giúp tập trung vào nghiệp vụ trước; ranh giới module rõ ràng giúp tách service ở giai đoạn 3 dễ hơn. Khi nào nên tách và cái giá phải trả: xem [Kiến trúc Microservices](/docs/key-notes/microservices/).
+Monolith chia module ở giai đoạn 1–2 giúp tập trung vào nghiệp vụ trước; ranh giới module rõ ràng giúp tách service ở giai đoạn 3 dễ hơn. Khi nào nên tách và cái giá phải trả: xem [Kiến trúc Microservices](../key-notes/microservices.mdx).
 
 ## Công nghệ đề xuất
 
@@ -147,4 +144,4 @@ flowchart LR
 | Giả lập API | WireMock, Postman mock server | Mô phỏng API bên thứ ba (cổng thanh toán, ngân hàng khác) |
 | Dữ liệu giả | Datafaker (Java), Faker.js | Dữ liệu thực tế, phủ nhiều kịch bản kiểm thử |
 
-Khi triển khai lên VPS: xem [Thiết lập máy chủ Ubuntu](/docs/cloud-computing/ubuntu-server-setup/).
+Khi triển khai lên VPS: xem [Thiết lập máy chủ Ubuntu](../cloud-computing/ubuntu-server-setup.mdx).

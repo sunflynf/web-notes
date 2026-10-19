@@ -159,6 +159,22 @@ const config: Config = {
     },
   } satisfies Preset.ThemeConfig,
 
+  plugins: [
+    [
+      "@docusaurus/plugin-client-redirects",
+      {
+        // Project plans moved from the blog to docs/projects
+        redirects: [
+          { from: "/blog/plan-app-banking", to: "/docs/projects/banking" },
+          { from: "/blog/plan-app-flashcard", to: "/docs/projects/flashcard" },
+          { from: "/blog/plan-app-minicrm", to: "/docs/projects/minicrm" },
+          { from: "/blog/plan-app-landing-page", to: "/docs/projects/landing-page" },
+          { from: "/blog/2025/06/18/landing-page", to: "/docs/projects/landing-page/workflows" },
+        ],
+      },
+    ],
+  ],
+
   themes: ["@docusaurus/theme-mermaid"],
   markdown: {
     mermaid: true,
