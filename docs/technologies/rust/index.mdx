@@ -1,0 +1,247 @@
+---
+description: Memory-safe systems language without a garbage collector - ownership, traits, cargo and async
+---
+
+# Rust
+
+> **Quick reference:** [Rust Cheatsheet](./cheatsheet.mdx)
+
+- Open-source systems programming language, started at **Mozilla**, now run by the **Rust Project** / Rust Foundation
+- **Features**
+  - Memory safety **without a garbage collector** (checked at compile time by the borrow checker)
+  - Zero-cost abstractions, performance close to C/C++
+  - Fearless concurrency: data races are compile errors
+  - Strong type system: traits, generics, algebraic data types (`enum`), pattern matching
+  - One official toolchain: `rustup`, `cargo`, `rustfmt`, `clippy`
+- **Use case**
+  - CLI tools, system utilities, embedded, WebAssembly
+  - High-performance network services and proxies
+  - Replacing C/C++ components where safety matters
+- **Editions**: language "versions" opted into per crate (`edition = "2024"` in `Cargo.toml`). Current: **Rust 2024**, stable since Rust 1.85 (2025-02-20). Crates on different editions interoperate.
+
+## Ownership
+
+Every value has exactly **one owner**. When the owner goes out of scope, the value is dropped (memory freed). Assigning or passing a heap value **moves** it.
+
+```rust
+fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1;            // move: s1 is no longer valid
+    // println!("{s1}");    // error[E0382]: borrow of moved value
+    let s3 = s2.clone();    // explicit deep copy
+    println!("{s2} {s3}");
+
+    let n = 5;
+    let m = n;              // i32 is `Copy`: both stay usable
+    println!("{n} {m}");
+}                           // s2, s3 dropped here
+```
+
+- Types that implement `Copy` (integers, `bool`, `char`, `f64`, tuples of `Copy`) are copied, not moved
+- `Drop` runs automatically at end of scope (RAII) - files, locks, sockets close themselves
+
+## Borrowing
+
+Use a value without taking ownership via references.
+
+| Rule | Meaning |
+|---|---|
+| Many `&T` **or** one `&mut T` | Shared XOR mutable at any moment |
+| References must not outlive the owner | No dangling pointers |
+
+```rust
+fn len(s: &String) -> usize { s.len() }      // shared borrow
+fn push_world(s: &mut String) { s.push_str(" world"); } // mutable borrow
+
+fn main() {
+    let mut s = String::from("hello");
+    let n = len(&s);
+    push_world(&mut s);
+    println!("{s} ({n})");
+}
+```
+
+- Prefer `&str` over `&String` and `&[T]` over `&Vec<T>` in parameters (more flexible)
+- Interior mutability when the rules are too strict: `Cell`, `RefCell` (single thread), `Mutex` / `RwLock` (threads), shared ownership with `Rc` / `Arc`
+
+## Lifetimes
+
+Lifetimes name how long a reference is valid. The compiler infers most of them (**elision**); you write them when a returned reference could come from more than one input.
+
+```rust
+// The result lives as long as the shorter of `a` and `b`
+fn longest<'a>(a: &'a str, b: &'a str) -> &'a str {
+    if a.len() > b.len() { a } else { b }
+}
+
+// Structs that hold references need a lifetime parameter
+struct Parser<'a> {
+    input: &'a str,
+}
+```
+
+- `'static` = lives for the whole program (string literals, owned data with no borrows)
+- If lifetimes get painful, consider owning the data (`String` instead of `&str`)
+
+## Traits
+
+Traits define shared behavior (like interfaces), used for generics (static dispatch) or trait objects (dynamic dispatch).
+
+```rust
+trait Shape {
+    fn area(&self) -> f64;
+    fn describe(&self) -> String {               // default method
+        format!("area = {:.2}", self.area())
+    }
+}
+
+struct Circle { r: f64 }
+impl Shape for Circle {
+    fn area(&self) -> f64 { std::f64::consts::PI * self.r * self.r }
+}
+
+fn print_static(s: &impl Shape) { println!("{}", s.describe()); }   // generic, monomorphized
+fn print_dyn(shapes: &[Box<dyn Shape>]) {                          // trait objects, vtable
+    for s in shapes { println!("{}", s.describe()); }
+}
+
+#[derive(Debug, Clone, PartialEq)]   // auto-implement common traits
+struct Point { x: i32, y: i32 }
+```
+
+- Common std traits: `Debug`, `Display`, `Clone`, `Copy`, `PartialEq`/`Eq`, `Hash`, `Default`, `From`/`Into`, `Iterator`
+- Trait bounds: `fn f<T: Display + Clone>(x: T)` or `where T: Display`
+
+## Enums and pattern matching
+
+Enums are **sum types**: each variant can carry data. `match` must be exhaustive.
+
+```rust
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+}
+
+fn handle(msg: Message) {
+    match msg {
+        Message::Quit => println!("quit"),
+        Message::Move { x, y } if x == y => println!("diagonal to {x}"),
+        Message::Move { x, y } => println!("move to {x},{y}"),
+        Message::Write(text) => println!("{text}"),
+    }
+}
+
+fn first_even(v: &[i32]) -> Option<i32> {
+    v.iter().copied().find(|n| n % 2 == 0)
+}
+
+fn main() {
+    if let Some(n) = first_even(&[1, 4, 6]) {
+        println!("found {n}");
+    }
+    let Some(n) = first_even(&[2]) else { return };  // let-else
+    println!("{n}");
+}
+```
+
+- No `null`: absence is `Option<T>` (`Some(v)` / `None`)
+- In the 2024 edition you can chain conditions: `if let Some(x) = a && x > 0 { ... }` (let chains, Rust 1.88+)
+
+## Error handling with Result and `?`
+
+Recoverable errors are values of type `Result<T, E>`; `panic!` is for bugs. The `?` operator returns early on `Err` (converting the error with `From`).
+
+```rust
+use std::fs;
+use std::num::ParseIntError;
+
+fn parse_port(s: &str) -> Result<u16, ParseIntError> {
+    let port: u16 = s.trim().parse()?;   // early return on Err
+    Ok(port)
+}
+
+fn read_config(path: &str) -> Result<String, Box<dyn std::error::Error>> {
+    let text = fs::read_to_string(path)?; // io::Error -> Box<dyn Error>
+    Ok(text)
+}
+
+fn main() {
+    match parse_port("8080") {
+        Ok(p) => println!("port {p}"),
+        Err(e) => eprintln!("bad port: {e}"),
+    }
+}
+```
+
+- Libraries: define an error enum (often with the `thiserror` crate)
+- Applications: `anyhow::Result<T>` + `.context("...")` for easy error chains
+- Avoid `.unwrap()` / `.expect()` outside tests, prototypes and truly impossible cases
+
+## Cargo and crates
+
+`cargo` is the build tool, package manager and test runner. Packages are **crates**, published on [crates.io](https://crates.io/), docs auto-built on [docs.rs](https://docs.rs/).
+
+```bash
+cargo new my-app          # binary crate (use --lib for a library)
+cargo add serde --features derive
+cargo run                 # build + run (debug)
+cargo build --release     # optimized build in target/release
+cargo test
+cargo fmt && cargo clippy # format + lint
+```
+
+```toml
+[package]
+name = "my-app"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+```
+
+- `Cargo.lock` pins exact versions - commit it for applications
+- **Workspaces** group multiple crates sharing one `Cargo.lock` and `target/`
+- **Features** are opt-in compile flags declared by a crate
+
+## Async with tokio
+
+Rust has `async`/`await` in the language but **no built-in runtime**. [tokio](https://tokio.rs/) is the de-facto runtime (task scheduler, async I/O, timers, channels).
+
+```rust
+use tokio::time::{sleep, Duration};
+
+async fn fetch(id: u32) -> u32 {
+    sleep(Duration::from_millis(100)).await;  // non-blocking wait
+    id * 10
+}
+
+#[tokio::main]
+async fn main() {
+    // run concurrently
+    let (a, b) = tokio::join!(fetch(1), fetch(2));
+    println!("{a} {b}");
+
+    // spawn a background task (must be 'static + Send)
+    let handle = tokio::spawn(async { fetch(3).await });
+    println!("{}", handle.await.unwrap());
+}
+```
+
+- Futures are **lazy**: nothing runs until `.await`ed or spawned
+- Never block inside async code (`std::thread::sleep`, heavy CPU); use `tokio::task::spawn_blocking`
+- Common stack on top of tokio: `axum` (web), `reqwest` (HTTP client), `sqlx` (SQL), `tonic` (gRPC)
+
+## When to choose Rust
+
+| Choose | When |
+|---|---|
+| **Rust** | Performance + memory safety both matter; no GC pauses; CLI tools, proxies, embedded, WebAssembly, safety-critical parts of a system |
+| **Go** | Network services and tooling where fast onboarding and quick compiles matter more than peak performance; GC is fine |
+| **C / C++** | Huge existing codebase or ecosystem (game engines, some GPU/HPC), platforms without Rust support |
+| **Java / C# / TS** | Business apps and CRUD APIs where productivity and libraries matter more than raw speed |
+
+- **Costs**: steep learning curve (borrow checker, lifetimes), slower compile times, smaller ecosystem in some enterprise areas
+- **Wins**: whole classes of bugs (use-after-free, data races, null) are gone at compile time; tiny static binaries; great tooling
