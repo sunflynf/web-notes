@@ -1,0 +1,42 @@
+---
+title: Model Landscape
+sidebar_position: 12
+description: Major LLM vendors and model families - verified current Claude models plus where to check the others.
+---
+
+# Model Landscape
+
+Checked 2026-10-31. Model lineups change every few months - treat this page as a map and confirm IDs on the official pages before using them. Values marked `verify` could not be confirmed from an official source at the time of writing.
+
+## Vendors
+
+| Vendor | Families | Weights | Current flagship (verified) | Official model list |
+|---|---|---|---|---|
+| **Anthropic** | Claude Fable, Opus, Sonnet, Haiku | Closed (API, Bedrock, Google Cloud, Microsoft Foundry) | Claude Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.1 | [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview) |
+| **OpenAI** | GPT (incl. reasoning models) | Closed, plus open-weight releases | GPT-6 family (e.g. GPT-6 Astra); exact current IDs `verify` | [Models](https://platform.openai.com/docs/models) |
+| **Google** | Gemini (closed), Gemma (open) | Both | Gemini 4 Argon (`gemini-4-argon`, GA 2026-10-13), Gemini 3.8 Flash ([release notes](https://ai.google.dev/gemini-api/docs/changelog)) | [Gemini models](https://ai.google.dev/gemini-api/docs/models) |
+| **Meta** | Llama | Open weights (custom license) | `verify` | [llama.com](https://www.llama.com/) |
+| **Mistral AI** | Mistral, Codestral, and others | Both | `verify` | [Mistral models](https://docs.mistral.ai/getting-started/models/) |
+| **DeepSeek** | DeepSeek V / R series | Open weights | `verify` | [DeepSeek API docs](https://api-docs.deepseek.com/) |
+| **Alibaba** | Qwen | Mostly open weights | `verify` | [Qwen on GitHub](https://github.com/QwenLM) |
+
+## Anthropic Claude (verified)
+
+| Model | API ID | Positioning (from Anthropic docs) |
+|---|---|---|
+| Claude Fable 5.1 | `claude-fable-5-1` | Demanding reasoning and long-horizon agentic work |
+| Claude Opus 5.5 | `claude-opus-5-5` | Long-running agentic coding and knowledge work; recommended default |
+| Claude Sonnet 5.5 | `claude-sonnet-5-5` | Best combination of speed and intelligence |
+| Claude Haiku 5.5 | `claude-haiku-5-5` | Fastest; high-volume classification, extraction, routing |
+
+- All four list a 1M-token context window, text + image input, tool use and adaptive thinking.
+- Dateless IDs (from the 4.6 generation on) are pinned snapshots, not moving aliases.
+- Older models (Claude 5, 4.x) remain available as legacy; see the deprecations page for retirement dates.
+
+## How to choose
+
+1. Start with a strong general model to see if the task is feasible.
+2. Build an eval set ([Evals](./evals.mdx)).
+3. Try cheaper/faster models against it; keep the cheapest one that passes.
+4. Need privacy/offline/self-hosting → open weights ([Local Models](./local-models.mdx)).
+5. Re-run evals when vendors ship new versions.

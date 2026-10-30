@@ -1,0 +1,66 @@
+---
+title: Evals
+sidebar_position: 7
+description: Testing LLM features - eval datasets, graders, LLM-as-judge and regression checks in CI.
+---
+
+# Evals
+
+Evals are the unit tests of LLM features. Without them, every prompt or model change is a guess.
+
+## Steps
+
+1. **Define success**: specific and measurable (e.g. "extracts the right invoice total in 95% of cases").
+2. **Build a dataset**: real inputs (anonymized), edge cases, adversarial inputs. Start with 20-50, grow from production failures.
+3. **Pick graders**: cheapest reliable grader per criterion.
+4. **Run on every change** (prompt, model, retrieval, tools) and compare to a baseline.
+5. **Look at outputs**, not just scores - read failures.
+
+## Grader types
+
+| Grader | Good for | Notes |
+|---|---|---|
+| **Code / exact match** | Classification, JSON fields, numbers | Fast, cheap, deterministic - prefer when possible |
+| **Schema / regex checks** | Format compliance | Combine with content checks |
+| **Similarity** | Paraphrase-tolerant answers | Embedding or string similarity; needs a threshold |
+| **LLM-as-judge** | Tone, helpfulness, faithfulness to sources | Use a clear rubric; validate against human labels |
+| **Human review** | Ground truth, rubric calibration | Expensive; sample |
+
+## Minimal harness (Python)
+
+```python
+import json, anthropic
+
+client = anthropic.Anthropic()
+cases = [json.loads(line) for line in open("evals/intent.jsonl")]  # {"input": ..., "expected": ...}
+
+def classify(text: str) -> str:
+    msg = client.messages.create(
+        model="claude-haiku-5-5",
+        max_tokens=10,
+        system="Classify the support message as one of: billing, bug, other. Reply with the label only.",
+        messages=[{"role": "user", "content": text}],
+    )
+    return msg.content[0].text.strip().lower()
+
+passed = sum(classify(c["input"]) == c["expected"] for c in cases)
+print(f"{passed}/{len(cases)} = {passed / len(cases):.0%}")
+```
+
+## LLM-as-judge tips
+
+- Ask for a **verdict from a fixed set** (pass/fail or 1-5 with a rubric), with reasoning before the verdict.
+- Give the judge the **reference answer or sources** when you have them.
+- Judge **one criterion per call**.
+- Watch for biases: preference for longer answers, for its own outputs, for the first option shown.
+
+## What to measure for RAG
+
+| Metric | Question |
+|---|---|
+| Retrieval recall@k | Was the needed chunk retrieved? |
+| Faithfulness | Is every claim supported by the sources? |
+| Answer relevance | Does it answer the actual question? |
+| Citation accuracy | Do citations point to supporting text? |
+
+Also track **latency, token usage and cost** per case - a better prompt that doubles cost is a trade-off, not a free win.

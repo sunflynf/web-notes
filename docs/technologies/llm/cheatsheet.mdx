@@ -1,0 +1,139 @@
+---
+title: LLM Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page refresh on building with LLMs - concepts, SDK calls, patterns, gotchas and current models/SDK versions.
+---
+
+# LLM Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Large language models: next-token predictors used via API (or local open weights) for text, code, extraction and agents |
+| Use it for | Chat/assistants, summarization, extraction to JSON, classification, code generation, RAG over your docs, tool-using agents |
+| Latest stable | Anthropic: Claude Opus 5.5, Sonnet 5.5, Haiku 5.5, Fable 5.1. Google: Gemini 4 Argon (`gemini-4-argon`, GA 2026-10-13). OpenAI: GPT-6 family, exact current IDs `verify`. SDK versions in the table below - checked 2026-10-31 |
+| Official docs | [Claude](https://platform.claude.com/docs/en/about-claude/models/overview) · [OpenAI](https://platform.openai.com/docs/models) · [Gemini](https://ai.google.dev/gemini-api/docs/models) · [MCP](https://modelcontextprotocol.io/) |
+
+**SDKs and spec (checked 2026-10-31)**
+
+| Package | Registry | Latest | Released |
+|---|---|---|---|
+| `@anthropic-ai/sdk` | npm | 1.3.0 | 2026-10-23 |
+| `openai` | npm | 7.45.1 | 2026-10-27 |
+| `@google/genai` | npm | 2.32.0 | 2026-10-29 |
+| `@modelcontextprotocol/sdk` | npm | 1.32.2 | 2026-10-23 |
+| `anthropic` | PyPI | 2.3.0 | 2026-10-23 |
+| `openai` | PyPI | 3.41.0 | 2026-10-28 |
+| `google-genai` | PyPI | 2.34.0 | 2026-10-29 |
+| `mcp` | PyPI | 2.3.0 | 2026-10-02 |
+| MCP specification | [GitHub releases](https://github.com/modelcontextprotocol/modelcontextprotocol/releases) | 2026-07-28 | 2026-07-28 |
+
+## Core concepts
+
+- **Token**: the unit models read, write and bill; roughly a word piece, not a character.
+- **Context window**: max tokens per request (input + output); the model sees only what you send.
+- **System prompt**: role, rules and format instructions that frame every turn.
+- **Sampling**: temperature / top-p trade determinism for variety; some reasoning models restrict them.
+- **Structured output**: constrain the reply to a JSON schema instead of parsing free text.
+- **Tool calling**: the model asks your code to run a function; you return the result; it continues.
+- **RAG**: retrieve relevant chunks (embeddings + search) and put them in the prompt.
+- **Agent**: a loop of model + tools running until the task is done.
+- **MCP**: open protocol for exposing tools/resources/prompts to any LLM app.
+- **Evals**: automated tests for prompts and models; the only reliable way to compare changes.
+
+## Syntax & commands
+
+```bash
+npm i @anthropic-ai/sdk openai @modelcontextprotocol/sdk
+pip install anthropic openai google-genai
+export ANTHROPIC_API_KEY=...   # SDKs read keys from env
+export OPENAI_API_KEY=...
+```
+
+```ts
+// Anthropic Messages API
+import Anthropic from "@anthropic-ai/sdk";
+const anthropic = new Anthropic();
+const msg = await anthropic.messages.create({
+  model: "claude-sonnet-5-5",
+  max_tokens: 1024,
+  system: "You are a concise senior engineer.",
+  messages: [{ role: "user", content: "Explain idempotency in 2 lines." }],
+});
+console.log(msg.content[0].type === "text" ? msg.content[0].text : msg.content);
+```
+
+```ts
+// OpenAI Responses API
+import OpenAI from "openai";
+const openai = new OpenAI();
+const res = await openai.responses.create({
+  model: process.env.OPENAI_MODEL!, // pick a current id from the OpenAI models page
+  instructions: "You are a concise senior engineer.",
+  input: "Explain idempotency in 2 lines.",
+});
+console.log(res.output_text);
+```
+
+```python
+# Anthropic, Python
+import anthropic
+client = anthropic.Anthropic()
+msg = client.messages.create(
+    model="claude-haiku-5-5",
+    max_tokens=512,
+    messages=[{"role": "user", "content": "Classify: 'refund please' -> intent?"}],
+)
+print(msg.content[0].text)
+```
+
+## Common patterns
+
+| Need | Pattern |
+|---|---|
+| Reliable JSON | Structured outputs with a JSON schema (Anthropic `output_config.format`) + validate anyway |
+| Use your data | RAG: chunk → embed → retrieve (hybrid) → rerank → cite |
+| Take actions | Tool calling loop; keep tools small, typed, idempotent |
+| Reuse tools across apps | Wrap them in an MCP server |
+| Cheap + fast | Small model for routing/classification, big model only when needed |
+| Long repeated prefix | Prompt caching (stable content first, variable content last) |
+| Bulk offline jobs | Batch API (Anthropic batches are 50% off) |
+| Responsive UI | Stream tokens |
+| Prevent regressions | Eval set in CI before shipping prompt/model changes |
+
+## Gotchas
+
+- `max_tokens` is required on Anthropic and caps output; truncated replies end with `stop_reason: "max_tokens"`.
+- Models are stateless: resend history every turn (and pay for it).
+- Never trust model output as code or SQL without validation; never put secrets in prompts.
+- Retrieved web pages, emails and files can contain prompt injection - treat them as data.
+- Newer reasoning models may reject or ignore `temperature`/`top_p`; check the model page.
+- Model IDs get retired; pin an ID and track deprecation pages.
+- Token counts differ per tokenizer/vendor - do not reuse estimates across models.
+
+## What's new in recent releases
+
+- **Claude 5.5 family** (Opus, Sonnet, Haiku) plus **Claude Fable 5.1** for the hardest reasoning/agentic work; all current Claude models list a 1M-token context window.
+- **Adaptive thinking + `effort`** on current Claude models replaces manual extended thinking with `budget_tokens`.
+- **Structured outputs are GA** on the Claude API under `output_config.format`; the old beta `output_format` is deprecated.
+- **Automatic prompt caching**: a top-level `cache_control` on the Claude Messages request moves the breakpoint forward as the conversation grows.
+- **MCP spec 2026-07-28**: stateless request/response protocol (no initialize handshake or `Mcp-Session-Id`), multi round-trip requests, extensions framework; breaking for SDKs that relied on sessions.
+- **Gemini 4 Argon** is GA on the Gemini API (2026-10-13).
+- **Major SDK bumps**: `@anthropic-ai/sdk` 1.x, npm `openai` 7.x, `@google/genai` 2.x, PyPI `mcp` 2.x - read migration notes before upgrading.
+
+## In these notes
+
+- [LLM overview](./index.mdx)
+- [Tokens, Context & Sampling](./tokens-context-sampling.mdx)
+- [Prompt Engineering](./prompt-engineering.mdx)
+- [Structured Output & Tool Calling](./structured-output-tool-calling.mdx)
+- [RAG](./rag.mdx)
+- [Agents & MCP](./agents-mcp.mdx)
+- [Evals](./evals.mdx)
+- [Security](./security.mdx)
+- [Cost & Latency](./cost-latency.mdx)
+- [Prompting vs RAG vs Fine-tuning](./fine-tuning-vs-rag-vs-prompting.mdx)
+- [Local Models](./local-models.mdx)
+- [Model Landscape](./model-landscape.mdx)

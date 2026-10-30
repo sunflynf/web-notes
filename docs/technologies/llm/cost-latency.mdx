@@ -1,0 +1,75 @@
+---
+title: Cost & Latency
+sidebar_position: 9
+description: Prompt caching, batching, streaming and model routing - making LLM features cheaper and faster.
+---
+
+# Cost & Latency
+
+## Levers
+
+| Lever | Saves | How |
+|---|---|---|
+| **Right-size the model** | Cost + latency | Small model for routing/extraction, large for hard reasoning |
+| **Prompt caching** | Input cost + time-to-first-token | Reuse a long, stable prompt prefix |
+| **Batch API** | Cost (Anthropic: 50% off) | Async bulk jobs that can wait (up to 24 hours) |
+| **Streaming** | Perceived latency | Show tokens as they arrive |
+| **Shorter output** | Cost + latency | Output tokens are the slow and expensive part; ask for concise answers, set `max_tokens` |
+| **Trim context** | Cost | Fewer, better RAG chunks; summarize history |
+| **Parallelize** | Latency | Independent calls concurrently |
+| **Cache responses** | Everything | Your own cache for identical requests |
+
+Prices change often - always check the vendor's pricing page instead of hard-coding numbers.
+
+## Prompt caching (Anthropic)
+
+Put stable content first (tools, system prompt, big documents) and variable content last. The cache matches on an exact prefix.
+
+```ts
+const res = await client.messages.create({
+  model: "claude-sonnet-5-5",
+  max_tokens: 1024,
+  cache_control: { type: "ephemeral" }, // automatic: breakpoint on last cacheable block
+  system: LONG_STABLE_SYSTEM_PROMPT,
+  messages,
+});
+console.log(res.usage); // cache_creation_input_tokens / cache_read_input_tokens
+```
+
+- Explicit breakpoints are also possible: `cache_control` on individual content blocks (e.g. a system text block).
+- Default cache lifetime is 5 minutes, refreshed on each hit; a 1-hour TTL (`ttl: "1h"`) costs more.
+- Prompts below a model-specific minimum length are silently not cached - check `usage`.
+- Any change before the breakpoint (even a timestamp in the system prompt) is a cache miss.
+
+## Streaming
+
+```ts
+const stream = client.messages.stream({
+  model: "claude-sonnet-5-5",
+  max_tokens: 1024,
+  messages: [{ role: "user", content: "Write a haiku about caches." }],
+});
+stream.on("text", (delta) => process.stdout.write(delta));
+const final = await stream.finalMessage();
+```
+
+Stream long outputs even server-side: long non-streaming requests can hit HTTP timeouts.
+
+## Batching
+
+```ts
+const batch = await client.messages.batches.create({
+  requests: docs.map((d) => ({
+    custom_id: d.id,
+    params: { model: "claude-haiku-5-5", max_tokens: 300, messages: [{ role: "user", content: `Summarize:\n${d.text}` }] },
+  })),
+});
+// poll client.messages.batches.retrieve(batch.id), then read results
+```
+
+## Latency checklist
+
+- Measure **time to first token** and **total time** separately.
+- Smaller models and lower reasoning effort reduce latency.
+- Keep the prompt prefix stable so caching hits.
+- Route easy requests to a fast model; escalate only when needed.

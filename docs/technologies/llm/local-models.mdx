@@ -1,0 +1,65 @@
+---
+title: Local Models
+sidebar_position: 11
+description: Running open-weight LLMs locally or self-hosted with Ollama, llama.cpp and vLLM.
+---
+
+# Local Models
+
+**Open-weight** models (weights downloadable, license varies) can run on your laptop or your own GPUs - for privacy, offline use, cost control or fine-tuning.
+
+## Tools
+
+| Tool | Best for | Notes |
+|---|---|---|
+| **Ollama** | Easiest local dev | One-command pull/run, local REST API, OpenAI-compatible endpoint |
+| **llama.cpp** | CPU/Apple Silicon, small footprints | C/C++ engine; GGUF quantized files; `llama-server` gives an OpenAI-compatible API |
+| **LM Studio** | GUI desktop use | Built on llama.cpp/MLX; local server option |
+| **vLLM** | Production GPU serving | High throughput (PagedAttention, continuous batching); OpenAI-compatible server |
+| **Hugging Face** | Finding weights | Model hub, model cards, licenses |
+
+## Commands
+
+```bash
+# Ollama
+ollama pull <model>          # download
+ollama run <model>           # chat in terminal
+ollama list                  # installed models
+# API on http://localhost:11434 (OpenAI-compatible under /v1)
+
+# llama.cpp
+llama-server -m ./model.gguf --port 8080   # OpenAI-compatible on :8080/v1
+
+# vLLM (GPU server)
+pip install vllm
+vllm serve <hf-org>/<model-name>          # OpenAI-compatible on :8000/v1
+```
+
+## Call a local model with the OpenAI SDK
+
+```ts
+import OpenAI from "openai";
+
+const local = new OpenAI({ baseURL: "http://localhost:11434/v1", apiKey: "ollama" }); // key is ignored
+const res = await local.chat.completions.create({
+  model: "<model>",
+  messages: [{ role: "user", content: "Say hi in Vietnamese." }],
+});
+console.log(res.choices[0].message.content);
+```
+
+Local servers usually implement the Chat Completions endpoint; support for the newer Responses API varies by tool and version.
+
+## Sizing basics
+
+- **Parameters × bytes per weight ≈ memory for weights**: 16-bit uses about 2 bytes/param, 8-bit about 1, 4-bit about 0.5 - plus room for the KV cache (grows with context length).
+- **Quantization** (e.g. 4-bit GGUF, AWQ, GPTQ) trades a little quality for much less memory.
+- **MoE models** (mixture of experts) activate only part of the weights per token: faster, but all weights must still fit in memory.
+- Smaller local models trail frontier API models on hard reasoning - evaluate on your task.
+
+## Gotchas
+
+- **Licenses differ** (Apache-2.0, MIT, custom community licenses with usage limits) - read the model card.
+- Use the model's **chat template**; wrong templates silently degrade quality (Ollama/vLLM apply it for you).
+- Tool calling and JSON modes depend on the model and server version.
+- Default context length in local runners may be smaller than the model supports; set it explicitly.
