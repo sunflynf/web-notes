@@ -1,4 +1,10 @@
+---
+description: Best practices for JSON responses in RESTful APIs - structure, status codes, errors, pagination and versioning.
+---
+
 # RESTful API Response
+
+> **Quick reference:** [REST API Cheatsheet](./rest-api-cheatsheet.mdx)
 
 ```mermaid
 sequenceDiagram
@@ -99,6 +105,7 @@ sequenceDiagram
 
 - Use a consistent error format with `status`, `error`, `message`, and optional `details`.
 - Include HTTP status code in the response body for clarity.
+- For a standard format, consider Problem Details ([RFC 9457](https://www.rfc-editor.org/rfc/rfc9457), which replaced RFC 7807): `type`, `title`, `status`, `detail`, `instance`, served as `application/problem+json`.
 
   ```json
   {

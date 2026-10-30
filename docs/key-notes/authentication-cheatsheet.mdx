@@ -1,0 +1,164 @@
+---
+title: Authentication Cheatsheet
+sidebar_label: Authentication Cheatsheet
+sidebar_position: 1
+description: One-page refresher on web authentication - sessions vs JWT, OAuth 2.0/2.1 flows, OpenID Connect, token storage, and the specs behind them.
+---
+
+# Authentication Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Proving who a user or client is (authentication) and deciding what it may do (authorization), usually with sessions or tokens |
+| Use it for | Login, SSO and social login, securing APIs, service-to-service calls, delegated access to third-party APIs |
+| Latest stable | OAuth 2.0 [RFC 6749](https://www.rfc-editor.org/rfc/rfc6749) (Oct 2012) · OAuth 2.1 still an Internet-Draft ([draft-ietf-oauth-v2-1-16](https://datatracker.ietf.org/doc/draft-ietf-oauth-v2-1/), 2026-09-03, not an RFC) · JWT [RFC 7519](https://www.rfc-editor.org/rfc/rfc7519) (May 2015) · [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html) incorporating errata set 2 (2023-12-15) - checked 2026-10-31 |
+| Official docs | [oauth.net](https://oauth.net/2/) · [OAuth 2.0 Security BCP (RFC 9700)](https://www.rfc-editor.org/rfc/rfc9700) · [OpenID specs](https://openid.net/developers/specs/) · [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) |
+
+## Core concepts
+
+- **AuthN vs AuthZ**: authentication = who you are (401 when missing); authorization = what you may do (403 when denied).
+- **Session**: server stores state, browser holds an opaque session id cookie; easy to revoke.
+- **JWT**: signed (JWS) JSON claims `header.payload.signature`; verifiable without a DB call, but hard to revoke before `exp`.
+- **OAuth 2.0**: delegated **authorization** framework; issues access tokens to clients. Not a login protocol by itself.
+- **OpenID Connect (OIDC)**: identity layer on OAuth 2.0; adds the `openid` scope, the **ID token** (a JWT about the user) and `/userinfo`.
+- **Roles**: resource owner (user), client (app), authorization server (IdP), resource server (API).
+- **Access / refresh / ID token**: short-lived API key / long-lived renewal credential / identity proof for the client only.
+- **Scopes and claims**: scopes request permissions (`read:orders`); claims are statements in tokens (`sub`, `email`, `roles`).
+- **PKCE**: `code_verifier` + `code_challenge` binds the auth code to the client that started the flow; required in OAuth 2.1.
+- **MFA / passkeys**: second factor (TOTP, push) or phishing-resistant WebAuthn credentials replacing passwords.
+
+## Syntax & commands
+
+**Pick a flow**
+
+| Scenario | Flow |
+|---|---|
+| Web app, SPA, mobile, desktop | Authorization Code + PKCE |
+| Service-to-service, cron jobs | Client Credentials |
+| TV, CLI, IoT (no browser/keyboard) | Device Authorization Grant (RFC 8628) |
+| First-party login form in a classic server app | Session cookie (no OAuth needed) |
+| ~~Implicit~~, ~~Resource Owner Password~~ | Deprecated by the Security BCP, removed in OAuth 2.1 |
+
+**Authorization Code + PKCE**
+
+```bash
+# 1. client creates verifier + challenge
+code_verifier=$(openssl rand -base64 48 | tr -d '=+/' | cut -c1-64)
+code_challenge=$(printf %s "$code_verifier" | openssl dgst -sha256 -binary | openssl base64 | tr '+/' '-_' | tr -d '=')
+
+# 2. browser redirect to the authorization server
+# GET https://idp.example.com/authorize?response_type=code&client_id=app
+#     &redirect_uri=https://app.example.com/callback&scope=openid%20profile%20email
+#     &state=RANDOM&code_challenge=$code_challenge&code_challenge_method=S256
+
+# 3. back-channel exchange of the code
+curl -s -X POST https://idp.example.com/token \
+  -d grant_type=authorization_code -d code=AUTH_CODE \
+  -d redirect_uri=https://app.example.com/callback \
+  -d client_id=app -d code_verifier="$code_verifier"
+```
+
+**Client credentials and refresh**
+
+```bash
+curl -s -X POST https://idp.example.com/token -u "$CLIENT_ID:$CLIENT_SECRET" \
+  -d grant_type=client_credentials -d scope="orders:read"
+
+curl -s -X POST https://idp.example.com/token \
+  -d grant_type=refresh_token -d refresh_token="$REFRESH" -d client_id=app
+
+curl -s https://api.example.com/orders -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+**Token response and JWT payload**
+
+```json
+{
+  "access_token": "eyJhbGciOiJSUzI1NiIs...",
+  "token_type": "Bearer",
+  "expires_in": 900,
+  "refresh_token": "8xLOxBtZp8",
+  "id_token": "eyJhbGciOiJSUzI1NiIs...",
+  "scope": "openid profile email"
+}
+```
+
+```json
+{
+  "iss": "https://idp.example.com",
+  "sub": "user-42",
+  "aud": "https://api.example.com",
+  "exp": 1793440800,
+  "iat": 1793439900,
+  "scope": "orders:read",
+  "roles": ["admin"]
+}
+```
+
+**Validate a JWT on the API (Node, `jose`)**
+
+```ts
+import { createRemoteJWKSet, jwtVerify } from "jose";
+
+const JWKS = createRemoteJWKSet(new URL("https://idp.example.com/.well-known/jwks.json"));
+
+const { payload } = await jwtVerify(token, JWKS, {
+  issuer: "https://idp.example.com",
+  audience: "https://api.example.com",
+  algorithms: ["RS256"],
+});
+```
+
+**Discovery**: `https://idp.example.com/.well-known/openid-configuration` lists the authorize/token/jwks/userinfo endpoints.
+
+## Common patterns
+
+| Pattern | Notes |
+|---|---|
+| Short access token + rotating refresh token | Access 5-15 min; each refresh returns a new refresh token, reuse of an old one revokes the family |
+| BFF (backend for frontend) for SPAs | Server does the OAuth flow and keeps tokens; browser only gets an `HttpOnly; Secure; SameSite` session cookie |
+| API gateway validates tokens | Gateway checks signature/`exp`/`aud`, forwards claims; services still check scopes for their own data |
+| Opaque tokens + introspection (RFC 7662) | Revocable instantly; costs a call to the auth server (cache briefly) |
+| Sender-constrained tokens | DPoP (RFC 9449) or mTLS (RFC 8705) so a stolen token is useless elsewhere |
+| RBAC vs ABAC | Roles in claims for coarse checks; attribute/policy checks (owner, tenant) in the service |
+| Logout | Clear the session, revoke refresh token (RFC 7009), and use OIDC RP-initiated logout for SSO |
+
+**Token storage**
+
+| Client | Access token | Refresh token |
+|---|---|---|
+| SPA | memory only (or none, with a BFF) | none in JS; BFF cookie or rotation with short lifetime |
+| Server web app | server-side session | server-side, encrypted |
+| Mobile / desktop | OS secure storage (Keychain / Keystore) | OS secure storage |
+
+**Password storage**: hash with Argon2id (or bcrypt/scrypt), unique salt per user, never encrypt or plain-hash (SHA-256) passwords.
+
+## Gotchas
+
+- JWT payload is **base64url, not encrypted**: anyone can read it. No secrets or PII you would not show the user.
+- Always verify signature, `iss`, `aud`, `exp` (and `nbf`); pin allowed algorithms; reject `alg: none` and HS/RS confusion.
+- Do not use the ID token to call APIs; send the access token. The API should not accept ID tokens.
+- `localStorage` tokens are readable by any XSS; prefer `HttpOnly` cookies via a BFF.
+- Cookies need CSRF protection (`SameSite=Lax/Strict` plus a CSRF token for state-changing requests).
+- Validate `state` (CSRF) and `nonce` (ID token replay) on the callback; require exact `redirect_uri` matching.
+- Clock skew: allow a small leeway (30-60 s) when checking `exp`/`nbf`.
+- Stateless JWTs cannot be revoked early: keep them short-lived or add a denylist / introspection.
+- Rotating refresh tokens is a recommendation from the OAuth Security BCP (RFC 9700) and OAuth 2.1, not RFC 6749 itself.
+
+## What's new in recent releases
+
+- **OAuth 2.1 draft -16** (2026-09-03): still in the IETF OAuth WG, not yet an RFC. Consolidates 2.0 + BCPs: PKCE required for authorization code, implicit and password grants removed, exact redirect URI matching, no bearer tokens in query strings, refresh tokens sender-constrained or one-time use for public clients.
+- **RFC 9700 OAuth 2.0 Security Best Current Practice** (January 2025): the current hardening guide that OAuth 2.1 builds on.
+- **OIDC Core 1.0 errata set 2** (2023-12-15): editorial fixes; also published as ISO/IEC 26131:2024.
+- **RFC 9449 DPoP** (September 2023): proof-of-possession for access and refresh tokens at the application layer.
+- **Passkeys (WebAuthn)**: now broadly supported across platforms and password managers; a practical passwordless default for consumer login.
+
+## In these notes
+
+- [Authentication Flows](./authentication.md) - JWT, OAuth 2.0 + refresh, revoked tokens (diagrams)
+- [REST API Cheatsheet](./rest-api-cheatsheet.mdx) - 401 vs 403, headers, error format
+- [Spring Security](../technologies/java/spring-framework/spring-security.md)
+- [Entra ID + JWT (ASP.NET Core)](../technologies/dotnet/entra-id-jwt.md)
+- [NestJS in depth](../technologies/js/be-frameworks/nest/in-depth.mdx)
