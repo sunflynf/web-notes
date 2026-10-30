@@ -8,7 +8,9 @@ tags:
 
 # Mocha
 
-- Version 10+ required **[Node.js](../../../technologies/js/env/nodejs.md) version 14+**
+> **Quick reference:** [JavaScript Testing Cheatsheet](./cheatsheet.mdx)
+
+- Mocha 12 requires **[Node.js](../env/nodejs.md) 20.19+ or 22.12+** (Mocha 11 required Node.js 18+)
 - `describe()`: Defines a test suite.
 - `it()`: Defines a test case.
 - `assert`: Built-in assertion library.
@@ -49,9 +51,9 @@ tags:
 ## Basic concepts
 
 ```js
-decribe("test suite", () => {
+describe("test suite", () => {
   // 'done' to be called to complete the test, and it is OPTIONAL
-  it("test case infor", (done) => {
+  it("test case info", (done) => {
     // do some stuff ...
     done();
   });
@@ -61,13 +63,15 @@ decribe("test suite", () => {
 ## Assertions
 
 > **USING**: `assert.<func>(...args)`
+>
+> The table follows Chai's `assert` style (`import { assert } from "chai"`). Node's built-in `node:assert` has `equal`, `strictEqual`, `deepStrictEqual`, `ok` and `throws`, but not `isOk` / `isNull` / `isUndefined`.
 
 | Function                        | Using                                     |
 | ------------------------------- | ----------------------------------------- |
-| equal(actual, expected)         | Checks for strict equality.               |
+| equal(actual, expected)         | Checks for loose equality (`==`).         |
 | deepEqual(actual, expected)     | Checks for deep equality.                 |
 | notEqual(actual, expected)      | Checks for inequality.                    |
-| strictEqual(actual, expected)   | Checks for strict inequality.             |
+| strictEqual(actual, expected)   | Checks for strict equality (`===`).       |
 | isOk(value)                     | Checks if value is truthy.                |
 | isNull(value)                   | Checks if value is null.                  |
 | isUndefined(value)              | Checks if value is undefined.             |

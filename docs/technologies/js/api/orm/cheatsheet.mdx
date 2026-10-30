@@ -1,0 +1,151 @@
+---
+title: Node.js ORM Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: Side-by-side refresher for Prisma, Drizzle, TypeORM and Sequelize, covering schema, CRUD, relations, transactions, migrations and current versions.
+tags:
+  - JavaScript
+  - TypeScript
+  - Database
+  - Cheatsheet
+---
+
+# Node.js ORM Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Libraries that map SQL tables to JS/TS objects and give you typed queries and migrations |
+| Use it for | CRUD APIs, relations, transactions and schema migrations without writing every query by hand |
+| Latest stable | Prisma v7.10.1 (released 2026-10-15; Prisma 8 is a release candidate) · Drizzle ORM v0.45.4 (released 2026-10-08; v1 is a release candidate) · TypeORM v1.1.2 (released 2026-10-08) · Sequelize v6.37.8 (released 2026-03-07) - checked 2026-10-31 |
+| Official docs | [Prisma](https://www.prisma.io/docs) · [Drizzle](https://orm.drizzle.team/docs/overview) · [TypeORM](https://typeorm.io/) · [Sequelize](https://sequelize.org/docs/v6/) |
+
+## Core concepts
+
+- **Schema source of truth**: Prisma uses `schema.prisma`, Drizzle uses TS tables, TypeORM uses decorated classes, Sequelize uses `Model.init` / `define`.
+- **Data Mapper vs Active Record**: repositories or clients run queries (Prisma, Drizzle, TypeORM repositories) vs models that save themselves (Sequelize, TypeORM `BaseEntity`).
+- **Migrations**: versioned SQL files generated from schema diffs. Use them in production instead of `synchronize` / `sync()` / `db push`.
+- **Relations and loading**: eager (`include`, `with`, `relations`) vs separate queries. Watch for N+1 queries.
+- **Transactions**: a callback API that commits on success and rolls back on throw.
+- **Connection pooling**: one client or pool per process. In serverless, use a pooler (PgBouncer, Prisma Accelerate, Neon/Supabase pooler).
+- **Driver adapters**: Prisma 7 and Drizzle run on top of a JS driver such as `pg`, `mysql2` or `better-sqlite3`.
+
+## Syntax & commands
+
+| Task | Prisma | Drizzle | TypeORM | Sequelize |
+|---|---|---|---|---|
+| Install | `npm i -D prisma@7` + `npm i @prisma/client @prisma/adapter-pg` | `npm i drizzle-orm pg` + `npm i -D drizzle-kit` | `npm i typeorm reflect-metadata pg` | `npm i sequelize pg pg-hstore` + `npm i -D sequelize-cli` |
+| Generate client / types | `npx prisma generate` | not needed (types from schema) | not needed | not needed |
+| New migration | `npx prisma migrate dev --name init` | `npx drizzle-kit generate` | `npx typeorm migration:generate src/migrations/Init -d src/data-source.ts` | `npx sequelize-cli migration:generate --name init` |
+| Apply migrations | `npx prisma migrate deploy` | `npx drizzle-kit migrate` | `npx typeorm migration:run -d src/data-source.ts` | `npx sequelize-cli db:migrate` |
+| Prototype sync (dev only) | `npx prisma db push` | `npx drizzle-kit push` | `synchronize: true` | `sequelize.sync()` |
+| GUI | `npx prisma studio` | `npx drizzle-kit studio` | - | - |
+
+```ts
+// Prisma 7: prisma.config.ts + schema + client with driver adapter
+import { defineConfig, env } from "prisma/config";
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  datasource: { url: env("DATABASE_URL") },
+});
+
+// generator client { provider = "prisma-client"  output = "../src/generated/prisma" }
+// model User { id Int @id @default(autoincrement())  email String @unique  posts Post[] }
+
+import { PrismaClient } from "./generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
+
+const user = await prisma.user.create({ data: { email: "a@b.co" } });
+const users = await prisma.user.findMany({ where: { email: { endsWith: "@b.co" } }, include: { posts: true } });
+await prisma.user.update({ where: { id: 1 }, data: { email: "new@b.co" } });
+```
+
+```ts
+// Drizzle: schema in TS, SQL-like queries
+import { pgTable, serial, text, integer } from "drizzle-orm/pg-core";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { eq } from "drizzle-orm";
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  age: integer("age"),
+});
+
+const db = drizzle(process.env.DATABASE_URL!);
+await db.insert(users).values({ email: "a@b.co" });
+const rows = await db.select().from(users).where(eq(users.email, "a@b.co"));
+await db.update(users).set({ age: 30 }).where(eq(users.id, 1));
+```
+
+```ts
+// TypeORM: decorated entity + repository
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn() id!: number;
+  @Column({ unique: true }) email!: string;
+  @OneToMany(() => Post, (p) => p.author) posts!: Post[];
+}
+
+const repo = AppDataSource.getRepository(User);
+await repo.save(repo.create({ email: "a@b.co" }));
+const found = await repo.find({ where: { email: "a@b.co" }, relations: { posts: true } });
+const many = await repo.findBy({ id: In([1, 2, 3]) }); // findByIds was removed in 1.0
+```
+
+```ts
+// Sequelize v6: model + queries
+const User = sequelize.define("User", {
+  email: { type: DataTypes.STRING, allowNull: false, unique: true },
+});
+User.hasMany(Post);
+
+await User.create({ email: "a@b.co" });
+const list = await User.findAll({ where: { email: { [Op.like]: "%@b.co" } }, include: Post });
+await User.update({ email: "new@b.co" }, { where: { id: 1 } });
+```
+
+## Common patterns
+
+```ts
+// Transactions
+await prisma.$transaction(async (tx) => { /* tx.user..., tx.post... */ });
+await db.transaction(async (tx) => { /* tx.insert(...) */ });
+await AppDataSource.transaction(async (manager) => { /* manager.save(...) */ });
+await sequelize.transaction(async (t) => { /* User.create(data, { transaction: t }) */ });
+```
+
+| Need | Prisma | Drizzle | TypeORM | Sequelize |
+|---|---|---|---|---|
+| Pagination | `skip` / `take` or `cursor` | `.limit()` / `.offset()` | `skip` / `take` | `limit` / `offset` |
+| Select columns | `select: { id: true }` | `db.select({ id: users.id })` | `select: { id: true }` | `attributes: ["id"]` |
+| Raw SQL | `` prisma.$queryRaw`...` `` (tagged, parameterized) | `` db.execute(sql`...`) `` | `dataSource.query(sql, params)` | `sequelize.query(sql, { replacements })` |
+| Upsert | `upsert({ where, update, create })` | `.onConflictDoUpdate({ target, set })` | `repo.upsert(data, ["email"])` | `Model.upsert(data)` |
+
+## Gotchas
+
+- `npx prisma` / `npm i prisma` now resolves to the **Prisma 8 RC CLI** (npm `latest` tag), which does not read `schema.prisma`. Pin `prisma@7` in Prisma 7 projects.
+- Prisma 7 no longer loads `.env` automatically and needs a driver adapter. The datasource `url` moved from the schema to `prisma.config.ts`.
+- Create one Prisma client / Drizzle pool per process. In Next.js dev, cache it on `globalThis` to survive hot reloads.
+- `synchronize: true` (TypeORM) and `sync({ alter: true })` (Sequelize) can drop or alter columns. Never use them in production.
+- TypeORM needs `experimentalDecorators` and `emitDecoratorMetadata` plus `import "reflect-metadata"` once at startup.
+- TypeORM 1.0 requires Node.js 20+, `mysql2` (not `mysql`) and `better-sqlite3` (not `sqlite3`), and removed `TYPEORM_*` env var config.
+- Sequelize v6 ships its own types, so do not install `@types/sequelize`. Sequelize v7 (`@sequelize/core`) is still alpha.
+- Drizzle `drizzle-kit` and `drizzle-orm` versions must match. v1 RC changes some APIs, so do not mix `@rc` and `@latest`.
+- Raw SQL with string concatenation is SQL injection. Use the tagged template or parameter APIs.
+
+## What's new in recent releases
+
+- **Prisma 8 RC** (2026): full TypeScript rewrite with a new CLI, PostgreSQL first (MongoDB too, SQLite and MySQL to follow), and a side-by-side migration path from 7. Prisma 7 keeps fixes for 18 months after 8 GA.
+- **Prisma 7** (2025): Rust-free `prisma-client` generator with explicit `output`, mandatory driver adapters, `prisma.config.ts`, ESM-first generated client.
+- **TypeORM 1.0** (2026-05-19, now 1.1.x): first major in about five years. Drops Node.js 16/18, removes `findByIds` and other deprecated APIs, needs MongoDB driver v7+.
+- **Drizzle v1 RC** (`drizzle-orm@rc`, 1.0.0-rc.5): new relational queries (RQB v2), reworked migrations folder and drizzle-kit, validator packages merged in. Stable `latest` is still 0.45.x.
+- **Sequelize**: v6 gets maintenance releases; v7 lives in `@sequelize/core` (alpha).
+
+## In these notes
+
+- [ORM comparison](./index.md)
+- [Prisma](./prisma.md) · [Drizzle](./drizzle.md) · [TypeORM](./type-orm.mdx) · [Sequelize](./sequelize.mdx)
+- Query builders: [Knex.js](../query-builder/knexjs.md) · [node-postgres](../query-builder/node-postgres.md)

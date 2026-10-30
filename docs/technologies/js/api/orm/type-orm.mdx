@@ -7,6 +7,8 @@ tags:
 
 # TypeORM
 
+> **Quick reference:** [Node.js ORM Cheatsheet](./cheatsheet.mdx)
+
 A quick reference for TypeORM, an ORM for TypeScript and JavaScript, supporting databases like PostgreSQL, MySQL, SQLite, MongoDB, Oracle, etc.
 
 ## Installation
@@ -24,7 +26,7 @@ Enable `experimentalDecorators` and `emitDecoratorMetadata` in `tsconfig.json`.
 
 ## Configuration
 
-Create a `data-source.ts` or `ormconfig.json` to configure the database connection.
+Create a `data-source.ts` to configure the database connection (TypeORM 1.0 removed `ormconfig.env` / `TYPEORM_*` env var loading; a `DataSource` file is the recommended setup).
 
 <Tabs>
   <TabItem value="postgres" label="PostgreSQL" default>
@@ -73,13 +75,12 @@ import { DataSource } from "typeorm";
 export const AppDataSource = new DataSource({
   type: "mongodb",
   url: "mongodb://localhost:27017/mydb",
-  useNewUrlParser: true,
   entities: ["src/entity/**/*.ts"],
   synchronize: true, // MongoDB supports synchronize
 });
 ```
 
-> **Note**: MongoDB requires `typeorm` version with MongoDB support (`npm install typeorm@latest`) and uses a different entity structure (no migrations).
+> **Note**: MongoDB needs the `mongodb` driver package (v7+ for TypeORM 1.0) and uses a different entity structure (`@ObjectIdColumn`, no migrations).
 
   </TabItem>
   <TabItem value="oracle" label="Oracle" default>
@@ -117,7 +118,7 @@ export const AppDataSource = new DataSource({
 });
 ```
 
-> **Note**: Install `sqlite3` driver (`npm install sqlite3`).
+> **Note**: Install the `better-sqlite3` driver (`npm install better-sqlite3`). TypeORM 1.0 dropped support for the `sqlite3` package.
 
   </TabItem>
 </Tabs>

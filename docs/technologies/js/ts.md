@@ -8,6 +8,8 @@ tags:
 
 # TypeScript
 
+> **Quick reference:** [TypeScript Cheatsheet](./ts-cheatsheet.mdx)
+
 **TypeScript** is **JavaScript** with _added syntax for types_.
 
 - TypeScript being converted into JavaScript means it runs anywhere that JavaScript runs!
@@ -26,8 +28,8 @@ let firstName = 'Dylan'; // Implicit -> auto be string
 let isTrue: boolean = false;
 let firstNum: number = 0;
 let yourName: string = 'My Name';
-let myVirtualBalance = new BigInt('999999999999999');
-let mySymbol: symbol = new Symbol('SIMP');
+let myVirtualBalance: bigint = BigInt('999999999999999'); // or 999999999999999n (no `new`)
+let mySymbol: symbol = Symbol('SIMP'); // no `new`
 
 // SPECIAL
 // 'undefined' | 'null' maybe useless
@@ -59,10 +61,10 @@ let car : {
 
 ```ts
 enum CardinalDirections {
-  North, // 1
+  North, // 0 (numeric enums start at 0)
   East,
   South,
-  West // 4
+  West // 3
 }
 enum StatusCodes {
   NotFound = 404, // it can be string like "404"
@@ -289,15 +291,15 @@ function createLoggedPair<S extends string | number, T extends string | number>(
   console.log(`creating pair: v1='${v1}', v2='${v2}'`);
   return [v1, v2];
 }
-console.log(createPair<string, number>('hello', 42)); // ['hello', 42]
+console.log(createLoggedPair<string, number>('hello', 42)); // ['hello', 42]
 ```
 
 ## Utility Types
 
 - `Record<K, V>`
-- `Excludes<TypeUnion, TypeRemove>`
+- `Exclude<TypeUnion, TypeRemove>`
 - `Readonly<T>` - Apply TS features only
-- `Patial<I>` - All keys are **OPTIONAL**
+- `Partial<I>` - All keys are **OPTIONAL**
 - `Required<I>` - All keys are **REQUIRED**
 - `Omit<I, 'key1' | 'key2'>` - Remove keys of interface
 - `Pick<I, 'key1' | 'key2'>` - Choose keys of interface
@@ -350,7 +352,8 @@ let myColor: HexColor<"blue"> = "#0000FF";
 ### Index Signature Labels
 
 ```ts
-type DynamicObject = { [key: string as `dynamic_${string}`]: string };
+// Template string pattern index signature (TS 4.4+)
+type DynamicObject = { [key: `dynamic_${string}`]: string };
 
 // Usage:
 let obj: DynamicObject = { dynamic_key: "value" };

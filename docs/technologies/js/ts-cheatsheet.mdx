@@ -1,0 +1,152 @@
+---
+title: TypeScript Cheatsheet
+sidebar_label: TypeScript Cheatsheet
+sidebar_position: 1
+description: One-page refresher for TypeScript types, generics, narrowing, utility types, tsconfig and the TypeScript 7 native compiler.
+tags:
+  - TypeScript
+  - Cheatsheet
+---
+
+# TypeScript Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | JavaScript with a static type system; the compiler (`tsc`) type-checks and emits plain JS |
+| Use it for | Catching bugs before runtime, editor autocomplete and refactors, typed APIs across front end and back end |
+| Latest stable | v7.0.2 (released 2026-07-08) - checked 2026-10-31 |
+| Official docs | [typescriptlang.org/docs](https://www.typescriptlang.org/docs/) · [Release notes](https://www.typescriptlang.org/docs/handbook/release-notes/overview.html) |
+
+## Core concepts
+
+- **Structural typing**: types match by shape, not by name. Any object with the right properties fits.
+- **Inference**: let TS infer locals and return types. Annotate function parameters and public APIs.
+- **Union and intersection**: `A | B` is either one, `A & B` is both at once.
+- **Narrowing**: `typeof`, `instanceof`, `in`, equality checks and custom type guards shrink a union inside a branch.
+- **`unknown` vs `any`**: `unknown` forces you to narrow before use; `any` switches checking off.
+- **Generics**: type parameters (`T`) make functions and types reusable while keeping types precise.
+- **Type-level programming**: `keyof`, indexed access `T[K]`, mapped types, conditional types and `infer`.
+- **Types are erased**: nothing of the type system exists at runtime. Validate external data (for example with Zod).
+
+## Syntax & commands
+
+```bash
+npm i -D typescript
+npx tsc --init          # create tsconfig.json
+npx tsc --noEmit        # type-check only (common in CI)
+npx tsc -w              # watch mode
+npx tsc -b              # build project references
+node --experimental-strip-types app.ts  # not needed on Node.js 23.6+/22.18+, types are stripped by default
+```
+
+```ts
+// Annotations and aliases
+let id: number | string = 1;
+type User = { id: number; name: string; email?: string; readonly createdAt: Date };
+interface Admin extends User { roles: string[] }
+
+// Functions
+function greet(name: string, greeting = "Hi"): string { return `${greeting} ${name}`; }
+type Handler = (event: MouseEvent) => void;
+
+// Literal and discriminated unions
+type Status = "idle" | "loading" | "error";
+type Result = { ok: true; data: User } | { ok: false; error: string };
+```
+
+```ts
+// Generics with constraints and defaults
+function first<T>(items: T[]): T | undefined { return items[0]; }
+function getProp<T, K extends keyof T>(obj: T, key: K): T[K] { return obj[key]; }
+type ApiResponse<T = unknown> = { data: T; status: number };
+
+// Narrowing and type guards
+function isUser(x: unknown): x is User {
+  return typeof x === "object" && x !== null && "id" in x;
+}
+
+// satisfies: check a value against a type but keep the narrow inferred type
+const routes = { home: "/", about: "/about" } satisfies Record<string, string>;
+
+// as const: readonly literal types
+const ROLES = ["admin", "user"] as const;
+type Role = (typeof ROLES)[number]; // "admin" | "user"
+```
+
+| Utility type | Result |
+|---|---|
+| `Partial<T>` / `Required<T>` | all props optional / required |
+| `Readonly<T>` | all props `readonly` |
+| `Pick<T, "a" \| "b">` / `Omit<T, "a">` | keep / drop keys |
+| `Record<K, V>` | object with keys `K` and values `V` |
+| `Exclude<U, X>` / `Extract<U, X>` | remove / keep union members |
+| `NonNullable<T>` | drop `null` and `undefined` |
+| `ReturnType<F>` / `Parameters<F>` | function return / parameter tuple |
+| `Awaited<T>` | unwrap a `Promise` type |
+
+## Common patterns
+
+```ts
+// Exhaustive switch with never
+function render(r: Result) {
+  switch (r.ok) {
+    case true: return r.data.name;
+    case false: return r.error;
+    default: { const _exhaustive: never = r; return _exhaustive; }
+  }
+}
+
+// Mapped and conditional types
+type Nullable<T> = { [K in keyof T]: T[K] | null };
+type ElementOf<T> = T extends (infer U)[] ? U : never;
+type EventName = `on${Capitalize<"click" | "focus">}`; // "onClick" | "onFocus"
+
+// Typed fetch helper
+async function getJson<T>(url: string): Promise<T> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(res.statusText);
+  return res.json() as Promise<T>;
+}
+```
+
+```json
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "module": "nodenext",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "outDir": "dist"
+  },
+  "include": ["src"]
+}
+```
+
+## Gotchas
+
+- `as` assertions do not convert or validate anything. Prefer narrowing or runtime validation.
+- Optional property `x?: T` is not the same as `x: T | undefined` under `exactOptionalPropertyTypes`.
+- `arr[i]` is typed `T`, not `T | undefined`, unless `noUncheckedIndexedAccess` is on.
+- Numeric `enum`s accept any number and emit runtime code. Prefer union literals or `as const` objects. Node.js type stripping does not support `enum` or `namespace` at all.
+- `interface` declarations with the same name merge; `type` aliases cannot be reopened.
+- `object`, `Object` and `{}` are different: `{}` accepts any non-null value, including strings.
+- Excess property checks only apply to fresh object literals, not to variables you pass in.
+- TypeScript 7 does not yet ship a stable programmatic API (planned for 7.1), so some tools (for example typescript-eslint, Vue/Svelte/Angular template checking) may still run on TypeScript 6.
+
+## What's new in recent releases
+
+- **7.0** (2026): the compiler is a native Go port (formerly `tsgo` / `@typescript/native-preview`), shipped as the normal `typescript` package. Full builds are reported 8-12x faster, with parallel parsing, checking and emitting (`--checkers`, `--builders`, `--singleThreaded`). Type-checking behavior matches 6.0.
+- **7.0 defaults**: `strict` on by default and modern `module` defaults; options deprecated in 6.0 (such as `baseUrl` and old `moduleResolution` modes) are removed.
+- **6.0** (2026): the last JavaScript-based release, a bridge to 7.0 that deprecates legacy options.
+- **5.9** (2025): smaller `tsc --init` output, `import defer` support, `--module node20`.
+- **5.8** (2025): `--erasableSyntaxOnly` for code that Node.js can run by stripping types.
+
+## In these notes
+
+- [TypeScript notes (types, enums, classes, generics, utility types)](./ts.md)
+- [JavaScript Cheatsheet](./cheatsheet.mdx)
+- [Node.js Cheatsheet](./env/nodejs-cheatsheet.mdx)

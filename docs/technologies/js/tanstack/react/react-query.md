@@ -8,6 +8,8 @@ tags:
 
 # React Query
 
+> **Quick reference:** [TanStack Cheatsheet](../cheatsheet.mdx)
+
 > Current version: v5
 
 ## Quick start

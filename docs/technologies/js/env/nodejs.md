@@ -9,6 +9,8 @@ tags:
 
 # Node.js
 
+> **Quick reference:** [Node.js Cheatsheet](./nodejs-cheatsheet.mdx)
+
 - Node.js is an open source server environment
 - Node.js uses JavaScript on the server
 - Node.js runs single-threaded, non-blocking, asynchronous programming
@@ -70,7 +72,7 @@ console.log(dt.myDateTime());
 | ------------------ | ------------------------------------------------------------------------- |
 | **assert**         | test                                                                      |
 | buffer             | binary data                                                               |
-| child_processes    | run a child processes                                                     |
+| child_process      | run a child processes                                                     |
 | cluster            | split single Node process -> multiple                                     |
 | **crypto**         | handle OpenSSL cryptographic func                                         |
 | dns                | DNS lookups & name resolution func                                        |
@@ -96,13 +98,13 @@ console.log(dt.myDateTime());
 
 ```js
 var http = require("http");
-var url = require("url");
 
 http
   .createServer(function (req, res) {
     res.writeHead(200, { "Content-Type": "text/html" });
-    var q = url.parse(req.url, true).query;
-    var txt = q.year + " " + q.month;
+    // url.parse() is deprecated: use the WHATWG URL API
+    var q = new URL(req.url, "http://" + req.headers.host).searchParams;
+    var txt = q.get("year") + " " + q.get("month");
     res.end(txt); // Add to body
   })
   .listen(8080);
@@ -209,5 +211,5 @@ For simpler tasks or functional programming, avoid classes and opt for regular f
 
 ### Resources
 
-1. [Node.js Documents (20.x)](https://nodejs.org/docs/latest-v20.x/api/index.html)
+1. [Node.js Documents (latest)](https://nodejs.org/docs/latest/api/index.html)
 2. [w3schools - Node.js](https://www.w3schools.com/nodejs/nodejs_get_started.asp)

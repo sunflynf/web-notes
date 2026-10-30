@@ -1,0 +1,149 @@
+---
+title: JavaScript Testing Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page refresher for JavaScript unit testing with Jest, plus the matching Vitest and Mocha syntax, mocks, async tests and coverage.
+tags:
+  - JavaScript
+  - Testing
+  - Cheatsheet
+---
+
+# JavaScript Testing Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Test runners for JS/TS: **Jest** (batteries included), **Vitest** (Jest-compatible API on top of Vite), **Mocha** (minimal runner, bring your own assertions) |
+| Use it for | Unit and integration tests, mocking modules and timers, snapshot tests, coverage in CI |
+| Latest stable | Jest v30.5.2 (released 2026-09-18) · Vitest v5.0.5 (released 2026-10-15) · Mocha v12.0.3 (released 2026-10-01) - checked 2026-10-31 |
+| Official docs | [jestjs.io](https://jestjs.io/docs/getting-started) · [vitest.dev](https://vitest.dev/guide/) · [mochajs.org](https://mochajs.org/) |
+
+## Core concepts
+
+- **Suite and test**: `describe` groups tests, `test` / `it` defines one case.
+- **Matchers**: `expect(value).toBe(...)`. Jest and Vitest bundle them; Mocha usually pairs with `node:assert` or Chai.
+- **Hooks**: `beforeAll`, `beforeEach`, `afterEach`, `afterAll` (Mocha: `before` / `after`).
+- **Test doubles**: `jest.fn()` / `vi.fn()` for mocks, `spyOn` to watch a real method, module mocks to replace imports.
+- **Fake timers**: control `setTimeout`, `setInterval` and `Date` without waiting.
+- **Environment**: `node` (default) or `jsdom` / `happy-dom` for DOM tests. Vitest also has a real-browser Browser Mode.
+- **Snapshots**: store serialized output and fail when it changes. Review diffs, do not blindly update.
+- **Coverage**: `--coverage`, with V8 or Istanbul as the provider.
+
+## Syntax & commands
+
+```bash
+npm i -D jest                 # Jest
+npx jest                      # run all
+npx jest user                 # files matching "user"
+npx jest -t "adds numbers"    # tests whose name matches
+npx jest --watch              # re-run changed
+npx jest --coverage
+
+npm i -D vitest               # Vitest
+npx vitest                    # watch mode in dev, run once in CI
+npx vitest run --coverage
+
+npm i -D mocha                # Mocha
+npx mocha "test/**/*.test.js"
+```
+
+```js
+// Jest (globals) · Vitest: import { describe, test, expect, vi } from "vitest"
+describe("sum", () => {
+  beforeEach(() => { /* reset state */ });
+
+  test("adds numbers", () => {
+    expect(sum(1, 2)).toBe(3);
+  });
+
+  test.each([[1, 1, 2], [2, 3, 5]])("sum(%i, %i) = %i", (a, b, out) => {
+    expect(sum(a, b)).toBe(out);
+  });
+});
+```
+
+| Matcher | Checks |
+|---|---|
+| `toBe(x)` | `Object.is` equality (primitives, same reference) |
+| `toEqual(obj)` / `toStrictEqual(obj)` | deep equality (strict also checks `undefined` props and classes) |
+| `toBeTruthy()` / `toBeNull()` / `toBeUndefined()` | truthiness and empty values |
+| `toContain(item)` / `toHaveLength(n)` | arrays and strings |
+| `toMatch(/re/)` / `toMatchObject(partial)` | regex / subset of an object |
+| `toThrow("msg")` | function throws (wrap the call: `expect(() => fn())`) |
+| `toHaveBeenCalledWith(...args)` / `toHaveBeenCalledTimes(n)` | mock calls |
+| `resolves` / `rejects` | promise outcome: `await expect(p).rejects.toThrow()` |
+
+## Common patterns
+
+```js
+// Async tests
+test("loads user", async () => {
+  const user = await getUser(1);
+  expect(user).toMatchObject({ id: 1 });
+});
+test("fails on missing id", async () => {
+  await expect(getUser(-1)).rejects.toThrow("not found");
+});
+```
+
+```js
+// Mocks and spies (Jest; replace jest with vi in Vitest)
+const onSave = jest.fn().mockResolvedValue({ ok: true });
+const spy = jest.spyOn(api, "fetchUser").mockReturnValue({ id: 1 });
+
+jest.mock("./mailer", () => ({ send: jest.fn() })); // whole module (hoisted)
+
+afterEach(() => jest.restoreAllMocks());
+```
+
+```js
+// Fake timers
+jest.useFakeTimers();
+debouncedSave();
+jest.advanceTimersByTime(300);
+expect(save).toHaveBeenCalledTimes(1);
+jest.useRealTimers();
+```
+
+```js
+// Mocha + node:assert
+import assert from "node:assert/strict";
+
+describe("Array", () => {
+  it("returns -1 when missing", () => {
+    assert.equal([1, 2, 3].indexOf(4), -1);
+  });
+});
+```
+
+| Jest | Vitest | Mocha (+ Chai / Sinon) |
+|---|---|---|
+| `jest.fn()` | `vi.fn()` | `sinon.fake()` / `sinon.stub()` |
+| `jest.mock(path)` | `vi.mock(path)` | proxyquire / esmock / `node:test` mocks |
+| `jest.useFakeTimers()` | `vi.useFakeTimers()` | `sinon.useFakeTimers()` |
+| `jest.config.js` | `vitest.config.ts` (or `test` in `vite.config.ts`) | `.mocharc.json` |
+
+## Gotchas
+
+- Jest runs CommonJS by default. Native ESM needs `node --experimental-vm-modules` (or Babel / `ts-jest` transform). Vitest handles ESM and TS natively.
+- `jest.mock()` calls are hoisted above imports. Variables used inside the factory must start with `mock`.
+- Forgetting `await` (or `return`) on a promise lets the test pass before the assertion runs. Vitest 5 now fails unawaited `resolves` / `rejects`.
+- `toBe` on objects compares references. Use `toEqual` for value equality.
+- Mocks leak between tests unless you reset them (`clearMocks` / `restoreMocks` in config, or `afterEach`).
+- Mocha arrow functions have no `this`, so `this.timeout()` only works in `function () {}` callbacks.
+- Mocha does not combine `done` and a returned promise. Use one style per test.
+
+## What's new in recent releases
+
+- **Vitest 5** (2026-09): needs Node.js 22.12+ and Vite 6.4+, faster pools, unawaited async assertions and `expect.poll` timeouts now fail, reports and attachments move under a shared `.vitest/` folder.
+- **Vitest 4** (2025-10): Browser Mode became stable, with visual regression testing (`toMatchScreenshot`).
+- **Jest 30** (2025-06): drops Node.js 14/16/19/21 and needs TypeScript 5.4+, jsdom 26, `--testPathPattern` renamed to `--testPathPatterns`, alias matchers such as `toBeCalledWith` removed (use `toHaveBeenCalledWith`), `using` support for spies. Jest 30.x minors continue on the same major.
+- **Mocha 12** (2026-08): needs Node.js 20.19+ or 22.12+ (the lines where `require()` of ESM works). Mocha 11 already needed Node.js 18+.
+
+## In these notes
+
+- [Jest](./jest.md)
+- [Mocha](./mocha.md)
+- [Node.js Cheatsheet (built-in `node:test` runner)](../env/nodejs-cheatsheet.mdx)
