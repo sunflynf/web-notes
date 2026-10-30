@@ -1,0 +1,160 @@
+---
+title: Docker Cheatsheet
+sidebar_label: Docker Cheatsheet
+sidebar_position: 1
+description: Docker Engine, Dockerfile and Docker Compose quick reference - commands, patterns, gotchas and recent releases
+---
+
+# Docker Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Container platform: build images, run isolated containers, wire them with networks and volumes |
+| Use it for | Reproducible dev environments, CI builds, shipping services as images, local multi-service stacks with Compose |
+| Latest stable | Docker Engine v29.9.2 (released 2026-10-20), Docker Compose v5.6.1 (released 2026-10-21) - checked 2026-10-31 |
+| Official docs | [docs.docker.com](https://docs.docker.com/) - [Engine release notes](https://docs.docker.com/engine/release-notes/) - [Compose releases](https://github.com/docker/compose/releases) |
+
+## Core concepts
+
+- **Image** - read-only, layered template (one layer per filesystem-changing Dockerfile instruction).
+- **Container** - a running (or stopped) instance of an image with its own writable layer.
+- **Dockerfile** - build recipe; built by **BuildKit** (the default builder).
+- **Registry** - stores images (`docker.io`, `ghcr.io`, ECR, ACR, Artifact Registry); image ref = `registry/repo:tag@digest`.
+- **Volume** - Docker-managed persistent storage; **bind mount** maps a host path into the container.
+- **Network** - user-defined bridge networks give built-in DNS: containers reach each other by name.
+- **Compose** - `compose.yaml` describes a multi-container app; run with the `docker compose` CLI plugin.
+- **Context / builder** - `docker context` switches target daemons; `docker buildx` manages builders and multi-platform builds.
+
+## Syntax & commands
+
+```bash
+# Containers
+docker run -d --name web -p 8080:80 nginx:stable-alpine   # detached, host:container port
+docker run --rm -it ubuntu:26.04 bash                     # throwaway interactive shell
+docker ps -a                                              # all containers
+docker logs -f --tail 100 web                             # follow logs
+docker exec -it web sh                                    # shell into a running container
+docker stop web && docker rm web                          # or: docker rm -f web
+docker inspect web | less                                 # full JSON config/state
+docker stats                                              # live CPU/mem
+```
+
+```bash
+# Images
+docker build -t my-app:1.0 .                  # build from ./Dockerfile
+docker build -f Dockerfile.prod --target runtime -t my-app:prod .
+docker buildx build --platform linux/amd64,linux/arm64 -t user/my-app:1.0 --push .
+docker image ls                               # v29: tree-style view by default
+docker pull postgres:18
+docker tag my-app:1.0 ghcr.io/user/my-app:1.0
+docker push ghcr.io/user/my-app:1.0
+```
+
+```bash
+# Volumes, networks, cleanup
+docker volume create pgdata && docker volume ls
+docker network create app-net
+docker run -d --network app-net --name db -v pgdata:/var/lib/postgresql postgres:18
+docker system df                              # disk usage
+docker system prune                           # stopped containers, unused networks, dangling images, build cache
+docker system prune -a --volumes              # ALSO unused images and anonymous volumes - careful
+```
+
+```bash
+# Compose (v2+ is a CLI plugin: "docker compose", not "docker-compose")
+docker compose up -d --build        # build + start in background
+docker compose ps
+docker compose logs -f api
+docker compose exec api sh
+docker compose down                 # add -v to also delete named volumes
+docker compose config               # print the fully resolved file
+docker compose watch                # sync/rebuild on file changes (develop.watch)
+```
+
+```docker
+# syntax=docker/dockerfile:1
+FROM node:24-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+FROM node:24-alpine AS runtime
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+USER node
+EXPOSE 3000
+HEALTHCHECK CMD wget -qO- http://localhost:3000/health || exit 1
+CMD ["node", "server.js"]
+```
+
+## Common patterns
+
+```yaml title="compose.yaml"
+services:
+  api:
+    build: .
+    ports:
+      - "127.0.0.1:3000:3000"   # bind to localhost only
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets: [db_password]
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  pgdata:
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+```
+
+| Need | Pattern |
+|---|---|
+| Small images | Multi-stage build, `-alpine` / `-slim` / distroless base, `.dockerignore` |
+| Fast rebuilds | Copy lockfile + install deps before `COPY . .`; `RUN --mount=type=cache,target=...` |
+| Dev hot reload | Bind mount source (`./src:/app/src`) or `docker compose watch` |
+| Prod overrides | `compose.yaml` + `compose.prod.yaml`, run `docker compose -f compose.yaml -f compose.prod.yaml up -d` |
+| Wait for DB | `healthcheck` on the DB + `depends_on: condition: service_healthy` |
+| Secrets at build | `RUN --mount=type=secret,id=npmrc ...` with `docker build --secret id=npmrc,src=.npmrc` |
+
+## Gotchas
+
+- **`version:` in Compose files is obsolete** - Compose v2+ ignores it and warns; just start with `services:`.
+- **`docker-compose` (v1, Python) is dead** - use `docker compose` (plugin).
+- **Published ports bypass UFW/firewalld rules** - Docker writes its own iptables/nftables rules; bind internal services to `127.0.0.1:` or don't publish them.
+- **`localhost` inside a container is the container**, not the host - use the service name, or `host.docker.internal` (add `extra_hosts: ["host.docker.internal:host-gateway"]` on Linux).
+- **`ENTRYPOINT`/`CMD` shell form** (`CMD node app.js`) runs under `/bin/sh -c`, so signals (SIGTERM) don't reach your app; prefer exec form `["node","app.js"]`.
+- **`latest` is just a tag**, not "newest"; pin versions (or digests) in prod.
+- **`ENV` / `ARG` values are baked into image history** - never pass secrets that way; use build secrets.
+- **Anonymous volumes pile up** - `docker volume prune` (only unused anonymous volumes by default; `-a` for named too).
+- **Default bridge network has no DNS by name** - create a user-defined network (Compose does it for you).
+
+## What's new in recent releases
+
+- **Engine 29.0** (2025-11-10): containerd image store is the default for fresh installs; experimental nftables firewall backend (`firewall-backend: nftables`); daemon requires API v1.44+ (Docker 25+ clients); cgroup v1 deprecated; Docker Content Trust removed from the CLI.
+- **Engine 29.0 CLI**: `docker image ls` shows the collapsed tree view by default and hides untagged images unless `--all`.
+- **Engine 29.8** (2026-09-03): `docker run --umask`, `docker ps --filter annotation=...`, configurable default AppArmor profile.
+- **Engine 29.9** (2026-10-08): `lazy-pull` feature for remote snapshotters, BuildKit v0.34, containerd v2.4.1; 29.9.x patches carry Go HTTP/2 security fixes.
+- **Compose v5** (v5.0.0 tagged 2025-12-02): new major line with a Go SDK (`github.com/docker/compose/v5`); builds go through Bake (`docker compose build --print` shows the equivalent bake file).
+
+## In these notes
+
+- [Docker Knowledge](./docker-knowledge.md) - concepts, CLI, Dockerfile, volumes, networking, Compose
+- [Nginx](./nginx.mdx) - Nginx in Docker / Compose as a reverse proxy
+- [Ubuntu server setup](../cloud-computing/ubuntu-server-setup.mdx) - running Docker on a VPS (and the UFW caveat)

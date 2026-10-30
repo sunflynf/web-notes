@@ -4,6 +4,8 @@ description: Package applications & dependencies in a container
 
 # Docker Knowledge
 
+> **Quick reference:** [Docker Cheatsheet](./docker-cheatsheet.mdx)
+
 Docker is a platform that allows you to package applications and all their dependencies into **containers**—lightweight, portable units that ensure consistency across different environments.
 
 :::info Key Benefits
@@ -56,10 +58,11 @@ docker rmi <image_id>                    # Remove image
 ```bash
 docker container prune            # Remove all stopped containers
 docker image prune                # Remove unused images
-docker system prune -a            # Remove all unused containers, networks, volumes, images
+docker system prune -a            # Remove stopped containers, unused networks, all unused images, build cache
+docker system prune -a --volumes  # ...and also unused anonymous volumes
 ```
 
-> 📝 **Note:** Use with caution – it can remove volumes and images you may want to keep.
+> 📝 **Note:** Use with caution – it can remove images (and, with `--volumes`, volumes) you may want to keep.
 
 ## Dockerfile
 
@@ -68,17 +71,20 @@ Used to define the steps for building a Docker image.
 ### Sample Dockerfile
 
 ```dockerfile
-# Use the official Node.js image
-FROM node:20
+# Use the official Node.js image (Node 20 reached EOL in April 2026)
+FROM node:24
 
 # Set working directory
 WORKDIR /app
 
-# Copy files
-COPY . .
+# Copy dependency manifests first so this layer is cached
+COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci
+
+# Copy the rest of the source
+COPY . .
 
 # Run app
 CMD ["node", "index.js"]
@@ -122,10 +128,9 @@ docker run -d --name app2 --network my-net my-img
 
 ## Docker Compose
 
-Docker Compose allows you to define and run multi-container applications using a `docker-compose.yml` file.
+Docker Compose allows you to define and run multi-container applications using a `compose.yaml` file (`docker-compose.yml` still works). The top-level `version:` key is obsolete and ignored by Compose v2+.
 
 ```yaml
-version: "3"
 services:
   app:
     build: .
@@ -146,9 +151,9 @@ volumes:
 ```
 
 ```bash
-docker-compose up -d
-docker-compose down
-docker-compose logs
+docker compose up -d     # Compose v2+ is a CLI plugin: "docker compose", not "docker-compose"
+docker compose down
+docker compose logs
 ```
 
 ## Docker Registry
