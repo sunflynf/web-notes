@@ -1,0 +1,148 @@
+---
+title: ASP.NET Core Cheatsheet
+sidebar_label: ASP.NET Core Cheatsheet
+sidebar_position: 1
+description: One-page ASP.NET Core refresher - Program.cs, minimal APIs vs controllers, middleware order, DI, configuration, auth, OpenAPI and what's new in .NET 10.
+tags:
+  - aspnetcore
+  - dotnet
+  - webapi
+  - cheatsheet
+---
+
+# ASP.NET Core Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Microsoft's cross-platform web framework on .NET, hosted by the Kestrel web server |
+| Use it for | REST APIs (minimal APIs or controllers), MVC / Razor Pages, Blazor, SignalR, gRPC |
+| Latest stable | ASP.NET Core 10.0.14 (released 2026-10-25, ships with .NET 10 LTS) - checked 2026-10-31 |
+| Official docs | [learn.microsoft.com/aspnet/core](https://learn.microsoft.com/aspnet/core/) |
+
+## Core concepts
+
+- **WebApplication builder**: `WebApplication.CreateBuilder(args)` sets up configuration, logging, DI and Kestrel in `Program.cs`.
+- **Middleware pipeline**: ordered components that each handle or pass on the request (`app.Use...`); order matters.
+- **Endpoint routing**: `UseRouting` matches a request to an endpoint; `Map*` methods define endpoints.
+- **Minimal APIs vs controllers**: lambdas mapped with `MapGet` / `MapPost` versus `[ApiController]` classes; both are first class.
+- **DI lifetimes**: Singleton (app), Scoped (one per request), Transient (every resolve).
+- **Configuration**: layered providers (`appsettings.json`, `appsettings.{Environment}.json`, user secrets, env vars, command line), last wins.
+- **Environments**: `ASPNETCORE_ENVIRONMENT` = `Development` / `Staging` / `Production`.
+- **Model binding + validation**: route, query, body and header values bind to parameters; data annotations validate.
+- **Results**: `TypedResults.Ok(...)`, `NotFound()`, `Problem(...)` produce consistent responses, including RFC 9457 problem details.
+
+## Syntax & commands
+
+```bash
+dotnet new webapi -n Api                 # minimal API template
+dotnet new webapi -n Api --use-controllers
+dotnet watch run                         # hot reload
+dotnet user-secrets init
+dotnet user-secrets set "Jwt:Key" "dev-secret"
+dotnet dev-certs https --trust
+```
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOpenApi();                       // built-in OpenAPI (.NET 9+)
+builder.Services.AddProblemDetails();
+builder.Services.AddValidation();                    // .NET 10: validation for minimal APIs
+builder.Services.AddScoped<ITodoService, TodoService>();
+builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
+builder.Services.AddAuthentication().AddJwtBearer();
+builder.Services.AddAuthorization();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+    app.MapOpenApi();                                // /openapi/v1.json
+
+app.UseExceptionHandler();
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+
+var todos = app.MapGroup("/api/todos").RequireAuthorization();
+
+todos.MapGet("/", async (ITodoService svc) => TypedResults.Ok(await svc.ListAsync()));
+
+todos.MapGet("/{id:int}", async Task<Results<Ok<Todo>, NotFound>> (int id, ITodoService svc) =>
+    await svc.FindAsync(id) is { } todo ? TypedResults.Ok(todo) : TypedResults.NotFound());
+
+todos.MapPost("/", async (CreateTodo req, ITodoService svc) =>
+{
+    var todo = await svc.CreateAsync(req);
+    return TypedResults.Created($"/api/todos/{todo.Id}", todo);
+});
+
+app.Run();
+```
+
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class ProductsController(IProductService service) : ControllerBase
+{
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<ProductDto>> Get(int id) =>
+        await service.FindAsync(id) is { } p ? Ok(p) : NotFound();
+
+    [HttpPost]
+    public async Task<IActionResult> Create(CreateProduct req)  // [ApiController] returns 400 on invalid model
+    {
+        var p = await service.CreateAsync(req);
+        return CreatedAtAction(nameof(Get), new { id = p.Id }, p);
+    }
+}
+```
+
+## Common patterns
+
+| Need | Use |
+|---|---|
+| Typed settings | `IOptions<T>` / `IOptionsSnapshot<T>` (per request) / `IOptionsMonitor<T>` (live reload) |
+| Global errors | `AddProblemDetails()` + `UseExceptionHandler()`, or a custom `IExceptionHandler` |
+| CORS | `AddCors(o => o.AddPolicy(...))` + `app.UseCors("policy")` before auth |
+| JWT auth | `AddAuthentication().AddJwtBearer()` or Microsoft.Identity.Web for Entra ID |
+| Rate limiting | `AddRateLimiter(...)` + `app.UseRateLimiter()` + `.RequireRateLimiting("fixed")` |
+| Caching | `AddOutputCache()` for responses, `HybridCache` (.NET 9+) for data |
+| Health checks | `AddHealthChecks()` + `app.MapHealthChecks("/health")` |
+| Background jobs | `AddHostedService<Worker>()` with a `BackgroundService` |
+| Outgoing HTTP | `AddHttpClient<TClient>()` + `AddStandardResilienceHandler()` |
+| Real time | `AddSignalR()` + `app.MapHub<ChatHub>("/hubs/chat")` |
+| Integration tests | `WebApplicationFactory<Program>` from `Microsoft.AspNetCore.Mvc.Testing` |
+
+Recommended middleware order: exception handler, HSTS, HTTPS redirection, static files, routing, CORS, authentication, authorization, rate limiter, output cache, endpoints.
+
+## Gotchas
+
+- `UseAuthentication()` must come before `UseAuthorization()`, and both after `UseRouting()` / `UseCors()` when those are called explicitly.
+- Do not capture Scoped services (like a `DbContext`) in Singletons or background threads; create a scope with `IServiceScopeFactory`.
+- `DbContext` is not thread-safe; never share one across parallel tasks.
+- Config keys use `:` in JSON paths and `__` (double underscore) in environment variables (`ConnectionStrings__Default`).
+- Swashbuckle is no longer in the templates since .NET 9; add it yourself if you want Swagger UI, or use `MapOpenApi()` with Scalar.
+- Minimal APIs did not validate data annotations before .NET 10; call `AddValidation()` to turn it on.
+- `async void` handlers and `.Result` calls cause crashes and thread-pool starvation.
+- Do not return EF entities directly; cycles break JSON serialization and you over-expose fields. Return DTOs.
+- In containers the default port is 8080 (since .NET 8), not 80.
+
+## What's new in recent releases
+
+- **ASP.NET Core 10 (Nov 2025, LTS)**: built-in validation for minimal APIs (`AddValidation()`), OpenAPI 3.1 documents by default (with YAML output), Server-Sent Events via `TypedResults.ServerSentEvents`, passkey support in ASP.NET Core Identity, and Blazor improvements (persistent state, faster script loading).
+- **ASP.NET Core 9 (Nov 2024, STS)**: `Microsoft.AspNetCore.OpenApi` document generation replaces Swashbuckle in templates, `MapStaticAssets` for optimized static files, `HybridCache`, and `TypedResults.InternalServerError`.
+- **ASP.NET Core 8 (Nov 2023, LTS)**: Identity API endpoints (`MapIdentityApi`), Native AOT for minimal APIs, keyed DI services (`[FromKeyedServices]`), `IExceptionHandler`.
+- **ASP.NET Core 11**: in release candidates; GA expected November 2026.
+
+## In these notes
+
+- [ASP.NET Core guide](./asp-net-core.md)
+- [Entra ID + JWT](./entra-id-jwt.md)
+- [Entity Framework Core](./entity-framework-core.md) and the [EF Core Cheatsheet](./ef-core-cheatsheet.mdx)
+- [Caching](./caching.md)
+- [Real-Time Communication](./real-time-communication.md)
+- [Testing](./testing.md)
+- [Project Structure](./project-structure.md)
+- [C# / .NET Cheatsheet](./cheatsheet.mdx)

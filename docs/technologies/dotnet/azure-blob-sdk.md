@@ -13,6 +13,8 @@ tags:
   - cloudnative
 ---
 
+> **Quick reference:** [Azure Blob Cheatsheet](./azure-blob-cheatsheet.mdx)
+
 ## Overview
 
 Microsoft Azure is a cloud computing platform providing compute, storage, networking, security, identity, AI, and DevOps tooling.
@@ -105,7 +107,7 @@ dotnet add package Azure.Storage.Blobs
 | Connection String | Development |
 | Shared Access Signature (SAS) | Temporary access |
 | Managed Identity | Production |
-| Azure AD | Enterprise auth |
+| Microsoft Entra ID (formerly Azure AD) | Enterprise auth |
 
 ```json
 {
@@ -162,13 +164,14 @@ await containerClient.CreateIfNotExistsAsync();
 
 ```csharp
 var blobClient = containerClient.GetBlobClient("photo.jpg");
-await blobClient.UploadAsync(stream);
+await blobClient.UploadAsync(stream, overwrite: true); // without overwrite it throws if the blob exists
 ```
 
 ### Downloading Files
 
 ```csharp
-var response = await blobClient.DownloadAsync();
+// DownloadAsync() is obsolete; use DownloadStreamingAsync() or DownloadContentAsync()
+var response = await blobClient.DownloadStreamingAsync();
 return response.Value.Content;
 ```
 
@@ -217,6 +220,8 @@ var sasUri = blobClient.GenerateSasUri(
     DateTimeOffset.UtcNow.AddHours(1));
 ```
 
+`GenerateSasUri` only works when the client was built with a shared key (connection string or `StorageSharedKeyCredential`); check `blobClient.CanGenerateSasUri`. With Entra ID / Managed Identity, request a user delegation key via `BlobServiceClient.GetUserDelegationKeyAsync` and build the SAS with `BlobSasBuilder`.
+
 ---
 
 ## Blob Metadata & Tags
@@ -240,8 +245,9 @@ await blobClient.SetTagsAsync(new Dictionary<string, string>
 | Tier | Usage |
 |------|-------|
 | Hot | Frequently accessed |
-| Cool | Infrequent access |
-| Archive | Rarely accessed |
+| Cool | Infrequent access (min. 30 days) |
+| Cold | Rarely accessed, still online (min. 90 days) |
+| Archive | Offline, must be rehydrated before reading (min. 180 days) |
 
 ```csharp
 await blobClient.SetAccessTierAsync(AccessTier.Cool);
@@ -276,8 +282,9 @@ var client = new BlobServiceClient(
 | Role | Access |
 |------|--------|
 | Storage Blob Data Reader | Read |
-| Storage Blob Data Contributor | Read/Write |
-| Owner | Full access |
+| Storage Blob Data Contributor | Read/Write/Delete |
+| Storage Blob Data Owner | Full data access, including ACLs on Data Lake Gen2 |
+| Owner | Manages the resource (control plane); does not by itself grant blob data access with Entra ID auth |
 
 ---
 
@@ -390,8 +397,8 @@ docker run -p 10000:10000 mcr.microsoft.com/azure-storage/azurite
 
 ## Dockerizing ASP.NET Core + Azure SDK
 
-```dockerfile
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+```docker
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY . .
 ENTRYPOINT ["dotnet", "MyApp.dll"]
@@ -441,7 +448,8 @@ Automatically move blobs to cheaper tiers:
 ```mermaid
 flowchart LR
     Hot --> Cool
-    Cool --> Archive
+    Cool --> Cold
+    Cold --> Archive
     Archive --> Delete
 ```
 
@@ -477,7 +485,7 @@ flowchart TD
 | Create Client | `new BlobServiceClient()` |
 | Get Container | `GetBlobContainerClient()` |
 | Upload Blob | `UploadAsync()` |
-| Download Blob | `DownloadAsync()` |
+| Download Blob | `DownloadStreamingAsync()` / `DownloadContentAsync()` |
 | Delete Blob | `DeleteIfExistsAsync()` |
 | Generate SAS | `GenerateSasUri()` |
 

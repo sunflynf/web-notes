@@ -1,0 +1,160 @@
+---
+title: C# / .NET Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page C# and .NET refresher - dotnet CLI, modern C# syntax (records, pattern matching, collection expressions), LINQ, async/await, DI and the latest .NET / C# releases.
+tags:
+  - csharp
+  - dotnet
+  - cheatsheet
+---
+
+# C# / .NET Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | .NET is Microsoft's open-source, cross-platform runtime + SDK; C# is its main statically typed, object-oriented language |
+| Use it for | Web APIs (ASP.NET Core), cloud services, desktop (WPF, WinForms, MAUI), games (Unity), CLI tools |
+| Latest stable | .NET 10.0.14 (released 2026-10-25), LTS, with C# 14 - checked 2026-10-31 |
+| Official docs | [learn.microsoft.com/dotnet](https://learn.microsoft.com/dotnet/) and [What's new in C#](https://learn.microsoft.com/dotnet/csharp/whats-new/) |
+
+Support policy: a new major every November. Even versions are **LTS** (3 years); odd versions are **STS** (24 months since .NET 9). .NET 10 (Nov 2025) is LTS until Nov 2028; .NET 11 (STS, C# 15) is in release candidates (RC 3 on 2026-10-25), GA expected Nov 2026.
+
+## Core concepts
+
+- **SDK vs runtime**: the SDK (`dotnet` CLI, compilers) builds; the runtime (CLR) runs IL with a JIT (or Native AOT).
+- **Value vs reference types**: `struct`, `enum`, primitives are copied; `class`, `record`, arrays, `string` are references.
+- **Nullable reference types**: `string?` may be null, `string` should not; the compiler warns (enabled by default in new projects).
+- **Records**: `record` / `record struct` give value equality, `with` expressions and concise immutable models.
+- **Properties**: `{ get; init; }` for set-once, `required` for mandatory initialization.
+- **LINQ**: query operators over `IEnumerable<T>` (in memory) and `IQueryable<T>` (translated, e.g. to SQL by EF Core).
+- **async/await**: `Task` / `ValueTask` for non-blocking I/O; async flows all the way up.
+- **IDisposable**: release unmanaged resources with `using` / `await using`.
+- **Generic host + DI**: `Microsoft.Extensions.*` (configuration, logging, DI) is shared by web, worker and console apps.
+
+## Syntax & commands
+
+```bash
+dotnet --info                       # SDKs, runtimes, OS
+dotnet new list                     # templates
+dotnet new console -n MyApp         # also: webapi, classlib, xunit, worker, sln
+dotnet new sln && dotnet sln add src/MyApp
+dotnet add package Serilog          # NuGet package
+dotnet add reference ../Core/Core.csproj
+dotnet build
+dotnet run
+dotnet test
+dotnet watch                        # hot reload
+dotnet publish -c Release -r linux-x64 --self-contained
+dotnet run app.cs                   # .NET 10: run a single file, no project needed
+dotnet tool install -g dotnet-ef    # global tool
+```
+
+```csharp
+// Top-level statements + file-scoped namespace
+namespace MyApp;
+
+var user = new User("Ann", 30);
+var older = user with { Age = 31 };           // non-destructive copy
+Console.WriteLine($"{older.Name} is {older.Age}");
+
+public record User(string Name, int Age);     // positional record
+
+public class Account(string owner)            // primary constructor (C# 12)
+{
+    public string Owner => owner;
+    public required string Iban { get; init; }
+    public decimal Balance { get; private set; }
+}
+```
+
+```csharp
+int[] nums = [1, 2, 3];                       // collection expression (C# 12)
+List<string> names = ["Ann", "Bob"];
+int[] all = [..nums, 4, 5];                 // spread; needs a target type, not var
+
+string Describe(object o) => o switch         // pattern matching
+{
+    null                  => "null",
+    int n when n < 0      => "negative",
+    int n                 => $"int {n}",
+    string { Length: 0 }  => "empty string",
+    User { Age: >= 18 } u => $"adult {u.Name}",
+    _                     => "other"
+};
+
+string label = input ?? "default";            // null-coalescing
+int? len = text?.Length;                      // null-conditional
+customer?.Address = newAddress;               // null-conditional assignment (C# 14)
+```
+
+```csharp
+// LINQ
+var adults = people
+    .Where(p => p.Age >= 18)
+    .OrderBy(p => p.Name)
+    .Select(p => new { p.Name, p.City })
+    .ToList();
+
+var byCity = people.GroupBy(p => p.City)
+                   .ToDictionary(g => g.Key, g => g.Count());
+
+// async
+public async Task<string> GetAsync(string url, CancellationToken ct)
+{
+    using var http = new HttpClient();        // in apps: inject IHttpClientFactory instead
+    return await http.GetStringAsync(url, ct);
+}
+
+var results = await Task.WhenAll(urls.Select(u => GetAsync(u, ct)));
+```
+
+## Common patterns
+
+| Need | Use |
+|---|---|
+| Immutable model / DTO | `record` with `init` / `required` properties |
+| Register services | `builder.Services.AddScoped<IRepo, Repo>()` (Singleton / Scoped / Transient) |
+| Typed settings | Options pattern: `services.Configure<MySettings>(config.GetSection("My"))` + `IOptions<MySettings>` |
+| HTTP calls | `IHttpClientFactory` / typed clients, plus `Microsoft.Extensions.Http.Resilience` for retries |
+| Background work | `BackgroundService` hosted service; `Channel<T>` for producer/consumer |
+| Logging | `ILogger<T>` with message templates (`"Order {OrderId}"`), not string interpolation |
+| Fast strings / buffers | `Span<T>`, `StringBuilder`, `string.Create` |
+| Locking | `System.Threading.Lock` (C# 13+) with `lock`, `SemaphoreSlim` for async code |
+| Testing | xUnit / NUnit / MSTest + NSubstitute or Moq |
+
+## Gotchas
+
+- Never block on async code with `.Result` or `.Wait()` (deadlocks, thread-pool starvation); avoid `async void` except event handlers.
+- Pass `CancellationToken` through every async call chain.
+- `new HttpClient()` per request exhausts sockets; use `IHttpClientFactory` or a shared instance.
+- LINQ is deferred: the query re-runs on every enumeration; call `ToList()` once if you reuse it.
+- `IEnumerable<T>` on an EF Core query pulls data into memory before filtering; keep `IQueryable<T>` until you materialize.
+- `struct` copies on assignment; mutating a copy does not change the original.
+- `string` is immutable; build big strings with `StringBuilder`.
+- `==` on records and strings compares values, on classes compares references.
+- Injecting a Scoped service into a Singleton captures it forever ("captive dependency"); the default host throws in Development.
+- `DateTime.Now` depends on the server time zone; store `DateTime.UtcNow` or `DateTimeOffset`, and use `TimeProvider` for testable time.
+
+## What's new in recent releases
+
+- **C# 14 / .NET 10 (Nov 2025, LTS)**: extension members (`extension` blocks for extension properties and static members), the `field` keyword in property accessors, null-conditional assignment (`a?.B = c`), `nameof` with unbound generics, implicit `Span<T>` conversions, partial constructors and events.
+- **.NET 10 SDK**: `dotnet run app.cs` file-based apps, `dotnet tool exec` / `dnx` for one-off tools, and `.slnx` solution files.
+- **C# 13 / .NET 9 (Nov 2024, STS)**: `params` collections, the new `Lock` type, `\e` escape, `ref struct` types implementing interfaces, partial properties.
+- **C# 12 / .NET 8 (Nov 2023, LTS)**: primary constructors for classes, collection expressions, `alias any type`, default lambda parameters.
+- **.NET 11 / C# 15**: in release candidates; GA expected November 2026 (STS).
+
+## In these notes
+
+- [C# Core Study Guide](./csharp-core-study-guide.md)
+- [ASP.NET Core](./asp-net-core.md) and the [ASP.NET Core Cheatsheet](./asp-net-core-cheatsheet.mdx)
+- [Entity Framework Core](./entity-framework-core.md) and the [EF Core Cheatsheet](./ef-core-cheatsheet.mdx)
+- [Azure Blob SDK](./azure-blob-sdk.md) and the [Azure Blob Cheatsheet](./azure-blob-cheatsheet.mdx)
+- [Entra ID + JWT](./entra-id-jwt.md)
+- [Caching](./caching.md)
+- [Multithreading & Scheduling](./multithreading-scheduling.md)
+- [Real-Time Communication](./real-time-communication.md)
+- [Testing](./testing.md)
+- [Project Structure](./project-structure.md)

@@ -11,6 +11,8 @@ tags:
   - backend
 ---
 
+> **Quick reference:** [ASP.NET Core Cheatsheet](./asp-net-core-cheatsheet.mdx)
+
 ## Overview
 
 ASP.NET Core is Microsoft's modern, cross-platform, high-performance web framework designed for the cloud era.
@@ -401,6 +403,16 @@ app.MapControllers();
 
 ## Swagger / OpenAPI
 
+Since .NET 9, project templates use the built-in `Microsoft.AspNetCore.OpenApi` package instead of Swashbuckle:
+
+```csharp
+builder.Services.AddOpenApi();
+
+app.MapOpenApi(); // serves /openapi/v1.json
+```
+
+Swashbuckle (third-party) still works if you want its Swagger UI:
+
 ```csharp
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -590,8 +602,8 @@ app.MapHealthChecks("/health");
 | Azure App Service | ✅ |
 | Linux Nginx | ✅ |
 
-```dockerfile
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+```docker
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY . .
 ENTRYPOINT ["dotnet", "MyApp.dll"]
@@ -630,7 +642,7 @@ ENTRYPOINT ["dotnet", "MyApp.dll"]
 |------|------|
 | Add Controllers | `builder.Services.AddControllers()` |
 | Map Controllers | `app.MapControllers()` |
-| Enable Swagger | `AddSwaggerGen()` |
+| Enable OpenAPI | `AddOpenApi()` + `MapOpenApi()` (.NET 9+) or `AddSwaggerGen()` |
 | Register DI | `AddScoped<T>()` |
 | Enable CORS | `AddCors()` |
 | Add Auth | `AddAuthentication()` |
