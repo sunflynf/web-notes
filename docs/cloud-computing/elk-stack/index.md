@@ -1,4 +1,10 @@
+---
+description: Elasticsearch, Logstash and Kibana for centralized logs, search and dashboards - integration flow and developer checklist
+---
+
 # ELK Stack Integration Guide
+
+> **Quick reference:** [ELK Stack Cheatsheet](./cheatsheet.mdx)
 
 The ELK stack is a developer-facing observability and search platform built from three tools:
 
@@ -34,6 +40,7 @@ flowchart LR
 
 ## Tool Guides
 
+- [Cheatsheet](./cheatsheet.mdx): commands, Query DSL, ES|QL, KQL, gotchas and latest versions.
 - [Elasticsearch](./elasticsearch.md): index design, APIs, mappings, queries, and operational checks.
 - [Logstash](./logstash.md): pipeline structure, filters, outputs, and local validation.
 - [Kibana](./kibana.md): data views, dashboards, developer workflows, and troubleshooting.

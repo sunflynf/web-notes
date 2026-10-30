@@ -1,0 +1,152 @@
+---
+title: ELK Stack Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: Elastic Stack (Elasticsearch, Logstash, Kibana) quick reference - REST APIs, Query DSL, ES|QL, KQL, pipelines, gotchas and recent releases
+---
+
+# ELK Stack Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Elastic Stack: **E**lasticsearch (store/search/aggregate), **L**ogstash (ingest/transform), **K**ibana (explore/visualize), plus Beats / Elastic Agent shippers |
+| Use it for | Centralized logs, observability, full-text and vector search, security analytics, operational dashboards |
+| Latest stable | v9.5.5 (released `verify`) - Elasticsearch, Logstash and Kibana share one version - checked 2026-10-31 |
+| Official docs | [elastic.co/docs](https://www.elastic.co/docs) - [release notes](https://www.elastic.co/docs/release-notes) |
+
+## Core concepts
+
+- **Index** - collection of JSON documents with a **mapping** (schema); split into **shards** (+ replicas) across nodes.
+- **Data stream** - append-only, time-series alias over hidden backing indices (`logs-*`, `metrics-*`); needs `@timestamp`.
+- **Mapping types** - `keyword` (exact filter/aggregate), `text` (analyzed full text), `date`, `long`/`double`, `object`, `nested`, `flattened`, `dense_vector`.
+- **Query vs filter context** - `must`/`should` score relevance; `filter`/`must_not` are yes/no and cacheable.
+- **Ingest** - Logstash pipelines (`input -> filter -> output`) or Elasticsearch **ingest pipelines** (processors run in ES).
+- **ILM / data stream lifecycle** - rollover, retention and tier moves (hot/warm/cold/frozen) for time-based data.
+- **Kibana data view** - index pattern + time field that Discover, Lens and dashboards query.
+- **Query languages** - Query DSL (JSON), **ES|QL** (piped), **KQL** (Kibana search bar), EQL, SQL.
+
+## Syntax & commands
+
+```bash
+# Cluster health and inventory (security on: add -u elastic:$PASS --cacert http_ca.crt, use https)
+curl -s localhost:9200                                   # version banner
+curl -s 'localhost:9200/_cluster/health?pretty'
+curl -s 'localhost:9200/_cat/nodes?v'
+curl -s 'localhost:9200/_cat/indices?v&s=store.size:desc'
+curl -s 'localhost:9200/_cat/shards?v' | grep UNASSIGNED
+curl -s 'localhost:9200/_cluster/allocation/explain?pretty'
+```
+
+```json
+PUT /orders
+{
+  "mappings": {
+    "properties": {
+      "@timestamp": { "type": "date" },
+      "status":     { "type": "keyword" },
+      "customer":   { "type": "keyword" },
+      "total":      { "type": "double" },
+      "note":       { "type": "text" }
+    }
+  }
+}
+
+POST /orders/_doc
+{ "@timestamp": "2026-10-31T10:00:00Z", "status": "PAID", "customer": "c-42", "total": 99.5 }
+
+POST /_bulk
+{ "index": { "_index": "orders" } }
+{ "@timestamp": "2026-10-31T10:01:00Z", "status": "NEW", "customer": "c-7", "total": 12 }
+```
+
+```json
+GET /orders/_search
+{
+  "query": {
+    "bool": {
+      "must":   [ { "match": { "note": "late delivery" } } ],
+      "filter": [
+        { "term":  { "status": "PAID" } },
+        { "range": { "@timestamp": { "gte": "now-7d" } } }
+      ]
+    }
+  },
+  "aggs": { "by_status": { "terms": { "field": "status" } } },
+  "size": 20,
+  "sort": [ { "@timestamp": "desc" } ]
+}
+```
+
+```text
+ES|QL (POST /_query  {"query": "..."} or Kibana Discover):
+FROM logs-*
+| WHERE service.name == "checkout-api" AND log.level == "error"
+| STATS errors = COUNT(*) BY bucket = BUCKET(@timestamp, 5 minutes)
+| SORT bucket DESC
+| LIMIT 50
+```
+
+```text
+KQL (Kibana search bar):
+service.name: "checkout-api" and log.level: error
+http.response.status_code >= 500 and not url.path: /health
+trace.id: "7d9f2a*"
+```
+
+```text
+Logstash pipeline (logstash.conf):
+input  { beats { port => 5044 } }
+filter {
+  json   { source => "message" }
+  date   { match => ["timestamp", "ISO8601"] target => "@timestamp" }
+  mutate { remove_field => ["password", "authorization"] }
+}
+output { elasticsearch { hosts => ["https://es:9200"] data_stream => "true" } }
+```
+
+```bash
+bin/logstash -f logstash.conf --config.test_and_exit    # validate pipeline syntax
+bin/logstash -f logstash.conf --config.reload.automatic
+bin/elasticsearch-reset-password -u elastic             # reset built-in superuser
+bin/elasticsearch-create-enrollment-token -s kibana     # enroll Kibana with a secured cluster
+```
+
+## Common patterns
+
+| Need | Pattern |
+|---|---|
+| Logs/metrics retention | Data streams + ILM or data stream lifecycle (`data_retention: 30d`) |
+| Change a field type | Create a new index with the new mapping, `POST _reindex`, swap an alias |
+| Zero-downtime index switch | Query an **alias**; repoint it atomically with `POST _aliases` |
+| Exact + full text on one field | Multi-field: `text` with a `.keyword` sub-field |
+| Deep pagination | `search_after` + point in time (PIT), not big `from` |
+| Parse in ES, no Logstash | Ingest pipeline (`grok`, `date`, `rename`, `set`) with `?pipeline=` or `index.default_pipeline` |
+| Local dev cluster | `curl -fsSL https://elastic.co/start-local \| sh` (ES + Kibana in Docker) |
+
+## Gotchas
+
+- **`term` on a `text` field** almost never matches (text is analyzed/lowercased) - use `match`, or `term` on `field.keyword`.
+- **Dynamic mapping guesses types once** - the first doc decides; a later string in a `long` field is rejected. Define mappings (or index templates) first.
+- **Mapping explosion** - unbounded keys (user ids as field names) hit `index.mapping.total_fields.limit`; use `flattened`.
+- **Mapping changes are mostly additive** - you cannot change an existing field's type in place; reindex.
+- **Security is on by default since 8.0** - HTTPS on 9200, `elastic` password and Kibana enrollment token are printed on first start.
+- **Too many small shards** hurt more than a few large ones; aim for tens of GB per shard.
+- **Heap** - leave about half of RAM to the OS file cache; Elasticsearch auto-sizes heap by default, override with `ES_JAVA_OPTS` only if needed.
+- **Upgrades** - major upgrades go through the last minor (7.17 -> 8.19 -> 9.x); keep Kibana and Logstash on the same version as Elasticsearch.
+- **Kibana shows "no results"** - check the time picker and the data view's time field first.
+
+## What's new in recent releases
+
+- **9.5** - batched query phase across shards on the same node (on by default), new reindex management APIs, data stream lifecycle can move data to the **frozen** tier, ES|QL support for `flattened` fields (tech preview), native OTLP metric temporality, columnar index modes (tech preview).
+- **9.5.x patches** (to 9.5.5) - security fixes across Elasticsearch, Logstash and Kibana; recommended over earlier 9.5 releases.
+- **9.x line** (from 9.0) - built on Lucene 10; ES|QL is the headline query language in Discover; `logsdb` index mode for cheaper log storage; vector search with quantized `dense_vector` by default.
+- **Upgrade path** - 7.17 clusters must upgrade to 8.19.x before 9.x.
+
+## In these notes
+
+- [ELK Stack Integration Guide](./index.md) - overview, flow and developer responsibilities
+- [Elasticsearch](./elasticsearch.md) - local setup, index design, mappings, queries
+- [Logstash](./logstash.md) - pipeline model, filters, Docker run, pitfalls
+- [Kibana](./kibana.md) - data views, KQL examples, dashboards, troubleshooting

@@ -1,0 +1,150 @@
+---
+title: Ubuntu Server Cheatsheet
+sidebar_label: Ubuntu Server Cheatsheet
+sidebar_position: 1
+description: Ubuntu Server quick reference - releases, apt, systemd, users, SSH, UFW, networking (netplan), disks, logs and upgrade gotchas
+---
+
+# Ubuntu Server Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Canonical's Debian-based Linux distribution, the most common OS image on cloud VMs and VPSs |
+| Use it for | Web/app servers, Docker hosts, databases, Kubernetes nodes, dev boxes |
+| Latest stable | LTS: Ubuntu 26.04 LTS "Resolute Raccoon" (released 2026-04-23, now at point release 26.04.1); interim: Ubuntu 26.10 "Stonking Stingray" (released 2026-10-15) - checked 2026-10-31 |
+| Official docs | [Ubuntu Server docs](https://documentation.ubuntu.com/server/) - [release notes](https://documentation.ubuntu.com/release-notes/) - [release cycle](https://ubuntu.com/about/release-cycle) |
+
+## Core concepts
+
+- **Versioning** - `YY.MM`; **LTS** every two years in April (22.04, 24.04, 26.04) with 5 years standard support, up to 10+ with Ubuntu Pro ESM.
+- **Interim releases** (`.10`, `.04` in odd years) - 9 months support; fine for trying new stacks, not for long-lived servers.
+- **Point releases** (26.04.1, .2 ...) - refreshed install media with rolled-up updates, not new versions.
+- **Package management** - `apt` for .deb packages from `main` / `universe` / `restricted` / `multiverse`; **snap** for some apps (certbot, lxd).
+- **systemd** - init system: services (`systemctl`), logs (`journalctl`), timers, resolved, networkd.
+- **netplan** - YAML network config in `/etc/netplan/*.yaml` rendered to systemd-networkd.
+- **cloud-init** - first-boot provisioning on cloud images (users, SSH keys, packages); drops files like `50-cloud-init.conf`.
+- **Ubuntu Pro** - free for personal use on up to 5 machines: ESM security updates, Livepatch, FIPS/CIS hardening.
+
+## Syntax & commands
+
+```bash
+# System info
+lsb_release -a            # or: cat /etc/os-release
+uname -r                  # kernel
+hostnamectl
+uptime && free -h && df -h
+```
+
+```bash
+# Packages
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y nginx
+sudo apt remove --purge nginx && sudo apt autoremove -y
+apt list --upgradable
+apt policy nginx          # candidate version + source repo
+dpkg -l | grep nginx
+sudo apt-mark hold docker-ce   # pin a package
+```
+
+```bash
+# Services and logs
+sudo systemctl status|start|stop|restart|reload nginx
+sudo systemctl enable --now nginx
+systemctl list-units --type=service --state=failed
+journalctl -u nginx -f            # follow a unit's logs
+journalctl -p err -b              # errors since boot
+journalctl --disk-usage && sudo journalctl --vacuum-time=7d
+```
+
+```bash
+# Users and SSH
+sudo adduser deploy && sudo usermod -aG sudo deploy
+ssh-copy-id deploy@server
+sudo sshd -t && sudo systemctl reload ssh     # unit is "ssh" on Ubuntu
+sudo sshd -T | grep -E 'passwordauthentication|permitrootlogin'
+```
+
+```bash
+# Firewall
+sudo ufw allow OpenSSH && sudo ufw enable
+sudo ufw allow 'Nginx Full'
+sudo ufw status numbered && sudo ufw delete 3
+```
+
+```bash
+# Network, ports, processes
+ip -br a                     # addresses
+ip r                         # routes
+ss -tulpn                    # listening ports + process
+resolvectl status            # DNS
+sudo netplan try             # apply with auto-rollback
+top / htop
+ps aux --sort=-%mem | head
+```
+
+```bash
+# Disks
+lsblk -f
+sudo du -xh / --max-depth=1 | sort -h
+sudo growpart /dev/sda 1 && sudo resize2fs /dev/sda1   # after enlarging a cloud disk (ext4)
+```
+
+```bash
+# Upgrades
+sudo apt install unattended-upgrades && sudo dpkg-reconfigure -plow unattended-upgrades
+sudo do-release-upgrade      # next LTS (LTS->LTS waits for the .1 point release)
+cat /var/run/reboot-required 2>/dev/null
+sudo pro attach <token>      # enable Ubuntu Pro
+```
+
+## Common patterns
+
+```yaml title="/etc/netplan/50-static.yaml"
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: false
+      addresses: [10.0.0.10/24]
+      routes:
+        - to: default
+          via: 10.0.0.1
+      nameservers:
+        addresses: [1.1.1.1, 8.8.8.8]
+```
+
+| Task | Command / file |
+|---|---|
+| Add swap (small VPS) | `fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile`, then add to `/etc/fstab` |
+| Set timezone | `sudo timedatectl set-timezone Asia/Ho_Chi_Minh` |
+| Cron vs timer | `crontab -e` for quick jobs; systemd `.timer` for logging + dependencies |
+| Run an app as a service | unit file in `/etc/systemd/system/app.service`, then `daemon-reload` + `enable --now` |
+| SSH hardening | drop-in `/etc/ssh/sshd_config.d/00-hardening.conf` |
+| Brute-force protection | `fail2ban` (sshd jail enabled by default) |
+
+## Gotchas
+
+- **sshd drop-ins: first value wins** - cloud images ship `50-cloud-init.conf` with `PasswordAuthentication yes`; name your file `00-...` and verify with `sshd -T`.
+- **Ubuntu 22.10+ uses socket-activated SSH** - the listening port comes from `ssh.socket`; after changing `Port`, run `systemctl daemon-reload` and restart `ssh.socket`.
+- **Docker-published ports bypass UFW** - bind to `127.0.0.1` or don't publish internal ports.
+- **`apt upgrade` vs `full-upgrade`** - `upgrade` never removes packages, so some kernel/meta updates stay "kept back".
+- **Enable UFW only after allowing SSH**, or you lock yourself out.
+- **Interim releases go EOL fast** (9 months) - don't build production on 26.10.
+- **Rust core tools** - recent releases switched `sudo` to sudo-rs and coreutils to the Rust uutils implementation; edge-case flags in old scripts may behave differently (the GNU versions remain installable).
+- **PPAs and third-party repos** can block `do-release-upgrade`; disable them first and re-add after.
+
+## What's new in recent releases
+
+- **26.04 LTS** (2026-04-23): new LTS base supported until April 2031 (longer with Ubuntu Pro); first LTS with sudo-rs and Rust coreutils by default; minimum server requirements start at 1.5 GB RAM and 4 GB disk.
+- **26.04.1** point release: refreshed images; enables `do-release-upgrade` from 24.04 LTS.
+- **26.10** (2026-10-15, supported until July 2027): Linux kernel 7.3; MySQL moves from 8.4 LTS to 9.7 LTS; HAProxy 3.4 with `random` as the default balancing algorithm; OpenSSH split into GSSAPI and non-GSSAPI packages (fresh installs get non-GSSAPI); Samba defaults to AES domain encryption.
+- **24.04 LTS** remains supported until April 2029 (standard), so there is no rush to move stable servers.
+
+## In these notes
+
+- [Ubuntu server setup](./ubuntu-server-setup.mdx) - from blank VPS to production: SSH, UFW, Fail2ban, databases, Nginx + SSL, process managers
+- [Nginx Cheatsheet](../technologies/nginx-cheatsheet.mdx) - web server / reverse proxy config
+- [Docker Cheatsheet](../technologies/docker-cheatsheet.mdx) - containers on the server
+- [Cloud Platforms Cheatsheet](./cloud-platforms-cheatsheet.mdx) - where Ubuntu VMs run

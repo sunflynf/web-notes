@@ -1,0 +1,121 @@
+---
+title: Cloud Platforms Cheatsheet
+sidebar_label: Cloud Platforms Cheatsheet
+sidebar_position: 1
+description: AWS vs Azure vs Google Cloud quick reference - service mapping, CLI commands (aws, az, gcloud), IAM concepts and gotchas
+---
+
+# Cloud Platforms Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Side-by-side map of the big three public clouds: AWS, Microsoft Azure, Google Cloud (GCP) |
+| Use it for | Translating a service name between clouds, remembering CLI syntax, picking the right managed service |
+| Latest stable | CLIs: AWS CLI v2.39.3 (released 2026-10-30), Azure CLI `az` 2.91.0 (released 2026-10-05), Google Cloud CLI `gcloud` 591.0.0 (released 2026-10-27) - checked 2026-10-31 |
+| Official docs | [AWS CLI](https://docs.aws.amazon.com/cli/) - [Azure CLI](https://learn.microsoft.com/cli/azure/) - [gcloud CLI](https://cloud.google.com/sdk/docs) |
+
+## Core concepts
+
+- **Region / zone** - region = geographic area; availability zone = isolated datacenter(s) inside it. Spread across zones for HA.
+- **Resource hierarchy** - AWS: Organization > OU > **Account**; Azure: Tenant (Entra ID) > Management group > **Subscription** > **Resource group**; GCP: Organization > Folder > **Project**.
+- **Identity** - AWS IAM users/roles/policies; Azure Entra ID + RBAC role assignments; GCP IAM principals + roles bound on a resource.
+- **Workload identity** - give code a role instead of keys: AWS instance profile / IRSA, Azure managed identity, GCP service account attached to the resource.
+- **Shared responsibility** - provider secures the cloud; you secure what you put in it (IAM, network, data, patches on VMs).
+- **Pricing model** - pay-as-you-go, plus discounts for commitment (Savings Plans / Reservations / CUDs) and interruptible capacity (Spot / Spot VMs).
+- **Infrastructure as Code** - CloudFormation / CDK, Bicep / ARM, Terraform / OpenTofu (all three), Pulumi.
+
+### Service mapping
+
+| Category | AWS | Azure | Google Cloud |
+|---|---|---|---|
+| VMs | EC2 | Virtual Machines | Compute Engine |
+| Managed Kubernetes | EKS | AKS | GKE |
+| Containers, no cluster | ECS on Fargate, App Runner | Container Apps, Container Instances | Cloud Run |
+| PaaS web apps | Elastic Beanstalk | App Service | App Engine |
+| Functions | Lambda | Azure Functions | Cloud Run functions |
+| Object storage | S3 | Blob Storage | Cloud Storage |
+| Block / file storage | EBS / EFS | Managed Disks / Azure Files | Persistent Disk, Hyperdisk / Filestore |
+| Relational DB | RDS, Aurora | Azure SQL, Database for PostgreSQL/MySQL | Cloud SQL, AlloyDB, Spanner |
+| NoSQL | DynamoDB | Cosmos DB | Firestore, Bigtable |
+| Cache | ElastiCache | Azure Managed Redis | Memorystore |
+| Data warehouse | Redshift | Synapse / Fabric | BigQuery |
+| Messaging / queue | SQS, SNS | Service Bus, Queue Storage | Pub/Sub |
+| Event bus | EventBridge | Event Grid | Eventarc |
+| Streaming | Kinesis, MSK | Event Hubs | Pub/Sub, Managed Kafka |
+| Private network | VPC | Virtual Network (VNet) | VPC (global) |
+| Load balancer | ELB (ALB / NLB) | Load Balancer, Application Gateway, Front Door | Cloud Load Balancing |
+| DNS / CDN | Route 53 / CloudFront | Azure DNS / Front Door | Cloud DNS / Cloud CDN |
+| Secrets / keys | Secrets Manager / KMS | Key Vault | Secret Manager / Cloud KMS |
+| Monitoring / logs | CloudWatch, X-Ray | Azure Monitor, App Insights | Cloud Monitoring, Cloud Logging, Trace |
+| Container registry | ECR | ACR | Artifact Registry |
+| CI/CD | CodePipeline / CodeBuild | Azure DevOps Pipelines | Cloud Build / Cloud Deploy |
+| Generative AI | Bedrock | Microsoft Foundry (Azure OpenAI) | Vertex AI (Gemini) |
+
+## Syntax & commands
+
+```bash
+# AWS CLI v2
+aws configure                       # or: aws configure sso / aws login
+aws sts get-caller-identity         # "who am I"
+aws s3 ls s3://my-bucket/ && aws s3 cp ./file s3://my-bucket/
+aws ec2 describe-instances --query 'Reservations[].Instances[].[InstanceId,State.Name]' --output table
+aws logs tail /aws/lambda/my-fn --follow
+export AWS_PROFILE=prod AWS_REGION=ap-southeast-1
+```
+
+```bash
+# Azure CLI
+az login                            # browser / device code
+az account set --subscription "<name-or-id>"
+az group create -n rg-demo -l southeastasia
+az vm list -o table
+az webapp up -n my-app --runtime "NODE:22-lts"
+az resource list -g rg-demo --query "[].{name:name,type:type}" -o table
+```
+
+```bash
+# Google Cloud CLI
+gcloud init                         # login + default project/region
+gcloud auth login && gcloud auth application-default login   # user vs ADC for SDKs
+gcloud config set project my-project
+gcloud compute instances list
+gcloud run deploy my-svc --source . --region asia-southeast1
+gcloud storage cp ./file gs://my-bucket/
+gcloud components update
+```
+
+## Common patterns
+
+| Goal | AWS | Azure | GCP |
+|---|---|---|---|
+| Static site | S3 + CloudFront | Static Web Apps | Cloud Storage + Cloud CDN / Firebase Hosting |
+| Container web API | App Runner / ECS Fargate + ALB | Container Apps | Cloud Run |
+| CI deploy without keys | GitHub OIDC -> IAM role | GitHub OIDC -> federated credential | Workload Identity Federation |
+| Private DB access | RDS in private subnet + SSM / bastion | Private Endpoint | Private IP + Cloud SQL Auth Proxy |
+| Budget guardrail | AWS Budgets alerts | Cost Management budgets | Billing budgets + alerts |
+
+## Gotchas
+
+- **Long-lived access keys** leak; prefer SSO / OIDC federation and short-lived credentials.
+- **Egress is not free** - data out to the Internet and across regions/zones costs money; NAT gateways add per-GB fees.
+- **Resource names differ in scope** - S3 bucket and GCS bucket names are global; Azure storage account names are global, lowercase, 3-24 chars.
+- **Default VPC/public IPs** make things reachable; lock down security groups / NSGs / firewall rules.
+- **Region availability** - not every service, VM size or AI model exists in every region.
+- **Free tiers changed**: AWS moved new accounts to a credit-based Free Tier (July 2025); GCP's trial is $300 credit for 90 days; Azure gives $200 credit for 30 days plus 12 months of some free services. Always check current terms.
+- **Deleting a project/resource group** removes everything inside - great for cleanup, dangerous in prod (use locks / deletion protection).
+
+## What's new in recent releases
+
+- **AWS CLI v2**: v1 is in maintenance; v2 adds SSO (`aws configure sso`), `aws login` for console-credential sign-in, auto-prompt (`--cli-auto-prompt`). Releases ship almost daily with new service APIs.
+- **Azure CLI**: monthly releases; the 2.91 line keeps tracking new resource providers; Azure AD is now **Microsoft Entra ID** in commands and docs.
+- **Google Cloud CLI**: weekly releases; 591.0.0 bundles Python 3.14.9, adds `gcloud storage buckets create --labels`; 590.0.0 removed the `gcloud-man-pages` component and added `POSTGRES_19` for Cloud SQL.
+- **Naming changes to remember**: Cloud Functions -> **Cloud Run functions** (2024), Azure Cache for Redis -> **Azure Managed Redis**, Azure AI Foundry -> **Microsoft Foundry**.
+
+## In these notes
+
+- [Cloud Platforms](./cloud-platforms.md) - provider comparison (pricing, free tiers, ideal use)
+- [Serverless Cheatsheet](./serverless-cheatsheet.mdx) - Lambda / Azure Functions / Cloud Run functions
+- [Ubuntu Server Cheatsheet](./ubuntu-server-cheatsheet.mdx) - managing the VMs you launch
+- [ELK Stack](./elk-stack/index.md) - centralized logging you can run on any cloud
