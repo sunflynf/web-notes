@@ -1,0 +1,155 @@
+---
+title: Laravel Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page Laravel refresher - Artisan, routing, Eloquent, validation, middleware, queues, testing and Laravel 12/13 changes.
+---
+
+# Laravel Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Full-stack PHP framework: routing, Eloquent ORM, Blade, queues, auth, testing out of the box |
+| Use it for | Web apps, REST/JSON APIs, SaaS back offices, Inertia/Livewire full-stack apps |
+| Latest stable | v13.39.0 (released 2026-10-27) - checked 2026-10-31 |
+| Official docs | [laravel.com/docs](https://laravel.com/docs) |
+
+## Core concepts
+
+- **Service container**: resolves dependencies by type-hint (constructor, controller method, closures).
+- **Service providers**: register bindings and boot code; app wiring lives in `bootstrap/app.php` (11+).
+- **Facades**: static-looking proxies (`Cache::`, `DB::`) to container services; easy to fake in tests.
+- **Eloquent**: Active Record ORM; one model per table, relationships as methods.
+- **Middleware**: request pipeline (auth, CSRF, throttling), configured with `->withMiddleware()` (11+).
+- **Form Requests**: validation + authorization classes injected into controllers.
+- **Queues + jobs**: push slow work to Redis/database/SQS workers (`php artisan queue:work`).
+- **Events, listeners, notifications, broadcasting** for decoupled side effects.
+- **Config cache**: `.env` is read only at config build time; use `config()` in code, never `env()` outside config files.
+
+## Syntax & commands
+
+```bash
+composer create-project laravel/laravel app   # or: laravel new app
+php artisan serve                 # dev server (composer run dev also starts Vite + queue)
+php artisan make:model Post -mfsc # model + migration, factory, seeder, controller
+php artisan make:controller PostController --resource
+php artisan make:request StorePostRequest
+php artisan migrate               # migrate:fresh --seed to rebuild
+php artisan tinker                # REPL
+php artisan route:list
+php artisan install:api           # add routes/api.php + Sanctum (11+)
+php artisan optimize              # cache config, routes, views, events
+php artisan queue:work
+```
+
+```php
+// routes/web.php
+Route::get('/', fn () => view('home'));
+Route::resource('posts', PostController::class);
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', DashboardController::class);
+});
+Route::get('/users/{user}', fn (User $user) => $user); // route model binding
+```
+
+```php
+// Eloquent
+$posts = Post::with('author')            // eager load (avoid N+1)
+    ->where('published', true)
+    ->latest()
+    ->paginate(15);
+
+$post = Post::findOrFail($id);
+$post->update(['title' => 'New']);
+Post::create($request->validated());
+
+class Post extends Model
+{
+    protected $fillable = ['title', 'body'];
+    protected function casts(): array { return ['published_at' => 'datetime']; }
+    public function author(): BelongsTo { return $this->belongsTo(User::class, 'user_id'); }
+}
+```
+
+```php
+// Validation
+$data = $request->validate([
+    'title' => ['required', 'string', 'max:255'],
+    'email' => ['required', 'email', 'unique:users,email'],
+]);
+```
+
+## Common patterns
+
+```php
+// API Resource for JSON shape
+class PostResource extends JsonResource
+{
+    public function toArray($request): array
+    {
+        return ['id' => $this->id, 'title' => $this->title];
+    }
+}
+return PostResource::collection($posts);
+```
+
+```php
+// Queued job
+class SendInvoice implements ShouldQueue
+{
+    use Queueable;
+    public function __construct(public Order $order) {}
+    public function handle(Mailer $mailer): void { /* ... */ }
+}
+SendInvoice::dispatch($order)->onQueue('emails');
+```
+
+```php
+// Scheduler: routes/console.php (11+)
+Schedule::command('orders:cleanup')->daily();
+```
+
+```php
+// Feature test (Pest)
+it('creates a post', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user)
+        ->post('/posts', ['title' => 'Hi', 'body' => 'x'])
+        ->assertRedirect();
+    $this->assertDatabaseHas('posts', ['title' => 'Hi']);
+});
+```
+
+| Need | Use |
+|---|---|
+| API tokens / SPA auth | Sanctum |
+| OAuth2 server | Passport |
+| Auth scaffolding | React / Vue / Livewire starter kits (12+) |
+| Queue dashboard | Horizon (Redis) |
+| Debug / profiling | Telescope, Pulse, Debugbar |
+| Local dev | Herd, Sail (Docker) |
+
+## Gotchas
+
+- **N+1 queries**: eager load with `with()`; enable `Model::preventLazyLoading()` in dev.
+- **Mass assignment**: set `$fillable` (or `$guarded`); never pass `$request->all()` blindly.
+- **`env()` returns null after `config:cache`** when called outside `config/`.
+- **Queued jobs serialize models by ID**: they are re-fetched at run time and may have changed or been deleted.
+- **Restart workers after deploy** (`queue:restart`); they keep old code in memory.
+- **Transactions + jobs/events**: use `afterCommit()` so workers do not read uncommitted rows.
+- **Laravel 11+ skeleton is slimmer**: no `app/Http/Kernel.php`, `app/Console/Kernel.php` or `app/Exceptions/Handler.php`; look in `bootstrap/app.php` and `routes/console.php`.
+
+## What's new in recent releases
+
+- **Laravel 13** (2026-03-17): requires PHP 8.3+, first-party AI SDK (provider-agnostic text, audio, embeddings), native vector search on PostgreSQL + pgvector, first-class JSON:API resources, more optional PHP attributes (middleware, authorization, job retry settings). A low-effort upgrade from 12.
+- **Laravel 12** (2025-02-24): new React, Vue and Livewire starter kits (Breeze and Jetstream no longer developed), WorkOS AuthKit option, mostly a maintenance release with minimal breaking changes.
+- Support policy: 18 months of bug fixes and 2 years of security fixes per major.
+
+## In these notes
+
+- [Laravel handbook](./index.mdx)
+- [Layered architecture (Vietnamese)](./architecture.mdx)
+- [PHP Cheatsheet](../cheatsheet.mdx)
+- [PHP language notes](../index.mdx)
