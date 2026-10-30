@@ -1,5 +1,5 @@
 ---
-description: Database Management System.
+description: Document-oriented NoSQL database - mongosh commands, CRUD, aggregation, indexes, ORMs, Docker and Kubernetes
 tags:
   - NoSQL
   - JSON
@@ -7,6 +7,8 @@ tags:
 ---
 
 # MongoDB
+
+> **Quick reference:** [MongoDB Cheatsheet](./mongodb-cheatsheet.mdx)
 
 | Feature                   | Description                                                         |
 | ------------------------- | ------------------------------------------------------------------- |
@@ -24,7 +26,7 @@ tags:
 
 ### 1. Connecting and Managing Databases
 
-- Connect to MongoDB: `mongo` or `mongo --host <host> --port <port>`
+- Connect to MongoDB: `mongosh` or `mongosh --host <host> --port <port>` (the legacy `mongo` shell was removed in MongoDB 6.0)
 - List all databases: `show dbs`
 - Switch to a database: `use <database_name>`
 - Create a database (automatically created when inserting data): `use <new_database_name>`
@@ -54,7 +56,7 @@ tags:
 ### 4. Read (Query Data)
 
 - Retrieve all documents: `db.<collection_name>.find()`
-- Retrieve all documents with formatted output: `db.<collection_name>.find().pretty()`
+- Retrieve all documents with formatted output: `db.<collection_name>.find().pretty()` (mongosh pretty-prints by default)
 - Query documents by condition: `db.<collection_name>.find({key: value})`
 - Retrieve one document: `db.<collection_name>.findOne({key: value})`
 - Limit the number of returned documents: `db.<collection_name>.find().limit(5)`
@@ -193,7 +195,7 @@ tags:
 - Export a collection: `mongoexport --db <db> --collection <coll> --out <file>.json`
 - Import a collection: `mongoimport --db <db> --collection <coll> --file <file>.json`
 - Backup a database: `mongodump --db <db> --out <backup_path>`
-- Restore a database: `mongorestore --db <db> <backup_path>`
+- Restore a database: `mongorestore --nsInclude="<db>.*" <backup_path>` (`--db` is deprecated)
 
 ### 13. Advanced Commands
 
@@ -204,7 +206,7 @@ tags:
   db.<collection_name>.find({key: value}).explain("executionStats")
   ```
 
-- Bulk operations:
+- Bulk operations (legacy API; prefer `db.<collection_name>.bulkWrite([...])`):
 
   ```javascript
   var bulk = db.<collection_name>.initializeOrderedBulkOp();
@@ -278,10 +280,12 @@ public class User {
 public interface UserRepository extends MongoRepository<User, String> {}
 ```
 
-### Laravel (with [Jenssegers/MongoDB](https://github.com/jenssegers/laravel-mongodb))
+### Laravel (with [Jenssegers/MongoDB](https://github.com/mongodb/laravel-mongodb))
+
+> The package is now maintained by MongoDB as `mongodb/laravel-mongodb` (namespace `MongoDB\Laravel`); `jenssegers/mongodb` is the old name.
 
 ```bash
-composer require jenssegers/mongodb
+composer require mongodb/laravel-mongodb
 ```
 
 ```php title="config/database.php"
@@ -296,7 +300,7 @@ composer require jenssegers/mongodb
 ```
 
 ```php
-use Jenssegers\Mongodb\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 
 class User extends Model {
     protected $connection = 'mongodb';
@@ -307,7 +311,7 @@ class User extends Model {
 ## Managing MongoDB with Docker
 
 ```yaml title="docker-compose.yml"
-version: "3.8"
+# The top-level `version` key is obsolete in Docker Compose v2, so it is omitted
 services:
   mongodb:
     image: mongodb/mongodb-community-server:latest
@@ -327,7 +331,7 @@ volumes:
 
 ```bash
 # Connect mongodb with mongosh commands
-mongosh "mongodb://root:example@localhost:27017"
+mongosh "mongodb://root:password@localhost:27017"
 ```
 
 > 💡 Use `mongo-express`, `Compass`, or `NoSQLBooster` for GUI access.
@@ -354,7 +358,7 @@ spec:
     spec:
       containers:
         - name: mongo
-          image: mongo:6
+          image: mongo:8.0 # mongo:6 reached end of life in 2025
           ports:
             - containerPort: 27017
           volumeMounts:
@@ -377,7 +381,7 @@ spec:
 ### Schema Design
 
 - Favor embedding for fast reads (1:1 or 1\:N), use referencing for N\:M relationships.
-- Keep documents < 16MB. Avoid overly nested structures.
+- Keep documents under 16MB. Avoid overly nested structures.
 
 ### Indexing & Performance
 
@@ -398,11 +402,12 @@ spec:
 
 - Use Mongoose validation or JSON Schema.
 - Leverage change streams for real-time use cases.
-- Use MongoDB transactions (4.0+) for atomicity across collections.
+- Use MongoDB transactions (4.0+ on replica sets, 4.2+ on sharded clusters) for atomicity across documents and collections.
 
 ## References
 
+- [MongoDB Manual](https://www.mongodb.com/docs/manual/)
 - [Learn Mongo](https://learn.mongodb.com/)
-- [Add MongoDB Image to Docker](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-community-with-docker/?msockid=0291cb7f1eee63680eafdd7a1f8862e9)
+- [Add MongoDB Image to Docker](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-community-with-docker/)
 - [Install Mongosh on Ubuntu](https://www.bytebase.com/reference/mongodb/how-to/how-to-install-mongodb-shell-on-mac-ubuntu-centos-windows/#apt)
 - [MongoDB Shell Commands](https://www.tutorialsteacher.com/mongodb/mongodb-shell-commands)

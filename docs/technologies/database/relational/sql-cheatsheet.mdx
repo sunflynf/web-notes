@@ -1,0 +1,189 @@
+---
+title: SQL Cheatsheet
+sidebar_label: SQL Cheatsheet
+sidebar_position: 1
+description: SQL at a glance - DDL, DML, joins, aggregation, CTEs, window functions, transactions and what SQL:2023 added
+---
+
+# SQL Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Declarative language for defining, querying and changing data in relational databases |
+| Use it for | CRUD, reporting/analytics, schema design, constraints, access control |
+| Latest stable | SQL:2023 - ISO/IEC 9075:2023 (published 2023-06) - checked 2026-10-31 |
+| Dialects | PostgreSQL, MySQL/MariaDB, SQLite, SQL Server (T-SQL), Oracle (PL/SQL) - all implement a subset plus extensions |
+| Official docs | [ISO/IEC 9075-2:2023](https://www.iso.org/standard/76584.html) - [Modern SQL](https://modern-sql.com/) - [PostgreSQL SQL docs](https://www.postgresql.org/docs/current/sql.html) |
+
+## Core concepts
+
+- **Table / row / column**: a relation of rows with typed columns; rows have no inherent order
+- **Keys**: primary key = unique row identity; foreign key = reference to another table's key
+- **Constraints**: `NOT NULL`, `UNIQUE`, `CHECK`, `PRIMARY KEY`, `FOREIGN KEY` enforce integrity in the database
+- **NULL**: "unknown"; any comparison with NULL is unknown, so use `IS NULL` / `IS DISTINCT FROM`
+- **Logical query order**: `FROM` -> `WHERE` -> `GROUP BY` -> `HAVING` -> `SELECT` -> `DISTINCT` -> `ORDER BY` -> `LIMIT`
+- **Sub-languages**: DDL (`CREATE`/`ALTER`/`DROP`), DML (`SELECT`/`INSERT`/`UPDATE`/`DELETE`/`MERGE`), DCL (`GRANT`/`REVOKE`), TCL (`COMMIT`/`ROLLBACK`)
+- **Transactions / ACID**: a group of statements that commits or rolls back as one unit
+- **Normalization**: split data to avoid duplication (1NF-3NF); denormalize deliberately for read speed
+- **Indexes**: speed up lookups/joins/sorts at the cost of slower writes and storage
+
+## Syntax & commands
+
+```sql
+-- DDL
+CREATE TABLE departments (
+  id   INT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE employees (
+  id            INT PRIMARY KEY,
+  name          VARCHAR(100) NOT NULL,
+  email         VARCHAR(255) UNIQUE,
+  salary        DECIMAL(10, 2) CHECK (salary >= 0),
+  department_id INT REFERENCES departments (id) ON DELETE SET NULL,
+  manager_id    INT REFERENCES employees (id),
+  hired_at      DATE DEFAULT CURRENT_DATE
+);
+
+ALTER TABLE employees ADD COLUMN phone VARCHAR(30);
+CREATE INDEX idx_employees_department ON employees (department_id);
+CREATE VIEW high_earners AS SELECT * FROM employees WHERE salary > 100000;
+DROP TABLE IF EXISTS temp_import;
+```
+
+```sql
+-- DML
+INSERT INTO departments (id, name) VALUES (1, 'Engineering'), (2, 'Sales');
+
+UPDATE employees SET salary = salary * 1.05 WHERE department_id = 1;
+
+DELETE FROM employees WHERE hired_at < DATE '2015-01-01';
+
+SELECT e.name, d.name AS department, e.salary
+FROM employees AS e
+LEFT JOIN departments AS d ON d.id = e.department_id
+WHERE e.salary BETWEEN 50000 AND 150000
+  AND e.name LIKE 'A%'
+  AND e.department_id IN (1, 2)
+ORDER BY e.salary DESC, e.name
+OFFSET 20 ROWS FETCH FIRST 10 ROWS ONLY;  -- standard; LIMIT 10 OFFSET 20 in PG/MySQL/SQLite
+```
+
+| Join | Returns |
+|---|---|
+| `INNER JOIN` | only matching rows from both sides |
+| `LEFT JOIN` | all left rows + matches (NULLs when none) |
+| `RIGHT JOIN` | all right rows + matches |
+| `FULL JOIN` | all rows from both sides (not in MySQL) |
+| `CROSS JOIN` | every combination (cartesian product) |
+| self join | table joined to itself (e.g. employee -> manager) |
+
+```sql
+-- Aggregation
+SELECT department_id, COUNT(*) AS headcount, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY department_id
+HAVING COUNT(*) > 5;
+
+-- Set operations
+SELECT email FROM customers
+UNION        -- UNION ALL keeps duplicates (faster)
+SELECT email FROM newsletter;   -- also INTERSECT, EXCEPT
+```
+
+```sql
+-- CTE + window functions
+WITH ranked AS (
+  SELECT name, department_id, salary,
+         RANK()       OVER (PARTITION BY department_id ORDER BY salary DESC) AS rnk,
+         SUM(salary)  OVER (PARTITION BY department_id) AS dept_total,
+         LAG(salary)  OVER (ORDER BY hired_at) AS prev_salary
+  FROM employees
+)
+SELECT * FROM ranked WHERE rnk <= 3;   -- top 3 per department
+```
+
+```sql
+-- Transactions
+BEGIN;            -- START TRANSACTION in MySQL
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+SAVEPOINT before_fee;
+ROLLBACK TO SAVEPOINT before_fee;
+COMMIT;           -- or ROLLBACK;
+
+-- Access control
+CREATE ROLE reporting;
+GRANT SELECT ON employees TO reporting;
+REVOKE SELECT ON employees FROM reporting;
+```
+
+## Common patterns
+
+```sql
+-- Recursive CTE: org chart
+WITH RECURSIVE chain AS (
+  SELECT id, name, manager_id, 0 AS depth FROM employees WHERE manager_id IS NULL
+  UNION ALL
+  SELECT e.id, e.name, e.manager_id, c.depth + 1
+  FROM employees e JOIN chain c ON e.manager_id = c.id
+)
+SELECT * FROM chain ORDER BY depth;
+
+-- Conditional values / pivot by hand
+SELECT department_id,
+       COUNT(*) FILTER (WHERE salary > 100000) AS seniors,           -- PG, SQLite
+       SUM(CASE WHEN salary <= 100000 THEN 1 ELSE 0 END) AS others   -- portable
+FROM employees GROUP BY department_id;
+
+-- Upsert (standard MERGE; PG 15+, SQL Server, Oracle)
+MERGE INTO stock AS s
+USING incoming AS i ON s.sku = i.sku
+WHEN MATCHED THEN UPDATE SET qty = s.qty + i.qty
+WHEN NOT MATCHED THEN INSERT (sku, qty) VALUES (i.sku, i.qty);
+
+-- Rows without a match (anti join)
+SELECT d.* FROM departments d
+WHERE NOT EXISTS (SELECT 1 FROM employees e WHERE e.department_id = d.id);
+
+-- Keyset pagination (faster than large OFFSET)
+SELECT * FROM employees WHERE id > 1000 ORDER BY id FETCH FIRST 50 ROWS ONLY;
+
+-- Default for NULL
+SELECT name, COALESCE(phone, 'n/a') AS phone FROM employees;
+```
+
+## Gotchas
+
+- `WHERE col = NULL` is never true; use `IS NULL`. `NOT IN (subquery)` returns nothing if the subquery yields a NULL - prefer `NOT EXISTS`
+- Column aliases from `SELECT` are not visible in `WHERE` (it runs earlier); repeat the expression or use a CTE
+- `UPDATE`/`DELETE` without `WHERE` touches every row; run the `SELECT` first or wrap in a transaction
+- `COUNT(col)` skips NULLs; `COUNT(*)` counts rows
+- Without `ORDER BY`, result order is not guaranteed (even if it looks stable)
+- Functions on indexed columns (`WHERE LOWER(email) = ...`) skip the index unless you index the expression
+- Leading wildcard `LIKE '%x'` cannot use a B-tree index
+- String quoting: `'single'` for strings, `"double"` for identifiers (MySQL uses backticks by default)
+- Always use parameterized queries / prepared statements, never string concatenation (SQL injection)
+- Dialects differ: `LIMIT` vs `FETCH FIRST`, `||` vs `CONCAT()`, `ILIKE` (PG only), auto-increment syntax
+
+## What's new in recent releases
+
+SQL:2023 (ISO/IEC 9075:2023) is the current edition; dialects adopt pieces at their own pace.
+
+- **SQL/PGQ (Part 16)**: query tables as a property graph with `GRAPH_TABLE(... MATCH ...)` (e.g. Oracle Database 23ai)
+- **JSON type** and JSON simplified accessor (`doc.a.b`), plus new SQL/JSON path item methods
+- **`ANY_VALUE()`** aggregate: pick any value from a group without adding it to `GROUP BY`
+- **`UNIQUE NULLS [NOT] DISTINCT`**: choose whether multiple NULLs are allowed in a unique constraint
+- **Literal tweaks**: underscores in numbers (`1_000_000`), hex/octal/binary integer literals (`0xFF`, `0b101`)
+- **`GREATEST` / `LEAST`**, **`LPAD` / `RPAD`**, **`LTRIM` / `RTRIM` / `BTRIM`** standardized; `ORDER BY` in grouped tables more flexible
+
+## In these notes
+
+- [SQL Fundamentals (DDL, DML, DCL, TCL, advanced examples)](./sql-fundamental.md)
+- [PostgreSQL Cheatsheet](./postgres-cheatsheet.mdx)
+- [MySQL Cheatsheet](./mysql-cheatsheet.mdx)
+- [PostgreSQL notes](./postgre.md)
+- [MySQL notes](./mysql.md)

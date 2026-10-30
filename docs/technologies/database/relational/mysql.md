@@ -7,11 +7,13 @@ tags:
 
 # MySQL
 
+> **Quick reference:** [MySQL Cheatsheet](./mysql-cheatsheet.mdx)
+
 | Feature                    | Description                                                                                      |
 | -------------------------- | ------------------------------------------------------------------------------------------------ |
 | **ACID Compliance**        | Ensures data consistency and reliability through atomic transactions (especially with InnoDB).   |
 | **Storage Engine Support** | Supports multiple engines like InnoDB (default), MyISAM, MEMORY, ARCHIVE.                        |
-| **Replication**            | Master-Slave, Master-Master, and Group Replication for high availability and horizontal scaling. |
+| **Replication**            | Source-Replica (formerly master-slave), multi-source, and Group Replication / InnoDB Cluster for high availability and read scaling. |
 | **Partitioning**           | Table partitioning to enhance performance on large datasets.                                     |
 | **Full-Text Search**       | Native full-text indexes and MATCH...AGAINST queries for fast text search.                       |
 | **GIS Support**            | Supports spatial data types and indexing for geolocation applications.                           |
@@ -97,7 +99,7 @@ export default sequelize;
 
 ```xml title="pom.xml"
 <dependency>
-  <groupId>mysql</groupId>
+  <groupId>com.mysql</groupId>
   <artifactId>mysql-connector-j</artifactId>
   <scope>runtime</scope>
 </dependency>
@@ -138,15 +140,14 @@ DB_PASSWORD=password
 
 > ✅ Tip: Use `php artisan migrate:fresh --seed` during development.
 
-Here’s the additional section for **Prisma** and **Sequelize** integration with **MySQL**, designed in the same style as the previous sections:
-
 ## Managing MySQL with Docker
 
 ```yaml title="docker-compose.yml"
-version: "3.8"
+# The top-level `version` key is obsolete in Docker Compose v2, so it is omitted
+# mysql:8.4 = current LTS line (8.0 reached end of life in April 2026)
 services:
   mysql:
-    image: mysql:8.0
+    image: mysql:8.4
     container_name: mysql-db
     restart: always
     environment:
@@ -204,7 +205,7 @@ spec:
     spec:
       containers:
         - name: mysql
-          image: mysql:8.0
+          image: mysql:8.4
           ports:
             - containerPort: 3306
           env:
@@ -267,5 +268,6 @@ spec:
 
 ## Resources
 
+- [MySQL Documentation](https://dev.mysql.com/doc/)
 - [MySQL Tutorial](https://www.mysqltutorial.org/)
 - [How to Set Up and Configure MySQL in Docker](https://www.datacamp.com/tutorial/set-up-and-configure-mysql-in-docker)

@@ -1,0 +1,148 @@
+---
+title: MySQL Cheatsheet
+sidebar_label: MySQL Cheatsheet
+sidebar_position: 1
+description: MySQL at a glance - mysql CLI, InnoDB, data types, indexes, upserts, JSON, users, backups, and the LTS vs Innovation release tracks
+---
+
+# MySQL Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Popular open source relational database (Oracle), InnoDB storage engine by default |
+| Use it for | Web/OLTP apps (LAMP, WordPress, Laravel), read-heavy workloads with replicas |
+| Latest stable | Innovation 26.10.0 (released 2026-10-20); LTS 9.7.4 and 8.4.13 (released 2026-10-20) - checked 2026-10-31 |
+| Release tracks | **LTS** (8.4, 9.7): long support, bug/security fixes only. **Innovation** (now calendar versions `YY.MM`, e.g. 26.10): new features roughly quarterly. 8.0 reached end of life in April 2026 |
+| Official docs | [dev.mysql.com/doc](https://dev.mysql.com/doc/) - [8.4 release notes](https://dev.mysql.com/doc/relnotes/mysql/8.4/en/) - [9.7 release notes](https://dev.mysql.com/doc/relnotes/mysql/9.7/en/) - [26.10 release notes](https://dev.mysql.com/doc/relnotes/mysql/26.10/en/) |
+
+## Core concepts
+
+- **Server -> database (= schema) -> table**: `DATABASE` and `SCHEMA` are synonyms in MySQL
+- **InnoDB**: transactional, row-level locking, MVCC, foreign keys, crash recovery; avoid MyISAM
+- **Clustered primary key**: InnoDB stores rows in PK order; secondary indexes point to the PK, so keep the PK small
+- **Isolation**: default `REPEATABLE READ` (with gap/next-key locks), unlike PostgreSQL's `READ COMMITTED`
+- **Character set**: `utf8mb4` is the default (8.0+); `utf8`/`utf8mb3` cannot store emoji
+- **SQL mode**: `STRICT_TRANS_TABLES` (default) rejects bad data instead of silently truncating
+- **Replication**: binary log based source -> replica, async or semi-sync; Group Replication / InnoDB Cluster for HA
+- **Users**: identified by `'user'@'host'`; default auth plugin `caching_sha2_password`
+
+## Syntax & commands
+
+```bash
+mysql -h 127.0.0.1 -P 3306 -u root -p            # connect (prompts for password)
+mysql -u app -p app_db < schema.sql              # run a script
+mysqldump --single-transaction --routines --triggers app_db > app_db.sql
+mysql -u root -p app_db < app_db.sql             # restore
+mysqlsh                                          # MySQL Shell (JS/Python/SQL modes, dump utilities)
+docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=secret -p 3306:3306 \
+  -v mysqldata:/var/lib/mysql mysql:8.4          # LTS image tag
+```
+
+```sql
+SHOW DATABASES;            CREATE DATABASE app CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE app;                   SHOW TABLES;
+DESCRIBE users;            SHOW CREATE TABLE users\G
+SHOW INDEX FROM users;     SHOW PROCESSLIST;
+SELECT VERSION();          SHOW VARIABLES LIKE 'innodb_buffer_pool_size';
+```
+
+```sql
+CREATE TABLE users (
+  id         BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  email      VARCHAR(255) NOT NULL,
+  name       VARCHAR(100) NOT NULL,
+  settings   JSON,
+  status     ENUM('active', 'banned') NOT NULL DEFAULT 'active',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_users_email (email),
+  KEY idx_users_status_created (status, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Upsert
+INSERT INTO users (email, name) VALUES ('a@x.io', 'Ann') AS new
+ON DUPLICATE KEY UPDATE name = new.name;          -- row alias, 8.0.19+ (VALUES() is deprecated)
+
+-- JSON
+SELECT name, settings->>'$.theme' AS theme FROM users
+WHERE JSON_CONTAINS(settings, '"beta"', '$.flags');
+UPDATE users SET settings = JSON_SET(settings, '$.theme', 'dark') WHERE id = 1;
+
+-- Pagination
+SELECT * FROM users ORDER BY id LIMIT 20 OFFSET 40;
+```
+
+```sql
+-- Users and privileges
+CREATE USER 'app'@'%' IDENTIFIED BY 'change-me';
+GRANT SELECT, INSERT, UPDATE, DELETE ON app.* TO 'app'@'%';
+SHOW GRANTS FOR 'app'@'%';
+ALTER USER 'app'@'%' IDENTIFIED BY 'new-secret';
+DROP USER 'app'@'%';
+
+-- Query plans
+EXPLAIN FORMAT=TREE SELECT * FROM users WHERE email = 'a@x.io';
+EXPLAIN ANALYZE SELECT * FROM users WHERE status = 'active' ORDER BY created_at DESC LIMIT 10;
+```
+
+## Common patterns
+
+```sql
+-- Online schema change (most ADD COLUMN / ADD INDEX are online in InnoDB)
+ALTER TABLE users ADD COLUMN phone VARCHAR(30), ALGORITHM=INSTANT;
+ALTER TABLE users ADD INDEX idx_users_name (name), ALGORITHM=INPLACE, LOCK=NONE;
+
+-- Full-text search
+ALTER TABLE posts ADD FULLTEXT INDEX ft_posts (title, body);
+SELECT * FROM posts WHERE MATCH(title, body) AGAINST('+mysql -oracle' IN BOOLEAN MODE);
+
+-- Window functions + CTEs (8.0+)
+WITH ranked AS (
+  SELECT id, user_id, total,
+         ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at DESC) AS rn
+  FROM orders
+)
+SELECT * FROM ranked WHERE rn = 1;   -- latest order per user
+
+-- Job queue
+SELECT * FROM jobs WHERE status = 'queued' ORDER BY id LIMIT 10 FOR UPDATE SKIP LOCKED;
+
+-- Find slow queries
+SET GLOBAL slow_query_log = 'ON';
+SET GLOBAL long_query_time = 1;
+SELECT * FROM sys.statements_with_runtimes_in_95th_percentile LIMIT 10;
+
+-- Table sizes
+SELECT table_name, ROUND((data_length + index_length) / 1024 / 1024, 1) AS size_mb
+FROM information_schema.tables WHERE table_schema = 'app' ORDER BY size_mb DESC;
+```
+
+## Gotchas
+
+- Identifiers are quoted with backticks (`` `order` ``); double quotes are strings unless `ANSI_QUOTES` is on
+- Table name case sensitivity follows the OS (`lower_case_table_names`), so Linux and Windows/macOS can differ
+- Default collation `utf8mb4_0900_ai_ci` is case- and accent-insensitive: `'a' = 'A'` and `'e' = 'é'` are true
+- `FULL OUTER JOIN` is not supported; emulate with `LEFT JOIN ... UNION ... RIGHT JOIN`
+- `TIMESTAMP` is limited to 2038 and converts time zones; `DATETIME` does not
+- Implicit type conversion in `WHERE varchar_col = 123` disables the index; compare with the right type
+- Avoid `SELECT ... LIMIT` with big `OFFSET` on large tables; use keyset pagination (`WHERE id > ?`)
+- `mysqldump` without `--single-transaction` locks tables; for big databases use MySQL Shell dump utilities
+- Upgrades go LTS -> LTS (8.4 -> 9.7) or along the Innovation track; from 8.0 go to 8.4 first
+- Old terms changed: use `SOURCE`/`REPLICA` (`SHOW REPLICA STATUS`, `CHANGE REPLICATION SOURCE TO`), not master/slave
+
+## What's new in recent releases
+
+- **MySQL 26.10 Innovation** (2026-10-20): calendar versioning with `VERSION_WITH_UPDATE()`; Health Monitor and the WebAuthn authentication plugin come to Community Edition; MySQL REST Service can run as a server component ([release notes](https://dev.mysql.com/doc/relnotes/mysql/26.10/en/news-26-10-0.html))
+- **MySQL 9.7 LTS** (9.7.0 on 2026-04-21): second LTS line; Community Edition gets DML (insert/update/delete) on **JSON duality views**, Hypergraph Optimizer access, OpenTelemetry telemetry and replication flow-control monitoring ([9.7.0 notes](https://dev.mysql.com/doc/relnotes/mysql/9.7/en/news-9-7-0.html))
+- **9.x Innovation features now in LTS**: `VECTOR` data type, JavaScript stored programs (Enterprise Edition), `EXPLAIN FORMAT=JSON ... INTO @var`
+- **MySQL 8.4 LTS**: `mysql_native_password` disabled by default, old master/slave replication statements removed in favor of source/replica
+- **MySQL 8.0** reached end of life in April 2026 (last release 8.0.46): plan an upgrade to 8.4 or 9.7
+
+## In these notes
+
+- [MySQL notes: ORMs, Docker, Kubernetes, best practices](./mysql.md)
+- [SQL Cheatsheet](./sql-cheatsheet.mdx)
+- [SQL Fundamentals](./sql-fundamental.md)
+- [PostgreSQL Cheatsheet](./postgres-cheatsheet.mdx)

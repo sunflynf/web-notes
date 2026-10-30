@@ -1,0 +1,177 @@
+---
+title: MongoDB Cheatsheet
+sidebar_label: MongoDB Cheatsheet
+sidebar_position: 1
+description: MongoDB at a glance - mongosh, CRUD, query and update operators, aggregation, indexes, schema validation, transactions and what's new in 9.0
+---
+
+# MongoDB Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Document database storing JSON-like BSON documents in collections |
+| Use it for | Flexible/evolving schemas, nested data read together, high write throughput, horizontal scaling |
+| Latest stable | 9.0.4 (released 2026-10-13) - checked 2026-10-31 |
+| Other lines | 8.0.34 (2026-10-13) still supported; shell: mongosh 2.14.0 (2026-10-26) |
+| Official docs | [MongoDB Manual](https://www.mongodb.com/docs/manual/) - [9.0 release notes](https://www.mongodb.com/docs/manual/release-notes/9.0/) - [mongosh](https://www.mongodb.com/docs/mongodb-shell/) |
+
+## Core concepts
+
+- **Document**: a BSON object (max 16 MB) with a unique `_id` (default `ObjectId`)
+- **Collection**: group of documents, no enforced schema unless you add `$jsonSchema` validation
+- **Embed vs reference**: embed data read together (1:few); reference with ids for large or many-to-many relations
+- **Replica set**: primary + secondaries with automatic failover; required for transactions and change streams
+- **Sharding**: split a collection across shards by a shard key for horizontal scale
+- **Aggregation pipeline**: stages (`$match`, `$group`, `$lookup`...) transform documents step by step
+- **Write concern / read concern / read preference**: tune durability, consistency and which node serves reads
+- **Transactions**: multi-document ACID transactions on replica sets and sharded clusters (keep them short)
+
+## Syntax & commands
+
+```bash
+mongosh "mongodb://user:pass@localhost:27017/app?authSource=admin"   # legacy `mongo` shell is gone (6.0+)
+mongosh "mongodb+srv://cluster0.example.mongodb.net/app" --username me
+mongodump --uri="mongodb://localhost:27017" --db=app --out=./backup
+mongorestore --uri="mongodb://localhost:27017" --nsInclude="app.*" ./backup
+mongoexport --db=app --collection=users --out=users.json
+mongoimport --db=app --collection=users --file=users.json
+docker run -d --name mongo -p 27017:27017 -v mongodata:/data/db mongodb/mongodb-community-server:latest
+```
+
+```mongodb
+show dbs
+use app                         // created on first write
+show collections
+db.users.countDocuments({ status: "active" })
+db.users.stats()
+db.dropDatabase()
+```
+
+```mongodb
+// Create
+db.users.insertOne({ name: "Ann", email: "ann@x.io", tags: ["admin"], age: 31 })
+db.users.insertMany([{ name: "Bob" }, { name: "Cy" }])
+
+// Read
+db.users.find({ age: { $gte: 18, $lt: 65 }, tags: "admin" })        // implicit AND, array contains
+db.users.find({ $or: [{ status: "new" }, { age: { $exists: false } }] })
+db.users.find({}, { name: 1, email: 1, _id: 0 }).sort({ age: -1 }).skip(20).limit(10)
+db.users.findOne({ _id: ObjectId("665f1c2e8b3e4a1d2c3b4a59") })
+db.users.find({ "address.city": "Hanoi" })                         // dot notation for nested fields
+db.orders.find({ items: { $elemMatch: { sku: "A1", qty: { $gt: 2 } } } })
+
+// Update
+db.users.updateOne({ email: "ann@x.io" }, { $set: { age: 32 }, $inc: { logins: 1 } })
+db.users.updateMany({ status: "new" }, { $set: { status: "active" } })
+db.users.updateOne({ email: "zed@x.io" }, { $setOnInsert: { name: "Zed" } }, { upsert: true })
+db.users.updateOne({ _id: id }, { $push: { tags: "beta" }, $pull: { tags: "old" } })
+db.users.findOneAndUpdate({ _id: id }, { $inc: { credits: -1 } }, { returnDocument: "after" })
+
+// Delete
+db.users.deleteOne({ _id: id })
+db.users.deleteMany({ status: "banned" })
+```
+
+| Operators | Examples |
+|---|---|
+| Comparison | `$eq` `$ne` `$gt` `$gte` `$lt` `$lte` `$in` `$nin` |
+| Logical | `$and` `$or` `$nor` `$not` |
+| Element / eval | `$exists` `$type` `$regex` `$expr` `$jsonSchema` |
+| Array query | `$all` `$elemMatch` `$size` |
+| Update | `$set` `$unset` `$inc` `$mul` `$rename` `$min` `$max` `$currentDate` `$setOnInsert` |
+| Array update | `$push` (with `$each`, `$slice`) `$addToSet` `$pull` `$pop` `$[]` `$[elem]` |
+
+```mongodb
+// Indexes
+db.users.createIndex({ email: 1 }, { unique: true })
+db.orders.createIndex({ userId: 1, createdAt: -1 })                  // compound: equality, sort, range (ESR)
+db.sessions.createIndex({ createdAt: 1 }, { expireAfterSeconds: 3600 }) // TTL
+db.users.createIndex({ phone: 1 }, { partialFilterExpression: { phone: { $exists: true } } })
+db.posts.createIndex({ title: "text", body: "text" })
+db.users.getIndexes()
+db.users.find({ email: "ann@x.io" }).explain("executionStats")      // look for IXSCAN, not COLLSCAN
+```
+
+## Common patterns
+
+```mongodb
+// Aggregation: revenue per customer, top 5, with customer name
+db.orders.aggregate([
+  { $match: { status: "paid", createdAt: { $gte: ISODate("2026-01-01") } } },
+  { $group: { _id: "$customerId", revenue: { $sum: "$total" }, orders: { $sum: 1 } } },
+  { $sort: { revenue: -1 } },
+  { $limit: 5 },
+  { $lookup: { from: "customers", localField: "_id", foreignField: "_id", as: "customer" } },
+  { $unwind: "$customer" },
+  { $project: { _id: 0, name: "$customer.name", revenue: 1, orders: 1 } }
+])
+
+// Faceted results (data + total in one query)
+db.products.aggregate([
+  { $match: { category: "books" } },
+  { $facet: { items: [{ $skip: 0 }, { $limit: 20 }], total: [{ $count: "n" }] } }
+])
+
+// Schema validation
+db.createCollection("users", {
+  validator: { $jsonSchema: {
+    bsonType: "object",
+    required: ["email"],
+    properties: { email: { bsonType: "string", pattern: "^.+@.+$" } }
+  } }
+})
+
+// Bulk writes
+db.users.bulkWrite([
+  { insertOne: { document: { name: "Dee" } } },
+  { updateOne: { filter: { name: "Bob" }, update: { $set: { age: 40 } } } },
+  { deleteOne: { filter: { name: "Cy" } } }
+], { ordered: false })
+
+// Transaction (mongosh, replica set required)
+const session = db.getMongo().startSession()
+session.withTransaction(() => {
+  const accts = session.getDatabase("bank").accounts
+  accts.updateOne({ _id: 1 }, { $inc: { balance: -100 } })
+  accts.updateOne({ _id: 2 }, { $inc: { balance: 100 } })
+})
+
+// Watch changes (replica set required)
+const cs = db.orders.watch([{ $match: { operationType: "insert" } }])
+```
+
+```mongodb
+// Users and roles
+use admin
+db.createUser({ user: "app", pwd: passwordPrompt(), roles: [{ role: "readWrite", db: "app" }] })
+db.getUsers()
+db.runCommand({ ping: 1 })
+db.currentOp({ secs_running: { $gt: 5 } })     // long-running operations
+```
+
+## Gotchas
+
+- "Schema-less" still needs a schema: enforce it with `$jsonSchema` validation or your ODM (Mongoose, Spring Data)
+- Unbounded arrays grow documents toward the 16 MB limit; use a separate collection or the bucket pattern
+- `skip()` with large values is slow; paginate by range on an indexed field (`_id > lastId`)
+- Field order matters in compound indexes and in embedded document equality matches (`{ a: 1, b: 2 }` is not `{ b: 2, a: 1 }`)
+- Querying `{ tags: "x" }` matches arrays containing `"x"`; use `$elemMatch` when several conditions must hit the same element
+- `$lookup` is not a cheap join; model data so hot paths read one document
+- Transactions and change streams need a replica set (a single-node replica set works for local dev)
+- Numbers from the shell are doubles; use `NumberInt()`, `NumberLong()` or `NumberDecimal()` for money and counters
+- Never expose `27017` publicly without auth; enable access control and TLS
+- Choose shard keys carefully: monotonically increasing keys (like `ObjectId`) create a hot shard
+
+## What's new in recent releases
+
+- **MongoDB 9.0** (GA 2026-09-29): up to 2x throughput on large instances and faster reads/updates vs 8.0; Queryable Encryption supports prefix, suffix and substring queries; OpenTelemetry and Query Shape Insights for writes ([announcement](https://www.mongodb.com/products/updates/mongodb-9-0-is-now-available/))
+- **9.0.4** (2026-10-13): security fixes for several CVEs, Ubuntu 26.04 support - recommended upgrade for 9.0 users
+- **MongoDB 8.0** (2024): large performance gains, Queryable Encryption range queries, `bulkWrite` across collections, easier resharding / `moveCollection`
+- **mongosh 2.x** replaces the legacy `mongo` shell (removed in 6.0); `.pretty()` is no longer needed
+
+## In these notes
+
+- [MongoDB notes: shell, ORMs, Docker, Kubernetes, best practices](./mongodb.md)
+- [SQL Cheatsheet](../relational/sql-cheatsheet.mdx)

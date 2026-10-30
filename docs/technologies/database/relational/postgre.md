@@ -7,6 +7,8 @@ tags:
 
 # PostgreSQL
 
+> **Quick reference:** [PostgreSQL Cheatsheet](./postgres-cheatsheet.mdx)
+
 | Feature                       | Description                                                                                                                                                                                          |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **ACID Compliance**           | Strong transactional integrity with multi-version concurrency control (MVCC).                                                                                                                        |
@@ -137,10 +139,10 @@ DB_PASSWORD=password
 ## Managing PostgreSQL with Docker
 
 ```yaml title="docker-compose.yml"
-version: "3.8"
+# The top-level `version` key is obsolete in Docker Compose v2, so it is omitted
 services:
   postgres:
-    image: postgres:15
+    image: postgres:18
     container_name: postgres-db
     restart: always
     environment:
@@ -150,7 +152,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql # PG 18+ image keeps data in /var/lib/postgresql/18/docker (use .../data for 17 and older)
     networks:
       - backend
 
@@ -163,7 +165,7 @@ networks:
 
 ```bash
 # Use psql
-docker exec -it postgres psql -U myuser -d mydatabase
+docker exec -it postgres-db psql -U postgres -d your_db
 ```
 
 :::tip
@@ -195,7 +197,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:15
+          image: postgres:18
           ports:
             - containerPort: 5432
           env:
@@ -206,7 +208,7 @@ spec:
                   key: password
           volumeMounts:
             - name: postgres-pvc
-              mountPath: /var/lib/postgresql/data
+              mountPath: /var/lib/postgresql # PG 18+ layout; use /var/lib/postgresql/data for 17 and older
   volumeClaimTemplates:
     - metadata:
         name: postgres-pvc
@@ -259,6 +261,7 @@ spec:
 ## References
 
 - [PostgreSQL Documents](https://www.postgresql.org/docs/current/)
+- [PostgreSQL Release Notes](https://www.postgresql.org/docs/release/)
 - [PostgreSQL in Docker](https://www.datacamp.com/tutorial/postgresql-docker)
 - [psql Command Line](https://tomcam.github.io/postgres/#getting-information-about-databases)
 - [JS tools - node-postgres](/docs/technologies/js/api/query-builder/node-postgres.md)
