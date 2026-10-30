@@ -74,6 +74,8 @@ model User {
 }
 ```
 
+> **Prisma 7+:** the datasource `url` moves from `schema.prisma` to `prisma.config.ts`. See [Prisma](../../js/api/orm/prisma.md).
+
 > ✅ Tip: Use [Prisma Studio](https://www.prisma.io/studio) (`npx prisma studio`) for a visual DB browser.
 
 ### [Sequelize](https://sequelize.org) (Node.js)

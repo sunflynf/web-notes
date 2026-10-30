@@ -70,6 +70,8 @@ model User {
 }
 ```
 
+> **Prisma 7+:** the datasource `url` moves from `schema.prisma` to `prisma.config.ts`. See [Prisma](../../js/api/orm/prisma.md).
+
 > ✅ Supports PostgreSQL-specific features like `@db.Json`, `@db.Uuid`, etc.
 
 ### [Sequelize](https://sequelize.org) (Node.js)
