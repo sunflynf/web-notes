@@ -74,6 +74,8 @@ for i := 0; i < n; i++ {
     }(i)
 }
 wg.Wait()
+
+// Go 1.25+: wg.Go(func() { /* work */ }) does Add(1) + go + Done for you
 ```
 
 ### 5. Mutex / RWMutex (shared state)
@@ -119,7 +121,7 @@ case v := <-ch:
 g, ctx := errgroup.WithContext(context.Background())
 
 for _, url := range urls {
-    url := url
+    url := url // not needed since Go 1.22 (per-iteration loop variables)
     g.Go(func() error {
         // respect ctx for cancellation
         return fetch(ctx, url)
@@ -209,12 +211,12 @@ func merge(cs ...<-chan int) <-chan int {
 // usage
 in := gen(1,2,3,4)
 c1 := sq(in)
-c2 := sq(in) // fan-out across workers → careful: you can’t reuse drained channel; typically split upstream
+c2 := sq(in) // fan-out: both workers read from the same `in`; each value goes to exactly one worker
 res := merge(c1, c2)
 for v := range res { fmt.Println(v) }
 ```
 
-> In real fan-out, duplicate the work upstream or distribute work to multiple workers reading from the same `in`.
+> Fan-out = several workers reading from the same channel; fan-in = `merge`. Output order is not preserved.
 
 ### 10. Timeouts, Heartbeats, Rate Limit
 

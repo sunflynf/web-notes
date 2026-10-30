@@ -1,0 +1,145 @@
+---
+title: Gin Cheatsheet
+sidebar_label: Gin Cheatsheet
+sidebar_position: 1
+description: One-page Gin refresher - routing, binding and validation, middleware, responses, testing and recent release changes.
+---
+
+# Gin Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Fast, minimal HTTP web framework for Go built on a radix-tree router (httprouter-style) |
+| Use it for | JSON REST APIs, microservices, small server-rendered apps |
+| Latest stable | v1.12.0 (released 2026-02-28) - checked 2026-10-31 |
+| Official docs | [gin-gonic.com/en/docs](https://gin-gonic.com/en/docs/) |
+
+## Core concepts
+
+- **`gin.Engine`**: the router + middleware chain; implements `http.Handler`.
+- **`gin.Default()`** = `gin.New()` + `Logger()` + `Recovery()` middleware.
+- **`*gin.Context`**: per-request object for params, binding, responses and request-scoped values.
+- **`gin.HandlerFunc`**: `func(c *gin.Context)`; middleware and handlers have the same shape.
+- **Route groups**: shared prefix + middleware (`r.Group("/api/v1", Auth())`).
+- **Binding**: struct tags (`json`, `form`, `uri`, `header`) + `binding:"required,..."` rules validated by go-playground/validator.
+- **`c.Next()` / `c.Abort()`**: continue or stop the handler chain.
+- **Modes**: `GIN_MODE=release` (or `gin.SetMode(gin.ReleaseMode)`) turns off debug logging.
+
+## Syntax & commands
+
+```bash
+go get github.com/gin-gonic/gin@latest
+GIN_MODE=release go run .
+```
+
+```go
+r := gin.Default()
+r.GET("/ping", func(c *gin.Context) { c.JSON(200, gin.H{"msg": "pong"}) })
+
+r.GET("/users/:id", getUser)        // c.Param("id")
+r.GET("/files/*path", serveFile)    // c.Param("path") includes leading "/"
+r.GET("/search", func(c *gin.Context) {
+    q := c.Query("q")                  // ?q=
+    page := c.DefaultQuery("page", "1")
+    c.String(200, q+page)
+})
+
+v1 := r.Group("/api/v1")
+v1.POST("/users", createUser)
+
+r.Run(":8080")
+```
+
+```go
+type CreateUserReq struct {
+    Email string `json:"email" binding:"required,email"`
+    Name  string `json:"name"  binding:"required,min=2"`
+}
+
+func createUser(c *gin.Context) {
+    var req CreateUserReq
+    if err := c.ShouldBindJSON(&req); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+    c.JSON(http.StatusCreated, req)
+}
+```
+
+| Response | Call |
+|---|---|
+| JSON | `c.JSON(200, obj)` |
+| Abort with JSON | `c.AbortWithStatusJSON(401, gin.H{...})` |
+| Text | `c.String(200, "ok")` |
+| Raw bytes | `c.Data(200, "text/plain", b)` |
+| No body | `c.Status(204)` |
+| File | `c.File("./a.pdf")` / `c.FileAttachment(path, name)` |
+| Redirect | `c.Redirect(302, "/login")` |
+
+## Common patterns
+
+```go
+// Middleware
+func Auth() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        token := c.GetHeader("Authorization")
+        if token == "" {
+            c.AbortWithStatusJSON(401, gin.H{"error": "unauthorized"})
+            return
+        }
+        c.Set("userID", "42")
+        c.Next()
+    }
+}
+// later: id := c.GetString("userID")
+```
+
+```go
+// Graceful shutdown with net/http
+srv := &http.Server{Addr: ":8080", Handler: r, ReadHeaderTimeout: 5 * time.Second}
+go srv.ListenAndServe()
+ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+defer stop()
+<-ctx.Done()
+shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+defer cancel()
+srv.Shutdown(shutdownCtx)
+```
+
+```go
+// Handler test
+func TestPing(t *testing.T) {
+    gin.SetMode(gin.TestMode)
+    r := setupRouter()
+    w := httptest.NewRecorder()
+    req := httptest.NewRequest(http.MethodGet, "/ping", nil)
+    r.ServeHTTP(w, req)
+    if w.Code != 200 { t.Fatal(w.Body.String()) }
+}
+```
+
+- Common add-ons: `gin-contrib/cors`, `gin-contrib/gzip`, `gin-contrib/requestid`, `gin-contrib/sessions`.
+- Use `c.Request.Context()` for DB calls so client disconnects cancel work.
+
+## Gotchas
+
+- **Always `return` after `Abort*`**: abort stops later handlers, not the current function.
+- **`Bind*` vs `ShouldBind*`**: `Bind*` writes a 400 itself; prefer `ShouldBind*` and handle the error.
+- **Request body can be read once**: use `c.ShouldBindBodyWith(&v, binding.JSON)` to bind it twice.
+- **Do not use `*gin.Context` in goroutines**: call `c.Copy()` first.
+- **Set trusted proxies** (`r.SetTrustedProxies(...)`) or `c.ClientIP()` trusts every `X-Forwarded-For`.
+- **Trailing slashes**: `/users` and `/users/` are different routes; Gin redirects by default (`RedirectTrailingSlash`).
+
+## What's new in recent releases
+
+- **v1.12.0** (2026-02-28): `encoding.TextUnmarshaler` support in URI/query binding, `c.GetError()` / `GetErrorSlice()`, Protocol Buffers content negotiation, BSON rendering, `Context.Delete`, escaped-path option; minimum Go raised to 1.24.
+- **v1.11.0**: HTTP/3 support via quic-go, `BindPlain`, default values for form binding, `AbortWithStatusPureJSON`, HTML loading from `http.FileSystem`, runtime-configurable JSON codec, 413 for `http.MaxBytesError`.
+
+## In these notes
+
+- [Gin framework guide](./gin.mdx)
+- [Go web frameworks overview](./index.md)
+- [Go Cheatsheet](../cheatsheet.mdx)
+- [Go folder structure](../folder-structure.mdx)

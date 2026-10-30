@@ -89,7 +89,7 @@ var anyType interface{} = "Could be any type"
 
    - Floats: Follow IEEE-754 standard
    - Strings: Immutable UTF-8 encoded
-   - Maps: Must be initialized with `make()` before use
+   - Maps: Must be initialized (`make()` or a literal) before writing; reading a nil map returns the zero value
    - Channels: Must be initialized with `make()` before use
 
 4. **SQL Nullable Types:**
@@ -121,14 +121,15 @@ fromIndex := slice[2:] // From index 2 to end
 negativeIndex := slice[len(slice)-3:] // Last 3 elements
 
 // Methods
-append(slice, 6, 7)              // Append elements
-append(slice, anotherSlice...)   // Append another slice
+slice = append(slice, 6, 7)            // Append elements (always reassign the result)
+slice = append(slice, anotherSlice...) // Append another slice
 len(slice)             // Length of slice
 cap(slice)             // Capacity of slice, underlying array size
 
-// Cloning (deep copy), to avoid modifying original slice
+// Cloning (copies elements, shallow), to avoid sharing the underlying array
 newSlice := make([]int, len(slice)) // Create new slice with same length
-copy(newSlice, slice) // Deep copy
+copy(newSlice, slice) // Copy elements
+// or: newSlice := slices.Clone(slice) // Go 1.21+
 ```
 
 ### Map
@@ -177,7 +178,8 @@ func printAge(a MyInt) {
 
 printAge(age) // Works, since MyInt is an alias for int
 printAge(MyInt(25)) // Also works, explicit conversion
-printAge(25) // Error, int is not MyInt
+printAge(25) // Also works: an alias IS int
+// With a defined type (`type MyInt int`, no `=`), passing an `int` variable needs MyInt(x)
 
 type bookMap = map[string]string // Alias for map type
 var books bookMap = map[string]string{

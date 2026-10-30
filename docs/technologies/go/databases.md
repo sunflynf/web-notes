@@ -14,7 +14,7 @@ In Go, you generally have **three layers of abstraction** to connect with databa
 | ------------ | ------------------------------------------ | ---------------------------------------------------- |
 | 🧱 Low-level  | Use `database/sql` directly (standard lib) | `database/sql`, driver like `lib/pq`, `mysql`, `pgx` |
 | ⚙️ Mid-level  | Lightweight ORM or query builder           | `sqlx`, `squirrel`, `pgxpool`                        |
-| 🚀 High-level | Full ORM (models, relations, migrations)   | `GORM`, `Ent`, `Bun`, `Prisma Go` (coming up)        |
+| 🚀 High-level | Full ORM (models, relations, migrations)   | `GORM`, `Ent`, `Bun`                                 |
 
 ---
 
@@ -270,7 +270,7 @@ db.NewInsert().Model(&User{Name: "Fee"}).Exec(ctx)
 
 | Database          | Package                                  | Notes                      |
 | ----------------- | ---------------------------------------- | -------------------------- |
-| **MongoDB**       | `go.mongodb.org/mongo-driver`            | Official driver            |
+| **MongoDB**       | `go.mongodb.org/mongo-driver/v2`         | Official driver (v2)       |
 | **Redis**         | `github.com/redis/go-redis/v9`           | Great for caching, pub/sub |
 | **Cassandra**     | `github.com/gocql/gocql`                 | Mature driver              |
 | **Elasticsearch** | `github.com/elastic/go-elasticsearch/v8` | Official client            |
@@ -278,7 +278,8 @@ db.NewInsert().Model(&User{Name: "Fee"}).Exec(ctx)
 Example Mongo snippet:
 
 ```go
-client, _ := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+// v2 driver: Connect no longer takes a context
+client, _ := mongo.Connect(options.Client().ApplyURI("mongodb://localhost:27017"))
 col := client.Database("test").Collection("users")
 col.InsertOne(ctx, bson.M{"name": "Fee"})
 ```

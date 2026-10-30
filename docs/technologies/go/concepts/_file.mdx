@@ -46,7 +46,7 @@ func getBalanceFromFile() float32 {
     }
     var balance float32
     fmt.Sscanf(string(data), "%f", &balance)
-    // balance, _ := strconv.parseFloat(string(data), 64) // alternative
+    // balance, _ := strconv.ParseFloat(string(data), 64) // alternative (returns float64)
     return balance
 }
 

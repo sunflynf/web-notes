@@ -442,15 +442,15 @@ make migrate-down
 ```makefile
 .PHONY: run test lint tidy migrate-up
 run:    ## Start API
-\tgo run ./cmd/api
+	go run ./cmd/api
 test:   ## Run tests with race
-\tgo test -race ./...
+	go test -race ./...
 lint:   ## Static checks
-\tgolangci-lint run
+	golangci-lint run
 tidy:
-\tgo mod tidy
+	go mod tidy
 migrate-up:
-\tmigrate -path migrations -database $$DB_DSN up
+	migrate -path migrations -database $$DB_DSN up
 ```
 
 ---

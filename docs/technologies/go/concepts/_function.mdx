@@ -48,8 +48,8 @@ fmt.Println("You entered:", input) // e.g. You entered: 42.5
 
 ```go
 // Using named return values as documentation and to avoid using constraint variable's name
-func calculateFinancials(revenue float32, expenses float32, taxRate float32)
-    (ebt float32, profit float32, ratio float32) {
+// Note: the result list must stay on the same line as the parameters
+func calculateFinancials(revenue, expenses, taxRate float32) (ebt, profit, ratio float32) {
     ebt = revenue - expenses // Earn Before Tax
     profit = ebt * (1 - taxRate/100)
     ratio = ebt / profit

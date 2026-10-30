@@ -1,7 +1,7 @@
 ## Generics
 
 - **Since Go 1.18**, Go supports generics: type parameters for functions, methods, and types.
-- Basically: "write once, use for any type.""
+- Basically: "write once, use for any type."
 
 ### Generic Functions
 
@@ -183,9 +183,9 @@ func Reduce[T any, U any](in []T, fn func(U, T) U, init U) U {
 
 ### Tips and Pitfalls
 
-1. **No runtime type info** — generics are erased at compile time (no reflection magic).
+1. **No type switching on `T` directly** — use `any(v).(type)` if you must; reflection sees the concrete instantiated type.
 2. **Don’t overuse** — Go still favors simplicity. If interfaces or duplication are clearer, use them.
-3. **Performance** — generics are efficient; they’re compiled into specialized versions per type.
+3. **Performance** — the compiler uses GC-shape stenciling + dictionaries (one instantiation per shape, not per type), so generic code can be slightly slower than hand-written code for pointer types.
 4. **Exporting generic types** works the same as normal: start with uppercase.
 
 :::note When to Use Generics
