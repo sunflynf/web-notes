@@ -1,4 +1,10 @@
+---
+description: Django basics - project and app setup, models, views, URLs, templates, admin, static files, forms and deployment.
+---
+
 # Django
+
+> **Quick reference:** [Django Cheatsheet](./django-cheatsheet.mdx)
 
 Django is a high-level Python web framework that encourages rapid development and clean, pragmatic design. It follows the "batteries-included" philosophy, meaning it comes with a lot of built-in features.
 
@@ -156,7 +162,7 @@ Visit `http://127.0.0.1:8000/admin/` and log in with the superuser credentials.
 
 ### Create a Static Directory
 
-Create a directory named `static` inside `myapp`.
+Create a directory named `static/myapp/` inside `myapp` (namespaced, so `{% static 'myapp/style.css' %}` resolves).
 
 ### Add Static Files
 

@@ -1,0 +1,162 @@
+---
+title: Django Cheatsheet
+sidebar_label: Django Cheatsheet
+sidebar_position: 1
+description: One-page Django refresher - manage.py commands, models and ORM queries, views, URLs, templates, admin, settings and Django 6.x changes.
+---
+
+# Django Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Batteries-included Python web framework (MTV: Model, Template, View) with ORM, admin, auth and migrations |
+| Use it for | Content-heavy sites, internal tools/back offices, SaaS apps, APIs with Django REST Framework or Django Ninja |
+| Latest stable | 6.1.2 (released 2026-10-06) - checked 2026-10-31 |
+| Official docs | [docs.djangoproject.com](https://docs.djangoproject.com/en/stable/) |
+
+## Core concepts
+
+- **Project vs app**: a project holds settings + root URLconf; apps are reusable feature modules listed in `INSTALLED_APPS`.
+- **Models** map classes to tables; **migrations** version the schema.
+- **QuerySets are lazy**: nothing hits the DB until you iterate, slice, `list()`, `count()` and so on.
+- **Views** take a request and return a response (function-based or class-based views).
+- **URLconf**: `path()` patterns map URLs to views; `name=` enables `reverse()` / `{% url %}`.
+- **Templates**: Django Template Language with inheritance (`{% extends %}`, `{% block %}`) and auto-escaping.
+- **Middleware**: request/response hooks (sessions, CSRF, auth, security headers).
+- **Admin**: auto-generated CRUD UI from models.
+- **Settings**: one module (`settings.py`); split per environment and read secrets from env vars.
+
+## Syntax & commands
+
+```bash
+pip install django
+django-admin startproject config .
+python manage.py startapp blog
+python manage.py makemigrations && python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+python manage.py shell            # auto-imports models (5.2+)
+python manage.py test
+python manage.py collectstatic
+python manage.py check --deploy   # production settings audit
+```
+
+```python
+# blog/models.py
+from django.db import models
+from django.conf import settings
+
+class Post(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="posts")
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
+    published = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.title
+```
+
+```python
+# ORM
+Post.objects.filter(published=True, title__icontains="django")
+Post.objects.exclude(author__username="bot").order_by("title")[:10]
+Post.objects.get(slug="hello")               # DoesNotExist / MultipleObjectsReturned
+Post.objects.select_related("author")        # FK join (1 query)
+User.objects.prefetch_related("posts")       # reverse/M2M (2 queries)
+from django.db.models import Count, Q, F
+Post.objects.filter(Q(published=True) | Q(author=user))
+Post.objects.update(views=F("views") + 1)    # atomic in DB
+User.objects.annotate(n=Count("posts")).filter(n__gt=5)
+```
+
+```python
+# blog/urls.py + views.py
+from django.urls import path
+from . import views
+
+app_name = "blog"
+urlpatterns = [
+    path("", views.post_list, name="list"),
+    path("<slug:slug>/", views.post_detail, name="detail"),
+]
+
+from django.shortcuts import render, get_object_or_404
+
+def post_detail(request, slug):
+    post = get_object_or_404(Post, slug=slug, published=True)
+    return render(request, "blog/detail.html", {"post": post})
+```
+
+## Common patterns
+
+```python
+# Class-based views
+from django.views.generic import ListView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class PostList(ListView):
+    model = Post
+    paginate_by = 20
+
+class PostCreate(LoginRequiredMixin, CreateView):
+    model = Post
+    fields = ["title", "slug"]
+    success_url = "/"
+```
+
+```python
+# Admin
+from django.contrib import admin
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ["title", "author", "published", "created_at"]
+    list_filter = ["published"]
+    search_fields = ["title"]
+    prepopulated_fields = {"slug": ["title"]}
+```
+
+```python
+# Transactions
+from django.db import transaction
+
+with transaction.atomic():
+    order.save()
+    transaction.on_commit(lambda: send_receipt.delay(order.id))
+```
+
+| Need | Use |
+|---|---|
+| REST API | Django REST Framework, Django Ninja |
+| Background jobs | `django.tasks` (6.0+, needs a backend) or Celery |
+| Async views | `async def` views under ASGI (uvicorn, daphne) |
+| Static files in prod | WhiteNoise or a CDN after `collectstatic` |
+| Custom user | `AUTH_USER_MODEL` set before the first migration |
+
+## Gotchas
+
+- **N+1 queries**: use `select_related` (FK/one-to-one) and `prefetch_related` (reverse/M2M); check with django-debug-toolbar.
+- **Custom user model**: decide on day one; switching later is painful.
+- **`DEBUG = False`** needs `ALLOWED_HOSTS` and a static files strategy; never deploy with `DEBUG = True`.
+- **`auto_now` fields are skipped by `QuerySet.update()`**; set them explicitly.
+- **QuerySet caching**: re-evaluating a filtered QuerySet hits the DB again; reuse the evaluated list.
+- **Migrations conflicts** on branches: run `makemigrations --merge` and commit migrations with the model change.
+- **Sync ORM in async views** raises `SynchronousOnlyOperation`; use the async ORM methods (`aget`, `acreate`, `async for` over a QuerySet) or `sync_to_async`.
+
+## What's new in recent releases
+
+- **Django 6.1** (2026-08-05): configurable model field fetch modes (`FETCH_ONE`, `FETCH_PEERS`), new `MAILERS` setting for multiple email backends, `csp_nonce_attr` template tag, `BitAnd` / `BitOr` / `BitXor` aggregates, PBKDF2 iterations raised to 1,500,000, PostgreSQL 15+ required; supports Python 3.12-3.14.
+- **Django 6.0** (2025-12-03): built-in Content Security Policy support, template partials (`{% partialdef %}` / `{% partial %}`), background Tasks framework (`django.tasks`), modern Python email API, `DEFAULT_AUTO_FIELD` defaults to `BigAutoField`; requires Python 3.12+.
+- **Django 5.2 LTS** (Apr 2025): composite primary keys, auto-imported models in `shell`; supported until April 2028.
+
+## In these notes
+
+- [Django guide](./django.md)
+- [Python frameworks comparison](./index.md)
+- [Python Cheatsheet](../cheatsheet.mdx)

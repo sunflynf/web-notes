@@ -24,10 +24,10 @@ if x > 5:
 elif x == 5:
     print("x is 5")
 else:
-    print("x is 5 or less")
+    print("x is less than 5")
 
 # Ternary operator
-sound = pet == "dog" if "bark" else "meow"
+sound = "bark" if pet == "dog" else "meow"  # value_if_true if condition else value_if_false
 
 # match-case example (Python 3.10+)
 match x:
@@ -100,7 +100,7 @@ print(multiply(a=2, b=3, c=4)) # 24
 
 # List comprehension and lambda
 squares = [x**2 for x in range(5)]
-print(squares) # [0, 2, 4, 6, 8]
+print(squares) # [0, 1, 4, 9, 16]
 
 # Anonymous function (lambda)
 double = lambda x: x * 2
