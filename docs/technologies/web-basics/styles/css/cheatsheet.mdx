@@ -1,0 +1,170 @@
+---
+title: CSS Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: CSS at a glance - cascade, selectors, box model, flexbox, grid, custom properties, container queries and recently Baseline features
+---
+
+# CSS Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | The style sheet language that controls how HTML is laid out and presented |
+| Use it for | Layout (flexbox, grid), typography, colors, responsive design, animation, theming |
+| Latest stable | CSS Snapshot 2026 (W3C Group Note, latest revision 2026-06-22) + Baseline for browser support - checked 2026-10-31 |
+| Versioning | No "CSS4": CSS is split into modules with their own levels; the yearly snapshot lists what is stable |
+| Official docs | [W3C CSS specs](https://www.w3.org/Style/CSS/specs.en.html) - [CSS Snapshot 2026](https://www.w3.org/TR/css-2026/) - [MDN CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) - [Baseline](https://web.dev/baseline) |
+
+## Core concepts
+
+- **Cascade**: origin + `!important` -> `@layer` order -> specificity -> source order decides which rule wins
+- **Specificity**: (id, class/attr/pseudo-class, type) - `#a` beats `.a.b.c`; `:where()` is 0, `:is()`/`:not()`/`:has()` take their most specific argument
+- **Inheritance**: text properties (`color`, `font-*`) inherit; box properties (`margin`, `border`) do not; force with `inherit`
+- **Box model**: content + padding + border + margin; use `box-sizing: border-box`
+- **Formatting contexts**: block vs inline flow; flex and grid create new contexts; margins collapse only in block flow
+- **Stacking context**: `z-index` only compares siblings inside the same context (created by `position` + `z-index`, `opacity` below 1, `transform`, `isolation: isolate`)
+- **Custom properties**: `--name: value` cascades and inherits; read with `var(--name, fallback)`
+- **Responsive**: media queries react to the viewport, container queries to the parent size
+- **Logical properties**: `margin-inline`, `padding-block`, `inset-inline-start` follow writing direction
+
+## Syntax & commands
+
+```css
+/* Selectors */
+.card > h2 + p ~ p {}          /* child, adjacent sibling, general sibling */
+a[href^="https"] {}            /* attribute starts with */
+li:nth-child(2n + 1) {}        /* odd items */
+input:focus-visible {}         /* keyboard focus only */
+.card:has(img) {}              /* parent selector */
+:is(h1, h2, h3) a {}           /* group, takes highest specificity */
+:where(ul, ol) { padding: 0 }  /* group, zero specificity */
+p::first-line, .btn::before {} /* pseudo-elements */
+
+/* Reset basics */
+*, *::before, *::after { box-sizing: border-box; }
+img { max-width: 100%; height: auto; display: block; }
+```
+
+```css
+/* Flexbox: one dimension */
+.row {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between; /* main axis */
+  align-items: center;            /* cross axis */
+  flex-wrap: wrap;
+}
+.row > .grow { flex: 1 1 0; }     /* grow shrink basis */
+
+/* Grid: two dimensions */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+.layout {
+  display: grid;
+  grid-template: "header header" auto "nav main" 1fr / 14rem 1fr;
+}
+.layout > header { grid-area: header; }
+.center { display: grid; place-items: center; }
+```
+
+```css
+/* Custom properties + theming */
+:root {
+  color-scheme: light dark;
+  --brand: oklch(60% 0.15 250);
+  --space: clamp(1rem, 2vw + 0.5rem, 2rem);
+}
+body { color: light-dark(#111, #eee); padding: var(--space); }
+
+/* Media + container queries */
+@media (width >= 48rem) { .sidebar { display: block; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none; } }
+.card-list { container-type: inline-size; }
+@container (width > 30rem) { .card { display: flex; } }
+
+/* Native nesting */
+.btn {
+  color: white;
+  &:hover { filter: brightness(1.1); }
+  .icon { margin-inline-end: 0.5rem; }
+}
+
+/* Cascade layers: later layer wins regardless of specificity */
+@layer reset, base, components, utilities;
+@layer components { .btn { padding: 0.5rem 1rem; } }
+```
+
+| Unit | Relative to |
+|---|---|
+| `px` | CSS pixel (absolute) |
+| `rem` / `em` | root font size / parent font size |
+| `%` | parent box (property dependent) |
+| `vw` `vh` | viewport; `svh` `lvh` `dvh` = small/large/dynamic viewport (mobile toolbars) |
+| `ch` | width of "0" in the current font (good for line length) |
+| `fr` | share of free space in a grid track |
+| `cqi` `cqb` | container inline/block size (inside a container query) |
+
+## Common patterns
+
+```css
+/* Readable centered column */
+.prose { max-width: 65ch; margin-inline: auto; }
+
+/* Sticky header */
+header { position: sticky; top: 0; z-index: 10; }
+
+/* Truncate text */
+.one-line { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.three-lines { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Aspect ratio media */
+.thumb { aspect-ratio: 16 / 9; object-fit: cover; width: 100%; }
+
+/* Fluid type */
+h1 { font-size: clamp(1.75rem, 4vw + 1rem, 3rem); text-wrap: balance; }
+
+/* Visually hidden but readable by screen readers */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Entry animation for elements that appear (e.g. popover) */
+[popover] { transition: opacity 0.2s, display 0.2s allow-discrete; opacity: 1; }
+@starting-style { [popover]:popover-open { opacity: 0; } }
+```
+
+## Gotchas
+
+- `z-index` does nothing on `position: static` elements (except flex/grid items) and is trapped by the parent stacking context
+- `100vh` on mobile includes the area under browser toolbars; prefer `100dvh` / `100svh`
+- Percent `height` needs a parent with a definite height; percent padding/margin is based on the parent **width**
+- Vertical margins collapse between adjacent blocks (not in flex/grid, not with padding/border in between)
+- `display: none` removes from the accessibility tree; `visibility: hidden` keeps layout space; use `.sr-only` to hide visually only
+- Flex items default to `min-width: auto` and refuse to shrink below content; add `min-width: 0` for overflowing text
+- Unlayered styles beat every `@layer` style; `!important` reverses layer order
+- Transitions cannot animate `display` or to/from `auto` without `transition-behavior: allow-discrete` / `interpolate-size`
+- `:hover` sticks on touch devices; guard with `@media (hover: hover)`
+
+## What's new in recent releases
+
+CSS ships per feature; these became Baseline (all major browsers) recently.
+
+- **Anchor positioning** (`anchor-name`, `position-anchor`, `position-area`): tether tooltips/menus to another element without JS; Baseline newly available in January 2026 ([web.dev](https://web.dev/blog/web-platform-01-2026))
+- **`@scope`**: limit selectors to a DOM subtree with an optional lower bound; Baseline newly available with Firefox 146 ([web.dev](https://web.dev/blog/web-platform-12-2025))
+- **`@starting-style` + `transition-behavior: allow-discrete`**: entry/exit animations for elements that toggle `display` (dialogs, popovers); Baseline since 2024
+- **`light-dark()`**, **`@property`** (typed custom properties), **`text-wrap: balance`**: Baseline since 2024
+- **Already safe to use**: native nesting, `:has()`, container queries, cascade layers, `oklch()` / `color-mix()`
+- **Customizable select** (`appearance: base-select`): Chrome + Safari only for now, not Baseline
+
+## In these notes
+
+- [CSS overview: selectors, colours, units, box model, display](./index.mdx)
+- [SASS (SCSS)](./sass.md)
+- [Less.js](./lessjs.md)
+- [CSS in JS](../css-in-js.md)
+- [Tailwind CSS](../frameworks/tailwindcss.md)
+- [Bootstrap 5](../frameworks/bootstrap5.md)
+- [HTML Cheatsheet](../../html/cheatsheet.mdx)
