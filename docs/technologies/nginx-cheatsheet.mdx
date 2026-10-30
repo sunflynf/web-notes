@@ -1,0 +1,180 @@
+---
+title: Nginx Cheatsheet
+sidebar_label: Nginx Cheatsheet
+sidebar_position: 1
+description: Nginx quick reference - config structure, reverse proxy, TLS, load balancing, caching, gotchas and recent releases
+---
+
+# Nginx Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Event-driven web server, reverse proxy, load balancer and TLS terminator |
+| Use it for | Serving SPA builds/static files, proxying to Node/Java/PHP apps, HTTPS, rate limiting, caching, L4 (stream) proxying |
+| Latest stable | Stable 1.30.6 (released 2026-10-14), mainline 1.31.8 (released 2026-10-21) - checked 2026-10-31 |
+| Official docs | [nginx.org/en/docs](https://nginx.org/en/docs/) - [directive index](https://nginx.org/en/docs/dirindex.html) - [CHANGES](https://nginx.org/en/CHANGES) |
+
+## Core concepts
+
+- **Master / worker processes** - master reads config and manages workers; each worker runs an async event loop.
+- **Contexts** - `main` > `events`, `http` > `server` > `location`; also `stream` (TCP/UDP) and `upstream`.
+- **Directive inheritance** - child contexts inherit from parents unless they redefine the same directive (then the whole set is replaced, e.g. `add_header`).
+- **`server` selection** - by `listen` address:port, then `server_name` (exact, leading wildcard, trailing wildcard, regex); else `default_server`.
+- **`location` matching** - exact `=` first, then longest prefix (`^~` stops regex search), then regexes `~` / `~*` in file order, else the longest prefix.
+- **Upstream** - named group of backends for `proxy_pass`, with a balancing method and keepalive pool.
+- **Variables** - `$host`, `$remote_addr`, `$request_uri`, `$uri`, `$scheme`, `$proxy_add_x_forwarded_for`, `$request_id`.
+- **Branches** - even minor = **stable** (bug/security fixes only), odd minor = **mainline** (new features; nginx recommends it for most users).
+
+## Syntax & commands
+
+```bash
+sudo nginx -t                  # test config syntax (always before reload)
+sudo nginx -T                  # test + dump the full merged config
+sudo systemctl reload nginx    # graceful reload (same as: nginx -s reload)
+sudo systemctl restart nginx
+nginx -V                       # version + compiled modules/flags
+tail -f /var/log/nginx/access.log /var/log/nginx/error.log
+
+# Debian/Ubuntu layout
+/etc/nginx/nginx.conf                  # main config
+/etc/nginx/sites-available/app.conf    # site files ...
+sudo ln -s /etc/nginx/sites-available/app.conf /etc/nginx/sites-enabled/
+/etc/nginx/conf.d/*.conf               # official nginx.org packages / Docker image use this
+```
+
+```nginx
+# Reverse proxy (Node, Spring Boot, Next.js ...)
+server {
+    listen 80;
+    server_name api.example.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+```nginx
+# SPA (React/Vue/Angular build)
+server {
+    listen 80;
+    root /var/www/app/dist;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+}
+```
+
+```nginx
+# HTTPS + HTTP->HTTPS redirect
+server {
+    listen 80;
+    server_name example.com;
+    return 301 https://$host$request_uri;
+}
+server {
+    listen 443 ssl;
+    http2 on;                                   # "listen ... http2" is deprecated
+    server_name example.com;
+    ssl_certificate     /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+}
+```
+
+```bash
+sudo certbot --nginx -d example.com -d www.example.com   # Let's Encrypt cert + config edit
+sudo certbot renew --dry-run
+```
+
+## Common patterns
+
+```nginx
+# Load balancing
+upstream backend {
+    least_conn;                      # default: round robin; also ip_hash, hash ... consistent
+    server 10.0.0.11:8080 weight=3;
+    server 10.0.0.12:8080 max_fails=3 fail_timeout=30s;
+    server 10.0.0.13:8080 backup;
+    keepalive 32;                    # idle connections kept to upstreams
+}
+server {
+    location / { proxy_pass http://backend; }
+}
+```
+
+```nginx
+# WebSocket
+location /ws/ {
+    proxy_pass http://127.0.0.1:3000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_read_timeout 1h;
+}
+```
+
+```nginx
+# Rate limit + gzip + proxy cache (inside http { })
+limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+proxy_cache_path /var/cache/nginx keys_zone=app_cache:10m max_size=1g inactive=60m;
+gzip on;
+gzip_types text/css application/javascript application/json image/svg+xml;
+
+server {
+    location /api/ {
+        limit_req zone=api burst=20 nodelay;
+        proxy_cache app_cache;
+        proxy_cache_valid 200 10m;
+        add_header X-Cache-Status $upstream_cache_status;
+        proxy_pass http://backend;
+    }
+}
+```
+
+| Task | Directive(s) |
+|---|---|
+| Max upload size | `client_max_body_size 20m;` (default 1m, error 413) |
+| Slow backend | `proxy_connect_timeout`, `proxy_read_timeout`, `proxy_send_timeout` |
+| Block hidden files | `location ~ /\.(?!well-known) { deny all; }` |
+| Basic auth | `auth_basic "Restricted"; auth_basic_user_file /etc/nginx/.htpasswd;` |
+| Custom error page | `error_page 502 503 /50x.html;` |
+| Real client IP behind LB/CDN | `set_real_ip_from 10.0.0.0/8; real_ip_header X-Forwarded-For;` |
+
+## Gotchas
+
+- **`proxy_pass` trailing slash matters**: `location /api/ { proxy_pass http://b/; }` strips `/api/`; `proxy_pass http://b;` (no URI) forwards the path unchanged.
+- **`add_header` is not inherited** once a `location` declares its own; add `always` so headers also go on 4xx/5xx. Since 1.29.3 you can opt in with `add_header_inherit merge;`.
+- **`if` is evil inside `location`** - only `return` and `rewrite ... last` are safe there; prefer `map`, `try_files`, separate locations.
+- **`root` vs `alias`**: `root` appends the full URI; `alias` replaces the matched location prefix (keep trailing slashes consistent).
+- **`ip_hash` uses only the first 3 octets** of IPv4, so a whole `/24` sticks to one backend.
+- **Reload, don't restart**, and run `nginx -t` first - a bad config on restart takes the site down.
+- **Docker upstream DNS** is resolved once at startup; if containers get new IPs use `resolver 127.0.0.11 valid=10s;` with a variable in `proxy_pass`, or reload.
+- **`listen 443 ssl http2`** form is deprecated since 1.25.1 - use `http2 on;`.
+
+## What's new in recent releases
+
+- **1.30.x stable** (1.30.0 on 2026-04-14) rolls up the 1.29 mainline: HTTP/2 to backends in the proxy module (1.29.4), session affinity `sticky` in open-source upstreams (1.29.6), upstream `keepalive` and proxy HTTP/1.1 keepalive enabled by default with `proxy_http_version` default `1.1` (1.29.7), `add_header_inherit` (1.29.3), `early_hints` for 103 responses (1.29.0), OpenSSL 4.0 compatibility (1.29.8).
+- **1.31.0** (2026-05-13): `least_time` balancing in open source, `ngx_http_tunnel_module`, HTTP/2 and HTTP/3 requests with `Connection`/`Upgrade`/`Transfer-Encoding` headers are now rejected; plus several security fixes.
+- **1.31.5** (2026-09-02): control API, predicate locations, `ngx_http_json_module`, `client_body_early_read`.
+- **1.31.7** (2026-10-14, together with stable 1.30.6): 5 CVE fixes, GeoIP modules read MaxMind MMDB, backend certs verifiable by IP, HTTP/2 uses RFC 9218 prioritization.
+- **1.31.8** (2026-10-21): `working_directory` is now relative to the nginx prefix, not the current directory.
+
+## In these notes
+
+- [Nginx](./nginx.mdx) - architecture, reverse proxy per app type, load balancing simulator, Docker Compose, security headers, tuning
+- [Ubuntu server setup](../cloud-computing/ubuntu-server-setup.mdx) - installing Nginx + Certbot on a VPS
+- [Docker Cheatsheet](./docker-cheatsheet.mdx) - running Nginx in containers

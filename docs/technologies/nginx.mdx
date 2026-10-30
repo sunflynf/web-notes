@@ -8,6 +8,8 @@ import LoadBalancerSimulator from "@site/src/components/LoadBalancerSimulator";
 
 # Nginx
 
+> **Quick reference:** [Nginx Cheatsheet](./nginx-cheatsheet.mdx)
+
 Nginx là web server hiệu năng cao, đồng thời thường được dùng làm **reverse proxy**, **load balancer** và điểm kết thúc HTTPS (SSL termination) đứng trước các ứng dụng React, Next.js, Node.js hay Spring Boot.
 
 :::info Dùng Nginx để
@@ -209,7 +211,7 @@ add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 :::warning
 
 - Thiếu `always` thì header không được gửi kèm các response lỗi (4xx, 5xx).
-- Nếu một `location` có `add_header` riêng, nó **không kế thừa** các `add_header` của khối cha — phải khai báo lại toàn bộ.
+- Nếu một `location` có `add_header` riêng, nó **không kế thừa** các `add_header` của khối cha — phải khai báo lại toàn bộ. Từ Nginx 1.29.3 (có trong bản stable 1.30) có thể dùng `add_header_inherit merge;` để gộp header của khối cha.
 
 :::
 
