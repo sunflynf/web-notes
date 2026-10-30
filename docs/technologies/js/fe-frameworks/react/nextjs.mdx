@@ -1,5 +1,5 @@
 ---
-description: Frontend / Fullstack Frameworks for SEO & SSR
+description: Next.js App Router notes - routing, Server Components, metadata, caching and project structure.
 tags:
   - Frontend
   - JavaScript
@@ -9,6 +9,8 @@ tags:
 
 # Next.js
 
+> **Quick reference:** [Next.js Cheatsheet](./nextjs-cheatsheet.mdx)
+
 import ProjectStructureExplorer from "@site/src/components/ProjectStructureExplorer";
 
 ## Features
@@ -17,8 +19,8 @@ import ProjectStructureExplorer from "@site/src/components/ProjectStructureExplo
 - Automatic Code Splitting
 - Built-in CSS and SASS support + TypeScript support
 - Image Optimization
-- Edge & Middleware support
-- Hot reloading
+- Edge & Middleware support (`middleware.ts` is renamed to `proxy.ts` in Next.js 16)
+- Hot reloading (Turbopack is the default bundler for `dev` and `build` since Next.js 16)
 - SEO Friendly
 - Incremental Static Regeneration
 - Easy deployment with **Vercel**
@@ -341,25 +343,34 @@ npm run dev
 />
 
 ```tsx title="app/hello/[username]/page.tsx"
-import { useRouter } from "next/router";
-
-export default function HelloUser() {
-  const router = useRouter();
-  const { username } = router.query;
+// App Router: dynamic params come in as a Promise (Next.js 15+).
+// `useRouter` from "next/router" is Pages Router only.
+export default async function HelloUser({
+  params,
+}: {
+  params: Promise<{ username: string }>;
+}) {
+  const { username } = await params;
   return <p>Hello {username}!</p>;
 }
 ```
 
-```tsx title="app/dashboard/page.tsx"
-export function Dashboard({
-  children: React.Node,
-  notifications: React.Node,
-  users: React.Node
+```tsx title="app/dashboard/layout.tsx"
+// Parallel routes: each `@slot` folder becomes a prop of the parent layout
+// (folder `@notification` -> prop `notification`). Each slot also needs a `default.tsx` (required since Next.js 16).
+export default function DashboardLayout({
+  children,
+  notification,
+  users,
+}: {
+  children: React.ReactNode;
+  notification: React.ReactNode;
+  users: React.ReactNode;
 }) {
   return (
     <div>
       {children}
-      {notifications}
+      {notification}
       {users}
     </div>
   );
@@ -399,26 +410,32 @@ export const metadata: Metadata = {
   description: "...",
 };
 
-export default function Page() {}
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
 ```
 
 ## Notes
 
 - **Fetch options**
-  - Data on server-components has catching, put `{ cache: 'no-store' }`
-  - To revidate on n seconds, put `{ next: { revalidate: time } }`
+  - Since Next.js 15, `fetch` is **not cached by default**; opt in with `{ cache: 'force-cache' }` (or the `"use cache"` directive with Cache Components in Next.js 16)
+  - To revalidate every n seconds, put `{ next: { revalidate: time } }`
 - **Component**
   - All components of Next is **server-components**
-  - To make **client-components**, put `'use-client'` on top of file
+  - To make **client-components**, put `'use client'` on top of file
 
     ```tsx
-    "use-client";
+    "use client";
 
     export function ClientComponent() {}
     ```
 
   - Hooks can only use in **client-components**
-  - Package catching type of component: `client-only` & `server-only`
+  - Packages guarding the component type: `client-only` & `server-only`
   - When to use
     - **Client**: actions | themes | user's behaviors
     - **Server**: fetching, work with file + data

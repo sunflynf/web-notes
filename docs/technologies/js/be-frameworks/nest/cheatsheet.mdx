@@ -1,0 +1,190 @@
+---
+title: NestJS Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page refresher for NestJS - modules, controllers, providers, DI, the request lifecycle, validation, config, CLI and what changed in v12.
+tags:
+  - NestJS
+  - TypeScript
+  - Backend
+  - Cheatsheet
+---
+
+# NestJS Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Progressive, TypeScript-first Node.js framework with modules, decorators and dependency injection, running on Express (default) or Fastify |
+| Use it for | Structured REST/GraphQL APIs, microservices, WebSocket gateways, enterprise backends with large teams |
+| Latest stable | v12.3.2 (released 2026-10-27) - checked 2026-10-31 |
+| Official docs | [docs.nestjs.com](https://docs.nestjs.com/) · [Migration guide v11 to v12](https://docs.nestjs.com/migration-guide) · [GitHub](https://github.com/nestjs/nest) |
+
+## Core concepts
+
+- **Module** (`@Module`): groups controllers and providers; `imports`/`exports` wire modules together.
+- **Controller** (`@Controller`): maps routes to handler methods with `@Get`, `@Post`, ...
+- **Provider** (`@Injectable`): services, repositories, factories that Nest injects through constructors.
+- **DI scopes**: singleton (default), `REQUEST` (new instance per request), `TRANSIENT` (new per consumer).
+- **Middleware**: runs before the route handler (Express-style `req, res, next`).
+- **Guard** (`CanActivate`): decides whether a request may proceed (auth, roles).
+- **Interceptor**: wraps the handler (logging, caching, response mapping, timeouts) with RxJS.
+- **Pipe**: validates/transforms input (`ValidationPipe`, `ParseIntPipe`, `StandardSchemaValidationPipe`).
+- **Exception filter**: turns thrown exceptions into HTTP responses.
+- **Request lifecycle**: middleware -> guards -> interceptors (before) -> pipes -> handler -> interceptors (after) -> filters (on error).
+
+## Syntax & commands
+
+```bash
+npm i -g @nestjs/cli
+nest new my-api                 # v12 asks CommonJS or ESM
+nest g resource users           # module + controller + service + DTOs (CRUD)
+nest g module|controller|service|guard|interceptor|pipe|filter <name>
+npm run start:dev               # watch mode
+nest build                      # compile (tsc, SWC or Rspack builder)
+nest upgrade --dry-run          # preview upgrading all @nestjs/* packages (v12+)
+```
+
+```ts
+// users.controller.ts
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
+
+@Controller("users")
+export class UsersController {
+  constructor(private readonly users: UsersService) {}
+
+  @Get()
+  findAll(@Query("page") page = "1") {
+    return this.users.findAll(Number(page));
+  }
+
+  @Get(":id")
+  findOne(@Param("id", ParseIntPipe) id: number) {
+    return this.users.findOne(id); // throw new NotFoundException() if missing
+  }
+
+  @Post()
+  create(@Body() dto: CreateUserDto) {
+    return this.users.create(dto);
+  }
+}
+```
+
+```ts
+// users.module.ts
+@Module({
+  imports: [TypeOrmModule.forFeature([User])],
+  controllers: [UsersController],
+  providers: [UsersService],
+  exports: [UsersService], // make it injectable in other modules
+})
+export class UsersModule {}
+```
+
+```ts
+// main.ts
+const app = await NestFactory.create(AppModule);
+app.setGlobalPrefix("api");
+app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+app.enableCors();
+app.enableShutdownHooks();
+await app.listen(process.env.PORT ?? 3000);
+```
+
+| Decorator | Purpose |
+|---|---|
+| `@Body()` `@Param()` `@Query()` `@Headers()` | Read request parts |
+| `@Req()` `@Res()` | Raw request/response (using `@Res()` disables auto response unless `passthrough: true`) |
+| `@HttpCode(204)` `@Header()` `@Redirect()` | Response tweaks |
+| `@UseGuards()` `@UseInterceptors()` `@UsePipes()` `@UseFilters()` | Attach enhancers at method/controller level |
+| `@SetMetadata()` / `Reflector.createDecorator()` | Custom metadata (e.g. roles) |
+| `@Inject(TOKEN)` `@Optional()` | Custom tokens / optional dependencies |
+
+## Common patterns
+
+```ts
+// DTO validation with class-validator
+export class CreateUserDto {
+  @IsEmail() email: string;
+  @IsString() @MinLength(8) password: string;
+}
+```
+
+```ts
+// v12: schema-first validation (Zod, Valibot, ArkType via Standard Schema)
+@Post()
+create(@Body({ schema: createUserSchema }) body: CreateUser) {
+  return this.users.create(body);
+}
+// main.ts
+app.useGlobalPipes(new StandardSchemaValidationPipe());
+```
+
+```ts
+// Role guard with Reflector
+export const Roles = Reflector.createDecorator<string[]>();
+
+@Injectable()
+export class RolesGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
+  canActivate(ctx: ExecutionContext) {
+    const roles = this.reflector.get(Roles, ctx.getHandler());
+    if (!roles) return true;
+    const { user } = ctx.switchToHttp().getRequest();
+    return roles.some((r) => user?.roles?.includes(r));
+  }
+}
+// usage: @Roles(["admin"]) @UseGuards(AuthGuard, RolesGuard)
+```
+
+```ts
+// Custom provider shapes
+providers: [
+  { provide: "CONFIG", useValue: { retries: 3 } },
+  { provide: PaymentGateway, useClass: StripeGateway },
+  { provide: "DB", useFactory: async (cfg: ConfigService) => connect(cfg.get("DB_URL")), inject: [ConfigService] },
+]
+```
+
+```ts
+// Config module (global) + global enhancers via DI
+@Module({
+  imports: [ConfigModule.forRoot({ isGlobal: true })],
+  providers: [
+    { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
+  ],
+})
+export class AppModule {}
+```
+
+```ts
+// Error with machine-readable code (v12)
+throw new BadRequestException("Password is too weak", { errorCode: "WEAK_PASSWORD" });
+```
+
+## Gotchas
+
+- **Provider not found** (`Nest can't resolve dependencies of X`): add the provider to the module, or export it from its module and import that module.
+- **Circular dependencies**: use `forwardRef(() => OtherModule)` or better, extract shared logic into a third module.
+- **`app.useGlobalX()` enhancers cannot inject dependencies**; register them with `APP_GUARD`/`APP_PIPE`/... providers instead.
+- **Route order matters** on Express: `@Get(":id")` declared before `@Get("me")` shadows it; v12 adds opt-in `routeConflictPolicy` diagnostics.
+- **`ValidationPipe` without `whitelist`** lets unknown properties through; `transform: true` is needed to get class instances and number params.
+- **Request-scoped providers bubble up**: anything injecting them also becomes request-scoped (slower).
+- **v12 packages are ESM**: CommonJS apps keep working via `require(esm)` on Node.js 20.19+/22.12+; AWS Lambda needs `NODE_OPTIONS=--experimental-require-module`.
+- **v12 `@Optional()`** is no longer inherited by a subclass that redeclares its constructor; add it again in the subclass.
+
+## What's new in recent releases
+
+- **v12.0** (2026-08-27): all core packages ship as ESM; `nest new` lets you pick CommonJS or ESM (ESM projects use Vitest, CJS use Jest), oxlint by default; Node.js 20.19+ to run, TypeScript 6 for the schematics.
+- **v12.0**: Standard Schema support - `schema` option on `@Body()`/`@Query()`/`@Param()`, `StandardSchemaValidationPipe`, `StandardSchemaSerializerInterceptor`; `@nestjs/config` validates with any Standard Schema (Zod, Valibot) instead of Joi.
+- **v12.0**: new `nest upgrade` and `nest deploy` CLI commands; Rspack replaces webpack as the monorepo bundler; opt-in route conflict diagnostics; `errorCode` on HTTP exceptions; structured logging params; native observability via `@nestjs/observe`.
+- **v12.0**: lifecycle hooks run by component hierarchy level; Express adapter drains in-flight requests on shutdown; regex Kafka patterns; request-scoped WebSocket gateways.
+- **v12.1** (2026-09-23): a subclass without its own constructor keeps its parent's `@Optional()` markers again (as in v11).
+
+## In these notes
+
+- [NestJS notes: core building blocks, packages, microservices, WebSocket, security, CLI](./index.md)
+- [NestJS in depth (Vietnamese): request lifecycle, DI scopes, validation, microservices, security](./in-depth.mdx)
+- [Express Cheatsheet](../express/cheatsheet.mdx) · [Backend frameworks comparison](../index.md)

@@ -1,5 +1,5 @@
 ---
-description: Backend Frameworks in JavaScript ecosystem.
+description: Fastify notes - high-performance Node.js web framework with schema validation, plugins and hooks.
 tags:
   - Backend
   - JavaScript
@@ -188,16 +188,16 @@ Fastify uses hooks and plugins instead of middleware.
 
 ## Serving Static Files
 
-1. **Install `fastify-static` Plugin**:
+1. **Install `@fastify/static` Plugin**:
 
    ```bash
-   npm install fastify-static
+   npm install @fastify/static
    ```
 
 2. **Serve Static Files**:
    ```javascript
    const path = require("path");
-   fastify.register(require("fastify-static"), {
+   fastify.register(require("@fastify/static"), {
      root: path.join(__dirname, "public"),
      prefix: "/public/",
    });
@@ -222,9 +222,9 @@ Fastify uses hooks and plugins instead of middleware.
 2. **Use Schema Validation Early**:  
    Fastify’s validation is fast and prevents common API errors.
 3. **Leverage Plugins**:  
-   Use official plugins like `fastify-static`, `fastify-cors`, and `fastify-formbody` for common needs.
+   Use official plugins like `@fastify/static`, `@fastify/cors`, and `@fastify/formbody` (the unscoped `fastify-*` names are deprecated) for common needs.
 
 4. **Check the Official Documentation**:  
-   Visit the [Fastify Docs](https://www.fastify.io/docs/latest/) for in-depth explanations and examples.
+   Visit the [Fastify Docs](https://fastify.dev/docs/latest/) for in-depth explanations and examples.
 
 :::

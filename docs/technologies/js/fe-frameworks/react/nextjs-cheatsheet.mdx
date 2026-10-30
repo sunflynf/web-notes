@@ -1,0 +1,185 @@
+---
+title: Next.js Cheatsheet
+sidebar_label: Next.js Cheatsheet
+sidebar_position: 1
+description: One-page refresher for Next.js 16 App Router - file conventions, Server and Client Components, data fetching, caching, Server Actions and proxy.
+tags:
+  - Next.js
+  - React
+  - TypeScript
+  - Cheatsheet
+---
+
+# Next.js Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Full-stack React framework by Vercel: file-based routing, server rendering, bundling (Turbopack) and backend endpoints in one app |
+| Use it for | SEO-friendly sites, e-commerce, dashboards, content sites, full-stack React apps with SSR/SSG/ISR |
+| Latest stable | v16.4.3 (released 2026-10-23) - checked 2026-10-31 |
+| Official docs | [nextjs.org/docs](https://nextjs.org/docs) · [Upgrade to v16](https://nextjs.org/docs/app/guides/upgrading/version-16) · [Blog](https://nextjs.org/blog) |
+
+## Core concepts
+
+- **App Router** (`app/`): folders are URL segments, `page.tsx` makes a segment public; the older Pages Router (`pages/`) still works.
+- **Server Components by default**: components in `app/` render on the server and can be `async`.
+- **Client Components**: add `"use client"` at the top of a file to use state, effects, browser APIs and event handlers.
+- **Layouts**: `layout.tsx` wraps child segments and keeps state across navigation; the root layout renders `<html>` and `<body>`.
+- **Server Actions / Functions**: async functions marked `"use server"` that a form or client can call to mutate data.
+- **Route Handlers**: `route.ts` exports `GET`, `POST`, ... for API endpoints using Web `Request`/`Response`.
+- **Rendering modes**: static (build time), dynamic (per request), streaming with `loading.tsx`/Suspense, ISR via `revalidate`.
+- **Cache Components**: with `cacheComponents: true`, the `"use cache"` directive caches components or functions; dynamic parts stream in (Partial Prerendering).
+- **Proxy** (`proxy.ts`, formerly `middleware.ts`): runs before routes for redirects, rewrites, auth checks.
+
+## Syntax & commands
+
+```bash
+npx create-next-app@latest my-app   # prompts: TypeScript, linter, Tailwind, App Router
+npm run dev                          # next dev (Turbopack by default)
+npm run build && npm start           # next build / next start
+npx @next/codemod@canary upgrade latest   # upgrade + codemods
+```
+
+| File | Purpose |
+|---|---|
+| `page.tsx` | UI for a route |
+| `layout.tsx` / `template.tsx` | Shared wrapper (persistent / remounted on navigation) |
+| `loading.tsx` | Suspense fallback for the segment |
+| `error.tsx` | Error boundary (must be a Client Component) |
+| `not-found.tsx` | UI for `notFound()` and unknown URLs |
+| `route.ts` | API endpoint (Route Handler) |
+| `default.tsx` | Fallback for a parallel route slot (required since v16) |
+| `[id]` / `[...slug]` / `[[...slug]]` | Dynamic / catch-all / optional catch-all segment |
+| `(group)` / `_private` / `@slot` | Route group (no URL) / not routable / parallel route |
+
+```tsx
+// app/blog/[slug]/page.tsx - params and searchParams are Promises (v15+)
+export default async function Post({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const post = await getPost(slug);
+  if (!post) notFound(); // from "next/navigation"
+  return <article>{post.title}</article>;
+}
+
+export async function generateStaticParams() {
+  return (await getPosts()).map((p) => ({ slug: p.slug }));
+}
+```
+
+```ts
+// app/api/users/route.ts
+export async function GET(request: Request) {
+  const users = await db.user.findMany();
+  return Response.json(users);
+}
+```
+
+```ts
+// Request-time APIs are async (v15+)
+import { cookies, headers } from "next/headers";
+const token = (await cookies()).get("token")?.value;
+const ua = (await headers()).get("user-agent");
+```
+
+## Common patterns
+
+```tsx
+// Server Action + form + revalidation
+// app/todos/actions.ts
+"use server";
+import { revalidatePath, updateTag } from "next/cache";
+
+export async function addTodo(formData: FormData) {
+  await db.todo.create({ data: { title: String(formData.get("title")) } });
+  updateTag("todos");       // expire + refresh now (Server Actions only)
+  revalidatePath("/todos"); // or revalidate a whole path
+}
+
+// app/todos/page.tsx
+import { addTodo } from "./actions";
+export default function Page() {
+  return (
+    <form action={addTodo}>
+      <input name="title" />
+      <button type="submit">Add</button>
+    </form>
+  );
+}
+```
+
+```ts
+// fetch caching (not cached by default since v15)
+await fetch(url, { cache: "force-cache" });           // cache
+await fetch(url, { next: { revalidate: 60 } });       // ISR: refresh every 60s
+await fetch(url, { next: { tags: ["posts"] } });      // tag for revalidateTag("posts", "max")
+```
+
+```tsx
+// Cache Components (next.config.ts: cacheComponents: true)
+import { cacheLife, cacheTag } from "next/cache";
+
+async function ProductList() {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("products");
+  return <List items={await db.product.findMany()} />;
+}
+```
+
+```ts
+// proxy.ts (project root) - formerly middleware.ts
+import { NextResponse, type NextRequest } from "next/server";
+
+export function proxy(request: NextRequest) {
+  if (!request.cookies.has("session")) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+}
+export const config = { matcher: ["/dashboard/:path*"] };
+```
+
+```tsx
+// Metadata for SEO (static or generateMetadata)
+export const metadata = { title: "Blog", description: "Posts" };
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  return { title: (await getPost(slug))?.title };
+}
+```
+
+- Navigate with `<Link href="/about">` (`next/link`); programmatic navigation with `useRouter()` from `next/navigation` (not `next/router`).
+- Optimize assets with `next/image` (`<Image>`), `next/font` and `next/script`.
+- Keep secrets server-only: env vars without `NEXT_PUBLIC_` never reach the browser; `import "server-only"` guards modules.
+
+## Gotchas
+
+- **`"use client"` is a boundary**: everything imported into a Client Component becomes client code; pass Server Components as `children` instead of importing them.
+- **Props from Server to Client Components must be serializable** (no functions except Server Actions, no class instances).
+- **`useRouter` from `next/router`** only works in the Pages Router; in `app/` use `next/navigation`.
+- **Await `params`, `searchParams`, `cookies()`, `headers()`**: synchronous access was removed in v16.
+- **Using `cookies()`/`headers()` makes a route dynamic**; unexpected dynamic rendering usually comes from these.
+- **Parallel route slots need `default.tsx`** in v16 or the build fails.
+- **`proxy.ts` runs on the Node.js runtime only**; keep `middleware.ts` (deprecated) if you need the Edge runtime.
+- **`revalidateTag` needs a cache profile** as second argument in v16 (`revalidateTag("posts", "max")`).
+- **`next lint` was removed** in v16; run ESLint or Biome directly.
+
+## What's new in recent releases
+
+- **v16.0** (2025-10-22): Turbopack is the default bundler for `next dev` and `next build`; minimum Node.js 20.9 and TypeScript 5.1.
+- **v16.0**: Cache Components (`cacheComponents`, `"use cache"`, stable `cacheLife`/`cacheTag`) replace the experimental PPR flag; new `updateTag` and `refresh` for Server Actions.
+- **v16.0**: `middleware.ts` renamed to `proxy.ts`; React Compiler support is stable (`reactCompiler` option); App Router runs on React 19.2 (View Transitions, `useEffectEvent`, Activity).
+- **v16.0**: rebuilt client routing with layout deduplication and incremental prefetching; AMP, `next lint` and `serverRuntimeConfig`/`publicRuntimeConfig` removed.
+- **v16.1-16.4** (2025-12 to 2026-10): minor releases; Turbopack filesystem caching is now on by default for both `next dev` and `next build`. See the [Next.js blog](https://nextjs.org/blog) for per-release details.
+
+## In these notes
+
+- [Next.js notes: features, project structure, routing, Server Components, metadata](./nextjs.mdx)
+- [Remix (now React Router framework mode)](./remix.mdx)
+- [React overview](../../libraries/react/index.mdx) · [React Cheatsheet](../../libraries/react/cheatsheet.mdx)
+- [Frontend frameworks comparison](../index.md)

@@ -1,3 +1,7 @@
+---
+description: Comparison of frontend frameworks - React, Next.js, Vue, Nuxt, SvelteKit, Remix, Angular, Qwik.
+---
+
 # Frontend Frameworks
 
 ## General Information
@@ -8,9 +12,9 @@
 | [Next.js](https://nextjs.org/)       | 2016             | **Large** - active Vercel-backed community          |
 | [Vue.js](https://vuejs.org/)         | 2014             | **Large** - active community                        |
 | [Nuxt.js](https://nuxt.com/)         | 2016             | **Growing** - strong Vue community                  |
-| [SvelteKit](https://kit.svelte.dev/) | 2020             | **Growing** - enthusiastic but smaller community    |
-| [Remix](https://remix.run/)          | 2021             | **Growing** - strong React community, Vercel-backed |
-| [Angular](https://angular.io/)       | 2016             | **Large** - enterprise adoption, Google-backed      |
+| [SvelteKit](https://svelte.dev/docs/kit) | 2020             | **Growing** - enthusiastic but smaller community    |
+| [Remix](https://remix.run/)          | 2021             | **Growing** - Shopify-backed; merged into React Router v7+|
+| [Angular](https://angular.dev/)      | 2016             | **Large** - enterprise adoption, Google-backed      |
 | [Qwik](https://qwik.dev/)            | 2022             | **Growing** - active innovation, Builder.io-backed  |
 
 ## Architecture
@@ -32,11 +36,11 @@
 | ------------- | -------------------------------------------------------------------------------------------------- |
 | React         | - Virtual DOM<br/>- JSX<br/>- Hooks<br/>- Large ecosystem                                          |
 | Next.js       | - SSR<br/>- SSG<br/>- File-based routing<br/>- API routes                                          |
-| Vue.js        | - Reactive data binding<br/>- Vue CLI<br/>- Composition API<br/>- Directives                       |
+| Vue.js        | - Reactive data binding<br/>- Vite (create-vue)<br/>- Composition API<br/>- Directives                       |
 | Nuxt.js       | - SSR/SSG<br/>- Auto-imports<br/>- File-based routing<br/>- Vue integration                        |
 | SvelteKit     | - No runtime overhead<br/>- SSR/SSG<br/>- File-based routing<br/>- Svelte integration              |
 | Remix         | - Nested routes<br/>- Loaders & actions<br/>- SSR/SSG<br/>- Data mutations<br/>- React ecosystem   |
-| Angular       | - Two-way data binding<br/>- Dependency injection<br/>- RxJS<br/>- CLI<br/>- Angular Universal     |
+| Angular       | - Two-way data binding<br/>- Dependency injection<br/>- RxJS<br/>- CLI<br/>- SSR (@angular/ssr)      |
 | Qwik          | - Resumability<br/>- Instant loading<br/>- Fine-grained lazy loading<br/>- SSR/SSG<br/>- Qwik City |
 
 ## Performance & TypeScript
@@ -58,7 +62,7 @@
 | ------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | React         | Extensive, thousands of libraries (e.g., Redux, React Router)                    | SPAs, dynamic UIs, reusable components                                           |
 | Next.js       | Rich, integrated with Vercel, supports React ecosystem                           | Full-stack apps, SEO-friendly sites, e-commerce platforms                        |
-| Vue.js        | Strong, includes Vue Router, Vuex, Vite                                          | SPAs, progressive web apps, lightweight projects                                 |
+| Vue.js        | Strong, includes Vue Router, Pinia, Vite                                         | SPAs, progressive web apps, lightweight projects                                 |
 | Nuxt.js       | Strong, leverages Vue ecosystem with Nuxt modules                                | Vue-based full-stack apps, static sites, SEO-focused projects                    |
 | SvelteKit     | Growing, includes Svelte stores, Vite, and adapter-based deployments             | High-performance apps, static sites, developer-friendly full-stack               |
 | Remix         | Strong, leverages React ecosystem, supports loaders, actions, and data mutations | Data-driven apps, full-stack React apps, SEO, fast-loading sites                 |

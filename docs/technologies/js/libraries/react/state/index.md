@@ -4,6 +4,10 @@ description: React context | Zustand | Jotai | Recoil | MobX | Redux
 
 # State Management
 
+:::note
+Recoil is no longer maintained (last release 0.7.7 in March 2023; the repo was archived in 2025) - prefer Jotai (similar atom model) or Zustand for new projects.
+:::
+
 | Feature                  | React Context | Zustand | Jotai   | Recoil   | Redux     | MobX    |
 | ------------------------ | ------------- | ------- | ------- | -------- | --------- | ------- |
 | **Complexity**           | Low           | Low     | Low     | Medium   | High      | High    |

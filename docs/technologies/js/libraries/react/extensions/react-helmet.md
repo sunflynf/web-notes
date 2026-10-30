@@ -9,6 +9,10 @@ tags:
 
 # React Helmet
 
+:::warning
+`react-helmet` is no longer maintained (last release 6.1.0 in June 2020) and relies on legacy class lifecycles. Prefer `react-helmet-async`, or in React 19+ render `<title>`, `<meta>` and `<link>` directly inside components - React hoists them into the document head.
+:::
+
 `react-helmet` is a reusable React component that helps manage changes to the document head, like updating the page title, adding meta tags, or linking external stylesheets.
 
 ## Features

@@ -1,0 +1,192 @@
+---
+title: Vue Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page refresher for Vue 3 - script setup, reactivity, template directives, components, composables, Pinia and Vue Router.
+tags:
+  - Vue
+  - JavaScript
+  - TypeScript
+  - Cheatsheet
+---
+
+# Vue Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Progressive JavaScript framework for building UIs with reactive data and HTML-based templates in Single-File Components |
+| Use it for | SPAs, progressively enhanced pages, dashboards, full-stack apps with Nuxt |
+| Latest stable | v3.5.44 (released 2026-10-13) - checked 2026-10-31 |
+| Official docs | [vuejs.org](https://vuejs.org/) · [API reference](https://vuejs.org/api/) · [Changelog](https://github.com/vuejs/core/blob/main/CHANGELOG.md) |
+
+## Core concepts
+
+- **SFC** (`.vue`): `<template>`, `<script setup>` and `<style scoped>` in one file, compiled by Vite.
+- **`<script setup>`**: Composition API with less boilerplate; top-level bindings are available in the template.
+- **`ref`**: reactive wrapper for any value; read/write `.value` in script, auto-unwrapped in templates.
+- **`reactive`**: deep reactive proxy for objects; loses reactivity if destructured or reassigned.
+- **`computed`**: cached derived value that updates when its dependencies change.
+- **`watch` / `watchEffect`**: run side effects when reactive sources change.
+- **Props down, events up**: `defineProps` for input, `defineEmits` for output, `defineModel` for two-way `v-model`.
+- **Slots**: pass template content into a child (default, named, scoped).
+- **Composables**: `useXxx()` functions that bundle reactive state and logic for reuse.
+- **Provide / inject**: pass values down a component tree without prop drilling.
+
+## Syntax & commands
+
+```bash
+npm create vue@latest my-app   # official scaffold (Vite + optional TS, Router, Pinia, Vitest, ESLint)
+npm run dev                    # Vite dev server
+npm run build                  # production build into dist/
+npm create nuxt@latest my-app  # full-stack / SSR with Nuxt
+```
+
+```html
+<script setup lang="ts">
+import { ref, computed, watch, onMounted } from "vue";
+
+const props = defineProps<{ title: string; max?: number }>();
+const emit = defineEmits<{ change: [value: number] }>();
+
+const count = ref(0);
+const isMax = computed(() => count.value >= (props.max ?? 10));
+
+function increment() {
+  count.value++;
+  emit("change", count.value);
+}
+
+watch(count, (newVal, oldVal) => console.log(oldVal, "->", newVal));
+onMounted(() => console.log("mounted"));
+</script>
+
+<template>
+  <h2>{{ title }}</h2>
+  <button :disabled="isMax" @click="increment">Count: {{ count }}</button>
+</template>
+
+<style scoped>
+button { font-weight: bold; }
+</style>
+```
+
+| Directive | Example | Meaning |
+|---|---|---|
+| Interpolation | `{{ msg }}` | Render text |
+| `v-bind` / `:` | `:href="url"` | Bind attribute or prop |
+| `v-on` / `@` | `@click.prevent="save"` | Listen to event (with modifier) |
+| `v-model` | `v-model.trim="name"` | Two-way binding |
+| `v-if` / `v-else-if` / `v-else` | `v-if="ok"` | Conditional render (removes DOM) |
+| `v-show` | `v-show="open"` | Toggle `display` (keeps DOM) |
+| `v-for` | `v-for="item in items" :key="item.id"` | List render |
+| `v-slot` / `#` | `#header="{ item }"` | Named / scoped slot |
+| `v-html` | `v-html="raw"` | Raw HTML (XSS risk) |
+
+## Common patterns
+
+```html
+<!-- Two-way binding on a custom component (Vue 3.4+) -->
+<script setup lang="ts">
+const model = defineModel<string>({ default: "" });
+</script>
+<template>
+  <input v-model="model" />
+</template>
+
+<!-- Parent -->
+<SearchBox v-model="query" />
+```
+
+```ts
+// Composable
+import { ref, onMounted, onUnmounted } from "vue";
+
+export function useMouse() {
+  const x = ref(0);
+  const y = ref(0);
+  const update = (e: MouseEvent) => { x.value = e.pageX; y.value = e.pageY; };
+  onMounted(() => window.addEventListener("mousemove", update));
+  onUnmounted(() => window.removeEventListener("mousemove", update));
+  return { x, y };
+}
+```
+
+```ts
+// Pinia store (setup syntax)
+import { defineStore } from "pinia";
+import { ref, computed } from "vue";
+
+export const useCartStore = defineStore("cart", () => {
+  const items = ref<{ id: number; price: number }[]>([]);
+  const total = computed(() => items.value.reduce((s, i) => s + i.price, 0));
+  function add(item: { id: number; price: number }) { items.value.push(item); }
+  return { items, total, add };
+});
+
+// In a component: keep reactivity when destructuring state
+import { storeToRefs } from "pinia";
+const cart = useCartStore();
+const { items, total } = storeToRefs(cart);
+```
+
+```ts
+// Vue Router
+import { createRouter, createWebHistory } from "vue-router";
+
+export const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: "/", component: () => import("./views/Home.vue") },
+    { path: "/users/:id", component: () => import("./views/User.vue"), props: true },
+  ],
+});
+
+// In a component
+import { useRoute, useRouter } from "vue-router";
+const route = useRoute();   // route.params.id
+const router = useRouter(); // router.push("/")
+```
+
+```html
+<!-- Template ref (3.5+), provide/inject, async component -->
+<script setup lang="ts">
+import { useTemplateRef, onMounted, provide, defineAsyncComponent } from "vue";
+
+const input = useTemplateRef<HTMLInputElement>("search");
+onMounted(() => input.value?.focus());
+
+provide("theme", "dark"); // child: const theme = inject("theme")
+const Chart = defineAsyncComponent(() => import("./Chart.vue"));
+</script>
+<template>
+  <input ref="search" />
+  <Suspense><Chart /></Suspense>
+</template>
+```
+
+## Gotchas
+
+- **Destructuring `reactive()`** breaks reactivity; use `toRefs()` or prefer `ref`.
+- **Forgetting `.value`** in script (templates unwrap automatically, script does not).
+- **`v-if` and `v-for` on the same element**: `v-if` runs first in Vue 3; wrap with `<template v-for>` instead.
+- **Missing `:key` in `v-for`** causes wrong element reuse and broken component state.
+- **Mutating props** is not allowed; emit an event or use `defineModel`.
+- **Watching a reactive object property**: `watch(state.count, ...)` passes a number, not a source; use a getter `watch(() => state.count, ...)`.
+- **`watch` on a `reactive` object is deep**, on a `ref` holding an object it is shallow unless `{ deep: true }`.
+- **Vue CLI is in maintenance mode**; new projects use `create-vue` (Vite). Vuex is replaced by Pinia.
+
+## What's new in recent releases
+
+- **3.5** (2024-09-03): reactive props destructure is stable (`const { count = 0 } = defineProps()`); `useTemplateRef()`; `useId()` for SSR-stable IDs.
+- **3.5**: lazy hydration strategies for async components (`hydrateOnVisible`, `hydrateOnIdle`, ...), `onWatcherCleanup()`, deferred `<Teleport defer>`, `data-allow-mismatch`; reactivity refactor with lower memory use.
+- **3.5.x** (2024-2026): patch releases only; 3.5.44 is the current stable line.
+- **3.6** (pre-release, rc.14 on 2026-10-30): opt-in **Vapor Mode** compilation (no virtual DOM, smaller bundles) and a reactivity core ported from alien-signals. Not stable yet.
+- **Ecosystem**: current majors are Vue Router 5 and Pinia 4 (checked on npm 2026-10-31).
+
+## In these notes
+
+- [Vue 3 notes: setup, Composition API, SFCs, Pinia, routing, testing](./index.mdx)
+- [Nuxt notes](./nuxt.mdx)
+- [Frontend frameworks comparison](../index.md)
