@@ -31,6 +31,7 @@ export const areas: Area[] = [
         prefix: "technologies/dotnet/",
       },
       { label: "Go", doc: "technologies/go/index" },
+      { label: "Rust", doc: "technologies/rust/index" },
       { label: "Python", doc: "technologies/python/index" },
       { label: "PHP", doc: "technologies/php/index" },
       { label: "HTML", doc: "technologies/web-basics/html/index" },
@@ -115,6 +116,11 @@ export const areas: Area[] = [
       { label: "Ubuntu server", doc: "cloud-computing/ubuntu-server-setup" },
       { label: "Azure Blob", doc: "technologies/dotnet/azure-blob-sdk" },
     ],
+  },
+  {
+    name: "AI",
+    marker: "y",
+    topics: [{ label: "LLM", doc: "technologies/llm/index" }],
   },
   {
     name: "Practices",

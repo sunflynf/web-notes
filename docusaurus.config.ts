@@ -153,6 +153,7 @@ const config: Config = {
         "scss",
         "solidity",
         "sql",
+        "toml",
         "yaml",
         "zig",
       ],
