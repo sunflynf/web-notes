@@ -1,5 +1,5 @@
 ---
-description: Backend Frameworks support REST APIs.
+description: Spring Framework and Spring Boot essentials - IoC/DI, Spring MVC, starters, and building layered REST APIs
 tags:
   - Backend
   - Java
@@ -9,6 +9,8 @@ tags:
 ---
 
 # Spring Framework
+
+> **Quick reference:** [Spring Cheatsheet](./cheatsheet.mdx)
 
 ## Structural Overview
 
@@ -31,12 +33,12 @@ flowchart LR
     %% Add-ons
     Controller --> |Templates| View(["`**View**
     *Mustache*,
-    *Thymleaf*, ...
+    *Thymeleaf*, ...
     `"])
     Validation -.->|"@Rule"| Entity
     Security(Security) -.->|Filter Chain| Controller
     Swagger(Swagger) -.->|"@Annotation"| Controller
-    HOAS -.->|jackson| Controller
+    HATEOAS -.->|jackson| Controller
     Actuator(Actuator) -.->|health| Controller
     subgraph Testing
         %% Testing
@@ -76,6 +78,7 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     // The ProductRepository dependency is injected by the Spring container
+    // (@Autowired is optional when a class has a single constructor)
     @Autowired
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -107,7 +110,7 @@ Spring Boot is an evolution of Spring that radically simplifies the development 
 
 Starters are convenient dependency descriptors that you can include in your build file (e.g., Maven's `pom.xml`). They group related dependencies together. Key starters for REST APIs include:
 
-- `spring-boot-starter-web`: For building RESTful web applications using Spring MVC and an embedded Tomcat server.
+- `spring-boot-starter-web`: For building RESTful web applications using Spring MVC and an embedded Tomcat server. In Spring Boot 4 it is renamed `spring-boot-starter-webmvc` (the old name is deprecated).
 - `spring-boot-starter-data-jpa`: For database access using [Java Persistence API (JPA)](/docs/technologies/java/api/jpa.md) with Hibernate.
 - `spring-boot-starter-validation`: For using Java's Bean Validation with Hibernate Validator.
 - `spring-boot-starter-test`: For testing with libraries like JUnit, Mockito, and [Spring Test](/docs/technologies/java/spring-framework/spring-test.md).
@@ -134,7 +137,7 @@ This layer handles HTTP requests and maps them to specific methods.
 
 | Annotation/Class                      | Description                                                                                                    |
 | ------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `@RequestMapping('/api/v1/products')` | Defines a base path for all methods in the controller.                                                         |
+| `@RequestMapping("/api/v1/products")` | Defines a base path for all methods in the controller.                                                         |
 | `@GetMapping("/{id}")`                | Maps HTTP GET requests to a method.                                                                            |
 | `@PostMapping()`                      | Maps HTTP POST requests (for creating resources).                                                              |
 | `@PutMapping("/{id}")`                | Maps HTTP PUT requests (for updating resources).                                                               |

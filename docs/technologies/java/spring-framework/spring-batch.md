@@ -65,7 +65,7 @@ Process records in configurable-sized chunks. Each chunk is read, processed, and
 
 ```java
 @Configuration
-@EnableBatchProcessing
+// No @EnableBatchProcessing: in Spring Boot 3+ it switches OFF Boot's batch auto-configuration
 public class CsvToDbBatchConfig {
 
     @Bean

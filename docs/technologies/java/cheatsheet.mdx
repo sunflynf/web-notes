@@ -1,0 +1,146 @@
+---
+title: Java Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page Java refresher - modern syntax (records, sealed types, pattern matching), collections, streams, Optional, virtual threads and recent JDK releases.
+tags:
+  - Java
+  - Cheatsheet
+---
+
+# Java Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Statically typed, object-oriented language running on the JVM ("write once, run anywhere") |
+| Use it for | Backend services (Spring), Android, big data (Kafka, Spark), enterprise and desktop apps |
+| Latest stable | JDK 27.0.1 (released 2026-10-20) - checked 2026-10-31. Current LTS: JDK 25.0.5 (released 2026-10-20) |
+| Official docs | [docs.oracle.com/en/java/javase](https://docs.oracle.com/en/java/javase/) and [openjdk.org](https://openjdk.org/projects/jdk/) |
+
+Release cadence: a feature release every 6 months (March and September); an LTS every 2 years (17, 21, 25, next 29).
+
+## Core concepts
+
+- **JDK / JRE / JVM**: JDK = compiler + tools, JVM executes bytecode (`.class`), the JIT compiles hot code to native.
+- **Primitives vs references**: 8 primitives (`int`, `long`, `double`, `boolean`, ...) live by value; everything else is an object reference (may be `null`).
+- **Pass-by-value**: Java always copies the value; for objects that value is the reference.
+- **Records**: immutable data carriers with generated constructor, accessors, `equals`/`hashCode`/`toString`.
+- **Sealed types**: `sealed ... permits` restricts which classes may extend; enables exhaustive `switch`.
+- **Generics**: compile-time type safety with type erasure at runtime (`List<String>` is just `List` at runtime).
+- **Collections framework**: `List`, `Set`, `Map`, `Deque` interfaces; pick an implementation (`ArrayList`, `HashMap`, ...).
+- **Streams + lambdas**: declarative pipelines over collections (`filter`, `map`, `collect`).
+- **Optional**: explicit "maybe a value" return type; avoid returning `null`.
+- **Virtual threads**: cheap JVM-managed threads (Java 21+) for blocking I/O at high concurrency.
+
+## Syntax & commands
+
+```bash
+java -version                 # runtime version
+javac Main.java && java Main  # compile + run
+java Main.java                # run a single source file directly (Java 11+)
+jshell                        # REPL
+jar --create --file app.jar -C out .
+```
+
+```java
+// Java 25: compact source file + instance main (no class, no static)
+void main() {
+    IO.println("Hello, Java 25");
+}
+```
+
+```java
+var names = new ArrayList<String>();         // local type inference (10+)
+List<Integer> nums = List.of(1, 2, 3);       // immutable factory (9+)
+Map<String, Integer> ages = Map.of("Ann", 30, "Bob", 25);
+
+String text = """
+    Multi-line
+    text block (15+)
+    """;
+
+record Point(int x, int y) {}                // record (16+)
+
+sealed interface Shape permits Circle, Square {}
+record Circle(double r) implements Shape {}
+record Square(double side) implements Shape {}
+
+double area(Shape s) {
+    return switch (s) {                      // pattern matching switch (21+)
+        case Circle c  -> Math.PI * c.r() * c.r();
+        case Square(double side) -> side * side;  // record pattern
+    };
+}
+
+if (obj instanceof String str && !str.isBlank()) { /* use str */ }
+```
+
+```java
+// Streams
+List<String> top = people.stream()
+    .filter(p -> p.age() >= 18)
+    .sorted(Comparator.comparing(Person::name))
+    .map(Person::name)
+    .limit(10)
+    .toList();                                 // Java 16+
+
+Map<String, List<Person>> byCity =
+    people.stream().collect(Collectors.groupingBy(Person::city));
+
+// Optional
+String city = findUser(id)
+    .map(User::address)
+    .map(Address::city)
+    .orElse("unknown");
+```
+
+```java
+// Virtual threads (21+)
+try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    urls.forEach(url -> executor.submit(() -> fetch(url)));
+}
+```
+
+## Common patterns
+
+| Need | Use |
+|---|---|
+| Immutable DTO / value object | `record` |
+| Closed set of variants | `sealed interface` + records + `switch` |
+| Resource cleanup | `try (var in = Files.newInputStream(p)) { ... }` |
+| Read a whole file | `Files.readString(Path.of("a.txt"))` |
+| Null-safe default | `Objects.requireNonNullElse(x, def)` / `Optional.ofNullable(x).orElse(def)` |
+| Thread-safe map | `ConcurrentHashMap` |
+| First / last element | `list.getFirst()` / `list.getLast()` (SequencedCollection, 21+) |
+| Many blocking calls | virtual threads, or `CompletableFuture` for async composition |
+| Builder for many optional fields | static nested `Builder` class (or Lombok `@Builder`) |
+
+## Gotchas
+
+- `==` compares references for objects; use `equals()` (and override `hashCode()` together with it).
+- `Integer` caching: `Integer.valueOf(127) == Integer.valueOf(127)` is true, 128 is not. Never compare boxed numbers with `==`.
+- Auto-unboxing a `null` `Integer` throws `NullPointerException`.
+- `List.of(...)` / `Map.of(...)` are immutable and reject `null`; `Arrays.asList` is fixed-size.
+- Modifying a collection while iterating it with for-each throws `ConcurrentModificationException`; use `removeIf` or an `Iterator`.
+- Streams are single-use and lazy: nothing runs until a terminal operation.
+- `Optional` is for return values, not fields or parameters; never call `get()` without checking.
+- Integer overflow is silent (`Integer.MAX_VALUE + 1` is negative); use `Math.addExact` or `long`.
+- `BigDecimal` for money, and construct it from a `String`, not a `double`.
+- Pinning: before Java 24, `synchronized` blocks pinned virtual threads to carrier threads.
+
+## What's new in recent releases
+
+- **JDK 27 (2026-09-16, non-LTS)**: latest feature release; see the [JDK 27 project page](https://openjdk.org/projects/jdk/27/) for its JEP list.
+- **JDK 26 (2026-03)**: HTTP/3 support in `HttpClient`, the Applet API removed, warnings when deep reflection mutates `final` fields ("prepare to make final mean final"), and ahead-of-time object caching that works with any GC.
+- **JDK 25 (2025-09, LTS)**: compact source files and instance `main` methods, module import declarations (`import module java.base;`), flexible constructor bodies (statements before `super(...)`), scoped values (final), and compact object headers as a product feature.
+- **JDK 24**: Stream Gatherers (`stream.gather(...)`) final; virtual threads no longer pin on `synchronized`.
+- **JDK 22-23**: unnamed variables `_`, Foreign Function and Memory API (final), Markdown doc comments (`///`).
+
+## In these notes
+
+- [Java language notes](./index.mdx): syntax, data types, OOP, collections, Optional, functional interfaces, streams
+- [JDBC](./api/jdbc.md)
+- [JPA](./api/jpa.md) and the [JPA Cheatsheet](./api/jpa-cheatsheet.mdx)
+- [Spring Framework](./spring-framework/index.mdx) and the [Spring Cheatsheet](./spring-framework/cheatsheet.mdx)

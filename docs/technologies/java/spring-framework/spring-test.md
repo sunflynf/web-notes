@@ -1,5 +1,5 @@
 ---
-description: spring-boot-starter-test
+description: Testing Spring Boot apps with spring-boot-starter-test - JUnit 5, Mockito, MockMvc, test slices, profiles and Testcontainers
 ---
 
 # Spring Testing
@@ -47,7 +47,7 @@ When testing services, isolate them by mocking dependencies with a framework lik
 @SpringBootTest
 public class UserServiceTest {
 
-    @MockBean
+    @MockitoBean // was @MockBean (deprecated in Boot 3.4, removed in Boot 4)
     private UserRepository userRepository;
 
     @Autowired
@@ -64,10 +64,12 @@ public class UserServiceTest {
 }
 ```
 
-#### Testing with `@MockBean` and `@SpyBean`
+#### Testing with `@MockitoBean` and `@MockitoSpyBean`
 
-- **@MockBean**: Creates a Mockito mock for a bean in the Spring context.
-- **@SpyBean**: Wraps an actual Spring bean in a spy to allow partial mocking.
+- **@MockitoBean**: Creates a Mockito mock for a bean in the Spring context.
+- **@MockitoSpyBean**: Wraps an actual Spring bean in a spy to allow partial mocking.
+
+These come from Spring Framework 6.2+ (`org.springframework.test.context.bean.override.mockito`). The older Boot `@MockBean` / `@SpyBean` were deprecated in Spring Boot 3.4 and removed in Spring Boot 4.
 
 Use these annotations to replace or partially replace dependencies in your test class.
 
@@ -79,7 +81,7 @@ Use these annotations to replace or partially replace dependencies in your test 
 
 ```java
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@AutoConfigureMockMvc // needed to inject MockMvc into a @SpringBootTest
 public class ApplicationIntegrationTest {
 
     @Autowired
@@ -120,8 +122,7 @@ public void testCreateUser() throws Exception {
 `@DataJpaTest` provides a lightweight environment for testing JPA repositories. It uses an in-memory database by default, suitable for testing without external dependencies.
 
 ```java
-@RunWith(SpringRunner.class)
-@DataJpaTest
+@DataJpaTest // JUnit 5: the Spring extension is already included, no @RunWith needed
 public class UserRepositoryTest {
 
     @Autowired
@@ -141,7 +142,7 @@ public class UserRepositoryTest {
 
 ### Using Mockito for Mocking
 
-Mockito is integrated into Spring Boot Test. Use `@Mock` or `@MockBean` to mock dependencies and use `@InjectMocks` to inject them into your service.
+Mockito is integrated into Spring Boot Test. Use `@Mock` (plain unit test) or `@MockitoBean` (Spring context) to mock dependencies and use `@InjectMocks` to inject them into your service.
 
 ```java
 @ExtendWith(MockitoExtension.class)
@@ -184,7 +185,6 @@ public void testUserCreation() {
 Mock HTTP interactions for tests involving `RestTemplate`.
 
 ```java
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class ApiServiceTest {
 
