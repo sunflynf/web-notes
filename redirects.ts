@@ -17,4 +17,11 @@ export const redirects: Redirect[] = [
   { from: "/docs/projects/landing-page", to: "/projects/landing-page/" },
   { from: "/docs/projects/landing-page/workflows", to: "/projects/landing-page/workflows/" },
   { from: "/docs/category/projects", to: "/projects/" },
+
+  // Cloud Computing reorganised into building blocks; merged pages retired
+  { from: "/docs/category/cloud-computing", to: "/docs/cloud-computing/" },
+  { from: "/docs/cloud-computing/cloud-platforms", to: "/docs/cloud-computing/" },
+  { from: "/docs/cloud-computing/cloud-platforms-cheatsheet", to: "/docs/cloud-computing/" },
+  { from: "/docs/cloud-computing/serverless", to: "/docs/cloud-computing/compute/" },
+  { from: "/docs/cloud-computing/serverless-cheatsheet", to: "/docs/cloud-computing/compute/" },
 ];

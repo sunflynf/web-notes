@@ -1,10 +1,82 @@
 ---
-description: AWS | Microsoft Azure | Google Platform | IBM | Oracle | DigitalOcean | Linode | Heroku
+title: Cloud Computing
+sidebar_label: Cloud Computing
+description: "Building blocks for real projects: which service to use, then how to set it up on AWS."
 ---
 
-# Cloud Platforms
+import LayerFlow from "@site/src/components/LayerFlow";
 
-> **Quick reference:** [Cloud Platforms Cheatsheet](./cloud-platforms-cheatsheet.mdx)
+# Cloud Computing
+
+Building blocks for real projects. Each block page starts with a decision chart that says which service to use, then shows how to set it up on AWS with the console, the CLI or Terraform. [Foundations](./foundations.mdx) comes first (accounts, regions, pricing, the AWS CLI), then [Identity](./identity.mdx), [Compute](./compute.mdx), [Storage](./storage.mdx), [Databases](./databases.mdx), [Networking](./networking.mdx), [Messaging](./messaging.mdx) and [Monitoring](./monitoring.mdx).
+
+## Architecture map {#architecture-map}
+
+A typical web project on AWS. Select a service to jump to its setup steps.
+
+<LayerFlow
+  ariaLabel="Typical web project on AWS"
+  layers={[
+    { title: "Client", nodes: [{ label: "User", plain: true }] },
+    {
+      title: "Edge",
+      nodes: [
+        { label: "CloudFront", to: "/docs/cloud-computing/networking/#cloudfront", detail: "Networking" },
+      ],
+    },
+    {
+      title: "App",
+      nodes: [
+        { label: "S3 static files", to: "/docs/cloud-computing/storage/#s3" },
+        { label: "EC2", to: "/docs/cloud-computing/compute/#ec2" },
+        { label: "Lambda", to: "/docs/cloud-computing/compute/#lambda" },
+      ],
+    },
+    {
+      title: "Data",
+      nodes: [{ label: "RDS", to: "/docs/cloud-computing/databases/#rds" }],
+    },
+  ]}
+  around={{
+    title: "Around everything",
+    nodes: [
+      { label: "IAM", to: "/docs/cloud-computing/identity/" },
+      { label: "VPC", to: "/docs/cloud-computing/networking/#vpc" },
+      { label: "CloudWatch", to: "/docs/cloud-computing/monitoring/#cloudwatch" },
+    ],
+  }}
+/>
+
+## Service mapping
+
+| Category | AWS | Azure | Google Cloud |
+|---|---|---|---|
+| VMs | EC2 | Virtual Machines | Compute Engine |
+| Managed Kubernetes | EKS | AKS | GKE |
+| Containers, no cluster | ECS on Fargate, App Runner | Container Apps, Container Instances | Cloud Run |
+| PaaS web apps | Elastic Beanstalk | App Service | App Engine |
+| Functions | Lambda | Azure Functions | Cloud Run functions |
+| Object storage | S3 | Blob Storage | Cloud Storage |
+| Block / file storage | EBS / EFS | Managed Disks / Azure Files | Persistent Disk, Hyperdisk / Filestore |
+| Relational DB | RDS, Aurora | Azure SQL, Database for PostgreSQL/MySQL | Cloud SQL, AlloyDB, Spanner |
+| NoSQL | DynamoDB | Cosmos DB | Firestore, Bigtable |
+| Cache | ElastiCache | Azure Managed Redis | Memorystore |
+| Data warehouse | Redshift | Synapse / Fabric | BigQuery |
+| Messaging / queue | SQS, SNS | Service Bus, Queue Storage | Pub/Sub |
+| Event bus | EventBridge | Event Grid | Eventarc |
+| Streaming | Kinesis, MSK | Event Hubs | Pub/Sub, Managed Kafka |
+| Private network | VPC | Virtual Network (VNet) | VPC (global) |
+| Load balancer | ELB (ALB / NLB) | Load Balancer, Application Gateway, Front Door | Cloud Load Balancing |
+| DNS / CDN | Route 53 / CloudFront | Azure DNS / Front Door | Cloud DNS / Cloud CDN |
+| Secrets / keys | Secrets Manager / KMS | Key Vault | Secret Manager / Cloud KMS |
+| Monitoring / logs | CloudWatch, X-Ray | Azure Monitor, App Insights | Cloud Monitoring, Cloud Logging, Trace |
+| Container registry | ECR | ACR | Artifact Registry |
+| CI/CD | CodePipeline / CodeBuild | Azure DevOps Pipelines | Cloud Build / Cloud Deploy |
+| Generative AI | Bedrock | Microsoft Foundry (Azure OpenAI) | Vertex AI (Gemini) |
+
+App Runner is closed to new AWS customers; for a container with no cluster to manage, AWS recommends Amazon ECS Express Mode (see [Compute](./compute.mdx#ecs-fargate)).
+
+## Platform comparison {#platform-comparison}
 
 | Cloud Platform                                                                       | Pricing (Per Month)                                          | Free Tier                                                       | Key Services                                                          | Unique Features                                                                    | Ideal For                                 |
 | ------------------------------------------------------------------------------------ | ------------------------------------------------------------ | --------------------------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------- |
@@ -17,7 +89,7 @@ description: AWS | Microsoft Azure | Google Platform | IBM | Oracle | DigitalOce
 | [**Linode (Akamai Cloud)**](https://www.linode.com/)                                                | Starts at $5/month (Nanode plan)                             | 60-day free trial ($100 credit)                                 | Simple VMs, Block/Object Storage, Kubernetes                          | Affordable, excellent support, easy setup                                          | Small to medium-scale apps, developers    |
 | [**Heroku**](https://www.heroku.com/)                                                | Starts at ~$5/month (Eco dynos)                              | No free tier since Nov 2022                                     | Managed containers, Databases (Postgres), Add-ons                     | Best for deploying apps quickly, managed containers                                | Startups, hobby projects, web apps        |
 
-## Notes
+### Notes
 
 - **Pricing** is generally pay-as-you-go, meaning it depends on usage. AWS, Azure, and GCP offer different pricing based on specific instance types, services, and regions.
 - **Free Tier**: Most platforms offer trial credits and/or always-free limits; terms change often, so check the provider's page before relying on them.
