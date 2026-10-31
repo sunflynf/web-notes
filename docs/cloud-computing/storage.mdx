@@ -138,7 +138,7 @@ If the last answer is no, the data is probably rows and records: see [Databases]
    }
    ```
 
-   Create the distribution, the OAC and the cache settings in CloudFront {/* TODO-LINK ./networking.mdx#cloudfront */}.
+   Create the distribution, the OAC and the cache settings in [CloudFront](./networking.mdx#cloudfront).
 
    :::caution
    OAC does not work with a bucket set up as an S3 website endpoint, because that has to be a custom origin. It also needs Object Ownership on **Bucket owner enforced**. If the objects use SSE-KMS, add a statement to the KMS key policy that lets the distribution use the key.
@@ -319,13 +319,13 @@ Notes on these resources:
 
 - **What it is**: Amazon EFS is a serverless, elastic file system you mount over NFS (versions 4.1 and 4.0), so many instances read and write the same files. It works with EC2, ECS, EKS, Lambda and Fargate, but not with Windows-based EC2 instances.
 - **Regional or One Zone**: Regional file systems (recommended) store data across several Availability Zones. One Zone file systems keep data in one zone, so losing that zone can lose the data.
-- **Network setup**: you reach the file system through mount targets, one per Availability Zone. The mount target's security group must allow inbound TCP 2049 (NFS) from the instances' security group, and each instance's security group must allow outbound 2049 to the mount target. Mount targets cannot have public IP addresses. See Networking (security groups) {/* TODO-LINK ./networking.mdx#vpc */}.
+- **Network setup**: you reach the file system through mount targets, one per Availability Zone. The mount target's security group must allow inbound TCP 2049 (NFS) from the instances' security group, and each instance's security group must allow outbound 2049 to the mount target. Mount targets cannot have public IP addresses. See [Networking (security groups)](./networking.mdx#vpc).
 - **Mount it**: install `amazon-efs-utils`, then `sudo mount -t efs -o tls fs-abcd123456789ef0:/ efs/` (replace the ID; `tls` encrypts in transit). Only the root user has read-write-execute permissions at first, so set NFS-level ownership and permissions on the directory.
 - **Terraform**: `aws_efs_file_system`, then `aws_efs_mount_target` for each subnet (one per Availability Zone), with `security_groups` set to the group that allows port 2049.
 
 ## Connects to
 
-- Networking: CloudFront {/* TODO-LINK ./networking.mdx#cloudfront */} puts a private bucket behind a CDN and a custom domain.
+- Networking: [CloudFront](./networking.mdx#cloudfront) puts a private bucket behind a CDN and a custom domain.
 - Identity: [Identity (IAM policies)](./identity.mdx#iam-policies) sits next to bucket policies: both decide who can read or write a bucket.
 - Compute: [Compute (EC2)](./compute.mdx#ec2) is where an EBS volume attaches, and where an instance role reads S3 objects.
 - Databases: [Databases](./databases.mdx#rds) is the better home for rows and records than files in a bucket.

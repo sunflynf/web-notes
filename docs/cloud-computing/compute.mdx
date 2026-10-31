@@ -145,7 +145,7 @@ gcloud run deploy hello --source . --function hello --base-image nodejs24 --regi
    With no key pair and no other login method such as Session Manager, you cannot connect to the instance.
    :::
 
-4. Under **Network settings**, choose the VPC and subnet, and create or select a security group that opens only the ports you need. See Networking (VPC and security groups) {/* TODO-LINK ./networking.mdx#vpc */}.
+4. Under **Network settings**, choose the VPC and subnet, and create or select a security group that opens only the ports you need. See [Networking (VPC and security groups)](./networking.mdx#vpc).
 
 5. Under **Advanced details**, set **IAM instance profile** to the profile that carries the instance's role. See [Identity (IAM roles)](./identity.mdx#iam-roles).
 
@@ -496,14 +496,14 @@ Gotchas:
 - **What it is**: Amazon ECS runs your containers, and Fargate removes the servers and the cluster of EC2 instances you would otherwise manage. You give CPU and memory per task, networking and IAM, then launch. Build the image first (see the Docker notes under Connects to).
 - **Setup order**: push the image to a registry such as ECR, register a task definition with `requiresCompatibilities` set to `FARGATE` (CLI: `--requires-compatibilities FARGATE`), create a cluster, then run a task or create a service. The console getting-started wizard walks through it.
 - **Task size**: CPU and memory are set per task, and only some pairs are valid. The smallest is 0.25 vCPU with 512 MiB, 1 GB or 2 GB, and the largest is 32 vCPU with up to 244 GB. 8 vCPU and larger need Linux platform version 1.4.0 or later.
-- **Networking**: tasks always use the `awsvpc` network mode, so every task gets its own network interface and you must supply subnets and security groups. In a public subnet the task needs a public IP to pull images. In a private subnet it needs a NAT gateway (or an ECR interface endpoint). Behind a load balancer the target group type must be `ip`. See Networking (VPC) {/* TODO-LINK ./networking.mdx#vpc */}.
+- **Networking**: tasks always use the `awsvpc` network mode, so every task gets its own network interface and you must supply subnets and security groups. In a public subnet the task needs a public IP to pull images. In a private subnet it needs a NAT gateway (or an ECR interface endpoint). Behind a load balancer the target group type must be `ip`. See [Networking (VPC)](./networking.mdx#vpc).
 - **Logs and cost levers**: the `awslogs` log driver sends container output to CloudWatch Logs. Fargate Spot runs interruption-tolerant tasks at a discount and gives a two-minute warning before it takes the capacity back.
 - **Terraform**: `aws_ecs_cluster`, `aws_ecs_task_definition` and `aws_ecs_service` with the `FARGATE` launch type (verify the arguments against the hashicorp/aws provider docs).
 
 ## Connects to
 
 - Identity: [Identity (IAM roles)](./identity.mdx#iam-roles) gives the instance profile and the Lambda execution role their permissions.
-- Networking: Networking (VPC, security groups) {/* TODO-LINK ./networking.mdx#vpc */} decides which subnet and which ports a VM or task uses.
+- Networking: [Networking (VPC, security groups)](./networking.mdx#vpc) decides which subnet and which ports a VM or task uses.
 - Monitoring: Monitoring (CloudWatch logs and metrics) {/* TODO-LINK ./monitoring.mdx#cloudwatch */} shows Lambda logs, ECS task logs and EC2 metrics.
 - [Docker knowledge](../technologies/docker-knowledge.md): build the container image that ECS on Fargate runs.
 - [Docker cheatsheet](../technologies/docker-cheatsheet.mdx): the commands for building and pushing it.

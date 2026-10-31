@@ -47,7 +47,7 @@ If the last answer is no, the data is probably files: see [Storage](./storage.md
 <Tabs groupId="aws-setup">
 <TabItem value="console" label="Console" default>
 
-1. Create a DB subnet group. Open the RDS console, choose **Subnet groups**, then **Create DB Subnet Group**. Enter a **Name** and **Description**, choose the **VPC**, and under **Add subnets** pick the Availability Zones and then the subnets. The subnets should be private ones. See Networking (VPC, private subnets) {/* TODO-LINK ./networking.mdx#vpc */}.
+1. Create a DB subnet group. Open the RDS console, choose **Subnet groups**, then **Create DB Subnet Group**. Enter a **Name** and **Description**, choose the **VPC**, and under **Add subnets** pick the Availability Zones and then the subnets. The subnets should be private ones. See [Networking (VPC, private subnets)](./networking.mdx#vpc).
 
    :::caution
    A DB subnet group needs subnets in at least two Availability Zones of the Region, and AWS advises one subnet in every zone, even for a single-AZ database, so you can switch to Multi-AZ later. For a database to be publicly accessible, all subnets in its group must be public, so keep the group private for a database that only your app talks to.
@@ -91,7 +91,7 @@ If the last answer is no, the data is probably files: see [Storage](./storage.md
    The console default retention is 7 days, while the CLI and API default to 1 day. The range is 0 to 35 days, and 0 turns automated backups off. Changing between 0 and a nonzero value causes an outage. Automated backups let you restore to any point in the retention period; they are deleted with the database unless you choose to retain them at deletion.
    :::
 
-8. To reach a private database from your laptop, go through an instance that is inside the VPC. With Session Manager port forwarding, no SSH port or public database address is needed (the instance needs the SSM Agent and an instance profile, as in EC2). Another way is a bastion host in a public subnet. See Networking (public and private subnets) {/* TODO-LINK ./networking.mdx#vpc */}.
+8. To reach a private database from your laptop, go through an instance that is inside the VPC. With Session Manager port forwarding, no SSH port or public database address is needed (the instance needs the SSM Agent and an instance profile, as in EC2). Another way is a bastion host in a public subnet. See [Networking (public and private subnets)](./networking.mdx#vpc).
 
    ```bash
    aws ssm start-session \
@@ -250,7 +250,7 @@ Declare `vpc_id`, `private_subnet_ids` and `app_security_group_id` as input vari
 
 ## Connects to
 
-- Networking: Networking (VPC, subnets, security groups) {/* TODO-LINK ./networking.mdx#vpc */} is where the private subnets and the app's security group for RDS come from.
+- Networking: [Networking (VPC, subnets, security groups)](./networking.mdx#vpc) is where the private subnets and the app's security group for RDS come from.
 - Compute: [Compute (EC2)](./compute.mdx#ec2) runs the app that connects, and the instance you tunnel through to reach a private database.
 - Identity: [Identity (IAM roles)](./identity.mdx#iam-roles) lets the app read the Secrets Manager secret instead of holding a password.
 - [PostgreSQL](../technologies/database/relational/postgre.md): the engine you will most often run on RDS or Aurora.
