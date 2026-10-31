@@ -134,7 +134,7 @@ with transaction.atomic():
 | Need | Use |
 |---|---|
 | REST API | Django REST Framework, Django Ninja |
-| Background jobs | `django.tasks` (6.0+, needs a backend) or Celery |
+| Background jobs | `django.tasks` (6.0+, needs an external worker to run tasks) or Celery |
 | Async views | `async def` views under ASGI (uvicorn, daphne) |
 | Static files in prod | WhiteNoise or a CDN after `collectstatic` |
 | Custom user | `AUTH_USER_MODEL` set before the first migration |
@@ -151,7 +151,7 @@ with transaction.atomic():
 
 ## What's new in recent releases
 
-- **Django 6.1** (2026-08-05): configurable model field fetch modes (`FETCH_ONE`, `FETCH_PEERS`), new `MAILERS` setting for multiple email backends, `csp_nonce_attr` template tag, `BitAnd` / `BitOr` / `BitXor` aggregates, PBKDF2 iterations raised to 1,500,000, PostgreSQL 15+ required; supports Python 3.12-3.14.
+- **Django 6.1** (2026-08-05): configurable model field fetch modes (`FETCH_ONE`, `FETCH_PEERS`, `FETCH_RAISE`), database-level `on_delete` options (`DB_CASCADE`, `DB_SET_NULL`), new `MAILERS` setting for multiple email backends, `csp_nonce_attr` template tag, `BitAnd` / `BitOr` / `BitXor` aggregates, PBKDF2 iterations raised to 1,500,000, PostgreSQL 15+ required; supports Python 3.12-3.14.
 - **Django 6.0** (2025-12-03): built-in Content Security Policy support, template partials (`{% partialdef %}` / `{% partial %}`), background Tasks framework (`django.tasks`), modern Python email API, `DEFAULT_AUTO_FIELD` defaults to `BigAutoField`; requires Python 3.12+.
 - **Django 5.2 LTS** (Apr 2025): composite primary keys, auto-imported models in `shell`; supported until April 2028.
 

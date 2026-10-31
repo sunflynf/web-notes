@@ -118,16 +118,16 @@ gcloud run deploy hello --source . --function hello --base-image nodejs24 --regi
 - **DB connections** - thousands of concurrent instances exhaust a database; use RDS Proxy / connection pooling or a serverless DB.
 - **VPC access** adds networking setup (ENIs, NAT for Internet egress); only attach a VPC when needed.
 - **/tmp is ephemeral** (Lambda default 512 MB, up to 10 GB) - not a database.
-- **Runtime deprecation** - managed runtimes are deprecated after the language's EOL; then you can no longer create or update functions on them.
+- **Runtime deprecation** - managed runtimes are deprecated after the language's EOL; patches stop, then function create and later update are blocked (at least 30 / 60 days after deprecation). Existing functions keep running.
 - **Payload limits** - Lambda sync request/response 6 MB, async event 1 MB (raised from 256 KB in 2025); larger data goes through S3.
 - **Serverless Framework v4 licensing** - free for individuals and orgs under the revenue threshold; v3 is no longer maintained.
 
 ## What's new in recent releases
 
 - **Serverless Framework 4.4x** (2026): frequent minor releases (4.44 on 2026-10-14, 4.45 on 2026-10-20, 4.46 on 2026-10-28); v4 ships TypeScript/esbuild bundling built in and `serverless dev` mode.
-- **Lambda preview runtimes** (Aug 2026): first public-preview managed runtimes, `nodejs26.x` and `python3.15`; not for production, GA targeted after upstream stable/LTS.
+- **Lambda preview runtimes** (Aug 2026): first public-preview managed runtimes, `nodejs26.x` and `python3.15`; not for production, GA targeted for November 2026 (Node.js 26 only after it reaches Active LTS).
 - **Lambda Node.js 24** (Nov 2025): `nodejs24.x` on Amazon Linux 2023, supported until 2028-04-30 (deprecation date).
-- **Lambda Python 3.14**: `python3.14` on Amazon Linux 2023, supported until 2029-06-30.
+- **Lambda Python 3.14** (Nov 2025): `python3.14` on Amazon Linux 2023, supported until 2029-06-30.
 - **Google Cloud Functions -> Cloud Run functions** (Aug 2024): functions now deploy as Cloud Run services; `gcloud functions` still works but `gcloud run deploy --function` is the new path.
 - **Azure Functions Flex Consumption** (GA 2024): fast scale, VNet integration, always-ready instances; the older Linux Consumption plan is scheduled to retire (2028-09-30), so new apps should use Flex.
 
