@@ -124,7 +124,7 @@ To update, from version 2.36.0 on, an installation made with the script or an of
 aws update
 ```
 
-On an older version, or to update by hand on Linux, download the installer again, unzip it over the old files and run the installer with `--update`. The installer refuses to run over an existing installation without it. Pass the symlink folder and the install folder you already have (find them with `which aws` and `ls -l /usr/local/bin/aws`):
+On an older version, or to update by hand on Linux, download the installer again, unzip it over the old files and run the installer with `--update`. Add `--update` and pass the symlink folder and the install folder you already have (find them with `which aws` and `ls -l /usr/local/bin/aws`):
 
 ```bash
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
