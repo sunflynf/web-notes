@@ -328,7 +328,7 @@ Declare `vpc_id` and `subnet_id` as input variables. Use `vpc_security_group_ids
    Behind API Gateway, the integration timeout defaults to 29 seconds. A 15-minute Lambda still fails the HTTP call at 29 seconds.
    :::
 
-7. Choose **Test** to run it with a sample event. Logs appear under **Monitor**, **View CloudWatch logs**. See Monitoring (CloudWatch) {/* TODO-LINK ./monitoring.mdx#cloudwatch */}.
+7. Choose **Test** to run it with a sample event. Logs appear under **Monitor**, **View CloudWatch logs**. See [Monitoring (CloudWatch)](./monitoring.mdx#cloudwatch).
 
 </TabItem>
 <TabItem value="cli" label="CLI">
@@ -504,7 +504,7 @@ Gotchas:
 
 - Identity: [Identity (IAM roles)](./identity.mdx#iam-roles) gives the instance profile and the Lambda execution role their permissions.
 - Networking: [Networking (VPC, security groups)](./networking.mdx#vpc) decides which subnet and which ports a VM or task uses.
-- Monitoring: Monitoring (CloudWatch logs and metrics) {/* TODO-LINK ./monitoring.mdx#cloudwatch */} shows Lambda logs, ECS task logs and EC2 metrics.
+- Monitoring: [Monitoring (CloudWatch logs and metrics)](./monitoring.mdx#cloudwatch) shows Lambda logs, ECS task logs and EC2 metrics.
 - [Docker knowledge](../technologies/docker-knowledge.md): build the container image that ECS on Fargate runs.
 - [Docker cheatsheet](../technologies/docker-cheatsheet.mdx): the commands for building and pushing it.
 - [Ubuntu server setup](./ubuntu-server-setup.mdx): configure a Linux server once you can log in to your EC2 instance.

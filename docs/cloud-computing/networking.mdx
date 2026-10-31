@@ -706,5 +706,5 @@ The S3 bucket policy that lets this distribution read the bucket is in [S3](./st
 - Storage: [S3](./storage.mdx#s3) is the private origin behind CloudFront, and [EFS](./storage.mdx#efs) reaches your instances through mount targets in the VPC.
 - Databases: [RDS](./databases.mdx#rds) sits in the private subnets and accepts connections only from the app's security group.
 - Identity: [Identity (IAM roles)](./identity.mdx#iam-roles) gives instances and functions permissions, while security groups decide which network traffic reaches them.
-- Monitoring: CloudWatch {/* TODO-LINK ./monitoring.mdx#cloudwatch */} shows NAT gateway metrics such as port allocation errors and dropped packets.
+- Monitoring: [CloudWatch](./monitoring.mdx#cloudwatch) shows NAT gateway metrics such as port allocation errors and dropped packets.
 - [Nginx](../technologies/nginx.mdx): a reverse proxy you run yourself on an instance, when a managed ALB is more than you need.
