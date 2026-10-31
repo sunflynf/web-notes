@@ -16,7 +16,7 @@ tags:
 |---|---|
 | What it is | Statically typed, object-oriented language running on the JVM ("write once, run anywhere") |
 | Use it for | Backend services (Spring), Android, big data (Kafka, Spark), enterprise and desktop apps |
-| Latest stable | JDK 27.0.1 (released 2026-10-20) - checked 2026-10-31. Current LTS: JDK 25.0.5 (released 2026-10-20) |
+| Latest stable | JDK 27.0.1 (released 2026-10-20; OpenJDK patch build 27.0.1.0.3 on 2026-10-24) - checked 2026-10-31. Current LTS: JDK 25.0.5 (released 2026-10-20) |
 | Official docs | [docs.oracle.com/en/java/javase](https://docs.oracle.com/en/java/javase/) and [openjdk.org](https://openjdk.org/projects/jdk/) |
 
 Release cadence: a feature release every 6 months (March and September); an LTS every 2 years (17, 21, 25, next 29).
@@ -132,8 +132,8 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
 ## What's new in recent releases
 
-- **JDK 27 (2026-09-16, non-LTS)**: latest feature release; see the [JDK 27 project page](https://openjdk.org/projects/jdk/27/) for its JEP list.
-- **JDK 26 (2026-03)**: HTTP/3 support in `HttpClient`, the Applet API removed, warnings when deep reflection mutates `final` fields ("prepare to make final mean final"), and ahead-of-time object caching that works with any GC.
+- **JDK 27 (2026-09-15, non-LTS)**: G1 is the default GC in all environments, compact object headers on by default, post-quantum hybrid key exchange for TLS 1.3, JFR in-process data redaction; lazy constants, structured concurrency and primitive patterns stay in preview. Full list on the [JDK 27 project page](https://openjdk.org/projects/jdk/27/).
+- **JDK 26 (2026-03-17)**: HTTP/3 support in `HttpClient`, the Applet API removed, warnings when deep reflection mutates `final` fields ("prepare to make final mean final"), and ahead-of-time object caching that works with any GC.
 - **JDK 25 (2025-09, LTS)**: compact source files and instance `main` methods, module import declarations (`import module java.base;`), flexible constructor bodies (statements before `super(...)`), scoped values (final), and compact object headers as a product feature.
 - **JDK 24**: Stream Gatherers (`stream.gather(...)`) final; virtual threads no longer pin on `synchronized`.
 - **JDK 22-23**: unnamed variables `_`, Foreign Function and Memory API (final), Markdown doc comments (`///`).

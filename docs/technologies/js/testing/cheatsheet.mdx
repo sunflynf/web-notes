@@ -140,7 +140,7 @@ describe("Array", () => {
 - **Vitest 5** (2026-09): needs Node.js 22.12+ and Vite 6.4+, faster pools, unawaited async assertions and `expect.poll` timeouts now fail, reports and attachments move under a shared `.vitest/` folder.
 - **Vitest 4** (2025-10): Browser Mode became stable, with visual regression testing (`toMatchScreenshot`).
 - **Jest 30** (2025-06): drops Node.js 14/16/19/21 and needs TypeScript 5.4+, jsdom 26, `--testPathPattern` renamed to `--testPathPatterns`, alias matchers such as `toBeCalledWith` removed (use `toHaveBeenCalledWith`), `using` support for spies. Jest 30.x minors continue on the same major.
-- **Mocha 12** (2026-08): needs Node.js 20.19+ or 22.12+ (the lines where `require()` of ESM works). Mocha 11 already needed Node.js 18+.
+- **Mocha 12** (2026-08): minimum Node.js raised from 18.18 to 20.19 (or 22.12+), the package is now ESM, the CLI parser moved from yargs to Node's `util.parseArgs`, and `--forbid-only` defaults on when `CI` is set.
 
 ## In these notes
 

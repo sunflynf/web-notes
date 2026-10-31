@@ -108,10 +108,10 @@ gcloud components update
 
 ## What's new in recent releases
 
-- **AWS CLI v2**: v1 is in maintenance; v2 adds SSO (`aws configure sso`), `aws login` for console-credential sign-in, auto-prompt (`--cli-auto-prompt`). Releases ship almost daily with new service APIs.
-- **Azure CLI**: monthly releases; the 2.91 line keeps tracking new resource providers; Azure AD is now **Microsoft Entra ID** in commands and docs.
-- **Google Cloud CLI**: weekly releases; 591.0.0 bundles Python 3.14.9, adds `gcloud storage buckets create --labels`; 590.0.0 removed the `gcloud-man-pages` component and added `POSTGRES_19` for Cloud SQL.
-- **Naming changes to remember**: Cloud Functions -> **Cloud Run functions** (2024), Azure Cache for Redis -> **Azure Managed Redis**, Azure AI Foundry -> **Microsoft Foundry**.
+- **AWS CLI v2**: v1 is in maintenance mode (end of support 2027-07-15); v2 adds SSO (`aws configure sso`), `aws login` for console-credential sign-in, auto-prompt (`--cli-auto-prompt`). Releases ship almost daily with new service APIs.
+- **Azure CLI**: core updates monthly, with breaking-change releases only in Q2 and Q4; Azure AD is now **Microsoft Entra ID** in docs and help text, but the command group is still `az ad`.
+- **Google Cloud CLI**: 591.0.0 (2026-10-27) bundles Python 3.14.9 and adds `--labels` to `gcloud storage buckets create`; 590.0.0 (2026-10-20) removed the `gcloud-man-pages` component (use `--help`) and added `POSTGRES_19` for Cloud SQL.
+- **Naming changes to remember**: Cloud Functions -> **Cloud Run functions** (2024), Azure AI Foundry -> **Microsoft Foundry**; Azure Cache for Redis is retiring, so move to **Azure Managed Redis**.
 
 ## In these notes
 
