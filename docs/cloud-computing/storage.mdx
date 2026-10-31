@@ -54,7 +54,7 @@ If the last answer is no, the data is probably rows and records: see [Databases]
    :::
 
    :::caution
-   Once you delete a bucket, another account may be able to create a bucket with the same name and receive requests meant for yours. AWS recommends emptying a bucket and keeping it rather than deleting it when you want to keep the name. To make sure no other account can ever own your names, create the bucket in your account regional namespace (the **S3 Bucket Namespace** setting; the name ends with the account ID, the Region and `-an`).
+   Once you delete a bucket, another account may be able to create a bucket with the same name and receive requests meant for yours. AWS recommends emptying a bucket and keeping it rather than deleting it when you want to keep the name. To make sure no other account can ever own your names, create the bucket in your account regional namespace (choose the account regional namespace when you create the bucket; the console appends the suffix `-<account ID>-<Region>-an` to the prefix you enter automatically, while the API and CLI need the full name).
    :::
 
 2. Leave **Object Ownership** on **Bucket owner enforced** (the default: ACLs are disabled and policies control access), and leave all four **Block Public Access** settings on (also the default).

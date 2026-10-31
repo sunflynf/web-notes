@@ -34,7 +34,7 @@ If none of the questions fits, start with a queue: it is the simplest way to han
 | Option | You manage | Scales | Cost shape | AWS | Azure | GCP |
 |---|---|---|---|---|---|---|
 | Queue | The consumer that polls and deletes messages, plus retries and a dead-letter queue | Standard queues support nearly unlimited API calls per second; FIFO queues have a lower limit | Pay per request; each 64 KB chunk of a payload is billed as one request; 1 million requests a month are free | [SQS](#sqs) | Service Bus queues, Queue Storage | Pub/Sub |
-| Topic (publish and subscribe) | The topic, its subscriptions and the permissions that let it reach each subscriber | You add subscribers; the topic delivers to all of them | Pay for messages published, notifications delivered and API calls; delivery price varies by endpoint type | [SNS](#sns) | Service Bus topics, Event Grid | Pub/Sub |
+| Topic (publish and subscribe) | The topic, its subscriptions and the permissions that let it reach each subscriber | You add subscribers; the topic delivers to all of them | Pay for messages published, notifications delivered and API calls; delivery price varies by endpoint type | [SNS](#sns) | Service Bus topics | Pub/Sub |
 | Event bus | Rules (event patterns), their targets, and retry and dead-letter settings | You add rules and targets; no capacity to plan | Pay for the events published and delivered; on the classic bus each 64 KB chunk of a payload is one event and events from AWS services are ingested for free | [EventBridge](#eventbridge) | Event Grid | Eventarc |
 
 ## Set it up on AWS

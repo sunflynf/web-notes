@@ -24,19 +24,19 @@ flowchart TD
     Q2 -- "Yes" --> Aurora["Aurora<br/>MySQL and PostgreSQL compatible"]
     Q1 -- "No" --> Q3{"Key-value or items fetched by key, at any scale?"}
     Q3 -- "Yes" --> DynamoDB["DynamoDB<br/>serverless NoSQL"]
-    Q3 -- "No" --> Other["Not a managed database: files and blobs belong in storage"]
+    Q3 -- "No" --> Other["None of these three: documents, graphs and search are other data shapes"]
     click RDS "#rds"
     click Aurora "#aurora"
     click DynamoDB "#dynamodb"
 ```
 
-If the last answer is no, the data is probably files: see [Storage](./storage.mdx#s3).
+If the last answer is no, your data may be documents, graphs or full-text search, which need a different kind of database than the three here. For documents, see the [MongoDB notes](../technologies/database/no-sql/mongodb.md).
 
 ## Compare the options
 
 | Option | You manage | Scales | Cost shape | AWS | Azure | GCP |
 |---|---|---|---|---|---|---|
-| Relational, standard | The engine and version, the instance class and storage, the schema and queries, and who can reach it (subnet group, security group) | Scale up by changing the instance class; storage autoscaling is off unless you set a maximum; read replicas for reads | Pay while the instance runs, even when idle; backup storage beyond the free allowance (equal to your provisioned database storage) is billed | [RDS](#rds) | Azure SQL, Database for PostgreSQL/MySQL | Cloud SQL |
+| Relational, standard | The engine and version, the instance class and storage, the schema and queries, and who can reach it (subnet group, security group) | Scale up by changing the instance class; storage autoscaling turns on when you set a maximum storage threshold (`MaxAllocatedStorage` in the API and CLI, `max_allocated_storage` in Terraform); read replicas for reads | Pay while the instance runs, even when idle; backup storage beyond the free allowance (equal to your provisioned database storage) is billed | [RDS](#rds) | Azure SQL, Database for PostgreSQL/MySQL | Cloud SQL |
 | Relational, higher scale or availability | The same as RDS, as a cluster of one writer and its readers | Up to 15 Aurora Replicas share one storage volume of up to 256 TiB; Serverless v2 scales between a minimum and maximum capacity | Provisioned instances, or Serverless v2 capacity measured in Aurora capacity units (ACUs), which can scale to 0 | [Aurora](#aurora) | Azure SQL, Database for PostgreSQL/MySQL | AlloyDB, Spanner |
 | Key-value, serverless | The table design (keys, indexes) and the capacity mode; no servers or instances | Serverless: scales to very large tables with single-digit millisecond performance | On-demand pays per read and write request; provisioned pays hourly for the capacity you set | [DynamoDB](#dynamodb) | Cosmos DB | Firestore, Bigtable |
 

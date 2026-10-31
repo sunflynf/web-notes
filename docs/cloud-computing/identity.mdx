@@ -53,7 +53,7 @@ AWS recommends that people use federation and temporary credentials, and that co
 
 - **What it is**: the AWS recommendation for people. You manage users once in IAM Identity Center (or connect your own identity provider), and they sign in to the AWS access portal and get temporary credentials for the accounts and roles you assign.
 - **Enable it**: open the IAM Identity Center console and choose **Enable**. The recommended **organization instance** needs AWS Organizations; from a standalone account, the console offers to create an organization with your account as its management account. An **account instance** (standalone account or a member account) only covers application assignments within that account.
-- **Pick the Region carefully**: an organization can have IAM Identity Center in a single Region. To change the Region later you must delete the instance and create a new one in the other Region.
+- **Pick the Region carefully**: your IAM Identity Center data is stored in the one Region where you enable it (its primary Region). To change that Region later you must delete the instance and create a new one in the other Region. You can instead replicate the instance to additional Regions (verify the steps in the IAM Identity Center User Guide, "IAM Identity Center Region data storage and operations").
 - **Next steps**: confirm the identity source (the built-in directory or an external provider), then create users or groups, create permission sets, and assign groups to accounts. This page does not cover those console screens step by step (verify them in the IAM Identity Center User Guide).
 - **Use it from the CLI**: run `aws configure sso` then `aws sso login`, as in [Set up the AWS CLI](./foundations.mdx#sign-in).
 - **Free tier note**: creating an AWS organization from a free-tier account upgrades it to a paid plan with pay-as-you-go pricing, and its free tier credits expire immediately.
@@ -523,7 +523,7 @@ Within one account, a resource-based policy that names an IAM user or a role ses
 
 #### Limits {#iam-limits}
 
-Defaults for each Region (the adjustable ones can be raised through Service Quotas):
+Defaults per account (the adjustable ones can be raised through Service Quotas):
 
 - **Users per account**: 5,000 (not adjustable). **Access keys per user**: 2. **MFA devices per user**: 8. **Groups per user**: 10.
 - **Roles per account**: 1,000. **Role trust policy length**: 2,048 characters (up to 8,192). **Instance profiles per account**: 1,000. **Role name**: 64 characters.

@@ -8,6 +8,8 @@ import LayerFlow from "@site/src/components/LayerFlow";
 
 # Cloud Computing
 
+Why cloud not on the sky?
+
 Building blocks for real projects. Each block page starts with a decision chart that says which service to use, then shows how to set it up on AWS with the console, the CLI or Terraform. [Foundations](./foundations.mdx) comes first (accounts, regions, pricing, the AWS CLI), then [Identity](./identity.mdx), [Compute](./compute.mdx), [Storage](./storage.mdx), [Databases](./databases.mdx), [Networking](./networking.mdx), [Messaging](./messaging.mdx) and [Monitoring](./monitoring.mdx).
 
 ## Architecture map {#architecture-map}
@@ -27,22 +29,22 @@ A typical web project on AWS. Select a service to jump to its setup steps.
     {
       title: "App",
       nodes: [
-        { label: "S3 static files", to: "/docs/cloud-computing/storage/#s3" },
-        { label: "EC2", to: "/docs/cloud-computing/compute/#ec2" },
-        { label: "Lambda", to: "/docs/cloud-computing/compute/#lambda" },
+        { label: "S3 static files", to: "/docs/cloud-computing/storage/#s3", detail: "Storage" },
+        { label: "EC2", to: "/docs/cloud-computing/compute/#ec2", detail: "Compute" },
+        { label: "Lambda", to: "/docs/cloud-computing/compute/#lambda", detail: "Compute" },
       ],
     },
     {
       title: "Data",
-      nodes: [{ label: "RDS", to: "/docs/cloud-computing/databases/#rds" }],
+      nodes: [{ label: "RDS", to: "/docs/cloud-computing/databases/#rds", detail: "Databases" }],
     },
   ]}
   around={{
     title: "Around everything",
     nodes: [
-      { label: "IAM", to: "/docs/cloud-computing/identity/" },
-      { label: "VPC", to: "/docs/cloud-computing/networking/#vpc" },
-      { label: "CloudWatch", to: "/docs/cloud-computing/monitoring/#cloudwatch" },
+      { label: "IAM", to: "/docs/cloud-computing/identity/", detail: "Identity" },
+      { label: "VPC", to: "/docs/cloud-computing/networking/#vpc", detail: "Networking" },
+      { label: "CloudWatch", to: "/docs/cloud-computing/monitoring/#cloudwatch", detail: "Monitoring" },
     ],
   }}
 />

@@ -69,7 +69,7 @@ AWS is **pay-as-you-go**: you are billed for what you use (instance seconds, GB 
 
 | Option | What you give up | How it works | Azure | GCP |
 |---|---|---|---|---|
-| Savings Plans | Flexibility: you commit to a steady spend per hour for 1 or 3 years | Up to 72% below On-Demand. Compute Savings Plans apply to EC2 whatever the instance family, size, OS or Region, and also to Fargate and Lambda. Pay all, partial or no upfront | Reservations | Committed use discounts (CUDs) |
+| Savings Plans | Flexibility: you commit to a steady spend per hour for 1 or 3 years | Up to 72% below On-Demand. Compute Savings Plans apply to EC2 whatever the instance family, size, OS or Region, and also to Fargate and Lambda. Pay all, partial or no upfront | Savings plan for compute | Committed use discounts (CUDs) |
 | Reserved Instances | Flexibility: you commit to an instance configuration for 1 or 3 years | A billing discount applied to matching On-Demand EC2 usage, not a physical instance. Standard gives the larger discount; Convertible can be exchanged. A purchase cannot be cancelled. AWS recommends Savings Plans over Reserved Instances | Reservations | Committed use discounts (CUDs) |
 | Spot | Reliability: AWS can take the capacity back | Spare EC2 capacity at a steep discount, billed at a Spot price that changes with supply and demand. A running instance gets a two-minute interruption notice. Savings Plans do not apply to Spot, so use it for batch jobs, analysis and other work that can be interrupted | Spot VMs | Spot VMs |
 
@@ -265,6 +265,8 @@ gcloud components update
 | CI deploy without keys | GitHub OIDC -> IAM role | GitHub OIDC -> federated credential | Workload Identity Federation |
 | Private DB access | RDS in private subnet + SSM / bastion | Private Endpoint | Private IP + Cloud SQL Auth Proxy |
 | Budget guardrail | AWS Budgets alerts | Cost Management budgets | Billing budgets + alerts |
+
+App Runner is closed to new AWS customers; for a container with no cluster to manage, AWS recommends Amazon ECS Express Mode (see [Compute](./compute.mdx#ecs-fargate)).
 
 ### Gotchas {#gotchas}
 
