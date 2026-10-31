@@ -1,6 +1,7 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import { redirects } from "./redirects";
 
 const config: Config = {
   title: "Web Notes",
@@ -164,14 +165,8 @@ const config: Config = {
     [
       "@docusaurus/plugin-client-redirects",
       {
-        // Project plans moved from the blog to docs/projects
-        redirects: [
-          { from: "/blog/plan-app-banking", to: "/docs/projects/banking" },
-          { from: "/blog/plan-app-flashcard", to: "/docs/projects/flashcard" },
-          { from: "/blog/plan-app-minicrm", to: "/docs/projects/minicrm" },
-          { from: "/blog/plan-app-landing-page", to: "/docs/projects/landing-page" },
-          { from: "/blog/2025/06/18/landing-page", to: "/docs/projects/landing-page/workflows" },
-        ],
+        // All redirects live in redirects.ts
+        redirects,
       },
     ],
   ],
