@@ -116,7 +116,23 @@ msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
 aws --version
 ```
 
-On Linux ARM, use `awscli-exe-linux-aarch64.zip` instead. To update, download the installer again and run it the same way (with `unzip -u` on Linux). The current version is under [CLI versions and What's new](#cli-versions).
+On Linux ARM, use `awscli-exe-linux-aarch64.zip` instead. The current version is under [CLI versions and What's new](#cli-versions).
+
+To update, from version 2.36.0 on, an installation made with the script or an official installer updates itself (use `sudo` on Linux and macOS, or an Administrator prompt on Windows, if it was installed for all users):
+
+```bash
+aws update
+```
+
+On an older version, or to update by hand on Linux, download the installer again, unzip it over the old files and run the installer with `--update`. The installer refuses to run over an existing installation without it. Pass the symlink folder and the install folder you already have (find them with `which aws` and `ls -l /usr/local/bin/aws`):
+
+```bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -u awscliv2.zip
+sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+```
+
+On Windows, run the MSI installer again; on macOS, run the `.pkg` installer again.
 
 ### Sign in {#sign-in}
 
