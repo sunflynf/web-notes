@@ -1,5 +1,5 @@
-// Checks that every H2 and H3 heading of the four retired Cloud pages appears in the merge ledger.
-// The source pages are read from the main branch, because the files are deleted on this branch.
+// Checks that every H2 to H4 heading of the four retired Cloud pages appears in the merge ledger.
+// The source pages are read from the v1.1.1 tag (the site before the reorganisation), because the files are deleted on this branch.
 // Usage: node --no-warnings scripts/checks/ledger.mjs   (run from the repo root)
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -24,7 +24,7 @@ function headings(text) {
       continue;
     }
     if (fence) continue;
-    const h = line.match(/^(#{2,3})\s+(.+?)\s*#*\s*$/);
+    const h = line.match(/^(#{2,4})\s+(.+?)\s*#*\s*$/);
     if (h) result.push(h[2].trim());
   }
   return result;
@@ -43,7 +43,7 @@ for (const line of readFileSync(LEDGER, "utf8").split(/\r?\n/)) {
 const missing = [];
 let total = 0;
 for (const file of SOURCES) {
-  const src = execFileSync("git", ["show", `main:docs/cloud-computing/${file}`], {
+  const src = execFileSync("git", ["show", `v1.1.1:docs/cloud-computing/${file}`], {
     encoding: "utf8",
     maxBuffer: 16 * 1024 * 1024,
   });
