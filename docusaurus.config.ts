@@ -96,6 +96,13 @@ const config: Config = {
           position: "left",
           label: "Documents",
         },
+        {
+          type: "docSidebar",
+          sidebarId: "projectsSidebar",
+          docsPluginId: "projects",
+          position: "left",
+          label: "Projects",
+        },
         { to: "/blog", label: "Blog", position: "left" },
         {
           href: "https://github.com/sunflynf",
@@ -162,6 +169,17 @@ const config: Config = {
   } satisfies Preset.ThemeConfig,
 
   plugins: [
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "projects",
+        path: "projects",
+        routeBasePath: "projects",
+        sidebarPath: "./sidebarsProjects.ts",
+        editUrl: "https://github.com/sunflynf/web-notes/tree/main/",
+        showLastUpdateTime: true,
+      },
+    ],
     [
       "@docusaurus/plugin-client-redirects",
       {
