@@ -148,7 +148,8 @@ PUB_A=$(aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.0.1.0/24 \
   --availability-zone ap-southeast-1a --query Subnet.SubnetId --output text)
 PRIV_A=$(aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.0.11.0/24 \
   --availability-zone ap-southeast-1a --query Subnet.SubnetId --output text)
-PUB_B=$(aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.0.2.0/24 \n  --availability-zone ap-southeast-1b --query Subnet.SubnetId --output text)
+PUB_B=$(aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.0.2.0/24 \
+  --availability-zone ap-southeast-1b --query Subnet.SubnetId --output text)
 
 # Give instances in the public subnet a public IPv4 address at launch
 aws ec2 modify-subnet-attribute --subnet-id $PUB_A --map-public-ip-on-launch
@@ -679,7 +680,7 @@ resource "aws_cloudfront_distribution" "site" {
 
 The S3 bucket policy that lets this distribution read the bucket is in [S3](./storage.mdx#s3). Notes on these resources:
 
-- The `X-Origin-Secret` header protects nothing by itself. The ALB must reject requests that lack it: add an `aws_lb_listener_rule` with an `http_header` condition that forwards only requests carrying the header, and make the listener's default action return a fixed `403` response. Without that, anyone can still call the ALB directly. Keep the value secret and rotate it.
+- The `X-Origin-Secret` header protects nothing by itself. The ALB must reject requests that lack it: change the listener's default action (the `forward` in the `aws_lb_listener` above) to a fixed `403` response, and add an `aws_lb_listener_rule` with an `http_header` condition that forwards only requests carrying the header. As written, anyone can still call the ALB directly. Keep the value secret and rotate it.
 - `aws_cloudfront_distribution` waits for the distribution to move from `InProgress` to `Deployed`, which takes a while. Set `wait_for_deployment = false` to skip the wait.
 - `default_cache_behavior` needs either `cache_policy_id` (preferred) or `forwarded_values` (deprecated). `ordered_cache_behavior` blocks are listed in order of precedence, the topmost first.
 - `acm_certificate_arn` must point to a certificate in us-east-1. `ssl_support_method = "vip"` uses a dedicated IP address and may cost extra.
