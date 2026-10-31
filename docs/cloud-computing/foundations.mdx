@@ -269,7 +269,7 @@ gcloud components update
 ### Gotchas {#gotchas}
 
 - **Egress is not free** - data out to the Internet and across regions/zones costs money; NAT gateways add per-GB fees.
-- **Resource names differ in scope** - S3 bucket and GCS bucket names are global; Azure storage account names are global, lowercase, 3-24 chars.
+- **Resource names differ in scope** - GCS bucket names are global; Azure storage account names are global, lowercase, 3-24 chars. The S3 version of this gotcha (bucket names are global across all AWS accounts) is in [Storage](./storage.mdx#s3).
 - **Default VPC/public IPs** make things reachable; lock down security groups / NSGs / firewall rules.
 - **Region availability** - not every service, VM size or AI model exists in every region.
 - **Free tiers changed**: AWS moved new accounts to a credit-based Free Tier (July 2025); GCP's trial is $300 credit for 90 days; Azure gives $200 credit for 30 days plus 12 months of some free services. Always check current terms.

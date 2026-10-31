@@ -490,7 +490,7 @@ resource "aws_iam_role_policy_attachment" "s3_read" {
 #### Policy types {#policy-types}
 
 - **Identity-based policies** are attached to a user, group or role and say what that identity may do. They are either AWS managed (for common cases, but not always least privilege), customer managed (yours, reusable) or inline (embedded in one identity).
-- **Resource-based policies** are attached to a resource and name who may use it, for example an S3 bucket policy. See Storage (bucket policies) {/* TODO-LINK ./storage.mdx#s3 */}. A role's trust policy is a resource-based policy too.
+- **Resource-based policies** are attached to a resource and name who may use it, for example an S3 bucket policy. See [Storage (bucket policies)](./storage.mdx#s3). A role's trust policy is a resource-based policy too.
 - **Permissions boundaries** set the most an identity-based policy can grant a user or role. They grant nothing on their own.
 - **Service control policies (SCPs) and resource control policies (RCPs)** in AWS Organizations set guardrails for the accounts below them. They grant nothing on their own.
 - **Session policies** limit a role session or federated user session further when you ask for temporary credentials.
@@ -534,7 +534,7 @@ Defaults for each Region (the adjustable ones can be raised through Service Quot
 ## Connects to
 
 - Compute: [Compute](./compute.mdx#ec2) is where an instance profile or a Lambda execution role is attached to the thing that runs your code.
-- Storage: Storage (bucket policies) {/* TODO-LINK ./storage.mdx#s3 */} are resource-based policies that decide who can read or write a bucket.
+- Storage: [Storage (bucket policies)](./storage.mdx#s3) are resource-based policies that decide who can read or write a bucket.
 - Foundations: [Workload identity](./foundations.mdx#workload-identity) explains why code gets a role instead of keys.
 - [Authentication flows](../key-notes/authentication.md): OAuth, JWT and refresh tokens, the ideas behind the OIDC token a CI job trades for AWS credentials.
 - [Authentication cheatsheet](../key-notes/authentication-cheatsheet.mdx): a quick reference for those flows.
