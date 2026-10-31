@@ -29,6 +29,19 @@ const TABLE_HEADER = ["Option", "You manage", "Scales", "Cost shape", "AWS", "Az
 const TAB_VALUES = ["console", "cli", "terraform"];
 // Placeholder for a link to a block page that does not exist yet: Name {/* TODO-LINK ./identity.mdx#iam-roles */}
 const TODO_LINK = /\{\/\*\s*TODO-LINK\s+(\S+?)\s*\*\/\}/g;
+const slugify = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+// A TODO-LINK must point at a known block page, and its #anchor must be one of that block's ids
+function todoLinkProblem(target) {
+  const m = target.match(/^\.\/([a-z]+)\.mdx(?:#([\w-]+))?$/);
+  if (!m) return `TODO-LINK target ${target} must look like ./<block>.mdx or ./<block>.mdx#<id>`;
+  const block = BLOCKS.find((b) => b.slug === m[1]);
+  if (!block) return `TODO-LINK target ${target} is not a known block page (${BLOCKS.map((b) => b.slug).join(", ")})`;
+  if (m[2]) {
+    const allowed = block.kind === "foundations" ? FOUNDATIONS_H2.map(slugify) : [...block.full, ...block.short];
+    if (!allowed.includes(m[2])) return `TODO-LINK anchor #${m[2]} is not an id of ${block.slug} (${allowed.join(", ")})`;
+  }
+  return null;
+}
 const targetFile = (href) => {
   const file = href.replace(/#.*$/, "");
   return resolve(DIR, file);
@@ -158,6 +171,10 @@ function checkBlock(block) {
     for (const c of clicks) {
       if (!ids.has(c.id)) err(`mermaid click ${c.node} -> "#${c.id}" has no matching {#${c.id}} heading id`);
     }
+    // Every required service of the block must be reachable from the chart
+    for (const id of [...block.full, ...block.short]) {
+      if (!clicks.some((c) => c.id === id)) err(`Decision chart has no \`click <Node> "#${id}"\` line for service ${id}`);
+    }
     // End boxes that name a service: a `click` must exist for each `class ... service`-less
     // node is not detectable; the service ids that appear in the chart are validated above.
 
@@ -255,7 +272,9 @@ function checkBlock(block) {
   // TODO-LINK placeholders: fine while the target file is missing, a violation once it exists
   for (const l of prose) {
     for (const m of l.text.matchAll(TODO_LINK)) {
-      if (existsSync(targetFile(m[1]))) err(`TODO-LINK to existing page ${m[1]} — convert to a real link`);
+      const problem = todoLinkProblem(m[1]);
+      if (problem) err(`line ${l.n}: ${problem}`);
+      else if (existsSync(targetFile(m[1]))) err(`TODO-LINK to existing page ${m[1]} — convert to a real link`);
     }
   }
 
