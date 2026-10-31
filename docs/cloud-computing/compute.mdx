@@ -147,7 +147,7 @@ gcloud run deploy hello --source . --function hello --base-image nodejs24 --regi
 
 4. Under **Network settings**, choose the VPC and subnet, and create or select a security group that opens only the ports you need. See Networking (VPC and security groups) {/* TODO-LINK ./networking.mdx#vpc */}.
 
-5. Under **Advanced details**, set **IAM instance profile** to the profile that carries the instance's role. See Identity (IAM roles) {/* TODO-LINK ./identity.mdx#iam-roles */}.
+5. Under **Advanced details**, set **IAM instance profile** to the profile that carries the instance's role. See [Identity (IAM roles)](./identity.mdx#iam-roles).
 
    :::caution
    The console list shows instance profile names. When you create a role for EC2 in the IAM console, it creates an instance profile with the same name. A role made with the CLI or Terraform has no instance profile until you create one.
@@ -291,7 +291,7 @@ Declare `vpc_id` and `subnet_id` as input variables. Use `vpc_security_group_ids
    Pick a runtime that is not close to deprecation. Once a runtime is deprecated, patches stop and later Lambda blocks creating and then updating functions on it. See the runtime list under Limits and runtimes below.
    :::
 
-2. Under **Permissions**, keep the default: the console creates an execution role that includes the `AWSLambdaBasicExecutionRole` managed policy, which lets the function write logs to CloudWatch Logs. Add more permissions later for what the function calls (S3, DynamoDB and so on). See Identity (IAM roles) {/* TODO-LINK ./identity.mdx#iam-roles */}.
+2. Under **Permissions**, keep the default: the console creates an execution role that includes the `AWSLambdaBasicExecutionRole` managed policy, which lets the function write logs to CloudWatch Logs. Add more permissions later for what the function calls (S3, DynamoDB and so on). See [Identity (IAM roles)](./identity.mdx#iam-roles).
 
 3. Write the handler in the code editor (or upload a zip) and choose **Deploy**. The handler setting is `<file>.<export>`, for example `index.handler`. Lambda has managed runtimes for Python, Node.js, Java and more; Go and Rust run on the OS-only runtime (see Limits and runtimes). Build each function as one small job, such as processing an API request or transforming data.
 
@@ -502,7 +502,7 @@ Gotchas:
 
 ## Connects to
 
-- Identity: Identity (IAM roles) {/* TODO-LINK ./identity.mdx#iam-roles */} gives the instance profile and the Lambda execution role their permissions.
+- Identity: [Identity (IAM roles)](./identity.mdx#iam-roles) gives the instance profile and the Lambda execution role their permissions.
 - Networking: Networking (VPC, security groups) {/* TODO-LINK ./networking.mdx#vpc */} decides which subnet and which ports a VM or task uses.
 - Monitoring: Monitoring (CloudWatch logs and metrics) {/* TODO-LINK ./monitoring.mdx#cloudwatch */} shows Lambda logs, ECS task logs and EC2 metrics.
 - [Docker knowledge](../technologies/docker-knowledge.md): build the container image that ECS on Fargate runs.

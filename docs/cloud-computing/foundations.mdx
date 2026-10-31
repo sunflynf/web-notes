@@ -36,7 +36,7 @@ Read this first: the shared ideas behind every AWS service, how you pay for them
 
 - Give code a role instead of keys. On AWS that is an IAM role: an instance profile for EC2, an execution role for Lambda, a task role for ECS, and IAM roles for service accounts (IRSA) on EKS.
 - The code then receives short-lived credentials automatically, so there is no access key to store, rotate or leak.
-- Roles, users and policies are covered in Identity {/* TODO-LINK ./identity.mdx#iam-roles */}. The Azure and GCP equivalents are in the [quick reference](#azure-gcp-core-concepts).
+- Roles, users and policies are covered in [Identity](./identity.mdx#iam-roles). The Azure and GCP equivalents are in the [quick reference](#azure-gcp-core-concepts).
 
 ### Infrastructure as code {#infrastructure-as-code}
 
@@ -268,7 +268,6 @@ gcloud components update
 
 ### Gotchas {#gotchas}
 
-- **Long-lived access keys** leak; prefer SSO / OIDC federation and short-lived credentials.
 - **Egress is not free** - data out to the Internet and across regions/zones costs money; NAT gateways add per-GB fees.
 - **Resource names differ in scope** - S3 bucket and GCS bucket names are global; Azure storage account names are global, lowercase, 3-24 chars.
 - **Default VPC/public IPs** make things reachable; lock down security groups / NSGs / firewall rules.
@@ -278,7 +277,7 @@ gcloud components update
 
 ## Connects to
 
-- Identity: Identity (IAM roles and policies) {/* TODO-LINK ./identity.mdx#iam-roles */} is where the roles behind workload identity are created.
+- Identity: [Identity (IAM roles and policies)](./identity.mdx#iam-roles) is where the roles behind workload identity are created.
 - Compute: [Compute](./compute.mdx) is the next block, where EC2, ECS on Fargate and Lambda use the Regions, profiles and roles set up here.
 - Networking: Networking (VPC, NAT and egress) {/* TODO-LINK ./networking.mdx#vpc */} explains the data-transfer costs listed under Pricing.
 - [Authentication cheatsheet](../key-notes/authentication-cheatsheet.mdx): OIDC, SSO and short-lived tokens, the ideas behind keyless sign-in.
