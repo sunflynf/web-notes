@@ -1,6 +1,7 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import { redirects } from "./redirects";
 
 const config: Config = {
   title: "Web Notes",
@@ -76,6 +77,10 @@ const config: Config = {
     colorMode: {
       respectPrefersColorScheme: true,
     },
+    mermaid: {
+      // "antiscript" keeps `click` links in Mermaid charts working
+      options: { securityLevel: "antiscript" },
+    },
     docs: {
       sidebar: {
         autoCollapseCategories: true,
@@ -94,6 +99,13 @@ const config: Config = {
           sidebarId: "documentSidebar",
           position: "left",
           label: "Documents",
+        },
+        {
+          type: "docSidebar",
+          sidebarId: "projectsSidebar",
+          docsPluginId: "projects",
+          position: "left",
+          label: "Projects",
         },
         { to: "/blog", label: "Blog", position: "left" },
         {
@@ -162,16 +174,21 @@ const config: Config = {
 
   plugins: [
     [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "projects",
+        path: "projects",
+        routeBasePath: "projects",
+        sidebarPath: "./sidebarsProjects.ts",
+        editUrl: "https://github.com/sunflynf/web-notes/tree/main/",
+        showLastUpdateTime: true,
+      },
+    ],
+    [
       "@docusaurus/plugin-client-redirects",
       {
-        // Project plans moved from the blog to docs/projects
-        redirects: [
-          { from: "/blog/plan-app-banking", to: "/docs/projects/banking" },
-          { from: "/blog/plan-app-flashcard", to: "/docs/projects/flashcard" },
-          { from: "/blog/plan-app-minicrm", to: "/docs/projects/minicrm" },
-          { from: "/blog/plan-app-landing-page", to: "/docs/projects/landing-page" },
-          { from: "/blog/2025/06/18/landing-page", to: "/docs/projects/landing-page/workflows" },
-        ],
+        // All redirects live in redirects.ts
+        redirects,
       },
     ],
   ],

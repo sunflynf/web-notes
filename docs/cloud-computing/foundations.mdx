@@ -1,0 +1,288 @@
+---
+title: Foundations
+sidebar_label: Foundations
+sidebar_position: 1
+description: The ideas every cloud service builds on (regions, accounts, shared responsibility, pricing), how to set up the AWS CLI, and an Azure and GCP quick reference with their CLI commands and gotchas
+---
+
+# Foundations
+
+Read this first: the shared ideas behind every AWS service, how you pay for them, how to get the AWS CLI working, and a quick reference for Azure and Google Cloud.
+
+## Core ideas
+
+### Regions and Availability Zones {#regions-and-azs}
+
+- A **Region** is a geographic area, such as `ap-southeast-1` (Singapore). Resources live in one Region unless you copy or replicate them.
+- An **Availability Zone (AZ)** is one or more isolated data centers inside a Region, each with its own power, networking and connectivity. AZs in a Region are up to about 100 km (60 miles) apart, far enough to avoid shared failures and close enough for single-digit millisecond latency. Spread an application across zones for high availability.
+- AZ names such as `ap-southeast-1a` are mapped to physical zones per account, so the same name can be a different zone in two accounts. Use the AZ ID (for example `apse1-az1`) when you need to compare zones across accounts.
+- Pick a Region by latency to your users, price, data residency rules and whether the services you need exist there: not every service, VM size or AI model is in every Region.
+
+### Accounts, Organizations and OUs {#accounts-and-organizations}
+
+- An **AWS account** is a container for resources, and it is both a billing boundary and a security boundary. Using several accounts (for example one per environment or team) is the recommended way to scale.
+- **AWS Organizations** groups accounts into one **organization**: one **management account** that creates the organization and pays the bill, plus **member accounts**.
+- **Organizational units (OUs)** group accounts under the **root** and can nest (up to five levels). Policies attached to a root or an OU are inherited by everything below it.
+- A **service control policy (SCP)** sets the maximum permissions for the users and roles in member accounts. An SCP never grants access by itself, and it does not restrict the management account, so keep workloads out of the management account.
+- Azure and Google Cloud use different hierarchies. See Core concepts on Azure and GCP under [Azure and GCP quick reference](#azure-gcp-core-concepts).
+
+### Shared responsibility {#shared-responsibility}
+
+- AWS secures the cloud: the hardware, software, networking and facilities that run the services.
+- You secure what you put in the cloud. How much that is depends on the service: on EC2 you patch the guest OS and set the security groups; on S3 or DynamoDB AWS runs the platform and you manage your data, encryption choices and IAM permissions.
+- Some controls are shared, such as patching: AWS patches its infrastructure, you patch your guest OS and applications.
+
+### Workload identity {#workload-identity}
+
+- Give code a role instead of keys. On AWS that is an IAM role: an instance profile for EC2, an execution role for Lambda, a task role for ECS, and IAM roles for service accounts (IRSA) on EKS.
+- The code then receives short-lived credentials automatically, so there is no access key to store, rotate or leak.
+- Roles, users and policies are covered in [Identity](./identity.mdx#iam-roles). The Azure and GCP equivalents are in the [quick reference](#azure-gcp-core-concepts).
+
+### Infrastructure as code {#infrastructure-as-code}
+
+- **Infrastructure as Code (IaC)** describes resources in files you keep in Git, so an environment can be reviewed, repeated and rebuilt.
+- The common tools: CloudFormation or CDK on AWS, Bicep or ARM on Azure, Terraform or OpenTofu on all three, and Pulumi.
+- The "Set it up on AWS" sections of the building-block pages show a Terraform tab for each service. They all start from a provider block like this one, with the `hashicorp/aws` provider (pin a `version` in `required_providers` for real projects):
+
+```hcl
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
+  }
+}
+
+provider "aws" {
+  region  = "ap-southeast-1"
+  profile = "prod" # a profile from "Set up the AWS CLI" below
+}
+```
+
+Then run `terraform init`, `terraform plan` and `terraform apply`.
+
+## Pricing
+
+### How you pay {#how-you-pay}
+
+AWS is **pay-as-you-go**: you are billed for what you use (instance seconds, GB stored, requests, GB transferred), with no upfront payment and no commitment. That default is called **On-Demand**. Pricing depends on the service, the instance type and the Region, so the same workload can cost different amounts in different places. Two ways to pay less:
+
+| Option | What you give up | How it works | Azure | GCP |
+|---|---|---|---|---|
+| Savings Plans | Flexibility: you commit to a steady spend per hour for 1 or 3 years | Up to 72% below On-Demand. Compute Savings Plans apply to EC2 whatever the instance family, size, OS or Region, and also to Fargate and Lambda. Pay all, partial or no upfront | Savings plan for compute | Committed use discounts (CUDs) |
+| Reserved Instances | Flexibility: you commit to an instance configuration for 1 or 3 years | A billing discount applied to matching On-Demand EC2 usage, not a physical instance. Standard gives the larger discount; Convertible can be exchanged. A purchase cannot be cancelled. AWS recommends Savings Plans over Reserved Instances | Reservations | Committed use discounts (CUDs) |
+| Spot | Reliability: AWS can take the capacity back | Spare EC2 capacity at a steep discount, billed at a Spot price that changes with supply and demand. A running instance gets a two-minute interruption notice. Savings Plans do not apply to Spot, so use it for batch jobs, analysis and other work that can be interrupted | Spot VMs | Spot VMs |
+
+Use AWS Cost Explorer to see a recommended Savings Plans commitment from your own usage. Fargate Spot works the same way for ECS tasks (see Compute, [ECS on Fargate](./compute.mdx#ecs-fargate)).
+
+### Free tier {#free-tier}
+
+- **AWS** moved new accounts to a credit-based Free Tier in July 2025. You choose a **Free account plan** or a **Paid account plan** when you sign up. New accounts get USD 100 in credits, plus up to USD 100 more for completing activities, so up to USD 200 in total. The free plan lasts up to six months or until the credits run out, whichever comes first, and some services are not available on it. More than 30 services are always free up to a monthly allowance.
+- **Azure** gives USD 200 credit for 30 days plus 12 months of some free services (B1s VMs, Blob storage).
+- **GCP** gives USD 300 credit for 90 days plus always-free products (e2-micro, 5 GB storage).
+- Terms change often: check the provider's page before relying on any of them.
+
+### Notes on pricing {#notes-on-pricing}
+
+- **Pricing** is generally pay-as-you-go, meaning it depends on usage. AWS, Azure, and GCP offer different pricing based on specific instance types, services, and regions.
+- **Free Tier**: Most platforms offer trial credits and/or always-free limits; terms change often, so check the provider's page before relying on them.
+- **Unique Features**: Each platform has strengths, like AWS's broad service range, GCP's AI and analytics, and Oracle's focus on databases.
+- Beyond the big three, IBM Cloud, Oracle Cloud, DigitalOcean, Linode (Akamai Cloud) and Heroku are the other platforms compared in the [Cloud Computing overview](./index.mdx#platform-comparison), with starting prices, free tiers and ideal uses side by side.
+- Egress is the usual surprise on the bill: data out to the Internet and across Regions or zones costs money, and NAT gateways add per-GB fees. Set a budget alert (AWS Budgets) before you build anything.
+
+## Set up the AWS CLI
+
+### Install version 2 {#install-aws-cli}
+
+AWS CLI version 1 and version 2 both use the command name `aws`. Install version 2:
+
+```bash
+# Linux x86_64
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+# macOS
+curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
+sudo installer -pkg ./AWSCLIV2.pkg -target /
+```
+
+```bash
+# Windows (run in Command Prompt as an administrator)
+msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
+```
+
+```bash
+aws --version
+```
+
+On Linux ARM, use `awscli-exe-linux-aarch64.zip` instead. The current version is under [CLI versions and What's new](#cli-versions).
+
+To update, from version 2.36.0 on, an installation made with the script or an official installer updates itself (use `sudo` on Linux and macOS, or an Administrator prompt on Windows, if it was installed for all users):
+
+```bash
+aws update
+```
+
+On an older version, or to update by hand on Linux, download the installer again, unzip it over the old files and run the installer with `--update`. Add `--update` and pass the symlink folder and the install folder you already have (find them with `which aws` and `ls -l /usr/local/bin/aws`):
+
+```bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip -u awscliv2.zip
+sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+```
+
+On Windows, run the MSI installer again; on macOS, run the `.pkg` installer again.
+
+### Sign in {#sign-in}
+
+Prefer short-lived credentials over access keys. Three ways, from best to last resort:
+
+1. **IAM Identity Center (SSO)**, the best choice for a team or several accounts. The wizard asks for an SSO session name, the start URL (or issuer URL), the SSO Region, the account, the role, a default Region and a profile name:
+
+   ```bash
+   aws configure sso
+   aws sso login --profile my-dev-profile
+   aws sso logout
+   ```
+
+   From version 2.22.0 the sign-in uses PKCE in your browser. On a machine without a browser, add `--use-device-code`.
+
+2. **Console credentials with `aws login`** (version 2.32.0 or later), when you already sign in to the console as an IAM user, a federated identity or the root user. Your IAM user or role needs the `SignInLocalDevelopmentAccess` managed policy (not needed for the root user). The CLI refreshes the temporary credentials for up to 12 hours, then you log in again:
+
+   ```bash
+   aws login
+   aws login --profile my-dev-profile
+   aws login --remote   # on a machine without a browser: open the URL elsewhere and paste the code back
+   aws logout
+   ```
+
+3. **Access keys with `aws configure`**, which asks for an access key ID, a secret access key, a default Region and an output format. These are long-lived: use them only when the first two do not fit.
+
+:::caution
+Long-lived access keys leak. If you must use them, keep them out of Git, rotate them and give the user the least permissions it needs.
+:::
+
+### Profiles {#profiles}
+
+Settings are stored in two plain-text files in `~/.aws/` (`%USERPROFILE%\.aws\` on Windows): `config` and `credentials`. Each file is divided into named **profiles**; the `default` profile is used unless you choose another. If a profile has keys in both files, the `credentials` file wins. A profile created by `aws configure sso` looks like this in `~/.aws/config`:
+
+```ini
+[profile my-dev-profile]
+sso_session = my-sso
+sso_account_id = 111122223333
+sso_role_name = SampleRole
+region = ap-southeast-1
+output = json
+
+[sso-session my-sso]
+sso_region = us-east-1
+sso_start_url = https://my-sso-portal.awsapps.com/start
+sso_registration_scopes = sso:account:access
+```
+
+Choose a profile and Region per command or for the whole shell. A command-line option beats an environment variable, which beats the files:
+
+```bash
+aws s3 ls --profile my-dev-profile --region ap-southeast-1
+export AWS_PROFILE=my-dev-profile AWS_REGION=ap-southeast-1
+aws configure list-profiles        # every profile name
+aws configure list                 # where the current settings come from
+```
+
+### Everyday commands {#everyday-commands}
+
+```bash
+# AWS CLI v2
+aws configure                       # or: aws configure sso / aws login
+aws sts get-caller-identity         # "who am I"
+aws s3 ls s3://my-bucket/ && aws s3 cp ./file s3://my-bucket/
+aws ec2 describe-instances --query 'Reservations[].Instances[].[InstanceId,State.Name]' --output table
+aws logs tail /aws/lambda/my-fn --follow
+export AWS_PROFILE=prod AWS_REGION=ap-southeast-1
+```
+
+Run `aws sts get-caller-identity` first whenever something fails with an access error: it shows which account and identity the CLI is really using.
+
+## Azure and GCP quick reference
+
+Everything below comes from the old Cloud Platforms Cheatsheet and is kept as written.
+
+### CLI versions and What's new {#cli-versions}
+
+| | |
+|---|---|
+| What it is | Side-by-side map of the big three public clouds: AWS, Microsoft Azure, Google Cloud (GCP) |
+| Use it for | Translating a service name between clouds, remembering CLI syntax, picking the right managed service |
+| Latest stable | CLIs: AWS CLI v2.39.3 (released 2026-10-30), Azure CLI `az` 2.91.0 (released 2026-10-05), Google Cloud CLI `gcloud` 591.0.0 (released 2026-10-27) - checked 2026-10-31 |
+| Official docs | [AWS CLI](https://docs.aws.amazon.com/cli/) - [Azure CLI](https://learn.microsoft.com/cli/azure/) - [gcloud CLI](https://cloud.google.com/sdk/docs) |
+
+What's new in recent releases:
+
+- **AWS CLI v2**: v1 is in maintenance mode (end of support 2027-07-15); v2 adds SSO (`aws configure sso`), `aws login` for console-credential sign-in, auto-prompt (`--cli-auto-prompt`). Releases ship almost daily with new service APIs.
+- **Azure CLI**: core updates monthly, with breaking-change releases only in Q2 and Q4; Azure AD is now **Microsoft Entra ID** in docs and help text, but the command group is still `az ad`.
+- **Google Cloud CLI**: 591.0.0 (2026-10-27) bundles Python 3.14.9 and adds `--labels` to `gcloud storage buckets create`; 590.0.0 (2026-10-20) removed the `gcloud-man-pages` component (use `--help`) and added `POSTGRES_19` for Cloud SQL.
+- **Naming changes to remember**: Cloud Functions -> **Cloud Run functions** (2024), Azure AI Foundry -> **Microsoft Foundry**; Azure Cache for Redis is retiring, so move to **Azure Managed Redis**.
+
+### Core concepts on Azure and GCP {#azure-gcp-core-concepts}
+
+- **Resource hierarchy** - AWS: Organization > OU > **Account**; Azure: Tenant (Entra ID) > Management group > **Subscription** > **Resource group**; GCP: Organization > Folder > **Project**.
+- **Identity** - AWS IAM users/roles/policies; Azure Entra ID + RBAC role assignments; GCP IAM principals + roles bound on a resource.
+- **Workload identity** - give code a role instead of keys: AWS instance profile / IRSA, Azure managed identity, GCP service account attached to the resource.
+- **Pricing model** - pay-as-you-go, plus discounts for commitment (Savings Plans / Reservations / CUDs) and interruptible capacity (Spot / Spot VMs).
+
+### Azure CLI {#azure-cli}
+
+```bash
+# Azure CLI
+az login                            # browser / device code
+az account set --subscription "<name-or-id>"
+az group create -n rg-demo -l southeastasia
+az vm list -o table
+az webapp up -n my-app --runtime "NODE:22-lts"
+az resource list -g rg-demo --query "[].{name:name,type:type}" -o table
+```
+
+### Google Cloud CLI {#gcloud-cli}
+
+```bash
+# Google Cloud CLI
+gcloud init                         # login + default project/region
+gcloud auth login && gcloud auth application-default login   # user vs ADC for SDKs
+gcloud config set project my-project
+gcloud compute instances list
+gcloud run deploy my-svc --source . --region asia-southeast1
+gcloud storage cp ./file gs://my-bucket/
+gcloud components update
+```
+
+### Common patterns {#common-patterns}
+
+| Goal | AWS | Azure | GCP |
+|---|---|---|---|
+| Static site | S3 + CloudFront | Static Web Apps | Cloud Storage + Cloud CDN / Firebase Hosting |
+| Container web API | App Runner / ECS Fargate + ALB | Container Apps | Cloud Run |
+| CI deploy without keys | GitHub OIDC -> IAM role | GitHub OIDC -> federated credential | Workload Identity Federation |
+| Private DB access | RDS in private subnet + SSM / bastion | Private Endpoint | Private IP + Cloud SQL Auth Proxy |
+| Budget guardrail | AWS Budgets alerts | Cost Management budgets | Billing budgets + alerts |
+
+App Runner is closed to new AWS customers; for a container with no cluster to manage, AWS recommends Amazon ECS Express Mode (see [Compute](./compute.mdx#ecs-fargate)).
+
+### Gotchas {#gotchas}
+
+- **Egress is not free** - data out to the Internet and across regions/zones costs money. The AWS NAT gateway per-GB fee, and how to lower it, is in [Networking](./networking.mdx#vpc).
+- **Resource names differ in scope** - GCS bucket names are global; Azure storage account names are global, lowercase, 3-24 chars. The S3 version of this gotcha (bucket names are global across all AWS accounts) is in [Storage](./storage.mdx#s3).
+- **Default networks/public IPs** make things reachable; lock down NSGs / firewall rules. The AWS version (the default VPC, public IPs and security groups) is in [Networking](./networking.mdx#vpc).
+- **Region availability** - not every service, VM size or AI model exists in every region.
+- **Free tiers changed**: AWS moved new accounts to a credit-based Free Tier (July 2025); GCP's trial is $300 credit for 90 days; Azure gives $200 credit for 30 days plus 12 months of some free services. Always check current terms.
+- **Deleting a project/resource group** removes everything inside - great for cleanup, dangerous in prod (use locks / deletion protection).
+
+## Connects to
+
+- Identity: [Identity (IAM roles and policies)](./identity.mdx#iam-roles) is where the roles behind workload identity are created.
+- Compute: [Compute](./compute.mdx) is the next block, where EC2, ECS on Fargate and Lambda use the Regions, profiles and roles set up here.
+- Networking: [Networking (VPC, NAT and egress)](./networking.mdx#vpc) explains the data-transfer costs listed under Pricing.
+- [Authentication cheatsheet](../key-notes/authentication-cheatsheet.mdx): OIDC, SSO and short-lived tokens, the ideas behind keyless sign-in.
+- [Ubuntu server setup](./ubuntu-server-setup.mdx): configure a Linux server once you can launch one.
+- [Ubuntu Server Cheatsheet](./ubuntu-server-cheatsheet.mdx): the commands for managing the VMs you launch.
+- [ELK Stack](./elk-stack/index.md): centralized logging you can run on any cloud.
