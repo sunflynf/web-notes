@@ -77,6 +77,10 @@ const config: Config = {
     colorMode: {
       respectPrefersColorScheme: true,
     },
+    mermaid: {
+      // "antiscript" keeps `click` links in Mermaid charts working
+      options: { securityLevel: "antiscript" },
+    },
     docs: {
       sidebar: {
         autoCollapseCategories: true,
