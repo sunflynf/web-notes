@@ -139,7 +139,7 @@ If the last answer is no, see [Storage](./storage.mdx#s3) for files or [Database
 </TabItem>
 <TabItem value="cli" label="CLI">
 
-Create the VPC, then one public and one private subnet in the first Availability Zone (repeat the `create-subnet` commands for the second zone with new CIDR blocks):
+Create the VPC, then one public and one private subnet in the first Availability Zone, and a second public subnet in another zone for the load balancer (it needs subnets in at least two zones). Repeat the pattern for a second private subnet if you want one:
 
 ```bash
 VPC_ID=$(aws ec2 create-vpc --cidr-block 10.0.0.0/16 --query Vpc.VpcId --output text)
@@ -148,9 +148,11 @@ PUB_A=$(aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.0.1.0/24 \
   --availability-zone ap-southeast-1a --query Subnet.SubnetId --output text)
 PRIV_A=$(aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.0.11.0/24 \
   --availability-zone ap-southeast-1a --query Subnet.SubnetId --output text)
+PUB_B=$(aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block 10.0.2.0/24 \n  --availability-zone ap-southeast-1b --query Subnet.SubnetId --output text)
 
 # Give instances in the public subnet a public IPv4 address at launch
 aws ec2 modify-subnet-attribute --subnet-id $PUB_A --map-public-ip-on-launch
+aws ec2 modify-subnet-attribute --subnet-id $PUB_B --map-public-ip-on-launch
 ```
 
 Add the internet gateway and a route table that makes the first subnet public:
@@ -162,6 +164,7 @@ aws ec2 attach-internet-gateway --vpc-id $VPC_ID --internet-gateway-id $IGW_ID
 PUB_RT=$(aws ec2 create-route-table --vpc-id $VPC_ID --query RouteTable.RouteTableId --output text)
 aws ec2 create-route --route-table-id $PUB_RT --destination-cidr-block 0.0.0.0/0 --gateway-id $IGW_ID
 aws ec2 associate-route-table --route-table-id $PUB_RT --subnet-id $PUB_A
+aws ec2 associate-route-table --route-table-id $PUB_RT --subnet-id $PUB_B
 ```
 
 Create a NAT gateway in the public subnet and send the private subnet's Internet traffic through it:
@@ -195,7 +198,7 @@ aws ec2 authorize-security-group-ingress --group-id $ALB_SG --protocol tcp --por
 aws ec2 authorize-security-group-ingress --group-id $APP_SG --protocol tcp --port 8080 --source-group $ALB_SG
 ```
 
-Create an internet-facing Application Load Balancer across two public subnets (the second subnet comes from the second zone), a target group and a listener:
+Create an internet-facing Application Load Balancer across the two public subnets, a target group and a listener:
 
 ```bash
 ALB_ARN=$(aws elbv2 create-load-balancer --name my-alb --type application \
@@ -214,14 +217,22 @@ aws elbv2 create-listener --load-balancer-arn $ALB_ARN --protocol HTTP --port 80
 
 Use `--target-type ip` for ECS tasks. For an HTTPS listener add `--protocol HTTPS --port 443 --certificates CertificateArn=<ACM certificate ARN>`, with a certificate in the load balancer's Region.
 
-Clean up in reverse order: the load balancer, the NAT gateway (it stays in the list for about an hour), its Elastic IP once the gateway is gone, the internet gateway, the subnets, and finally the VPC. The first four steps look like this:
+Clean up in reverse order. Delete the load balancer first, then its target group once the load balancer is gone. Deleting a NAT gateway is asynchronous (its entry stays in the list for about an hour), so wait until it is deleted before you release its Elastic IP and detach the internet gateway:
 
 ```bash
+aws elbv2 delete-load-balancer --load-balancer-arn $ALB_ARN
+aws elbv2 wait load-balancers-deleted --load-balancer-arns $ALB_ARN
+aws elbv2 delete-target-group --target-group-arn $TG_ARN
+
 aws ec2 delete-nat-gateway --nat-gateway-id $NAT_ID
+aws ec2 wait nat-gateway-deleted --nat-gateway-ids $NAT_ID
 aws ec2 release-address --allocation-id $EIP_ALLOC
+
 aws ec2 detach-internet-gateway --internet-gateway-id $IGW_ID --vpc-id $VPC_ID
 aws ec2 delete-internet-gateway --internet-gateway-id $IGW_ID
 ```
+
+Then delete the subnets and route tables you created, and finally the VPC with `aws ec2 delete-vpc --vpc-id $VPC_ID`. Deleting the load balancer does not touch its registered targets, so your instances keep running.
 
 </TabItem>
 <TabItem value="terraform" label="Terraform">
@@ -364,6 +375,11 @@ resource "aws_lb_target_group" "app" {
   vpc_id      = aws_vpc.main.id
 }
 
+variable "alb_certificate_arn" {
+  description = "ARN of an ACM certificate in the load balancer's Region"
+  type        = string
+}
+
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.web.arn
   port              = 443
@@ -434,14 +450,10 @@ Notes on these resources:
    A Lambda function URL used as an origin must be reachable by CloudFront. With OAC, set the function URL's `AuthType` to `AWS_IAM` and allow `lambda:InvokeFunctionUrl` and `lambda:InvokeFunction` in the function's resource-based policy. Without OAC, use `AuthType` `NONE` with a resource-based policy that allows `lambda:InvokeFunctionUrl`. A secret custom header that the function code checks keeps people from calling the URL directly. For a Lambda origin, use the `AllViewerExceptHostHeader` origin request policy, because the function URL expects its own domain in the `Host` header.
    :::
 
-5. Serve HTTPS on your own domain. First request a certificate in us-east-1. Open the ACM console in that Region, choose **Request a certificate**, enter the domain names (add `*.example.com` or the apex name as extra names), choose **DNS validation - recommended** as the **Validation method**, and request it. It shows `Pending validation` until you add the CNAME record ACM gives you to your DNS, and then `Issued`. Next open the distribution, and under **Settings**, **Alternate domain names**, choose **Add a domain**. Enter up to five domains and choose **Next**. For **TLS certificate** pick the ACM certificate (when you use Route 53, CloudFront can create and validate it for you), then **Add domains**.
+5. Serve HTTPS on your own domain. Open the distribution and, under **Settings**, **Alternate domain names**, choose **Add a domain**. Enter up to five domains and choose **Next**. For **TLS certificate**, CloudFront looks for an existing ACM certificate for your domain in your account in `us-east-1`. If it finds none, you can create one there: with Route 53, CloudFront creates the certificate for you. When the certificate is provisioned, add the DNS records that prove you own the domain (with Route 53, CloudFront updates your DNS records for you), then choose **Validate certificate**. Choose **Next**, review the changes, and choose **Add domains**. If you would rather request the certificate yourself, open the ACM console in `us-east-1`, choose **Request a certificate**, enter the domain names, choose **DNS validation - recommended** as the **Validation method**, and request it. It shows `Pending validation` until you add the CNAME record ACM gives you, and then `Issued`.
 
    :::caution
-   A certificate for CloudFront must be requested in the US East (N. Virginia) Region, `us-east-1`, wherever your bucket and servers are. A certificate in any other Region does not show up. A wildcard such as `*.example.com` covers one subdomain level and not the apex name `example.com`, so add both names to one request. ACM keeps trying to validate for 72 hours, then times out.
-   :::
-
-   :::caution
-   Choose the SNI option for **Custom SSL client support** (it is the recommended one). **Legacy Clients Support** serves old browsers that lack SNI but adds a monthly charge.
+   A certificate for CloudFront must be in the US East (N. Virginia) Region, `us-east-1`, wherever your bucket and servers are. A wildcard such as `*.example.com` covers one subdomain level and not the apex name `example.com`, so add both names to one request. ACM keeps trying to validate for 72 hours, then times out.
    :::
 
 6. Point your domain at the distribution. In Route 53 create an alias record that targets the distribution (see [Route 53](#route53)). With another DNS provider, use a CNAME record for a subdomain such as `www`. An apex name such as `example.com` cannot be a CNAME, so use Route 53 alias records for it.
@@ -531,6 +543,8 @@ aws cloudfront update-distribution --id EDFDVBD6EXAMPLE \
 }
 ```
 
+`SSLSupportMethod` `sni-only` is the recommended setting: virtually all modern browsers and clients support SNI. `vip` serves older clients without SNI from a dedicated IP address and adds a monthly charge.
+
 Invalidate files. Put quotes around a path with a wildcard:
 
 ```bash
@@ -542,9 +556,15 @@ For an ALB origin, add a second item in `Origins` with a `CustomOriginConfig` (`
 </TabItem>
 <TabItem value="terraform" label="Terraform">
 
-An S3 origin with OAC, an ALB origin for `/api/*`, and a us-east-1 certificate for the custom domain. The certificate needs a provider alias for us-east-1, and the bucket and ALB are assumed to exist elsewhere in the configuration:
+An S3 origin with OAC, an ALB origin for `/api/*`, and a us-east-1 certificate for the custom domain. The certificate needs a provider alias for us-east-1. The bucket (`aws_s3_bucket.assets`) and the ALB (`aws_lb.web`, from the VPC tab) are assumed to exist elsewhere in the configuration:
 
 ```hcl
+variable "origin_secret" {
+  description = "Secret value of the X-Origin-Secret header that CloudFront adds to origin requests"
+  type        = string
+  sensitive   = true
+}
+
 provider "aws" {
   alias  = "us_east_1"
   region = "us-east-1"
@@ -659,6 +679,7 @@ resource "aws_cloudfront_distribution" "site" {
 
 The S3 bucket policy that lets this distribution read the bucket is in [S3](./storage.mdx#s3). Notes on these resources:
 
+- The `X-Origin-Secret` header protects nothing by itself. The ALB must reject requests that lack it: add an `aws_lb_listener_rule` with an `http_header` condition that forwards only requests carrying the header, and make the listener's default action return a fixed `403` response. Without that, anyone can still call the ALB directly. Keep the value secret and rotate it.
 - `aws_cloudfront_distribution` waits for the distribution to move from `InProgress` to `Deployed`, which takes a while. Set `wait_for_deployment = false` to skip the wait.
 - `default_cache_behavior` needs either `cache_policy_id` (preferred) or `forwarded_values` (deprecated). `ordered_cache_behavior` blocks are listed in order of precedence, the topmost first.
 - `acm_certificate_arn` must point to a certificate in us-east-1. `ssl_support_method = "vip"` uses a dedicated IP address and may cost extra.
