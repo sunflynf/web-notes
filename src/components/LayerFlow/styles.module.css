@@ -98,8 +98,15 @@
 }
 
 .gap {
+  /* Fade the box, not the text: text stays full opacity for contrast. */
   border-style: dashed;
-  opacity: 0.5;
+  border-color: color-mix(in srgb, var(--wn-rule) 65%, transparent);
+  background: transparent;
+  color: var(--wn-graphite);
+}
+
+.gap .label {
+  font-weight: 500;
 }
 
 .around {
