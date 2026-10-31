@@ -1,0 +1,55 @@
+---
+title: LLM Security
+sidebar_label: Security
+sidebar_position: 8
+description: Hallucination, prompt injection, data leakage and unsafe output handling - risks and mitigations for LLM apps.
+---
+
+# LLM Security
+
+## Threats at a glance
+
+| Risk | What happens | Main mitigations |
+|---|---|---|
+| **Hallucination** | Fluent but false answers, fake citations, invented APIs | Ground with RAG/tools, "say I don't know", cite sources, verify critical facts |
+| **Direct prompt injection** | User types "ignore previous instructions..." | Never rely on the prompt alone for access control; enforce rules in code |
+| **Indirect prompt injection** | Instructions hidden in web pages, emails, files, tool results | Treat retrieved content as data, limit tool permissions, confirm actions |
+| **Data leakage** | System prompt, other users' data or secrets exposed | No secrets in prompts; per-user retrieval filtering; output filtering |
+| **Insecure output handling** | Model output executed as HTML/SQL/shell | Escape/sanitize; parameterized queries; sandbox code execution |
+| **Excessive agency** | Agent does destructive or costly things | Least privilege, allowlists, human approval, spend limits |
+| **Denial of wallet** | Huge inputs or loops burn tokens | Input size limits, rate limits, max iterations, budgets |
+
+## Prompt injection: design for it
+
+There is no complete fix; assume the model **can** be steered by anything in its context.
+
+- **Separate trust levels**: mark untrusted content clearly (e.g. inside `<document>` tags) and tell the model it is data, not instructions.
+- **Least privilege tools**: read-only by default; scope tokens to the current user.
+- **The "lethal trifecta"**: private data + untrusted content + a way to send data out (web requests, email, links). Avoid giving one agent all three.
+- **Human confirmation** for writes, payments, messages and anything irreversible.
+- **Do not render untrusted links/images** from model output automatically (exfiltration via URLs).
+- **Log and monitor** tool calls; alert on unusual patterns.
+
+## Hallucination: reduce and detect
+
+- Provide the facts (RAG, tools) instead of relying on model memory, especially for recent or niche facts.
+- Allow uncertainty: "If the sources do not contain the answer, say so."
+- Ask for quotes/citations and check them programmatically.
+- Lower temperature for factual tasks (where supported).
+- Use evals for faithfulness (see [Evals](./evals.mdx)).
+
+## Output handling (TypeScript)
+
+```ts
+import { z } from "zod";
+
+const Refund = z.object({ orderId: z.string().regex(/^ORD-\d+$/), amount: z.number().positive().max(500) });
+
+const parsed = Refund.safeParse(JSON.parse(modelJson));
+if (!parsed.success) throw new Error("Rejected model output");
+await requireHumanApproval(parsed.data); // never auto-execute money moves
+```
+
+## References
+
+- [OWASP Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/)

@@ -1,0 +1,146 @@
+---
+title: Azure Blob Cheatsheet
+sidebar_label: Azure Blob Cheatsheet
+sidebar_position: 1
+description: One-page Azure Blob Storage .NET SDK (Azure.Storage.Blobs) refresher - clients, auth with DefaultAzureCredential, upload/download/list, SAS, tiers, retries and Azurite.
+tags:
+  - azure
+  - azureblobstorage
+  - dotnet
+  - cheatsheet
+---
+
+# Azure Blob Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Azure Blob Storage is Azure's object storage; `Azure.Storage.Blobs` is the official .NET client library (v12) |
+| Use it for | File uploads, media, backups, logs, static assets, data lake files |
+| Latest stable | Azure.Storage.Blobs 12.30.1 (released 2026-10-06) - checked 2026-10-31 |
+| Official docs | [Blob Storage .NET quickstart](https://learn.microsoft.com/azure/storage/blobs/storage-quickstart-blobs-dotnet) and [SDK changelog](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/storage/Azure.Storage.Blobs/CHANGELOG.md) |
+
+## Core concepts
+
+- **Hierarchy**: storage account, then containers, then blobs. "Folders" are just `/` in blob names (unless hierarchical namespace / ADLS Gen2 is enabled).
+- **Clients**: `BlobServiceClient` (account), `BlobContainerClient` (container), `BlobClient` (one blob); plus `BlockBlobClient`, `AppendBlobClient`, `PageBlobClient`.
+- **Blob types**: block (files, the default), append (logs), page (VM disks).
+- **Access tiers**: Hot, Cool (30 days min.), Cold (90 days), Archive (180 days, offline until rehydrated).
+- **Auth**: Microsoft Entra ID (`DefaultAzureCredential`, managed identity) is recommended; account keys / connection strings and SAS are alternatives.
+- **SAS**: signed URL granting limited, time-boxed access; a user delegation SAS is signed with Entra ID credentials instead of the account key.
+- **RBAC data roles**: Storage Blob Data Reader / Contributor / Owner grant data access; the Owner role alone does not.
+- **Metadata vs index tags**: metadata is free-form and returned with the blob; index tags are queryable across a container or account.
+
+## Syntax & commands
+
+```bash
+dotnet add package Azure.Storage.Blobs
+dotnet add package Azure.Identity
+dotnet add package Microsoft.Extensions.Azure     # DI integration
+
+# Local emulator
+docker run -p 10000:10000 mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0
+# connection string for Azurite: "UseDevelopmentStorage=true"
+
+az storage blob upload --account-name mystore -c images -f photo.jpg -n photo.jpg --auth-mode login
+```
+
+```csharp
+using Azure.Identity;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+
+var service = new BlobServiceClient(
+    new Uri("https://mystore.blob.core.windows.net"),
+    new DefaultAzureCredential());                       // or new BlobServiceClient(connectionString)
+
+var container = service.GetBlobContainerClient("images");
+await container.CreateIfNotExistsAsync();
+
+var blob = container.GetBlobClient("2026/10/photo.jpg");
+
+// Upload (stream or file path), set content type
+await blob.UploadAsync(stream, new BlobUploadOptions
+{
+    HttpHeaders = new BlobHttpHeaders { ContentType = "image/jpeg" },
+    Metadata = new Dictionary<string, string> { ["uploadedBy"] = "api" }
+});
+await blob.UploadAsync("local.jpg", overwrite: true);
+
+// Download
+BlobDownloadResult small = await blob.DownloadContentAsync();      // into memory (BinaryData)
+BlobDownloadStreamingResult big = await blob.DownloadStreamingAsync(); // stream it
+await blob.DownloadToAsync("copy.jpg");
+
+// List ("folder" style)
+await foreach (BlobItem item in container.GetBlobsAsync(prefix: "2026/10/"))
+    Console.WriteLine($"{item.Name} {item.Properties.ContentLength}");
+
+// Other
+bool exists = await blob.ExistsAsync();
+await blob.SetAccessTierAsync(AccessTier.Cool);
+await blob.DeleteIfExistsAsync(DeleteSnapshotsOption.IncludeSnapshots);
+```
+
+```csharp
+// SAS with an account key (connection-string client)
+if (blob.CanGenerateSasUri)
+{
+    Uri readUrl = blob.GenerateSasUri(BlobSasPermissions.Read, DateTimeOffset.UtcNow.AddMinutes(15));
+}
+
+// User delegation SAS (Entra ID / managed identity)
+var key = await service.GetUserDelegationKeyAsync(DateTimeOffset.UtcNow, DateTimeOffset.UtcNow.AddHours(1));
+var sas = new BlobSasBuilder
+{
+    BlobContainerName = "images",
+    BlobName = "2026/10/photo.jpg",
+    Resource = "b",
+    ExpiresOn = DateTimeOffset.UtcNow.AddMinutes(15)
+};
+sas.SetPermissions(BlobSasPermissions.Read);
+var uri = new BlobUriBuilder(blob.Uri)
+{
+    Sas = sas.ToSasQueryParameters(key.Value, service.AccountName)
+}.ToUri();
+```
+
+## Common patterns
+
+| Need | Use |
+|---|---|
+| Register clients in DI | `builder.Services.AddAzureClients(c => c.AddBlobServiceClient(uri).WithCredential(new DefaultAzureCredential()))` |
+| Browser uploads without proxying bytes | API returns a short-lived write SAS; the client PUTs directly to the blob |
+| Large files | `UploadAsync` with `StorageTransferOptions` (`MaximumConcurrency`, `MaximumTransferSize`) |
+| Bulk copy / directory transfers | `Azure.Storage.DataMovement.Blobs` |
+| Retries | `BlobClientOptions.Retry` (`MaxRetries`, `Mode = RetryMode.Exponential`) |
+| React to uploads | Event Grid `BlobCreated` events or an Azure Functions blob trigger |
+| Cost control | Lifecycle management rules (Hot to Cool to Cold to Archive to delete) |
+| Overwrite protection | `BlobRequestConditions { IfNoneMatch = ETag.All }` or `IfMatch` with the last ETag |
+| Local development | Azurite + `UseDevelopmentStorage=true` |
+
+## Gotchas
+
+- `UploadAsync(stream)` throws `RequestFailedException` (409 BlobAlreadyExists) if the blob exists; pass `overwrite: true` or options.
+- Reset `stream.Position = 0` before uploading a stream you just wrote to.
+- `DownloadAsync()` is obsolete; use `DownloadStreamingAsync()` or `DownloadContentAsync()` (the latter loads everything into memory).
+- `GenerateSasUri` needs a shared-key credential; with `DefaultAzureCredential` it throws, so use a user delegation SAS.
+- Container names must be lowercase, 3-63 chars, letters, digits and hyphens.
+- Archive-tier blobs cannot be read until rehydrated (hours); early deletion from Cool/Cold/Archive is billed.
+- Clients are thread-safe and cheap to reuse: register them as singletons, do not create one per request.
+- `DefaultAzureCredential` tries many sources in order; in production pin it (for example `ManagedIdentityCredential`) to avoid slow fallbacks.
+- Role assignments can take several minutes to apply; a fresh 403 is often just propagation delay.
+
+## What's new in recent releases
+
+- **Azure.Storage.Blobs 12.30.x (Sep-Oct 2026)**: current stable line (12.30.0 on 2026-09-30, 12.30.1 on 2026-10-06); see the [changelog](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/storage/Azure.Storage.Blobs/CHANGELOG.md) for service-version and feature details.
+- **12.29.x (mid 2026)**: previous stable line (12.29.2 on 2026-08-24).
+- **Recent 12.x trend**: Cold tier support (`AccessTier.Cold`), streaming / content download APIs replacing `DownloadAsync`, and the separate `Azure.Storage.DataMovement.Blobs` package for high-throughput transfers.
+
+## In these notes
+
+- [Azure Blob SDK & Azure Cloud Services guide](./azure-blob-sdk.md)
+- [Entra ID + JWT](./entra-id-jwt.md)
+- [ASP.NET Core](./asp-net-core.md) and the [ASP.NET Core Cheatsheet](./asp-net-core-cheatsheet.mdx)
+- [C# / .NET Cheatsheet](./cheatsheet.mdx)

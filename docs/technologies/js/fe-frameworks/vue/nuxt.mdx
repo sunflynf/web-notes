@@ -1,5 +1,5 @@
 ---
-description: Fullstack Frameworks for SEO & SSR
+description: Nuxt notes - setup, file-based routing, SSR, server API, Pinia, plugins, middleware and deployment.
 tags:
   - JavaScript
   - TypeScript
@@ -11,16 +11,13 @@ tags:
 ## Getting Started
 
 ### Installation
-Install Nuxt 3 using `npx`, `npm`, or `yarn`:
+Scaffold a new Nuxt app (current major: Nuxt 4). `create-nuxt-app` is the old Nuxt 2 scaffolder - do not use it:
 ```bash
-# Using npx
-npx nuxi init my-nuxt3-app
-
 # Using npm
-npm create nuxt-app@latest my-nuxt3-app
+npm create nuxt@latest my-nuxt-app
 
-# Using yarn
-yarn create nuxt-app my-nuxt3-app
+# Using npx (equivalent)
+npx nuxi@latest init my-nuxt-app
 ```
 
 Navigate to the project directory and install dependencies:
@@ -35,7 +32,7 @@ npm run dev
 ```
 
 ## Project Structure
-The default structure is designed for scalability:
+The default structure is designed for scalability (in Nuxt 4, `components/`, `pages/`, `layouts/`, etc. live under an `app/` directory by default):
 ```
 ├── assets/          # Unprocessed assets like CSS, images, etc.
 ├── components/      # Reusable Vue components
@@ -52,7 +49,7 @@ The default structure is designed for scalability:
 ## Key Features of Nuxt
 
 ### File-Based Routing
-Nuxt 3 automatically generates routes based on files in the `pages/` directory:
+Nuxt automatically generates routes based on files in the `pages/` directory:
 ```bash
 pages/
   index.vue         # Accessible at /
@@ -76,10 +73,14 @@ console.log(route.params.id);
 ```
 
 ### Server-Side Rendering (SSR)
-Nuxt 3 enables SSR by default. You can switch to Static Site Generation (SSG) by updating the build target in `nuxt.config.ts`:
+Nuxt enables SSR by default. For Static Site Generation (SSG) run `npx nuxi generate` (the Nuxt 2 `target: 'static'` option no longer exists), or prerender selected routes in `nuxt.config.ts`:
 ```javascript
 export default defineNuxtConfig({
-  target: 'static', // Enables SSG
+  // ssr: false,            // SPA mode (no server rendering)
+  routeRules: {
+    '/': { prerender: true }, // prerender at build time
+    '/blog/**': { isr: 3600 }, // incremental regeneration (supported hosts)
+  },
 });
 ```
 
@@ -218,7 +219,7 @@ export default defineNuxtConfig({
 Nuxt automatically imports composables, components, and other utilities. No need for explicit imports for most use cases.
 
 ### Lazy Loading Components
-Nuxt automatically lazy-loads components by default.
+Components are auto-imported; prefix one with `Lazy` (e.g. `<LazyMyChart />`) to load it lazily.
 
 ### Route-Level Code Splitting
 Dynamic imports are handled automatically for route components.
@@ -226,9 +227,9 @@ Dynamic imports are handled automatically for route components.
 ## Testing
 
 ### Unit Testing
-Use Jest or Vitest for unit tests:
+Use Vitest with `@nuxt/test-utils` for unit tests:
 ```bash
-npm install --save-dev jest @vue/test-utils
+npm install --save-dev vitest @nuxt/test-utils @vue/test-utils happy-dom
 ```
 
 ### End-to-End Testing
@@ -254,5 +255,5 @@ vercel
 ```
 
 ## Resources
-- **Nuxt 3 Documentation:** [https://nuxt.com/docs](https://nuxt.com/docs)
+- **Nuxt Documentation:** [https://nuxt.com/docs](https://nuxt.com/docs)
 - **Pinia Documentation:** [https://pinia.vuejs.org](https://pinia.vuejs.org)

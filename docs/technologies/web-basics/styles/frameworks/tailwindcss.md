@@ -10,6 +10,12 @@ tags:
 
 A utility-first CSS framework that provides low-level classes to build custom designs without writing custom CSS.
 
+:::info Tailwind CSS v4 (latest v4.3.3, 2026-07-16)
+
+v4 is configured in CSS, not JavaScript: `@import "tailwindcss";` replaces the three `@tailwind` directives, and theme tokens go in an `@theme` block. `tailwind.config.js` is only loaded if you opt in with `@config`. Install with `@tailwindcss/vite` or `@tailwindcss/postcss`.
+
+:::
+
 ## Core Concepts
 
 1. **Utility Classes**:  
@@ -27,7 +33,15 @@ A utility-first CSS framework that provides low-level classes to build custom de
    ```
 
 3. **Customization**:  
-   Easily customize colors, spacing, etc., through `tailwind.config.js`.
+   Customize colors, spacing, etc. with CSS variables in an `@theme` block (v4), or `tailwind.config.js` in v3.
+
+   ```css
+   @import "tailwindcss";
+
+   @theme {
+     --color-brand: oklch(60% 0.15 250);
+   }
+   ```
 
 4. **State Variants**:  
    Apply styles on hover, focus, etc.
@@ -56,7 +70,7 @@ A utility-first CSS framework that provides low-level classes to build custom de
 
 :::tip
 
-1. **Use the JIT Mode (Just-In-Time Compiler)** for faster builds and smaller output.
+1. **On-demand generation** (the former JIT mode) is always on since v3: only classes you use end up in the CSS.
 2. **Install Tailwind Plugins** for forms, typography, or aspect ratios to extend features.
 3. **Play with Tailwind’s Playground**: Try out [Tailwind Play](https://play.tailwindcss.com/).
 
@@ -68,7 +82,7 @@ A utility-first CSS framework that provides low-level classes to build custom de
 - [Tailwind Labs YouTube Channel](https://www.youtube.com/@TailwindLabs) (Includes screencasts, tutorials, and best practices)
 - [Awesome Tailwind CSS](https://github.com/aniftyco/awesome-tailwindcss) (A curated list of tools, utilities, and more)
 - **UI Components & Templates:**
-  - [Tailwind UI](https://tailwindui.com/) (Official, paid component library)
+  - [Tailwind Plus](https://tailwindcss.com/plus) (Official, paid component library, formerly Tailwind UI)
   - [Headless UI](https://headlessui.com/) (Unstyled, accessible UI components by Tailwind Labs)
   - [Flowbite](https://flowbite.com/) (Open-source components)
   - [DaisyUI](https://daisyui.com/) (Tailwind CSS Components plugin)

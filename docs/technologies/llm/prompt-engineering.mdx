@@ -1,0 +1,69 @@
+---
+title: Prompt Engineering
+sidebar_position: 3
+description: System prompts, clear instructions, examples, structure and iteration - practical prompting for apps.
+---
+
+# Prompt Engineering
+
+## Anatomy of a prompt
+
+| Part | Put here |
+|---|---|
+| **System prompt** | Role, audience, rules, tone, output format, what to do when unsure |
+| **Context** | Documents, retrieved chunks, user profile, tool results |
+| **Examples** | 1-5 input/output pairs showing the exact format and edge cases |
+| **Task** | The concrete question or instruction, last |
+
+## Principles
+
+- **Be explicit**: say what you want, the format, the length, and the audience. The model cannot read your mind.
+- **Explain why**: a reason behind a rule ("short, because it is read on mobile") generalizes better than the bare rule.
+- **Structure with delimiters**: wrap inputs in XML-like tags or Markdown headings so instructions and data do not mix.
+- **Show, do not just tell**: diverse examples beat long descriptions; make them match the format exactly.
+- **Give an escape hatch**: "If the answer is not in the documents, say you do not know."
+- **Let it think on hard tasks**: allow reasoning (thinking/effort settings or an explicit reasoning section) before the final answer.
+- **Positive instructions**: "Write in plain prose" works better than a list of "do not" rules.
+- **One job per call**: chain several focused prompts instead of one giant prompt.
+
+## System prompt template
+
+```markdown
+You are a support assistant for ACME's billing product.
+Audience: non-technical customers. Answer in at most 4 sentences.
+
+Rules:
+- Use only the information inside <docs>. If it is not there, say so and offer to escalate.
+- Never promise refunds; explain the refund policy instead.
+- Reply in the user's language.
+
+Output: plain text, no Markdown headings.
+```
+
+```ts
+const msg = await client.messages.create({
+  model: "claude-sonnet-5-5",
+  max_tokens: 500,
+  system: SYSTEM_PROMPT,
+  messages: [
+    { role: "user", content: `<docs>\n${docs}\n</docs>\n\nQuestion: ${question}` },
+  ],
+});
+```
+
+## Techniques cheat table
+
+| Technique | When |
+|---|---|
+| Few-shot examples | Output format or tone must be exact |
+| Prompt chaining | Multi-step tasks (extract → analyze → write) |
+| Prefilled / structured output | Need machine-readable output - prefer schema-constrained outputs |
+| Self-check | Ask the model to verify its answer against the sources before finalizing |
+| Quote first, then answer | Long documents: extract relevant quotes, then answer from them |
+
+## Iterate like engineering
+
+1. Write success criteria and a small eval set first (see [Evals](./evals.mdx)).
+2. Change one thing at a time; re-run the evals.
+3. Version prompts in Git next to code.
+4. Re-test prompts when you change model - prompts tuned for one model do not always transfer.

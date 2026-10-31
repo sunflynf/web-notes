@@ -1,0 +1,144 @@
+---
+title: EF Core Cheatsheet
+sidebar_label: EF Core Cheatsheet
+sidebar_position: 1
+description: One-page Entity Framework Core refresher - DbContext setup, mapping, migrations CLI, LINQ queries, loading, tracking, bulk updates and EF Core 10 features.
+tags:
+  - efcore
+  - dotnet
+  - orm
+  - cheatsheet
+---
+
+# EF Core Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Entity Framework Core, Microsoft's open-source ORM for .NET (LINQ to SQL, change tracking, migrations) |
+| Use it for | Relational data access in .NET apps: SQL Server, PostgreSQL (Npgsql), SQLite, MySQL, Azure Cosmos DB |
+| Latest stable | EF Core 10.0.14 (released 2026-10-25, ships with .NET 10 LTS) - checked 2026-10-31 |
+| Official docs | [learn.microsoft.com/ef/core](https://learn.microsoft.com/ef/core/) |
+
+## Core concepts
+
+- **DbContext**: unit of work + repository; holds `DbSet<T>` properties and the change tracker. Register it as Scoped.
+- **Model building**: conventions, then data annotations, then Fluent API in `OnModelCreating` (Fluent API wins).
+- **Change tracking**: tracked entities are compared at `SaveChanges()` and turned into INSERT / UPDATE / DELETE.
+- **IQueryable**: LINQ is translated to SQL only when you materialize (`ToListAsync`, `FirstAsync`, `CountAsync`...).
+- **Loading related data**: eager (`Include`), explicit (`Entry(...).Collection(...).LoadAsync()`), lazy (proxies, opt-in).
+- **Migrations**: C# classes that evolve the schema; the snapshot file tracks the current model.
+- **Owned / complex types**: value objects mapped into the owner's table (or JSON column).
+- **Providers**: the NuGet package that targets a database (`Microsoft.EntityFrameworkCore.SqlServer`, `Npgsql.EntityFrameworkCore.PostgreSQL`, ...).
+
+## Syntax & commands
+
+```bash
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer   # or Npgsql.EntityFrameworkCore.PostgreSQL
+dotnet add package Microsoft.EntityFrameworkCore.Design
+dotnet tool install --global dotnet-ef
+
+dotnet ef migrations add InitialCreate
+dotnet ef migrations remove                  # undo the last, unapplied migration
+dotnet ef database update                    # apply all pending migrations
+dotnet ef database update PreviousMigration  # roll back to a migration
+dotnet ef migrations script --idempotent -o migrate.sql   # for production deploys
+dotnet ef migrations bundle                  # self-contained migration executable
+dotnet ef dbcontext scaffold "Host=...;Database=app" Npgsql.EntityFrameworkCore.PostgreSQL -o Models
+```
+
+```csharp
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+{
+    public DbSet<Blog> Blogs => Set<Blog>();
+    public DbSet<Post> Posts => Set<Post>();
+
+    protected override void OnModelCreating(ModelBuilder b)
+    {
+        b.Entity<Blog>(e =>
+        {
+            e.Property(x => x.Name).HasMaxLength(200).IsRequired();
+            e.HasIndex(x => x.Slug).IsUnique();
+            e.HasMany(x => x.Posts).WithOne(p => p.Blog).HasForeignKey(p => p.BlogId)
+             .OnDelete(DeleteBehavior.Cascade);
+            e.HasQueryFilter(x => !x.IsDeleted);       // soft delete
+        });
+        b.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+    }
+}
+
+builder.Services.AddDbContext<AppDbContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+```
+
+```csharp
+// Read
+var blogs = await db.Blogs
+    .AsNoTracking()
+    .Where(b => b.Name.Contains("dotnet"))
+    .Include(b => b.Posts.Where(p => p.Published))   // filtered include
+    .OrderBy(b => b.Name)
+    .Skip(page * size).Take(size)
+    .ToListAsync(ct);
+
+var summaries = await db.Blogs
+    .Select(b => new BlogSummary(b.Id, b.Name, b.Posts.Count))   // projection = no tracking, less data
+    .ToListAsync(ct);
+
+// Write
+db.Blogs.Add(new Blog { Name = "New" });
+blog.Name = "Renamed";                 // tracked entity: just change it
+db.Posts.Remove(post);
+await db.SaveChangesAsync(ct);
+
+// Set-based (no loading, no change tracking) - EF Core 7+
+await db.Posts.Where(p => p.CreatedAt < cutoff).ExecuteDeleteAsync(ct);
+await db.Posts.Where(p => p.BlogId == id)
+    .ExecuteUpdateAsync(s => s.SetProperty(p => p.Archived, true), ct);
+
+// Raw SQL (interpolated values become parameters)
+var recent = await db.Posts.FromSql($"SELECT * FROM posts WHERE blog_id = {id}").ToListAsync(ct);
+```
+
+## Common patterns
+
+| Need | Use |
+|---|---|
+| Read-only queries | `AsNoTracking()` or project to DTOs with `Select` |
+| Avoid cartesian explosion with several `Include`s | `.AsSplitQuery()` |
+| Optimistic concurrency | `[Timestamp]` / `IsRowVersion()` (SQL Server), `xmin` with `[Timestamp] uint` (PostgreSQL), catch `DbUpdateConcurrencyException` |
+| Transactions | `SaveChanges` is already transactional; for several calls use `await db.Database.BeginTransactionAsync()` |
+| Audit fields | Override `SaveChangesAsync` or use a `SaveChangesInterceptor` |
+| Value objects | `ComplexProperty(...)` or `OwnsOne(...)`, optionally `.ToJson()` |
+| Enum as text | `.HasConversion<string>()` |
+| Seed data | `UseSeeding` / `UseAsyncSeeding` (EF Core 9+) or `HasData` for static rows |
+| High-throughput apps | `AddDbContextPool<T>()` and compiled queries |
+| Tests | SQLite in-memory connection or Testcontainers; avoid the InMemory provider |
+
+## Gotchas
+
+- N+1 queries: touching navigation properties in a loop without `Include` or projection (or with lazy loading on).
+- Calling `AsEnumerable()` / `ToList()` too early moves filtering to memory.
+- A `DbContext` is not thread-safe: no parallel `await`s on the same instance.
+- Long-lived contexts grow the change tracker and get slow; keep them per request / unit of work.
+- `Update(entity)` marks every column modified; prefer loading and changing tracked entities.
+- `ExecuteUpdate` / `ExecuteDelete` skip the change tracker, interceptors and in-memory entities.
+- Global query filters also apply to `Include`; use `IgnoreQueryFilters()` when you need deleted rows.
+- Running `Database.Migrate()` at startup with several instances can race; prefer scripts or migration bundles in CI/CD.
+- `FromSqlRaw` with string concatenation is a SQL injection risk; use `FromSql` with interpolation or parameters.
+
+## What's new in recent releases
+
+- **EF Core 10 (Nov 2025, LTS)**: `LeftJoin` / `RightJoin` LINQ operators, named query filters (several filters per entity, disable one by name), complex types mapped to JSON columns and as structs, vector search support for SQL Server 2025, and `ExecuteUpdateAsync` accepting a regular (non-expression) lambda.
+- **EF Core 9 (Nov 2024, STS)**: `UseSeeding` / `UseAsyncSeeding`, auto-compiled models, Native AOT / precompiled queries (experimental), a migration lock and a warning for pending model changes, big Azure Cosmos DB provider rework.
+- **EF Core 8 (Nov 2023, LTS)**: complex types, primitive collections (`List<int>` stored as JSON), raw SQL for unmapped types (`SqlQuery<T>`), `HierarchyId`.
+- **EF Core 11**: in release candidates with .NET 11; GA expected November 2026.
+
+## In these notes
+
+- [Entity Framework Core guide](./entity-framework-core.md)
+- [ASP.NET Core](./asp-net-core.md) and the [ASP.NET Core Cheatsheet](./asp-net-core-cheatsheet.mdx)
+- [Testing](./testing.md)
+- [Caching](./caching.md)
+- [C# / .NET Cheatsheet](./cheatsheet.mdx)

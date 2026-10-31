@@ -79,7 +79,8 @@ PrintColoredShapeInfo(sq) // Works because Square implements ColoredShape
 
 ```go
 func Describe(i interface{}) {
-    // val, ok := i.(int) // Type assertion, panics if wrong type
+    // i.(int) panics if i is not an int; val, ok := i.(int) returns ok=false instead
+    // Tip: `any` is an alias for interface{} (Go 1.18+)
     switch v := i.(type) {
     case int:
         fmt.Printf("Integer: %d\n", v)

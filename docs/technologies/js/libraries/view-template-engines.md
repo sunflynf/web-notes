@@ -1,3 +1,7 @@
+---
+description: Server-side view template engines for Node.js and other languages, with notes on when to use each.
+---
+
 # View Template Engines
 
 ## JavaScript (Node.js)

@@ -7,6 +7,8 @@ tags:
 
 # Drizzle
 
+> **Quick reference:** [Node.js ORM Cheatsheet](./cheatsheet.mdx)
+
 - **Type-safe SQL queries** (auto-completion)  
 - **Lightweight & fast** (no runtime overhead)  
 - **Supports raw SQL** when needed  

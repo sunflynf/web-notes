@@ -1,8 +1,11 @@
 ---
 title: Laravel
+description: Laravel handbook covering project setup, architecture, database layer, request lifecycle, auth, queues, testing and deployment.
 ---
 
 # Laravel Handbook — System Setup & Architecture Timeline
+
+> **Quick reference:** [Laravel Cheatsheet](./cheatsheet.mdx)
 
 ![Image](https://i.sstatic.net/yD0eH.jpg)
 
@@ -26,7 +29,7 @@ title: Laravel
   composer global require laravel/installer
   ```
 
-- Laravel Valet (macOS), Homestead (Vagrant), Docker/Sail (cross-platform).
+- Laravel Herd (macOS/Windows, the officially recommended local setup), Valet (macOS), Docker/Sail (cross-platform). Homestead is no longer maintained.
 - Database engines: MySQL/MariaDB, PostgreSQL, SQLite, SQL Server.
 
 ### 1.2 Creating a New Laravel Project
@@ -280,7 +283,7 @@ protected function name(): Attribute {
 
 ## **4. Request → Response Lifecycle**
 
-![Image](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/index/_static/request-delegate-pipeline.png?view=aspnetcore-10.0&utm_source=chatgpt.com)
+![Image](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/index/_static/request-delegate-pipeline.png?view=aspnetcore-10.0)
 ![Image](https://codemag.com/Article/Image/2301041/image1.jpg)
 
 ### 4.1 HTTP Kernel
@@ -288,7 +291,8 @@ protected function name(): Attribute {
 Located at:
 
 ```
-app/Http/Kernel.php
+bootstrap/app.php        # Laravel 11+: ->withMiddleware(...)
+app/Http/Kernel.php      # Laravel 10 and older
 ```
 
 #### **Types of Middleware**
@@ -321,6 +325,8 @@ Route::get('/', HomeController::class);
 ```
 
 #### **API**
+
+Laravel 11+ ships without `routes/api.php`; run `php artisan install:api` to add it (plus Sanctum).
 
 ```php
 Route::middleware('auth:sanctum')->get('/me', fn() => auth()->user());
@@ -364,7 +370,8 @@ class UserController {
 Located at:
 
 ```
-app/Exceptions/Handler.php
+bootstrap/app.php            # Laravel 11+: ->withExceptions(...)
+app/Exceptions/Handler.php   # Laravel 10 and older
 ```
 
 Supports:
@@ -427,6 +434,8 @@ Log::withContext(['request_id' => Str::uuid()]);
 - Database (query builder)
 
 ### 6.3 Authentication Starter Kits
+
+Since Laravel 12 the official starter kits are the **React**, **Vue** and **Livewire** kits (`laravel new` asks which one). Breeze and Jetstream still work but no longer get new features.
 
 #### **Breeze**
 
@@ -501,14 +510,12 @@ event(new OrderPaid($order));
 
 #### **Define Tasks**
 
-In:
-
-```
-app/Console/Kernel.php
-```
+In `routes/console.php` (Laravel 11+; `app/Console/Kernel.php` in Laravel 10 and older):
 
 ```php
-$schedule->command('orders:cleanup')->daily();
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command('orders:cleanup')->daily();
 ```
 
 #### **CRON single entry**

@@ -21,7 +21,7 @@ fmt.Println(a)  // a is now 100
 var s []int = []int{1, 2, 3}
 var ps *[]int = &s // ps holds the address of slice s
 (*ps)[0] = 10      // Modify slice through pointer
-fmt.Println(s)     // Output: [10, 2, 3]
+fmt.Println(s)     // Output: [10 2 3]
 
 var m map[string]int = map[string]int{"one": 1, "two": 2}
 var pm *map[string]int = &m // pm holds the address of map m

@@ -1,0 +1,156 @@
+---
+title: TanStack Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page refresher for TanStack Query, Table, Form and Router in React, covering setup, core hooks, patterns and recent versions.
+tags:
+  - JavaScript
+  - TypeScript
+  - React
+  - TanStack
+  - Cheatsheet
+---
+
+# TanStack Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | A family of headless, type-safe, framework-agnostic libraries with adapters for React, Vue, Solid, Svelte, Angular and more |
+| Use it for | Server state and caching (Query), data grids (Table), forms and validation (Form), type-safe routing (Router) |
+| Latest stable | `@tanstack/react-query` v5.105.0 (released 2026-10-26) · `@tanstack/react-table` v9.3.1 (released 2026-10-12) · `@tanstack/react-form` v1.33.5 (released 2026-08-11) · `@tanstack/react-router` v1.170.46 (released 2026-10-22) - checked 2026-10-31 |
+| Official docs | [tanstack.com](https://tanstack.com/) · [Query](https://tanstack.com/query/latest) · [Table](https://tanstack.com/table/latest) · [Form](https://tanstack.com/form/latest) · [Router](https://tanstack.com/router/latest) |
+
+## Core concepts
+
+- **Headless**: no markup or styles. The libraries give you state and APIs, and you render your own UI.
+- **Query key**: an array that identifies cached data (`["todos", { page }]`). Change the key and Query fetches again.
+- **Stale vs garbage-collected**: `staleTime` is how long data counts as fresh; `gcTime` is how long unused cache stays in memory.
+- **Mutations and invalidation**: write with `useMutation`, then `invalidateQueries` so related queries refetch.
+- **Table features (v9)**: you register features and row models with `tableFeatures()`, so unused features are tree-shaken.
+- **Form fields**: `form.Field` render props expose value, handlers and per-field validation (`onChange`, `onBlur`, `onSubmit`, async variants).
+- **Router route tree**: file-based or code-based routes with typed params, typed search params and loaders.
+- **Stable references**: keep `columns`, `data` fallbacks and options stable (module scope or `useMemo`) to avoid render loops.
+
+## Syntax & commands
+
+```bash
+npm i @tanstack/react-query @tanstack/react-query-devtools
+npm i -D @tanstack/eslint-plugin-query
+npm i @tanstack/react-table
+npm i @tanstack/react-form
+npm i @tanstack/react-router && npm i -D @tanstack/router-plugin   # Vite plugin for file-based routes
+```
+
+```tsx
+// Query: provider, read, write
+const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 60_000 } } });
+<QueryClientProvider client={queryClient}><App /></QueryClientProvider>;
+
+const { data, isPending, isError, error } = useQuery({
+  queryKey: ["todos", page],
+  queryFn: () => fetchTodos(page),
+});
+
+const qc = useQueryClient();
+const addTodo = useMutation({
+  mutationFn: postTodo,
+  onSuccess: () => qc.invalidateQueries({ queryKey: ["todos"] }),
+});
+addTodo.mutate({ title: "New" });
+```
+
+```tsx
+// Table v9: explicit features + useTable
+import {
+  createColumnHelper, createSortedRowModel, rowSortingFeature,
+  sortFn_alphanumeric, tableFeatures, useTable,
+} from "@tanstack/react-table";
+
+type Person = { name: string; age: number };
+const features = tableFeatures({
+  rowSortingFeature,
+  sortedRowModel: createSortedRowModel(),
+  sortFns: { alphanumeric: sortFn_alphanumeric },
+});
+const helper = createColumnHelper<typeof features, Person>();
+const columns = helper.columns([
+  helper.accessor("name", { header: "Name" }),
+  helper.accessor("age", { header: "Age" }),
+]);
+
+const table = useTable({ features, columns, data });
+// render: table.getHeaderGroups(), table.getRowModel().rows,
+// <table.FlexRender header={header} />, <table.FlexRender cell={cell} />
+```
+
+```tsx
+// Form v1
+const form = useForm({
+  defaultValues: { email: "" },
+  onSubmit: async ({ value }) => save(value),
+});
+
+<form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }}>
+  <form.Field
+    name="email"
+    validators={{ onChange: ({ value }) => (value.includes("@") ? undefined : "Invalid email") }}
+    children={(field) => (
+      <input value={field.state.value} onChange={(e) => field.handleChange(e.target.value)} onBlur={field.handleBlur} />
+    )}
+  />
+</form>;
+```
+
+```tsx
+// Router v1: file route with typed search params and a loader
+export const Route = createFileRoute("/posts/$postId")({
+  validateSearch: (s) => ({ tab: (s.tab as string) ?? "info" }),
+  loader: ({ params }) => fetchPost(params.postId),
+  component: PostPage,
+});
+
+function PostPage() {
+  const post = Route.useLoaderData();
+  const { tab } = Route.useSearch();
+  return <Link to="/posts/$postId" params={{ postId: post.id }}>{post.title}</Link>;
+}
+```
+
+## Common patterns
+
+| Need | Pattern |
+|---|---|
+| Paginate without flicker | `placeholderData: keepPreviousData` |
+| Infinite scroll | `useInfiniteQuery` with `initialPageParam` and `getNextPageParam` |
+| Dependent query | `enabled: !!userId` |
+| Suspense data | `useSuspenseQuery` (data is never undefined) |
+| Optimistic update | `onMutate` to update cache, `onError` to roll back, `onSettled` to invalidate |
+| Prefetch on hover / in loader | `queryClient.prefetchQuery(...)` or `ensureQueryData(...)` in a Router loader |
+| Server-side table | v9: controlled `state: { pagination }` with `onPaginationChange`, fetch with Query |
+| Schema validation in Form | pass a Standard Schema (Zod, Valibot, ArkType) to `validators.onChange` |
+| Typed links | `<Link to="/posts/$postId" params={{ postId }} />` is checked at compile time |
+
+## Gotchas
+
+- Query v5 removed the `onSuccess` / `onError` callbacks on `useQuery`. Use effects or the mutation callbacks.
+- `isLoading` in v5 means `isPending && isFetching`. For "no data yet", check `isPending`.
+- `cacheTime` was renamed `gcTime` in v5, and `keepPreviousData: true` became `placeholderData: keepPreviousData`.
+- A new `data ?? []` array on every render resets Table row models. Use a stable module-level empty array.
+- Table v9 renamed `useReactTable` to `useTable`. APIs exist only for registered features (for example, no `column.getToggleSortingHandler()` without `rowSortingFeature`).
+- Form validators return an error value (string or object) or `undefined`. Throwing is not the same as returning an error.
+- Router file-based routing needs the router plugin (or CLI) to generate `routeTree.gen.ts`. Do not edit that file by hand.
+
+## What's new in recent releases
+
+- **Table v9** (2026-08-04): tree-shakable feature plugins via `tableFeatures()`, `useTable` replaces `useReactTable`, state built on TanStack Store (`table.state`, `table.Subscribe`, per-slice atoms), `table.FlexRender`, `createTableHook` for app-wide table presets. `stockFeatures` and `useLegacyTable` (from `@tanstack/react-table/legacy`) help with gradual v8 migration. Needs React 18+.
+- **Form**: 1.x is stable (1.0 on 2025-03-02) with Standard Schema validators. 2.0 is in alpha (`@tanstack/react-form@alpha`).
+- **Query**: still on major v5 (5.x minors keep adding features), so v5 code and guides apply.
+- **Router**: still on major v1 with frequent minors. TanStack Start, the full-stack framework built on Router, ships as `@tanstack/react-start`.
+
+## In these notes
+
+- [React Query](./react/react-query.md)
+- [React Table (v8 notes)](./react/react-table.md)
+- [React Form](./react/react-form.md)

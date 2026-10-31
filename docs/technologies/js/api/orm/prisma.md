@@ -7,6 +7,19 @@ tags:
 
 # Prisma
 
+> **Quick reference:** [Node.js ORM Cheatsheet](./cheatsheet.mdx)
+
+:::info Prisma 7 changes (current stable: 7.x)
+
+- The generator is now `provider = "prisma-client"` with a required `output` path (`prisma-client-js` is the legacy generator). Import the client from that output folder, not `@prisma/client`.
+- The datasource `url` moves out of `schema.prisma` into `prisma.config.ts` (`defineConfig({ datasource: { url: env("DATABASE_URL") } })`), and `.env` is no longer loaded automatically.
+- `PrismaClient` needs a driver adapter, e.g. `new PrismaClient({ adapter: new PrismaPg({ connectionString }) })` from `@prisma/adapter-pg`.
+- `npx prisma` now resolves to the Prisma 8 release candidate CLI, which does not read `schema.prisma`. Pin `npm i -D prisma@7` for Prisma 7 projects.
+
+The examples below use the older (Prisma 5/6) style and still show the query API correctly.
+
+:::
+
 - Type-safe database client
 - Schema-first approach
 - Auto-completion for all queries
@@ -184,7 +197,10 @@ if (process.env.NODE_ENV !== 'production') {
 model User {
   id    Int    @id
   email String @unique
-  @@index([name]) // Composite index
+  name  String
+  role  String
+  @@index([name])        // Single-column index
+  @@index([role, name])  // Composite index
 }
 ```
 

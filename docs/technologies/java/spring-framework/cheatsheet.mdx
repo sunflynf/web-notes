@@ -1,0 +1,160 @@
+---
+title: Spring Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page Spring Boot and Spring Framework refresher - annotations, configuration, REST controllers, data access, testing and what changed in Boot 4 / Framework 7.
+tags:
+  - Spring
+  - Spring Boot
+  - Java
+  - Cheatsheet
+---
+
+# Spring Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Spring Framework = IoC/DI container + web, data and transaction modules; Spring Boot = opinionated auto-configuration, starters and embedded server on top |
+| Use it for | REST APIs, microservices, batch jobs, event-driven and enterprise Java/Kotlin apps |
+| Latest stable | Spring Boot 4.1.2 (released 2026-10-22), Spring Framework 7.0.10 (released 2026-10-22) - checked 2026-10-31 |
+| Official docs | [Spring Boot](https://docs.spring.io/spring-boot/) and [Spring Framework](https://docs.spring.io/spring-framework/reference/) |
+
+Baselines for Boot 4 / Framework 7: Java 17+ (21 or 25 recommended), Jakarta EE 11 (`jakarta.*` packages), Kotlin 2.2+.
+
+## Core concepts
+
+- **Bean**: an object created and managed by the `ApplicationContext` (IoC container).
+- **Dependency injection**: prefer constructor injection; `@Autowired` is optional with a single constructor.
+- **Stereotypes**: `@Component`, `@Service`, `@Repository`, `@Controller` / `@RestController` mark classes for component scanning.
+- **Configuration classes**: `@Configuration` + `@Bean` methods for beans you construct yourself (third-party types).
+- **Auto-configuration**: Boot configures beans based on the classpath and properties; your own beans win (`@ConditionalOnMissingBean`).
+- **Starters**: dependency bundles such as `spring-boot-starter-webmvc`, `-data-jpa`, `-security`, `-test`.
+- **Externalized config**: `application.yml` / `.properties`, env vars, profiles (`spring.profiles.active`), `@ConfigurationProperties`.
+- **AOP proxies**: `@Transactional`, `@Cacheable`, `@Async` work through proxies, so they only apply to calls coming from another bean.
+- **Actuator**: production endpoints (`/actuator/health`, `/metrics`, `/info`).
+
+## Syntax & commands
+
+```bash
+# New project (or use https://start.spring.io)
+curl https://start.spring.io/starter.zip -d dependencies=web,data-jpa,validation,actuator -d javaVersion=21 -o demo.zip
+
+./mvnw spring-boot:run                 # run with Maven
+./gradlew bootRun                      # run with Gradle
+./mvnw clean package && java -jar target/app.jar
+./mvnw spring-boot:build-image         # OCI image via Buildpacks
+java -jar app.jar --spring.profiles.active=prod --server.port=9090
+```
+
+```java
+@SpringBootApplication
+public class DemoApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+}
+
+@RestController
+@RequestMapping("/api/products")
+class ProductController {
+    private final ProductService service;
+    ProductController(ProductService service) { this.service = service; }
+
+    @GetMapping("/{id}")
+    ProductDto get(@PathVariable Long id) { return service.find(id); }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    ProductDto create(@Valid @RequestBody CreateProduct req) { return service.create(req); }
+
+    @GetMapping
+    Page<ProductDto> list(@RequestParam(defaultValue = "") String q, Pageable pageable) {
+        return service.search(q, pageable);
+    }
+}
+```
+
+```yaml
+# application.yml
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/app
+    username: app
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate      # use Flyway/Liquibase for schema changes
+    open-in-view: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+```
+
+```java
+@ConfigurationProperties(prefix = "app.mail")
+public record MailProperties(String host, int port, boolean enabled) {}
+// register with @EnableConfigurationProperties(MailProperties.class) or @ConfigurationPropertiesScan
+```
+
+## Common patterns
+
+| Need | Use |
+|---|---|
+| Global error handling | `@RestControllerAdvice` + `@ExceptionHandler`, return `ProblemDetail` (RFC 9457) |
+| Validation | `spring-boot-starter-validation` + `@Valid` + `@NotBlank`, `@Size`, ... |
+| Data access | `interface ProductRepository extends JpaRepository<Product, Long>` |
+| Transactions | `@Transactional` on service methods (`readOnly = true` for queries) |
+| Call another HTTP API | `RestClient` (sync), `WebClient` (reactive) or `@HttpExchange` interface clients |
+| Caching | `@EnableCaching` + `@Cacheable("products")` |
+| Scheduled jobs | `@EnableScheduling` + `@Scheduled(cron = "0 0 * * * *")` |
+| Domain events | `ApplicationEventPublisher.publishEvent(...)` + `@EventListener` / `@TransactionalEventListener` |
+| Security | `SecurityFilterChain` bean with the lambda DSL |
+| Tests | `@SpringBootTest`, slices `@WebMvcTest`, `@DataJpaTest`, mocks via `@MockitoBean` |
+
+```java
+@Bean
+SecurityFilterChain security(HttpSecurity http) throws Exception {
+    return http
+        .authorizeHttpRequests(a -> a
+            .requestMatchers("/actuator/health", "/public/**").permitAll()
+            .anyRequest().authenticated())
+        .oauth2ResourceServer(o -> o.jwt(Customizer.withDefaults()))
+        .build();
+}
+```
+
+## Gotchas
+
+- Self-invocation: calling a `@Transactional` / `@Cacheable` / `@Async` method from the same class bypasses the proxy, so nothing happens.
+- `@Transactional` rolls back only on unchecked exceptions by default; add `rollbackFor = Exception.class` for checked ones.
+- `spring.jpa.open-in-view` is `true` by default (with a warning); disable it to avoid lazy loading in the web layer.
+- Component scanning starts at the package of the `@SpringBootApplication` class; beans outside it are not found.
+- Field injection makes testing harder and hides circular dependencies; use constructor injection.
+- `@MockBean` / `@SpyBean` are gone in Boot 4; use `@MockitoBean` / `@MockitoSpyBean`.
+- `WebSecurityConfigurerAdapter`, `antMatchers` and `authorizeRequests` were removed in Spring Security 6; use `SecurityFilterChain`, `requestMatchers` and `authorizeHttpRequests`.
+- Profiles: `application-prod.yml` overrides `application.yml` only when `prod` is active.
+
+## What's new in recent releases
+
+- **Spring Boot 4.0 (2025-11)**: built on Spring Framework 7 and Jakarta EE 11; codebase split into smaller modules with focused starters (`spring-boot-starter-web` renamed to `spring-boot-starter-webmvc`); Jackson 3 by default; JSpecify null-safety annotations across the portfolio.
+- **Spring Framework 7.0**: first-class API versioning (for example `@GetMapping(path = "/users", version = "1.1")`), `@ImportHttpServices` for declarative HTTP clients, core resilience annotations (`@Retryable`, `@ConcurrencyLimit` with `@EnableResilientMethods`), and the new `JmsClient`.
+- **Testing**: `@MockitoBean` / `@MockitoSpyBean` (Framework 6.2+) replace Boot's `@MockBean` / `@SpyBean`, which Boot 4 removed.
+- **Boot 4.1 (2026)**: current minor line; Boot 4.2 is in release candidates (4.2.0-RC1 on 2026-10-22). Check the [release notes wiki](https://github.com/spring-projects/spring-boot/wiki) before upgrading.
+
+## In these notes
+
+- [Spring Framework overview](./index.mdx)
+- [Spring Security](./spring-security.md)
+- [Spring Testing](./spring-test.md)
+- [Spring Batch](./spring-batch.md)
+- [Event-driven Spring](./spring-event-driven.md)
+- [Spring Cloud microservices](./spring-microservices.md)
+- [Spring AI](./spring-ai.md)
+- [JPA](../api/jpa.md) and the [JPA Cheatsheet](../api/jpa-cheatsheet.mdx)
+- [Java Cheatsheet](../cheatsheet.mdx)

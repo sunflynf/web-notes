@@ -1,3 +1,7 @@
+---
+description: Logstash pipeline model, filters, outputs and local validation with Docker
+---
+
 # Logstash Integration Guide
 
 Logstash is the ingestion and transformation layer of the ELK stack. It reads events from inputs, applies filters, and writes normalized documents to Elasticsearch or another destination.
@@ -57,7 +61,7 @@ Run it with Docker on the same `elk` network as Elasticsearch:
 docker run --rm --name logstash --net elk \
   -v ${PWD}/logstash.conf:/usr/share/logstash/pipeline/logstash.conf \
   -v ${PWD}/logs:/logs \
-  docker.elastic.co/logstash/logstash:8.15.0
+  docker.elastic.co/logstash/logstash:9.5.5
 ```
 
 ## Developer Integration Steps

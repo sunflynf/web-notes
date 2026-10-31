@@ -1,0 +1,200 @@
+---
+title: React Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page refresher for React 19 - components, JSX, hooks, Actions, Suspense, Server Components and the newest 19.x APIs.
+tags:
+  - React
+  - JavaScript
+  - TypeScript
+  - Cheatsheet
+---
+
+# React Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | A JavaScript library for building user interfaces from components, maintained by Meta and the community |
+| Use it for | SPAs, interactive widgets, full-stack apps through a framework (Next.js, React Router), mobile via React Native |
+| Latest stable | v19.3.1 (released 2026-10-14) - checked 2026-10-31 |
+| Official docs | [react.dev](https://react.dev/) · [API reference](https://react.dev/reference/react) · [Changelog](https://github.com/facebook/react/blob/main/CHANGELOG.md) |
+
+## Core concepts
+
+- **Component**: a function that returns JSX; name it in PascalCase.
+- **Props**: read-only inputs passed from parent to child; `children` is the nested JSX.
+- **State**: data owned by a component (`useState`/`useReducer`); setting it schedules a re-render.
+- **Rendering is pure**: the same props and state must produce the same JSX; side effects go in event handlers or Effects.
+- **Effects**: `useEffect` syncs with something outside React (network, DOM, subscriptions), not for deriving data.
+- **Keys**: stable `key` on list items lets React match elements between renders.
+- **Context**: passes a value deep down the tree without prop drilling.
+- **Suspense**: shows a fallback while children wait for code or data.
+- **Server Components (RSC)**: run only on the server (in a framework), can be `async`, ship no JS; `"use client"` marks the client boundary.
+- **Actions**: async functions passed to `<form action>` or transitions; React tracks pending state, errors and optimistic updates.
+
+## Syntax & commands
+
+```bash
+# New app: use a framework or Vite (Create React App is deprecated)
+npm create vite@latest my-app -- --template react-ts
+npx create-next-app@latest my-app
+npx create-react-router@latest my-app
+```
+
+```tsx
+// Component + props + state
+import { useState } from "react";
+
+type Props = { label: string; initial?: number };
+
+export function Counter({ label, initial = 0 }: Props) {
+  const [count, setCount] = useState(initial);
+  return (
+    <button onClick={() => setCount((c) => c + 1)}>
+      {label}: {count}
+    </button>
+  );
+}
+```
+
+```tsx
+// Conditional rendering and lists
+{isLoading ? <Spinner /> : <List />}
+{error && <p className="error">{error}</p>}
+<ul>
+  {items.map((item) => (
+    <li key={item.id}>{item.name}</li>
+  ))}
+</ul>
+```
+
+```tsx
+// Effect with cleanup
+useEffect(() => {
+  const id = setInterval(tick, 1000);
+  return () => clearInterval(id); // runs before re-run and on unmount
+}, [tick]); // dependency array
+```
+
+| Hook | Use it for |
+|---|---|
+| `useState` / `useReducer` | Local state / complex state transitions |
+| `useEffect` / `useLayoutEffect` | Sync with external systems / measure DOM before paint |
+| `useRef` | Mutable value or DOM node that does not trigger re-render |
+| `useMemo` / `useCallback` | Cache a value / function between renders (often unneeded with React Compiler) |
+| `useContext` / `use(Context)` | Read context (`use` can be called conditionally) |
+| `use(promise)` | Read a promise inside Suspense |
+| `useTransition` / `useDeferredValue` | Mark updates as non-urgent |
+| `useActionState` | State + pending flag for a form Action |
+| `useOptimistic` | Show optimistic UI while an Action runs |
+| `useFormStatus` (react-dom) | Pending state of the parent `<form>` |
+| `useId` | Stable unique IDs for accessibility attributes |
+| `useEffectEvent` | Non-reactive logic called from an Effect (19.2+) |
+| `useSyncExternalStore` | Subscribe to an external store |
+
+```tsx
+// Entry point (ReactDOM.render was removed in React 19)
+import { createRoot } from "react-dom/client";
+createRoot(document.getElementById("root")!).render(<App />);
+```
+
+## Common patterns
+
+```tsx
+// Form Action with pending state (React 19)
+import { useActionState } from "react";
+
+function SignupForm() {
+  const [error, submit, isPending] = useActionState(
+    async (_prev: string | null, formData: FormData) => {
+      const res = await signup(formData.get("email") as string);
+      return res.ok ? null : "Signup failed";
+    },
+    null,
+  );
+  return (
+    <form action={submit}>
+      <input name="email" type="email" required />
+      <button disabled={isPending}>Sign up</button>
+      {error && <p>{error}</p>}
+    </form>
+  );
+}
+```
+
+```tsx
+// Context: create, provide, consume
+const ThemeContext = createContext<"light" | "dark">("light");
+
+<ThemeContext value="dark">   {/* React 19: <Context> works as provider */}
+  <Page />
+</ThemeContext>;
+
+const theme = use(ThemeContext);
+```
+
+```tsx
+// Lazy loading + Suspense + error boundary
+const Chart = lazy(() => import("./Chart"));
+
+<ErrorBoundary fallback={<p>Something broke</p>}>
+  <Suspense fallback={<Spinner />}>
+    <Chart />
+  </Suspense>
+</ErrorBoundary>;
+```
+
+```tsx
+// Custom hook: reuse stateful logic
+function useOnline() {
+  const [online, setOnline] = useState(navigator.onLine);
+  useEffect(() => {
+    const on = () => setOnline(true);
+    const off = () => setOnline(false);
+    window.addEventListener("online", on);
+    window.addEventListener("offline", off);
+    return () => {
+      window.removeEventListener("online", on);
+      window.removeEventListener("offline", off);
+    };
+  }, []);
+  return online;
+}
+```
+
+- **Lift state up** to the closest common parent when siblings need the same data.
+- **Derive, don't sync**: compute values during render instead of copying props into state with an Effect.
+- **Reset state with a key**: `<Profile key={userId} />` remounts when `userId` changes.
+- **Ref as a prop** (React 19): function components accept `ref` directly; `forwardRef` is no longer needed.
+- **Document metadata** (React 19): render `<title>`, `<meta>`, `<link>` anywhere; React hoists them to `<head>`.
+
+## Gotchas
+
+- **State updates are snapshots**: `setCount(count + 1)` twice adds 1; use the updater form `setCount((c) => c + 1)`.
+- **Mutating state** (`arr.push`, `obj.x = 1`) does not re-render; create new arrays/objects.
+- **Missing Effect dependencies** cause stale values; follow the `react-hooks` ESLint rule instead of silencing it.
+- **Strict Mode runs Effects twice in dev** (mount, unmount, mount) to surface missing cleanup.
+- **Objects/functions created in render** change identity every render and retrigger Effects or memoized children.
+- **Index as `key`** breaks state when items are reordered, inserted or removed.
+- **Hooks rules**: call hooks at the top level of components or custom hooks only (`use` is the exception).
+- **`&&` with numbers**: `{count && <Badge />}` renders `0`; use `count > 0 &&`.
+- **Removed in React 19**: `ReactDOM.render`, `hydrate`, string refs, `propTypes` checks and `defaultProps` on function components (use default parameters).
+
+## What's new in recent releases
+
+- **19.3** (2026-09): `<ViewTransition />` and `addTransitionType` for View Transition animations; refs on `<Fragment>`; `browser()` in react-dom to mark a subtree browser-only inside `<Suspense>`; transitions now render independently instead of being entangled.
+- **19.3** also enables Trusted Types integration and adds a DEV warning when `use()` is called conditionally in a way that unblocks a component.
+- **19.2** (2025-10): `<Activity mode="hidden">` hides UI while keeping its state; `useEffectEvent`; `cacheSignal` for RSC; React Performance Tracks in browser DevTools.
+- **19.2**: partial pre-rendering resume APIs (`resume`, `resumeAndPrerender`, Node stream variants) and batched Suspense boundary reveals during SSR.
+- **React Compiler 1.0** (stable since 2025-10) auto-memoizes components; most manual `useMemo`/`useCallback` becomes optional.
+
+## In these notes
+
+- [React overview: components, hooks, portals, compiler](./index.mdx)
+- State: [State management comparison](./state/index.md) · [React Redux](./state/react-redux.md) · [RTK Query](./state/rtk-query.md) · [Redux add-ons](./state/redux-technologies.md) · [Immer](./state/immerjs.mdx)
+- Extensions: [React Router](./extensions/react-router.md) · [React Hook Form](./extensions/react-hook-form.md) · [Formik](./extensions/formik.md) · [react-i18next](./extensions/react-i18next.md) · [React Helmet](./extensions/react-helmet.md) · [react-window](./extensions/react-window.md)
+- Components: [react-select](./components/react-select.md) · [react-number-format](./components/react-number-format.md) · [react-toastify](./components/react-toastify.md)
+- B2B: [react-admin](./b2b/react-admin.md)
+- Frameworks: [Next.js](../../fe-frameworks/react/nextjs.mdx) · [Next.js Cheatsheet](../../fe-frameworks/react/nextjs-cheatsheet.mdx) · [Remix](../../fe-frameworks/react/remix.mdx)

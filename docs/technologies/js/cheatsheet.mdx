@@ -1,0 +1,151 @@
+---
+title: JavaScript Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page refresher for modern JavaScript (ECMAScript) syntax, built-ins, async patterns and recent ES2025/ES2026 features.
+tags:
+  - JavaScript
+  - Cheatsheet
+---
+
+# JavaScript Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | The language of the web, standardized as ECMAScript (ECMA-262) by TC39, and runs in browsers, Node.js, Deno and Bun |
+| Use it for | Browser UIs, servers and APIs (Node.js), tooling and scripts, serverless functions |
+| Latest stable | ECMAScript 2026 (ECMA-262 17th edition, approved 2026-06-30) - checked 2026-10-31 |
+| Official docs | [ECMA-262 spec](https://tc39.es/ecma262/) · [MDN JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) · [TC39 proposals](https://github.com/tc39/proposals) |
+
+## Core concepts
+
+- **Primitives vs objects**: `string`, `number`, `bigint`, `boolean`, `undefined`, `null`, `symbol` are immutable values. Everything else is an object passed by reference.
+- **Scope**: `let`/`const` are block-scoped and sit in the temporal dead zone until declared. `var` is function-scoped and hoisted.
+- **Closures**: a function keeps access to the variables of the scope it was created in.
+- **`this`**: set by the call site (`obj.fn()`), by `new`, or by `call`/`apply`/`bind`. Arrow functions take `this` from the enclosing scope.
+- **Prototypes**: objects inherit through the prototype chain. `class` is syntax on top of it.
+- **Event loop**: one call stack. Microtasks (promises, `queueMicrotask`) all run before the next macrotask (`setTimeout`, I/O, events).
+- **Equality**: `===` compares without coercion. `Object.is` also treats `NaN` as equal to itself and `+0` as different from `-0`.
+- **Modules**: ES modules (`import`/`export`) are strict, static and live-bound. CommonJS (`require`) is the older Node.js format.
+- **Truthiness**: falsy values are `false`, `0`, `-0`, `0n`, `""`, `null`, `undefined`, `NaN`. Everything else is truthy.
+
+## Syntax & commands
+
+```js
+// Variables, destructuring, spread, defaults
+const { id, name = "anon", ...rest } = user;
+const [first, , third = 0] = list;
+const merged = { ...defaults, ...overrides };
+const copy = structuredClone(deepObject); // deep copy
+
+// Optional chaining, nullish coalescing, logical assignment
+const city = user?.address?.city ?? "unknown";
+settings.theme ??= "light";
+count ||= 1;
+
+// Functions
+const add = (a, b = 0) => a + b;
+function sum(...nums) { return nums.reduce((t, n) => t + n, 0); }
+```
+
+```js
+// Arrays: non-mutating helpers
+arr.map(fn).filter(Boolean).reduce((acc, x) => acc + x, 0);
+arr.at(-1);                       // last item
+arr.toSorted((a, b) => a - b);   // copy, original untouched
+arr.toReversed(); arr.toSpliced(1, 1); arr.with(0, "x");
+arr.findLast(fn); arr.findLastIndex(fn);
+Object.groupBy(users, (u) => u.role); // { admin: [...], user: [...] }
+Array.from({ length: 3 }, (_, i) => i); // [0, 1, 2]
+```
+
+```js
+// Objects
+Object.entries(obj).map(([k, v]) => `${k}=${v}`);
+Object.fromEntries(map);
+Object.hasOwn(obj, "key");
+
+// Classes
+class Counter {
+  #count = 0;                 // private field
+  static create() { return new Counter(); }
+  get value() { return this.#count; }
+  inc() { this.#count++; return this; }
+}
+```
+
+```js
+// Async
+const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+const data = await res.json();
+
+const [a, b] = await Promise.all([getA(), getB()]);       // fail fast
+const results = await Promise.allSettled([p1, p2]);       // never rejects
+const fastest = await Promise.any([mirror1, mirror2]);    // first fulfilled
+const { promise, resolve, reject } = Promise.withResolvers();
+
+for await (const chunk of stream) process(chunk);
+```
+
+```js
+// Modules
+export const PI = 3.14;
+export default function main() {}
+import main, { PI } from "./math.js";
+const { heavy } = await import("./heavy.js");          // lazy load
+import config from "./config.json" with { type: "json" }; // import attributes
+```
+
+## Common patterns
+
+| Need | Pattern |
+|---|---|
+| Debounce input | `clearTimeout(t); t = setTimeout(fn, 300)` |
+| Unique values | `[...new Set(arr)]` |
+| Set math (ES2025) | `a.union(b)`, `a.intersection(b)`, `a.difference(b)`, `a.isSubsetOf(b)` |
+| Count / cache by key (ES2026) | `map.getOrInsert(key, 0)`, `map.getOrInsertComputed(key, () => compute())` |
+| Lazy pipelines (ES2025) | `iter.values().filter(fn).map(fn).take(10).toArray()` |
+| Safe sync-or-async call (ES2025) | `Promise.try(() => maybeThrows())` |
+| Cancel a request | `const ac = new AbortController(); fetch(url, { signal: ac.signal }); ac.abort();` |
+| Deep clone | `structuredClone(value)` (no functions or DOM nodes) |
+| Format numbers / dates | `new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n)` |
+| Retry with backoff | loop with `await new Promise(r => setTimeout(r, 2 ** i * 100))` |
+
+```js
+// Error handling with cause
+try {
+  await saveUser(user);
+} catch (err) {
+  throw new Error("Saving user failed", { cause: err });
+}
+```
+
+## Gotchas
+
+- `0.1 + 0.2 !== 0.3`. Use integers (cents) or `Math.sumPrecise` (ES2026) for sums of floats.
+- `typeof null === "object"` and `typeof [] === "object"`. Use `Array.isArray` and `value === null`.
+- `arr.sort()` sorts as strings by default and mutates. Pass a compare function or use `toSorted`.
+- `parseInt("08abc")` returns `8`. `Number("08abc")` returns `NaN`. Pick the one you mean.
+- `forEach` does not wait for `async` callbacks. Use `for...of` with `await`, or `Promise.all(arr.map(...))`.
+- Losing `this`: `const f = obj.method; f()` has no `obj`. Bind it or use an arrow wrapper.
+- `JSON.stringify` drops `undefined`, functions and symbols, and throws on `BigInt` and circular references.
+- `new Date("2026-01-02")` is parsed as UTC, while `new Date(2026, 0, 2)` is local time, with months starting at 0.
+- `==` coerces types (`"" == 0` is true). Default to `===`.
+
+## What's new in recent releases
+
+- **ES2026** (June 2026): `Map`/`WeakMap` `getOrInsert` / `getOrInsertComputed` (upsert), `Iterator.concat`, `Uint8Array` base64/hex (`toBase64`, `Uint8Array.fromBase64`, `toHex`, `fromHex`), `Math.sumPrecise`, `Error.isError`, `Array.fromAsync`, `RegExp.escape`, and `JSON.parse` source text access (`context.source` in revivers, `JSON.rawJSON`).
+- **ES2025** (June 2025): iterator helpers (`.map`, `.filter`, `.take`, `.drop`, `.toArray` on iterators), new `Set` methods, import attributes and JSON modules, `Promise.try`, `Float16Array`, RegExp modifiers and duplicate named capture groups.
+- **ES2024**: `Object.groupBy` / `Map.groupBy`, `Promise.withResolvers`, resizable `ArrayBuffer`, RegExp `v` flag.
+- **Next (ES2027, already stage 4)**: `Temporal` date/time API and explicit resource management (`using` / `await using`). Node.js 26 already ships `Temporal` on by default.
+
+## In these notes
+
+- [JavaScript concepts (syntax, types, functions, objects, async, DOM, BOM)](./index.mdx)
+- [TypeScript](./ts.md) · [TypeScript Cheatsheet](./ts-cheatsheet.mdx)
+- [Node.js](./env/nodejs.md) · [Node.js Cheatsheet](./env/nodejs-cheatsheet.mdx)
+- [Testing Cheatsheet](./testing/cheatsheet.mdx) · [TanStack Cheatsheet](./tanstack/cheatsheet.mdx) · [Node.js ORM Cheatsheet](./api/orm/cheatsheet.mdx)
+- Libraries: [Lodash](./libraries/lodash.md) · [jQuery](./libraries/jquery.md) · [View template engines](./libraries/view-template-engines.md)
+- API tools: [Axios](./api/axios.mdx) · [Socket.IO](./api/socket-io.mdx)

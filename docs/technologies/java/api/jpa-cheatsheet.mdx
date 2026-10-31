@@ -1,0 +1,161 @@
+---
+title: JPA Cheatsheet
+sidebar_label: JPA Cheatsheet
+sidebar_position: 1
+description: One-page Jakarta Persistence (JPA) and Hibernate ORM refresher - entity mapping, relationships, JPQL, fetching, transactions, Spring Data JPA and common pitfalls.
+tags:
+  - Java
+  - JPA
+  - Hibernate
+  - Database
+  - Cheatsheet
+---
+
+# JPA Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Jakarta Persistence (JPA) is the Java ORM specification; Hibernate ORM is its most used implementation (and Spring Boot's default) |
+| Use it for | Mapping Java objects to relational tables, CRUD, JPQL/Criteria queries, caching and transactions |
+| Latest stable | Hibernate ORM 7.4.14.Final (released 2026-10-25), implementing Jakarta Persistence 3.2 - checked 2026-10-31 |
+| Official docs | [Hibernate ORM docs](https://hibernate.org/orm/documentation/) and [Jakarta Persistence spec](https://jakarta.ee/specifications/persistence/) |
+
+Packages: `jakarta.persistence.*` (Hibernate 6+ / Spring Boot 3+). Old code uses `javax.persistence.*`.
+
+## Core concepts
+
+- **Entity**: a class annotated `@Entity` with an `@Id`; one instance = one row.
+- **EntityManager / Session**: the unit of work that loads, tracks and flushes entities (Hibernate's `Session` extends `EntityManager`).
+- **Persistence context**: first-level cache; within it each row maps to exactly one object instance.
+- **Entity states**: transient (new), managed (tracked), detached (context closed), removed.
+- **Dirty checking**: changes to managed entities are written automatically on flush/commit; no `save()` needed.
+- **Owning side**: the side with the foreign key (`@ManyToOne` / `@JoinColumn`); `mappedBy` marks the inverse side.
+- **Fetch type**: `LAZY` loads on access through a proxy; `EAGER` loads immediately. To-one defaults to EAGER, to-many to LAZY.
+- **JPQL**: object query language over entities and fields, not tables and columns.
+- **Second-level cache**: optional cache shared across sessions (Hibernate + JCache provider).
+
+## Syntax & commands
+
+```java
+@Entity
+@Table(name = "orders", indexes = @Index(columnList = "customer_id"))
+public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+
+    @Column(nullable = false, length = 50)
+    private String number;
+
+    @Enumerated(EnumType.STRING)          // never rely on ORDINAL
+    private Status status;
+
+    private Instant createdAt;            // java.time needs no @Temporal
+
+    @ManyToOne(fetch = FetchType.LAZY)    // override the EAGER default
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderLine> lines = new ArrayList<>();
+
+    @Version
+    private long version;                 // optimistic locking
+
+    public void addLine(OrderLine line) { // keep both sides in sync
+        lines.add(line);
+        line.setOrder(this);
+    }
+}
+
+@Embeddable
+public record Money(BigDecimal amount, String currency) {}   // records as embeddables (JPA 3.2)
+```
+
+```java
+// Plain JPA
+Order o = em.find(Order.class, id);
+em.persist(newOrder);
+Order merged = em.merge(detached);
+em.remove(o);
+
+List<Order> open = em.createQuery(
+        "select o from Order o join fetch o.customer where o.status = :s", Order.class)
+    .setParameter("s", Status.OPEN)
+    .setMaxResults(20)
+    .getResultList();
+
+// JPA 3.2: transaction helpers on EntityManagerFactory
+emf.runInTransaction(em -> em.persist(newOrder));
+```
+
+```java
+// Spring Data JPA
+public interface OrderRepository extends JpaRepository<Order, Long> {
+    List<Order> findByStatusAndCreatedAtAfter(Status status, Instant after);  // derived query
+
+    @Query("select o from Order o where o.customer.email = :email")
+    List<Order> findByCustomerEmail(@Param("email") String email);
+
+    @EntityGraph(attributePaths = {"lines", "customer"})
+    Optional<Order> findWithLinesById(Long id);
+
+    @Modifying
+    @Query("update Order o set o.status = :s where o.createdAt < :before")
+    int bulkUpdate(@Param("s") Status s, @Param("before") Instant before);
+
+    <T> List<T> findByStatus(Status status, Class<T> type);   // dynamic projection (DTO/record)
+}
+```
+
+```properties
+spring.jpa.hibernate.ddl-auto=validate
+spring.jpa.open-in-view=false
+spring.jpa.properties.hibernate.default_batch_fetch_size=50
+spring.jpa.properties.hibernate.jdbc.batch_size=50
+spring.jpa.properties.hibernate.order_inserts=true
+logging.level.org.hibernate.SQL=debug
+logging.level.org.hibernate.orm.jdbc.bind=trace
+```
+
+## Common patterns
+
+| Need | Use |
+|---|---|
+| Avoid N+1 | `join fetch`, `@EntityGraph`, or `default_batch_fetch_size` |
+| Read-only list | DTO/record projection: `select new com.app.OrderView(o.id, o.number) from Order o` |
+| Paging | `Pageable` / `Page<T>` in Spring Data; avoid `join fetch` of collections with paging |
+| Concurrent edits | `@Version` (optimistic) or `@Lock(LockModeType.PESSIMISTIC_WRITE)` |
+| Bulk change | `@Modifying` JPQL update/delete (bypasses the persistence context, so clear it) |
+| Audit columns | Spring Data `@CreatedDate` / `@LastModifiedDate`, or Hibernate `@CreationTimestamp` / `@UpdateTimestamp` |
+| Soft delete | Hibernate `@SoftDelete` (6.4+) |
+| Schema changes | Flyway or Liquibase, with `ddl-auto=validate` |
+| Inheritance | `@MappedSuperclass` for shared fields; `@Inheritance(strategy = SINGLE_TABLE)` when you query polymorphically |
+
+## Gotchas
+
+- `LazyInitializationException`: accessing a lazy association after the session is closed. Fetch what you need in the query instead of enabling open-in-view.
+- `@ManyToOne` and `@OneToOne` are EAGER by default; set `fetch = FetchType.LAZY` almost everywhere.
+- `GenerationType.IDENTITY` disables JDBC insert batching in Hibernate; prefer `SEQUENCE` where the database supports it.
+- `equals`/`hashCode` on entities: do not use all fields or Lombok `@Data`; base them on a business key or a non-null id.
+- `CascadeType.REMOVE` / `ALL` on `@ManyToMany` deletes shared rows; cascade only parent-to-child.
+- Using `List` for two `join fetch` bag collections throws `MultipleBagFetchException`; use `Set` or separate queries.
+- `save()` on a detached entity in Spring Data calls `merge`, which returns a new instance; use the returned object.
+- `ddl-auto=update` / `create-drop` in production can drop or skew schema; use migrations.
+- Bulk JPQL updates and native queries do not update already-loaded entities.
+
+## What's new in recent releases
+
+- **Hibernate ORM 7.x (7.0 GA 2025)**: implements Jakarta Persistence 3.2, requires Java 17+, relicensed to Apache License 2.0, and supports Jakarta Data repositories; 7.4 is the current stable series.
+- **Jakarta Persistence 3.2**: records as `@Embeddable`, `runInTransaction` / `callInTransaction`, programmatic `PersistenceConfiguration`, JPQL `union` / `intersect` / `except`, `cast`, `left` / `right` / `replace`, `id()` and `version()` functions, and `@Temporal` deprecated.
+- **Hibernate ORM 8.0**: in beta (8.0.0.Beta4 on 2026-10-28); not for production yet.
+- **Spring Boot 4**: uses Hibernate 7 / Jakarta Persistence 3.2 through `spring-boot-starter-data-jpa`.
+
+## In these notes
+
+- [JPA guide](./jpa.md): annotations, repositories, transactions, tuning, testing
+- [JDBC](./jdbc.md)
+- [Spring Framework](../spring-framework/index.mdx) and the [Spring Cheatsheet](../spring-framework/cheatsheet.mdx)
+- [Spring Testing](../spring-framework/spring-test.md)

@@ -33,7 +33,7 @@ go run .
 
 ```bash
 # Update code dependencies
-go get -u         # update all dependencies
+go get -u ./...   # update all dependencies
 go mod tidy       # to clean up unused dependencies
 go mod vendor     # to create vendor folder
 go mod graph      # to view dependency graph

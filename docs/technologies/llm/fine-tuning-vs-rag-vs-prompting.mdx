@@ -1,0 +1,38 @@
+---
+title: Prompting vs RAG vs Fine-tuning
+sidebar_position: 10
+description: Choosing between prompt engineering, retrieval (RAG) and fine-tuning to adapt an LLM to your use case.
+---
+
+# Prompting vs RAG vs Fine-tuning
+
+Start cheap, escalate only when evals show you must.
+
+```mermaid
+flowchart TD
+  A[Problem] --> B{Good with a better prompt + examples?}
+  B -->|yes| P[Prompting]
+  B -->|no| C{Missing knowledge / private or fresh data?}
+  C -->|yes| R[RAG or tools]
+  C -->|no| D{Need consistent style/format at scale, or a smaller cheaper model?}
+  D -->|yes| F[Fine-tuning]
+  D -->|no| M[Try a stronger model]
+```
+
+| | Prompting | RAG / tools | Fine-tuning |
+|---|---|---|---|
+| Adds new knowledge | Only what fits in the prompt | Yes, fresh and private data | Poorly; not for facts that change |
+| Changes behavior/style | Yes, mostly | No | Yes, strongly |
+| Effort | Minutes | Days (pipeline + index) | Weeks (data + training + evals) |
+| Update cost | Edit text | Re-index docs | Re-train |
+| Citations / traceability | No | Yes | No |
+| Typical wins | Most tasks | Q&A over docs, support, search | Narrow high-volume tasks, distilling a big model into a small one |
+
+## Rules of thumb
+
+- **Prompting first** - most "we need fine-tuning" cases are fixed with clearer instructions and examples.
+- **Knowledge problem → RAG**, **behavior problem → fine-tuning**.
+- **Combine them**: a fine-tuned model can still use RAG.
+- **Fine-tuning needs data**: hundreds to thousands of high-quality examples plus an eval set.
+- **Check availability**: not every vendor/model offers fine-tuning; open-weight models can be fine-tuned yourself (e.g. LoRA/QLoRA).
+- **New base models** often beat your old fine-tune - re-evaluate on upgrades.

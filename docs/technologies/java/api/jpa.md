@@ -1,5 +1,5 @@
 ---
-description: Object-relational mapping (ORM) in Java
+description: Object-relational mapping (ORM) in Java with Jakarta Persistence (JPA), Hibernate and Spring Data JPA
 tags:
   - Java
   - Database
@@ -8,7 +8,9 @@ tags:
 
 # Java Persistence API
 
-- **JPA**: A standard API for object-relational mapping (ORM) in Java.
+> **Quick reference:** [JPA Cheatsheet](./jpa-cheatsheet.mdx)
+
+- **JPA**: A standard API for object-relational mapping (ORM) in Java. Since Java EE moved to Eclipse, it is called **Jakarta Persistence** and lives in the `jakarta.persistence` package (Spring Boot 3+).
 - **Hibernate**: A popular ORM framework implementing JPA, offering extra features like caching, batch processing, and more.
 - **Spring Data JPA**: A Spring module providing an abstraction layer for JPA, simplifying repository creation and data access patterns.
 
@@ -40,6 +42,7 @@ spring.datasource.url=jdbc:h2:mem:testdb
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.username=sa
 spring.datasource.password=password
+# Optional since Hibernate 6: the dialect is detected from the JDBC connection
 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 spring.jpa.hibernate.ddl-auto=update
 ```
@@ -58,7 +61,7 @@ spring.jpa.hibernate.ddl-auto=update
 | `@Transient`                       | Excludes a field from DB mapping.                              | `@Transient private String temp;`                     |
 | `@Enumerated`                      | Maps enums (`ORDINAL` or `STRING`).                            | `@Enumerated(EnumType.STRING)`                        |
 | `@Lob`                             | Maps large data types (BLOB/CLOB).                             | `@Lob private String content;`                        |
-| `@Temporal`                        | Specifies date/time type (`DATE`, `TIME`, `TIMESTAMP`).        | `@Temporal(TemporalType.TIMESTAMP)`                   |
+| `@Temporal`                        | Legacy `java.util.Date`/`Calendar` only (deprecated in JPA 3.2). `java.time` types need no annotation. | `@Temporal(TemporalType.TIMESTAMP)`                   |
 | `@CreationTimestamp` *(Hibernate)* | Auto-sets creation time.                                       | `@CreationTimestamp private LocalDateTime createdAt;` |
 | `@UpdateTimestamp` *(Hibernate)*   | Auto-sets update time.                                         | `@UpdateTimestamp private LocalDateTime updatedAt;`   |
 | `@Version`                         | Used for optimistic locking.                                   | `@Version private Long version;`                      |
@@ -102,7 +105,7 @@ spring.jpa.hibernate.ddl-auto=update
 - Use `@GeneratedValue(strategy = GenerationType.IDENTITY)` for auto-generated primary keys.
 
 ```java
-import javax.persistence.*;
+import jakarta.persistence.*; // javax.persistence before Spring Boot 3 / Hibernate 6
 
 @Entity
 public class User {
@@ -263,8 +266,7 @@ public class GlobalExceptionHandler {
 ### Unit Testing Repositories
 
 ```java
-@RunWith(SpringRunner.class)
-@DataJpaTest // lightweight testing of JPA repositories.
+@DataJpaTest // JUnit 5: no @RunWith needed; lightweight testing of JPA repositories.
 public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;

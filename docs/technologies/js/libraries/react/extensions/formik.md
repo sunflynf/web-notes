@@ -1,3 +1,7 @@
+---
+description: Formik form library for React - Formik component, Field, validation with Yup, and useFormik.
+---
+
 # Formik
 
 [**Documents**](https://formik.org/)
@@ -22,7 +26,7 @@ export const FormTemplates = () => (
       if (!test.trim()) errors["test"] = "Required!";
       return errors;
     }}
-    // validateSchema={testSchema_yup} // build with validation libraries like Yup, Zod
+    // validationSchema={testSchema_yup} // build with validation libraries like Yup, Zod
     onSubmit={(values, { setSubmitting }) => {
       setTimeout(() => {
         console.log(values);

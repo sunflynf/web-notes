@@ -1,0 +1,64 @@
+---
+title: Tokens, Context & Sampling
+sidebar_position: 2
+description: Tokens, context windows, max output, temperature and top-p - the knobs every LLM request has.
+---
+
+# Tokens, Context & Sampling
+
+## Tokens
+
+- Models read and write **tokens** (sub-word pieces from a tokenizer), not characters or words.
+- Price, rate limits, latency and context limits are all counted in tokens.
+- Each vendor (and sometimes each model generation) has its own tokenizer, so the same text yields different counts.
+- Code, non-English text, numbers and whitespace often cost more tokens than plain English prose.
+- Count before you send: Anthropic has a token counting endpoint; for estimates, use the vendor's tokenizer rather than a rule of thumb.
+
+```ts
+import Anthropic from "@anthropic-ai/sdk";
+const client = new Anthropic();
+const { input_tokens } = await client.messages.countTokens({
+  model: "claude-sonnet-5-5",
+  messages: [{ role: "user", content: "How many tokens is this?" }],
+});
+```
+
+## Context window
+
+| Term | Meaning |
+|---|---|
+| Context window | Max tokens the model can attend to in one request (system + history + tools + docs + output) |
+| Max output (`max_tokens`) | Cap on generated tokens; separate limit, usually far smaller than the window |
+| Knowledge cutoff | Date after which the model has no training knowledge; give fresh facts in context |
+
+Practical rules:
+
+- **Bigger context is not free**: more input tokens means more cost and latency, and quality can drop on facts buried mid-context.
+- **Put long documents first, the question last** - this tends to work better for long inputs.
+- **Trim history**: summarize old turns or drop tool outputs you no longer need.
+- **Read limits from the model docs** (or the Models API) instead of hard-coding them.
+
+## Sampling parameters
+
+| Param | What it does | Typical use |
+|---|---|---|
+| `temperature` | Scales randomness; low = focused, high = varied | Low for extraction/classification, higher for brainstorming |
+| `top_p` | Nucleus sampling: sample only from the smallest token set whose probability sums to p | Tune temperature **or** top_p, not both |
+| `top_k` | Sample only from the k most likely tokens | Rarely needed |
+| `stop_sequences` / `stop` | Stop generation when a string appears | Delimited outputs |
+| `max_tokens` | Hard cap on output length | Always set; check the stop reason |
+
+Gotchas:
+
+- Temperature `0` is **not** fully deterministic; expect small variation.
+- Reasoning / "thinking" models may fix or restrict sampling params; current Claude models use adaptive thinking steered by `effort` instead.
+- If the reply was cut off, the stop reason says so (`max_tokens` on Anthropic, `incomplete` status on OpenAI Responses) - do not parse a truncated JSON.
+
+## Stop reasons (Anthropic)
+
+| `stop_reason` | Meaning |
+|---|---|
+| `end_turn` | Model finished naturally |
+| `max_tokens` | Hit your cap - raise it or continue |
+| `stop_sequence` | Hit one of your stop strings |
+| `tool_use` | Model wants you to run a tool |

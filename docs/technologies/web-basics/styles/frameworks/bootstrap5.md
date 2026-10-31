@@ -10,7 +10,7 @@ tags:
 
 Bootstrap is a popular front-end framework for building responsive, mobile-first websites using pre-designed components and utility classes.
 
-> _This note for Bootstrap version 5.3 (04-2024)_
+> _This note for Bootstrap version 5.3 (04-2024). Latest 5.3.x: v5.3.8 (2025-08-26) - bump the CDN version and copy the new `integrity` hashes from the docs._
 
 ```txt
 -- VARIANTS --
@@ -50,7 +50,7 @@ dark     --> black
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    \
+    <!-- OR: instead of the bundle, load Popper + bootstrap.min.js separately -->
     <!-- Add Popper below in case using dropdowns, popovers or tooltips -->
     <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"

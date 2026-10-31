@@ -99,4 +99,4 @@ Each framework names things differently (e.g. `Bind`, `Decode`, `Render`, `Conte
 - **Full-stack / battery-included**: Beego
 - **Maximum raw performance**: FastHTTP
 
-[1]: https://blog.logrocket.com/top-go-frameworks-2025/?utm_source=chatgpt.com "The 8 best Go web frameworks for 2025: Updated list"
+[1]: https://blog.logrocket.com/top-go-frameworks-2025/ "The 8 best Go web frameworks for 2025: Updated list"

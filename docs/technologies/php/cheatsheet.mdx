@@ -1,0 +1,137 @@
+---
+title: PHP Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page PHP refresher - syntax, arrays, OOP, types, Composer, security basics and PHP 8.4/8.5 features.
+---
+
+# PHP Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Server-side scripting language with gradual typing, run per request (PHP-FPM) or via CLI |
+| Use it for | Web apps and APIs (Laravel, Symfony), CMSs (WordPress, Drupal), CLI scripts |
+| Latest stable | 8.5.12 (released 2026-10-21) - checked 2026-10-31 |
+| Official docs | [php.net/manual](https://www.php.net/manual/en/) |
+
+## Core concepts
+
+- **Request lifecycle**: each request starts fresh; nothing lives in memory between requests (unless you use workers like FrankenPHP, RoadRunner, Swoole).
+- **`declare(strict_types=1);`**: per-file switch that stops scalar type coercion on calls from that file.
+- **Arrays are ordered hash maps**: one type for lists and dictionaries, copied on write.
+- **Objects are passed by handle**; arrays and scalars by value (use `&` for references).
+- **Composer + PSR-4**: dependency manager and autoloading standard (`vendor/autoload.php`).
+- **Types**: scalar, `array`, `object`, union `int|string`, nullable `?T`, `mixed`, `never`, `void`, intersection `A&B`.
+- **Errors vs exceptions**: most engine errors are `Error` throwables since PHP 7; catch `Throwable` at the top level.
+- **OPcache**: compiled bytecode cache; must be on in production (JIT is optional).
+
+## Syntax & commands
+
+```bash
+php -v                         # version
+php -S localhost:8000 -t public  # built-in dev server
+php -l file.php                # syntax check
+composer init                  # new composer.json
+composer require vendor/pkg    # add dependency
+composer install --no-dev -o   # production install, optimized autoloader
+composer dump-autoload
+```
+
+```php
+<?php
+declare(strict_types=1);
+
+$name = 'Ada';
+echo "Hi {$name}\n";               // interpolation needs double quotes
+$x = $input ?? 'default';          // null coalescing
+$len = $user?->profile?->bio;      // nullsafe
+$list = [1, 2, 3];
+$map  = ['a' => 1, 'b' => 2];
+[$first, $second] = $list;         // destructuring
+$all = [...$list, 4];              // spread
+
+function add(int $a, int $b = 0): int { return $a + $b; }
+$double = fn(int $n) => $n * 2;    // arrow fn captures by value
+echo add(b: 2, a: 1);              // named arguments
+```
+
+```php
+$label = match (true) {
+    $code >= 500 => 'server error',
+    $code >= 400 => 'client error',
+    default      => 'ok',
+};
+```
+
+| Array task | Function |
+|---|---|
+| Transform / filter | `array_map`, `array_filter` (keeps keys) |
+| Reduce | `array_reduce` |
+| Find | `in_array($v, $a, true)`, `array_search`, `array_find` (8.4) |
+| Keys / values | `array_keys`, `array_values`, `array_key_exists` |
+| First / last | `array_first`, `array_last` (8.5), `array_key_first` |
+| Sort | `sort`, `usort`, `ksort` (in place, return bool) |
+| Merge | `array_merge` (renumbers ints), `$a + $b` (keeps left keys) |
+
+## Common patterns
+
+```php
+final class User
+{
+    public function __construct(
+        public readonly int $id,
+        private string $email,
+    ) {}
+}
+
+enum Status: string
+{
+    case Active = 'active';
+    case Banned = 'banned';
+
+    public function label(): string { return ucfirst($this->value); }
+}
+$s = Status::from('active');      // tryFrom() returns null instead of throwing
+```
+
+```php
+// PDO prepared statement
+$pdo = new PDO('mysql:host=localhost;dbname=app', $user, $pass, [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+]);
+$stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
+$stmt->execute([$email]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+```
+
+```php
+// Passwords and output escaping
+$hash = password_hash($plain, PASSWORD_DEFAULT);
+password_verify($plain, $hash);
+echo htmlspecialchars($comment, ENT_QUOTES, 'UTF-8');
+```
+
+## Gotchas
+
+- **Loose comparison**: use `===`; `in_array`/`array_search` need `true` as third arg for strict.
+- **`0 == "abc"` is `false` since PHP 8**, but other `==` coercions still surprise; avoid it.
+- **`foreach` by reference** (`&$v`) leaves `$v` bound to the last element; `unset($v)` after the loop.
+- **`array_filter` keeps keys**: wrap in `array_values()` before JSON-encoding a list.
+- **Integer keys**: `"1"` as a key becomes int `1`; `array_merge` renumbers numeric keys.
+- **`empty("0")` is `true`**.
+- **Never interpolate user input into SQL**; always prepared statements.
+- **Floats**: `0.1 + 0.2 != 0.3`; use `bcmath` (or the `BcMath\Number` class, 8.4) for money.
+
+## What's new in recent releases
+
+- **PHP 8.5** (2025-11-20): pipe operator `|>`, new always-available URI extension, `clone($obj, ['prop' => $v])` ("clone with"), `#[\NoDiscard]`, `array_first()` / `array_last()`, closures and first-class callables in constant expressions, backtraces for fatal errors.
+- **PHP 8.4**: property hooks, asymmetric visibility (`public private(set)`), `new Foo()->bar()` without extra parentheses, lazy objects, `array_find` / `array_any` / `array_all`, `#[\Deprecated]`, HTML5-aware `Dom\HTMLDocument`.
+- **PHP 8.3**: typed class constants, `json_validate()`, `#[\Override]`, dynamic class constant fetch (`Foo::{$name}`).
+
+## In these notes
+
+- [PHP language notes](./index.mdx)
+- [Laravel handbook](./laravel/index.mdx) and [Laravel Cheatsheet](./laravel/cheatsheet.mdx)
+- [Laravel layered architecture](./laravel/architecture.mdx)

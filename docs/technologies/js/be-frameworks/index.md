@@ -1,3 +1,7 @@
+---
+description: Comparison of Node.js and Deno backend frameworks - Express, NestJS, Fastify, Koa, AdonisJS, Hono, Fresh.
+---
+
 # Backend Frameworks
 
 ## General Information
@@ -92,7 +96,7 @@ flowchart TD
 
 - **[Express.js](https://expressjs.com/)**: The de-facto standard for Node.js, offering simplicity and flexibility. Ideal for quick APIs but requires manual structure for large projects.
 - **[NestJS](https://nestjs.com/)**: A robust, TypeScript-first framework with Angular-like patterns, suited for scalable, enterprise applications but with a steeper learning curve.
-- **[Fastify](https://www.fastify.io/)**: Focused on performance and low overhead, great for high-speed APIs and microservices, though its ecosystem is smaller than Express.
+- **[Fastify](https://fastify.dev/)**: Focused on performance and low overhead, great for high-speed APIs and microservices, though its ecosystem is smaller than Express.
 - **[Koa](https://koajs.com/)**: A lightweight framework leveraging async/await, ideal for developers seeking a modern, minimal alternative to Express, but with a smaller ecosystem.
 - **[AdonisJS](https://adonisjs.com/)**: A full-stack MVC framework with built-in tools like ORM and authentication, perfect for rapid development but less flexible for non-MVC use cases.
 - **[Hono](https://hono.dev/)**: A modern, edge-native framework for building fast APIs and web apps, TypeScript-first and ideal for serverless and edge deployments.

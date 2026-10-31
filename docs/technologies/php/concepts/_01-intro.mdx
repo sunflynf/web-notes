@@ -40,7 +40,7 @@ echo "Hello, $name! You are $age years old.";
 
 **Common Pitfalls:**
 
-- Variables must be defined before use (no default value).
+- Using an undefined variable raises a Warning (PHP 8+) and evaluates to `null`; always initialize.
 - Strings with variables require double quotes or concatenation.
 
 ---

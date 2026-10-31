@@ -1,4 +1,10 @@
+---
+description: Authentication flows with diagrams - stateless JWT, OAuth 2.0 authorization code with refresh token, and handling invalid or revoked tokens.
+---
+
 # Authentication Flows
+
+> **Quick reference:** [Authentication Cheatsheet](./authentication-cheatsheet.mdx)
 
 ## Traditional JWT (Stateless)
 
@@ -68,7 +74,7 @@ The **Refresh Token** enables obtaining a new access token without requiring the
 
 * Store refresh tokens securely (e.g., in an HTTP-only, secure cookie).
 * Set proper scopes during authorization.
-* Rotate refresh tokens (RFC 6749 best practice).
+* Rotate refresh tokens (recommended by the OAuth 2.0 Security BCP, RFC 9700, and OAuth 2.1).
 * Implement PKCE (Proof Key for Code Exchange) for public clients (especially SPAs and mobile apps).
 
 ---
@@ -92,7 +98,7 @@ sequenceDiagram
     alt Valid Refresh Token
         Auth_Server-->>Client_App: Return new Access Token
     else Revoked or expired Refresh Token
-        Auth_Server-->>Client_App: 403 Forbidden - Require re-login
+        Auth_Server-->>Client_App: 400 invalid_grant - Require re-login
     end
 ```
 

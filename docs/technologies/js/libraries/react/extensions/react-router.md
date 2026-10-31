@@ -11,8 +11,14 @@ tags:
 
 - Enables **Client-side routing**
 
+:::note
+Since React Router v7 the `react-router-dom` package is only a re-export; install `react-router` and import everything from `"react-router"` (DOM-specific APIs such as `RouterProvider` come from `"react-router/dom"`). The `react-router-dom` imports below still work.
+:::
+
 ```bash
-# Add to project
+# Add to project (v7+)
+npm i react-router
+# Legacy package name (v6 and earlier)
 npm i react-router-dom
 # For React Native
 npm i react-router-native
@@ -25,7 +31,7 @@ npm i react-router-native
 | **Browser** | default                                  |
 | **Hash**    | use when server not support get full URL |
 | **Memory**  | for Testing setup                        |
-| **Statis**  | support **Server-Side rendering**        |
+| **Static**  | support **Server-Side rendering**        |
 
 ```jsx
 // <[Browser|Hash|Memory|Native|Static]Router/>

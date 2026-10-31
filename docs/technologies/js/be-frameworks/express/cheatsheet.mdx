@@ -1,0 +1,176 @@
+---
+title: Express Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page refresher for Express 5 - app setup, routing, middleware, request/response API, error handling and Express 4 to 5 changes.
+tags:
+  - Express
+  - JavaScript
+  - Backend
+  - Cheatsheet
+---
+
+# Express Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Minimal, unopinionated web framework for Node.js built around routing and a middleware chain |
+| Use it for | REST/JSON APIs, server-rendered sites with a view engine, BFFs, prototypes, the HTTP layer under NestJS |
+| Latest stable | v5.3.0 (released 2026-10-09) - checked 2026-10-31 |
+| Official docs | [expressjs.com](https://expressjs.com/) · [API 5.x](https://expressjs.com/en/5x/api.html) · [Migrating to Express 5](https://expressjs.com/en/guide/migrating-5.html) · [History.md](https://github.com/expressjs/express/blob/master/History.md) |
+
+## Core concepts
+
+- **App**: `express()` creates the application; `app.listen()` starts an HTTP server.
+- **Routing**: `app.METHOD(path, ...handlers)` matches HTTP method + path.
+- **Middleware**: functions `(req, res, next)` that run in registration order; call `next()` or send a response.
+- **Router**: `express.Router()` is a mini-app for grouping routes, mounted with `app.use("/prefix", router)`.
+- **Request** (`req`): `params`, `query`, `body`, `headers`, `cookies` (with cookie-parser).
+- **Response** (`res`): `json`, `send`, `status`, `redirect`, `render`, `sendFile`, `set`.
+- **Error middleware**: 4 arguments `(err, req, res, next)`, registered after routes.
+- **Async errors** (v5): a rejected promise from a handler is passed to `next(err)` automatically.
+
+## Syntax & commands
+
+```bash
+npm init -y
+npm install express            # v5 is the "latest" tag
+npm install -D @types/express  # TypeScript types
+node --watch server.js         # dev reload without nodemon (Node 18.11+)
+```
+
+```js
+// server.js (ESM: set "type": "module" in package.json)
+import express from "express";
+
+const app = express();
+app.use(express.json());                          // parse JSON bodies
+app.use(express.urlencoded({ extended: false })); // parse form bodies
+app.use(express.static("public"));                // serve static files
+
+app.get("/health", (req, res) => res.json({ ok: true }));
+
+app.get("/users/:id", async (req, res) => {
+  const user = await db.users.find(req.params.id); // errors go to error handler (v5)
+  if (!user) return res.status(404).json({ error: "Not found" });
+  res.json(user);
+});
+
+app.post("/users", async (req, res) => {
+  const user = await db.users.create(req.body);
+  res.status(201).location(`/users/${user.id}`).json(user);
+});
+
+app.listen(3000, () => console.log("http://localhost:3000"));
+```
+
+| Need | API |
+|---|---|
+| Path params | `req.params.id` (route `/users/:id`) |
+| Query string | `req.query.page` (read-only getter in v5) |
+| Body | `req.body` (needs `express.json()`; `undefined` if not parsed in v5) |
+| Header | `req.get("Authorization")` / `res.set("X-Id", "1")` |
+| Status + JSON | `res.status(201).json(data)` |
+| No content | `res.sendStatus(204)` |
+| Redirect | `res.redirect(301, "/new")` |
+| File | `res.sendFile(path.resolve("file.pdf"))` / `res.download(p)` |
+| Cookie | `res.cookie("sid", v, { httpOnly: true })` / `res.clearCookie("sid")` |
+| View | `app.set("view engine", "ejs"); res.render("home", { title })` |
+
+## Common patterns
+
+```js
+// routes/users.js - Router module
+import { Router } from "express";
+const router = Router();
+
+router.route("/")
+  .get(listUsers)
+  .post(validate(createUserSchema), createUser);
+router.get("/:id", getUser);
+
+export default router;
+
+// app.js
+app.use("/api/users", router);
+```
+
+```js
+// Middleware: logging, auth, validation
+const logger = (req, res, next) => {
+  const start = Date.now();
+  res.on("finish", () => console.log(req.method, req.originalUrl, res.statusCode, Date.now() - start, "ms"));
+  next();
+};
+
+const requireAuth = (req, res, next) => {
+  const token = req.get("Authorization")?.replace("Bearer ", "");
+  if (!token) return res.status(401).json({ error: "Unauthorized" });
+  req.user = verifyJwt(token);
+  next();
+};
+
+const validate = (schema) => (req, res, next) => {
+  const result = schema.safeParse(req.body); // e.g. Zod
+  if (!result.success) return res.status(400).json(result.error.flatten());
+  req.body = result.data;
+  next();
+};
+```
+
+```js
+// 404 + central error handler (register last)
+app.use((req, res) => res.status(404).json({ error: "Not found" }));
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status ?? 500).json({ error: err.expose ? err.message : "Internal Server Error" });
+});
+```
+
+```js
+// Typical production stack
+import helmet from "helmet";
+import cors from "cors";
+import rateLimit from "express-rate-limit";
+
+app.set("trust proxy", 1);          // behind a load balancer / reverse proxy
+app.use(helmet());
+app.use(cors({ origin: ["https://app.example.com"] }));
+app.use(rateLimit({ windowMs: 60_000, limit: 100 }));
+```
+
+```js
+// Express 5 path syntax (path-to-regexp v8)
+app.get("/files/*splat", handler);           // wildcard must be named (was "/files/*")
+app.get("/*splat", handler);                 // catch-all (does not match "/")
+app.get("/users{/:id}", handler);            // optional segment (was "/users/:id?")
+app.get("/assets/{*path}", handler);         // optional wildcard, matches "/assets" too
+```
+
+## Gotchas
+
+- **Order matters**: middleware and routes run in registration order; register body parsers before routes and the error handler last.
+- **Respond exactly once**: forgetting `return` before `res.json()` in a branch leads to "Cannot set headers after they are sent".
+- **No body without a parser**: `req.body` is `undefined` unless `express.json()`/`urlencoded()` ran (v4 gave `{}`).
+- **Express 5 route strings changed**: bare `*`, `:id?` and regex characters inside strings throw; use named wildcards and braces.
+- **Express 4 async handlers** swallow rejections; wrap them or upgrade to v5, which forwards rejected promises to `next(err)`.
+- **Nested query strings** (`a[b]=1`) are not parsed in v5 by default; opt back in with `app.set("query parser", "extended")`.
+- **`req.query` is read-only in v5**: write parsed values to another property (`res.locals.query`) instead of reassigning.
+- **`app.set("trust proxy", ...)`** is required behind proxies for correct `req.ip`, `req.protocol` and secure cookies.
+- **Removed in v5**: `app.del`, `res.sendfile` (use `sendFile`), `req.param()`, `res.json(obj, status)` signatures, and `res.redirect("back")` (use `req.get("Referrer")`).
+
+## What's new in recent releases
+
+- **5.3.0** (2026-10-09): security upgrades of `qs`, `proxy-addr` and `body-parser` (an invalid `limit` now throws instead of silently disabling the size check); `res.send()` no longer sets `Content-Length` together with `Transfer-Encoding`.
+- **5.3.0**: `req.fresh` supports the QUERY method; default error handler logs the full error (including `cause`); `content-disposition` 2 drops quotes around token-safe file names in `res.attachment()`/`res.download()`.
+- **5.2.0** (2025-12-01): `body-parser` 2.2.1 and a deprecation warning for `res.redirect()` called with `undefined` arguments.
+- **5.1.0** (2025-03-31): Express 5 becomes the npm `latest` tag; `Uint8Array` in `res.send()`, ETag option for `res.sendFile()`, several dependencies dropped.
+- **5.0.0** (2024-09-10): Node.js 18+, async error forwarding, path-to-regexp v8 route syntax, `"simple"` query parser by default, removal of long-deprecated APIs. Express 4 continues on the `latest-4` tag (4.22.x).
+
+## In these notes
+
+- [Express notes: folder structures, seeding, useful packages](./index.mdx)
+- [Backend frameworks comparison](../index.md) · [Fastify](../fastify.md) · [NestJS Cheatsheet](../nest/cheatsheet.mdx)

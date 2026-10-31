@@ -1,0 +1,169 @@
+---
+title: PostgreSQL Cheatsheet
+sidebar_label: PostgreSQL Cheatsheet
+sidebar_position: 1
+description: PostgreSQL at a glance - psql commands, types, JSONB, indexes, upserts, EXPLAIN, roles, backups and what's new in PostgreSQL 18
+---
+
+# PostgreSQL Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Open source object-relational database with strong SQL standard support and extensions |
+| Use it for | OLTP apps, JSON documents (JSONB), geospatial (PostGIS), vectors (pgvector), full-text search |
+| Latest stable | 18.6 (released 2026-08-13) - checked 2026-10-31 |
+| Next major | PostgreSQL 19 RC 1 (2026-10-15), GA planned for 2026-11-19 |
+| Support | Each major version gets 5 years of minor releases (quarterly, cumulative) |
+| Official docs | [postgresql.org/docs](https://www.postgresql.org/docs/current/) - [release notes](https://www.postgresql.org/docs/release/) - [versioning policy](https://www.postgresql.org/support/versioning/) |
+
+## Core concepts
+
+- **Cluster -> database -> schema -> table**: one server hosts many databases; `public` is the default schema
+- **Roles**: users and groups are both roles; `LOGIN` makes a role a user
+- **MVCC**: readers never block writers; old row versions are cleaned by **VACUUM** (autovacuum)
+- **WAL**: write-ahead log for crash safety, point-in-time recovery and replication
+- **Extensions**: `CREATE EXTENSION` adds types/functions (`pgcrypto`, `pg_trgm`, `postgis`, `vector`)
+- **Rich types**: `jsonb`, arrays, `uuid`, ranges, `timestamptz`, enums, `inet`, generated columns
+- **Index types**: B-tree (default), GIN (jsonb/arrays/full-text), GiST/SP-GiST (geo, ranges), BRIN (huge append-only), hash
+- **Isolation**: default `READ COMMITTED`; `REPEATABLE READ` and true `SERIALIZABLE` available
+
+## Syntax & commands
+
+```bash
+psql -h localhost -U postgres -d app              # connect
+psql "postgresql://user:pass@host:5432/app?sslmode=require"
+createdb app && dropdb app
+pg_dump -Fc -d app -f app.dump                    # custom-format backup
+pg_restore -d app_copy --clean app.dump
+pg_dumpall --globals-only > roles.sql             # roles + tablespaces
+docker run -d --name pg -e POSTGRES_PASSWORD=secret -p 5432:5432 \
+  -v pgdata:/var/lib/postgresql postgres:18       # PG 18+ image: mount the parent dir
+```
+
+| psql meta-command | Does |
+|---|---|
+| `\l` / `\c db` | list databases / connect to one |
+| `\dn` `\dt` `\dv` `\di` | list schemas, tables, views, indexes |
+| `\d table` / `\d+ table` | describe table (with size, storage) |
+| `\du` | list roles |
+| `\df` / `\sf func` | list functions / show function source |
+| `\x auto` | expanded output for wide rows |
+| `\timing on` | show query time |
+| `\i file.sql` / `\o out.txt` | run a file / send output to a file |
+| `\e` | edit the last query in `$EDITOR` |
+| `\q` | quit |
+
+```sql
+CREATE TABLE users (
+  id         bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,  -- prefer over serial
+  public_id  uuid NOT NULL DEFAULT uuidv7(),                   -- PG 18+, else gen_random_uuid()
+  email      text NOT NULL UNIQUE,
+  profile    jsonb NOT NULL DEFAULT '{}',
+  tags       text[] NOT NULL DEFAULT '{}',
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- Upsert
+INSERT INTO users (email) VALUES ('a@x.io')
+ON CONFLICT (email) DO UPDATE SET profile = users.profile || EXCLUDED.profile
+RETURNING id;
+
+-- JSONB
+SELECT profile->>'name' AS name, profile->'address'->>'city' AS city
+FROM users
+WHERE profile @> '{"plan": "pro"}'          -- containment, uses GIN index
+  AND profile ? 'name';                     -- key exists
+UPDATE users SET profile = jsonb_set(profile, '{plan}', '"free"') WHERE id = 1;
+
+-- Arrays
+SELECT * FROM users WHERE 'admin' = ANY (tags);
+SELECT * FROM users WHERE tags && ARRAY['admin', 'staff'];  -- overlap
+```
+
+```sql
+-- Indexes
+CREATE INDEX CONCURRENTLY idx_users_profile ON users USING gin (profile);
+CREATE INDEX idx_users_email_lower ON users (lower(email));      -- expression index
+CREATE INDEX idx_active ON orders (created_at) WHERE status = 'active';  -- partial index
+CREATE INDEX idx_orders_cover ON orders (user_id) INCLUDE (total); -- covering index
+
+-- Query plans
+EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM users WHERE email = 'a@x.io';
+
+-- Roles and privileges
+CREATE ROLE app_user LOGIN PASSWORD 'change-me';
+GRANT CONNECT ON DATABASE app TO app_user;
+GRANT USAGE ON SCHEMA public TO app_user;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO app_user;
+```
+
+## Common patterns
+
+```sql
+-- Full-text search
+ALTER TABLE posts ADD COLUMN search tsvector
+  GENERATED ALWAYS AS (to_tsvector('english', title || ' ' || body)) STORED;
+CREATE INDEX ON posts USING gin (search);
+SELECT title FROM posts WHERE search @@ websearch_to_tsquery('english', 'postgres -mysql');
+
+-- Fuzzy match (pg_trgm)
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE INDEX ON users USING gin (email gin_trgm_ops);
+SELECT * FROM users WHERE email ILIKE '%smith%';
+
+-- Job queue: each worker grabs unlocked rows
+SELECT * FROM jobs WHERE status = 'queued'
+ORDER BY id LIMIT 10 FOR UPDATE SKIP LOCKED;
+
+-- Row-level security
+ALTER TABLE docs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY own_docs ON docs USING (owner_id = current_setting('app.user_id')::bigint);
+
+-- Top N per group
+SELECT DISTINCT ON (user_id) user_id, id, created_at
+FROM orders ORDER BY user_id, created_at DESC;
+
+-- Who is running what / kill it
+SELECT pid, state, now() - query_start AS runtime, query FROM pg_stat_activity WHERE state <> 'idle';
+SELECT pg_cancel_backend(12345);      -- pg_terminate_backend() to drop the connection
+
+-- Sizes
+SELECT pg_size_pretty(pg_database_size(current_database()));
+SELECT pg_size_pretty(pg_total_relation_size('users'));
+```
+
+## Gotchas
+
+- Unquoted identifiers fold to lower case: `CREATE TABLE "Users"` must then always be quoted - stick to snake_case
+- Use `timestamptz`, not `timestamp`; it stores UTC and converts on display
+- `CREATE INDEX` locks writes; use `CONCURRENTLY` in production (not inside a transaction)
+- Foreign keys do **not** create an index on the referencing column; add one yourself
+- Each connection is a process: use a pooler (PgBouncer, or your driver's pool) instead of hundreds of connections
+- Long-running or "idle in transaction" sessions block VACUUM and cause bloat; set `idle_in_transaction_session_timeout`
+- `ALTER TABLE ... ADD COLUMN ... DEFAULT volatile_fn()` rewrites the table; constant defaults are instant (PG 11+)
+- Major upgrades need `pg_upgrade` or dump/restore; minor upgrades are just a binary swap
+- Docker image 18+: data lives in `/var/lib/postgresql/18/docker`; mount `/var/lib/postgresql`, not `.../data`
+- `md5` password auth is deprecated (PG 18); use `scram-sha-256`
+
+## What's new in recent releases
+
+PostgreSQL 18 (GA 2025-09-25, current 18.6):
+
+- **Asynchronous I/O** subsystem (`io_method`) speeds up sequential scans, bitmap heap scans and vacuum
+- **`uuidv7()`** built in: time-ordered UUIDs that index well
+- **Virtual generated columns** (computed on read) are now the default for generated columns
+- **`OLD` / `NEW` in `RETURNING`** for `INSERT`/`UPDATE`/`DELETE`/`MERGE`
+- **B-tree skip scan**, temporal constraints (`WITHOUT OVERLAPS`, `PERIOD` foreign keys), OAuth authentication, and `pg_upgrade` keeps planner statistics
+
+PostgreSQL 19 (RC, GA planned 2026-11-19): new `REPACK` command (with `CONCURRENTLY`), logical replication of sequences, JIT disabled by default ([RC 1 notes](https://www.postgresql.org/about/news/postgresql-19-rc-1-released-3409/)).
+
+## In these notes
+
+- [PostgreSQL notes: ORMs, Docker, Kubernetes, best practices](./postgre.md)
+- [SQL Cheatsheet](./sql-cheatsheet.mdx)
+- [SQL Fundamentals](./sql-fundamental.md)
+- [MySQL Cheatsheet](./mysql-cheatsheet.mdx)
+- [node-postgres (JS client)](../../js/api/query-builder/node-postgres.md)

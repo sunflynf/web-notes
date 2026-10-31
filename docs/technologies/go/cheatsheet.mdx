@@ -1,0 +1,158 @@
+---
+title: Go Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page Go refresher - toolchain commands, syntax, errors, interfaces, generics, concurrency and recent release changes.
+---
+
+# Go Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Statically typed, compiled language from Google with a built-in scheduler for goroutines |
+| Use it for | APIs and microservices, CLIs, networking, cloud/infra tooling (Docker, Kubernetes, Terraform are written in Go) |
+| Latest stable | go1.27.3 (released 2026-10-19) - checked 2026-10-31 |
+| Official docs | [go.dev/doc](https://go.dev/doc/) |
+
+## Core concepts
+
+- **Module**: a versioned unit of code defined by `go.mod`; a **package** is one directory of `.go` files.
+- **Exported names** start with an uppercase letter; lowercase means package-private.
+- **Zero values**: every type has one (`0`, `""`, `false`, `nil`), so variables are always initialized.
+- **Errors are values**: functions return `(T, error)`; check `if err != nil` right away.
+- **Interfaces are implicit**: a type satisfies an interface just by having the methods.
+- **Composition over inheritance**: struct embedding instead of class hierarchies.
+- **Goroutines + channels**: cheap concurrent functions that talk over typed pipes.
+- **`context.Context`**: carries cancellation, deadlines and request values; pass it as the first param.
+- **Generics** (1.18+): type parameters with constraints like `any`, `comparable`, `~int | ~float64`.
+
+## Syntax & commands
+
+```bash
+go mod init example.com/app   # new module
+go get github.com/x/y@latest  # add/upgrade a dependency
+go mod tidy                   # sync go.mod/go.sum with imports
+go run .                      # build + run
+go build -o bin/app ./cmd/app # build a binary
+go test ./... -race -cover    # tests with race detector
+go vet ./... && gofmt -l .    # static checks + formatting
+go fix ./...                  # apply modernizers (1.26+)
+GOOS=linux GOARCH=arm64 go build   # cross-compile
+```
+
+```go
+x := 10                       // short declaration (inside funcs)
+var s []int                   // nil slice, append still works
+s = append(s, 1, 2)
+m := map[string]int{"a": 1}   // maps must be made before writing
+v, ok := m["b"]               // comma-ok lookup
+for i, v := range s { _ = i; _ = v }
+for i := range 10 { _ = i }   // range over int (1.22+)
+```
+
+```go
+func div(a, b int) (int, error) {
+    if b == 0 {
+        return 0, errors.New("divide by zero")
+    }
+    return a / b, nil
+}
+
+type User struct {
+    ID   int    `json:"id"`
+    Name string `json:"name"`
+}
+func (u *User) Rename(n string) { u.Name = n } // pointer receiver mutates
+```
+
+```go
+// Generics
+func Map[T, U any](in []T, f func(T) U) []U {
+    out := make([]U, 0, len(in))
+    for _, v := range in {
+        out = append(out, f(v))
+    }
+    return out
+}
+```
+
+## Common patterns
+
+```go
+// Wrap + inspect errors
+if err != nil {
+    return fmt.Errorf("load user %d: %w", id, err)
+}
+if errors.Is(err, sql.ErrNoRows) { /* not found */ }
+var pe *fs.PathError
+if errors.As(err, &pe) { /* typed error */ }
+```
+
+```go
+// Fan out work, wait, cancel on timeout
+ctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+defer cancel()
+
+var wg sync.WaitGroup
+for _, url := range urls {
+    wg.Go(func() { fetch(ctx, url) }) // Go 1.25+ (Add/Done for you)
+}
+wg.Wait()
+```
+
+```go
+// HTTP server with the stdlib router (method + path patterns, 1.22+)
+mux := http.NewServeMux()
+mux.HandleFunc("GET /users/{id}", func(w http.ResponseWriter, r *http.Request) {
+    id := r.PathValue("id")
+    json.NewEncoder(w).Encode(map[string]string{"id": id})
+})
+log.Fatal(http.ListenAndServe(":8080", mux))
+```
+
+```go
+// Table-driven test
+func TestAdd(t *testing.T) {
+    tests := []struct{ a, b, want int }{{1, 2, 3}, {0, 0, 0}}
+    for _, tt := range tests {
+        if got := Add(tt.a, tt.b); got != tt.want {
+            t.Errorf("Add(%d,%d)=%d want %d", tt.a, tt.b, got, tt.want)
+        }
+    }
+}
+```
+
+| Need | Reach for |
+|---|---|
+| Structured logs | `log/slog` |
+| Slice/map helpers | `slices`, `maps` packages |
+| Bounded concurrency + first error | `golang.org/x/sync/errgroup` with `SetLimit` |
+| Config from env | `os.Getenv` / `os.LookupEnv` |
+
+## Gotchas
+
+- **Nil map write panics**; reading a nil map is fine.
+- **`append` may reallocate**: always reassign (`s = append(s, x)`); sub-slices share the backing array.
+- **Nil interface vs typed nil**: an `error` holding a nil `*MyErr` is not `== nil`.
+- **Map iteration order is random**; sort keys if order matters.
+- **Unbuffered sends block** until someone receives; forgotten receivers leak goroutines.
+- **Value receivers copy** the struct; use pointer receivers for mutation or large structs, and do not copy a `sync.Mutex`.
+- **`defer` in a loop** runs at function end, not iteration end.
+- **Shadowing with `:=`** inside `if`/`for` blocks can hide the outer `err`.
+
+## What's new in recent releases
+
+- **Go 1.27** (Aug 2026): generic methods (methods may declare their own type parameters), a new top-level `uuid` package, `encoding/json/v2` + `encoding/json/jsontext`, `crypto/mldsa` post-quantum signatures, faster small-object allocation. Check the official [release notes](https://go.dev/doc/go1.27) for the final list.
+- **Go 1.26** (Feb 2026): `new(expr)` accepts an expression (e.g. `new(42)`), Green Tea GC on by default, rewritten `go fix` with modernizers, `errors.AsType`, lower cgo call overhead.
+- **Go 1.25** (Aug 2025): container-aware `GOMAXPROCS`, `sync.WaitGroup.Go`, `testing/synctest` GA, experimental `encoding/json/v2`.
+- **Go 1.22-1.23** reminders: per-iteration loop variables, `range` over ints and iterator functions, method + wildcard patterns in `net/http.ServeMux`.
+
+## In these notes
+
+- [Go language notes (basics to concurrency)](./index.mdx)
+- [Folder structure](./folder-structure.mdx)
+- [Database connection](./databases.md)
+- [Web frameworks overview](./frameworks/index.md)
+- [Gin framework](./frameworks/gin.mdx) and [Gin Cheatsheet](./frameworks/gin-cheatsheet.mdx)

@@ -12,6 +12,8 @@ tags:
   - postgresql
 ---
 
+> **Quick reference:** [EF Core Cheatsheet](./ef-core-cheatsheet.mdx)
+
 ## Overview
 
 Entity Framework Core (EF Core) is a modern Object-Relational Mapper (ORM) for .NET. It enables developers to:
@@ -339,6 +341,8 @@ var blogs = await _context.Blogs
 ### Lazy Loading
 
 ```csharp
+// Requires the Microsoft.EntityFrameworkCore.Proxies package
+// and options.UseLazyLoadingProxies() when registering the DbContext
 public virtual ICollection<Post> Posts { get; set; }
 ```
 
@@ -378,9 +382,11 @@ public class Product
     public int Id { get; set; }
 
     [Timestamp]
-    public byte[] RowVersion { get; set; }
+    public byte[] RowVersion { get; set; } // SQL Server rowversion
 }
 ```
+
+With PostgreSQL (Npgsql) there is no `rowversion` type; map the system `xmin` column instead with `[Timestamp] public uint Version { get; set; }`.
 
 ---
 
@@ -389,6 +395,11 @@ public class Product
 ```csharp
 var users = await _context.Users
     .FromSqlRaw("SELECT * FROM Users")
+    .ToListAsync();
+
+// With parameters, prefer FromSql: interpolated values become DbParameters (no SQL injection)
+var active = await _context.Users
+    .FromSql($"SELECT * FROM Users WHERE Status = {status}")
     .ToListAsync();
 ```
 
@@ -497,6 +508,8 @@ flowchart TD
 
 ### In-Memory Database (unit tests)
 
+Microsoft discourages the in-memory provider for testing: it is not relational (no transactions, constraints or raw SQL). Prefer SQLite or a real database via Testcontainers.
+
 ```csharp
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseInMemoryDatabase("TestDb"));
@@ -505,7 +518,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 ### SQLite Testing (preferred for realistic integration tests)
 
 ```csharp
-options.UseSqlite("DataSource=:memory:");
+// The in-memory SQLite database lives only while the connection is open
+var connection = new SqliteConnection("DataSource=:memory:");
+connection.Open();
+options.UseSqlite(connection);
 ```
 
 ---

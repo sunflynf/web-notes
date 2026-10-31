@@ -1,5 +1,5 @@
 ---
-description: spring-boot-starter-security
+description: Spring Security with spring-boot-starter-security - SecurityFilterChain configuration, authentication, authorization, CORS/CSRF, sessions and testing
 ---
 
 # Spring Security
@@ -32,17 +32,22 @@ You can use multiple methods for authentication in Spring Security:
 
 Configure in-memory authentication with specific users and roles.
 
+:::note
+
+`WebSecurityConfigurerAdapter` was removed in Spring Security 6 (Spring Boot 3+). Configuration is now done by declaring beans such as `SecurityFilterChain` and `UserDetailsService`, using the lambda DSL.
+
+:::
+
 ```java
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-            .withUser("user").password("{noop}password").roles("USER")
-            .and()
-            .withUser("admin").password("{noop}admin").roles("ADMIN");
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails user = User.withUsername("user").password("{noop}password").roles("USER").build();
+        UserDetails admin = User.withUsername("admin").password("{noop}admin").roles("ADMIN").build();
+        return new InMemoryUserDetailsManager(user, admin);
     }
 }
 ```
@@ -72,7 +77,7 @@ public PasswordEncoder passwordEncoder() {
 To use JWT tokens for authentication:
 
 1. Create a login endpoint that generates a JWT upon successful authentication.
-2. Configure a `JWTAuthenticationFilter` to validate tokens on each request.
+2. Configure a `JWTAuthenticationFilter` to validate tokens on each request, or use `spring-boot-starter-oauth2-resource-server` with `http.oauth2ResourceServer(o -> o.jwt(Customizer.withDefaults()))` to validate JWTs without a custom filter.
 
 ## Authorization: Configuring Access Control
 
@@ -81,15 +86,16 @@ Authorization configurations control access to resources based on roles or permi
 ### Role-Based Access Control
 
 ```java
-@Override
-protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests()
-        .antMatchers("/admin/**").hasRole("ADMIN")
-        .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-        .antMatchers("/public/**").permitAll()
-        .anyRequest().authenticated()
-        .and()
-        .formLogin();
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/admin/**").hasRole("ADMIN")
+            .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+            .requestMatchers("/public/**").permitAll()
+            .anyRequest().authenticated())
+        .formLogin(Customizer.withDefaults());
+    return http.build();
 }
 ```
 
@@ -110,8 +116,9 @@ public void someAdminMethod() {
 Enable method-level security with:
 
 ```java
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class MethodSecurityConfig extends WebSecurityConfigurerAdapter {
+@Configuration
+@EnableMethodSecurity // replaces @EnableGlobalMethodSecurity; prePostEnabled is on by default
+public class MethodSecurityConfig {
 }
 ```
 
@@ -122,10 +129,8 @@ public class MethodSecurityConfig extends WebSecurityConfigurerAdapter {
 Enable CORS for REST APIs that might be accessed from a different domain:
 
 ```java
-@Override
-protected void configure(HttpSecurity http) throws Exception {
-    http.cors();
-}
+// inside your SecurityFilterChain bean
+http.cors(Customizer.withDefaults()); // picks up the CorsConfigurationSource bean below
 
 @Bean
 public CorsConfigurationSource corsConfigurationSource() {
@@ -144,10 +149,8 @@ public CorsConfigurationSource corsConfigurationSource() {
 By default, CSRF is enabled. You can disable it for stateless APIs (like JWT):
 
 ```java
-@Override
-protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().disable();
-}
+// inside your SecurityFilterChain bean
+http.csrf(csrf -> csrf.disable());
 ```
 
 :::warning
@@ -160,11 +163,9 @@ Only disable CSRF if you know it is not needed, such as with stateless REST APIs
 Spring Security manages sessions by default. You can configure session policies to meet your security requirements:
 
 ```java
-@Override
-protected void configure(HttpSecurity http) throws Exception {
-    http.sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);  // For JWT or token-based authentication
-}
+// inside your SecurityFilterChain bean
+http.sessionManagement(session -> session
+    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // For JWT or token-based authentication
 ```
 
 Options:

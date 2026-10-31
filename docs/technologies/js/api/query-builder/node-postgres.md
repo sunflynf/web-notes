@@ -1,5 +1,5 @@
 ---
-description: A promise-based ORM
+description: Non-blocking PostgreSQL client for Node.js (the pg package) - pools, queries, transactions
 tags:
   - JavaScript
   - TypeScript

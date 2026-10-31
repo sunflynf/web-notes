@@ -116,9 +116,8 @@ print(a.value)
 Type hints make your intent clearer and help tools catch bugs early.
 
 ```python
-from typing import List
-
-def average(nums: List[float]) -> float:
+# Python 3.9+: use built-in generics (list[float]) instead of typing.List
+def average(nums: list[float]) -> float:
     return sum(nums) / len(nums)
 
 print(average([1.0, 2.0, 3.0]))
@@ -141,7 +140,8 @@ print(sys.getrefcount(a))  # Decreased reference count
 ### 9. Multi-threading vs Multi-processing
 
 - **Multi-threading**: Multiple threads within the same process share memory space. Good for I/O-bound tasks.
-- **Multi-processing**: Separate memory space for each process. Better for CPU-bound tasks.
+- **Multi-processing**: Separate memory space for each process. Better for CPU-bound tasks (with the standard GIL build).
+- **Free-threaded build** (`python3.14t`, officially supported since 3.14): no GIL, so threads can run CPU-bound code in parallel.
 
 ```python
 import threading
@@ -156,7 +156,8 @@ thread.join()
 import multiprocessing
 def worker():
     print("Worker process")
-process = multiprocessing.Process(target=worker)
-process.start()
-process.join()
+if __name__ == "__main__":  # required with the 'spawn' start method (Windows/macOS)
+    process = multiprocessing.Process(target=worker)
+    process.start()
+    process.join()
 ```

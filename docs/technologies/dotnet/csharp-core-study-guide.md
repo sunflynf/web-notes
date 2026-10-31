@@ -9,6 +9,8 @@ tags:
   - backend
 ---
 
+> **Quick reference:** [C# / .NET Cheatsheet](./cheatsheet.mdx)
+
 ## Overview
 
 C# (pronounced *C-Sharp*) is a modern, object-oriented programming language developed by Microsoft. It is widely used for:
@@ -64,7 +66,14 @@ Official website: https://dotnet.microsoft.com/download
 Verify installation:
 
 ```bash
-dotnet --version
+dotnet --version     # SDK version in use
+dotnet --list-sdks   # all installed SDKs
+```
+
+Since C# 9 / .NET 5 you can skip the `Program` class entirely with **top-level statements** (the default in `dotnet new console`):
+
+```csharp
+Console.WriteLine("Hello, World!");
 ```
 
 ---

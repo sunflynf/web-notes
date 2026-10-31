@@ -1,0 +1,134 @@
+---
+title: Git Cheatsheet
+sidebar_label: Git Cheatsheet
+sidebar_position: 1
+description: One-page Git refresher - everyday commands, branching and undo patterns, gotchas and what changed in Git 2.55 and 2.56.
+---
+
+# Git Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Distributed version control system: every clone holds the full history as a graph of content-addressed commits |
+| Use it for | Tracking changes, branching and merging, code review via pull/merge requests, release tagging, CI triggers |
+| Latest stable | Git v2.56.0 (tagged 2026-09-27) - checked 2026-10-31 |
+| Official docs | [git-scm.com/docs](https://git-scm.com/docs) · [Pro Git book](https://git-scm.com/book/en/v2) · [Release notes](https://github.com/git/git/tree/master/Documentation/RelNotes) |
+
+## Core concepts
+
+- **Working tree / index (staging area) / repository**: edit files, `git add` to stage, `git commit` to record.
+- **Commit**: immutable snapshot + metadata + parent pointer(s), identified by a hash (SHA-1 today, SHA-256 optional).
+- **Branch**: a movable pointer to a commit; `HEAD` points to the branch (or commit) you have checked out.
+- **Remote / remote-tracking branch**: `origin/main` is your local read-only copy of the remote's `main`, updated by `fetch`.
+- **Merge vs rebase**: merge keeps history and adds a merge commit; rebase replays your commits on a new base (rewrites hashes).
+- **Tag**: fixed pointer to a commit; annotated tags (`-a`) carry author, date and message, use them for releases.
+- **Reflog**: local log of where `HEAD` and branches pointed; the safety net for "lost" commits.
+- **Stash**: shelf for uncommitted changes so you can switch context.
+
+## Syntax & commands
+
+```bash
+# setup
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+git config --global init.defaultBranch main
+git config --global pull.rebase true        # rebase instead of merge on pull
+
+# start
+git init
+git clone https://github.com/org/repo.git
+git clone --depth=1 --filter=blob:none URL   # fast shallow / partial clone
+```
+
+```bash
+# daily loop
+git status -sb
+git add -p                     # stage hunks interactively
+git commit -m "Add login form"
+git commit --amend --no-edit   # fold staged changes into last commit (local only)
+git fetch --prune
+git pull                       # fetch + merge/rebase
+git push -u origin feature/x   # first push sets upstream
+```
+
+```bash
+# branches
+git switch -c feature/x        # create + switch (newer than checkout -b)
+git switch main
+git branch -vv                 # branches + upstream + ahead/behind
+git branch -d feature/x        # delete merged branch (-D to force)
+git merge --no-ff feature/x
+git rebase main                # replay current branch onto main
+git rebase -i HEAD~3           # squash / reword / reorder last 3 commits
+git cherry-pick abc1234
+```
+
+```bash
+# inspect
+git log --oneline --graph --all
+git log -p -- path/to/file      # history of one file
+git diff                        # unstaged changes
+git diff --staged               # staged changes
+git blame -L 10,30 file.ts
+git show HEAD~1
+git bisect start; git bisect bad; git bisect good v1.2.0
+```
+
+```bash
+# undo
+git restore file.ts             # discard unstaged changes to a file
+git restore --staged file.ts    # unstage
+git reset --soft HEAD~1         # undo commit, keep changes staged
+git reset --hard origin/main    # DANGER: drop local commits + changes
+git revert abc1234              # new commit that undoes abc1234 (safe on shared branches)
+git reflog                      # find the hash, then: git reset --hard HEAD@{2}
+git stash push -m "wip"; git stash list; git stash pop
+```
+
+```bash
+# tags and remotes
+git tag -a v1.4.0 -m "Release 1.4.0"
+git push origin v1.4.0          # or --tags
+git remote -v
+git remote add upstream https://github.com/org/repo.git
+git push --force-with-lease     # safer than --force after a rebase
+```
+
+## Common patterns
+
+| Pattern | How |
+|---|---|
+| Feature branch + PR | `git switch -c feat/x` → commits → `git push -u origin feat/x` → open PR → squash or merge |
+| Keep branch up to date | `git fetch` then `git rebase origin/main` (private branch) or `git merge origin/main` (shared branch) |
+| Clean up before review | `git rebase -i origin/main`, use `fixup`/`squash`; `git commit --fixup abc123` + `git rebase -i --autosquash` |
+| Hotfix a release | branch from the tag (`git switch -c hotfix/1.4.1 v1.4.0`), fix, tag `v1.4.1`, merge or cherry-pick back to `main` |
+| Work on two branches at once | `git worktree add ../repo-hotfix hotfix/1.4.1` |
+| Find the commit that broke it | `git bisect start`, mark `bad`/`good`, or automate with `git bisect run npm test` |
+| Commit message | Imperative subject ≤ 50 chars (`Fix null check in parser`), blank line, body explains why |
+
+**Branching models**: trunk-based (short-lived branches, feature flags; best with CI/CD) vs Git Flow (`develop`, `release/*`, `hotfix/*`; heavier, suits versioned releases).
+
+## Gotchas
+
+- Never rebase, amend or force-push commits others already pulled; use `revert` on shared branches.
+- Prefer `--force-with-lease` over `--force`: it refuses if the remote moved since your last fetch.
+- `git reset --hard` and `git clean -fd` destroy uncommitted work; reflog only saves **committed** states.
+- `.gitignore` does not untrack files already committed: `git rm --cached file` first.
+- Secrets committed once stay in history; rotate the secret, then rewrite history (`git filter-repo`) if needed.
+- Line endings: set `core.autocrlf` (Windows `true`, macOS/Linux `input`) or use `.gitattributes` (`* text=auto`).
+- Detached `HEAD` (after checking out a tag or hash): create a branch before committing or the commits are easy to lose.
+- Large binaries bloat the repo forever; use Git LFS for them.
+
+## What's new in recent releases
+
+- **Git 2.56** (2026-09): `git add --resolved` stages only conflict-resolved paths (aborts if conflict markers remain); `git branch --delete-merged`; `git bisect --reset-when-found`; `git refs` gains `create`/`delete`/`update`/`rename`; experimental `git history drop`.
+- **Git 2.56**: `fetch.followRemoteHEAD` default setting, `includeIf` can match the worktree location, `git log --graph` indents root commits, typo advice for `git push origin/main`.
+- **Git 2.55** (2026-06): config-defined hooks can run in parallel; `git push` accepts a remote group name; `git log --graph` lane limit; fsmonitor daemon on Linux; new `git format-rev` and `git url-parse`; `git history fixup`.
+- **Git 2.55**: terminal control sequences from remote sideband output are disabled by default (only ANSI colors pass).
+- **Planned for Git 3.0** (see `BreakingChanges` doc): SHA-256 default for new repos, `reftable` ref storage default, default branch `main`, Rust required to build.
+
+## In these notes
+
+- [Version Control Tools](./version-control-tools.md) - GitHub vs GitLab vs Bitbucket vs Azure DevOps

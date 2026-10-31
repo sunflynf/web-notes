@@ -1,5 +1,5 @@
 ---
-description: Frontend / Fullstack Frameworks for SEO & SSR
+description: Vue 3 notes - project setup, Composition API, SFCs, Pinia, Vue Router, styling and testing.
 tags:
   - Frontend
   - JavaScript
@@ -9,19 +9,23 @@ tags:
 
 # Vue 3
 
+> **Quick reference:** [Vue Cheatsheet](./cheatsheet.mdx)
+
 ## Getting Started
 
 ### Install Vue
 ```bash
-# Using Vue CLI
-npm install -g @vue/cli
-vue create my-vue3-project
+# Recommended: official scaffold (create-vue, Vite-based)
+npm create vue@latest my-vue3-project
 
-# Using Vite
-npm create vite@latest my-vue3-project --template vue
+# Plain Vite template (note the extra `--` for npm 7+)
+npm create vite@latest my-vue3-project -- --template vue
+
+# Legacy: Vue CLI (webpack-based) is in maintenance mode - avoid for new projects
+# npm install -g @vue/cli && vue create my-vue3-project
 ```
 
-### 1.2 Project Structure
+### Project Structure
 Organize your files for scalability and maintainability:
 ```
 src/
@@ -193,8 +197,9 @@ div {
 ### CSS Frameworks
 Integrate Tailwind, Bootstrap, or any CSS framework:
 ```bash
-npm install tailwindcss
-npx tailwindcss init
+# Tailwind CSS v4 with Vite (no `tailwindcss init` / config file needed)
+npm install tailwindcss @tailwindcss/vite
+# then add tailwindcss() to vite.config plugins and `@import "tailwindcss";` in your CSS
 ```
 
 ## Performance Optimization
@@ -211,13 +216,13 @@ Use `shallowRef` and `shallowReactive` for less reactive overhead when deep reac
 ## Testing
 
 ### Unit Testing
-Use Jest or Vitest:
+Use Vitest (recommended for Vite projects) with Vue Test Utils:
 ```bash
-npm install --save-dev jest vue-jest
+npm install --save-dev vitest @vue/test-utils jsdom
 ```
 
 ### End-to-End Testing
-Use Cypress:
+Use Cypress or Playwright:
 ```bash
 npm install --save-dev cypress
 ```

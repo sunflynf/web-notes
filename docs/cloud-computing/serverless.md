@@ -1,4 +1,10 @@
+---
+description: Serverless and Function-as-a-Service - concepts, how to deploy, use cases, pros and cons
+---
+
 # Serverless
+
+> **Quick reference:** [Serverless Cheatsheet](./serverless-cheatsheet.mdx)
 
 ### What is Serverless?
 
@@ -11,8 +17,8 @@ The most common serverless service is **Function-as-a-Service (FaaS)**, where ap
 Examples of serverless platforms include:
 - **AWS Lambda** (by Amazon Web Services)
 - **Azure Functions** (by Microsoft Azure)
-- **Google Cloud Functions** (by Google Cloud)
-- **IBM Cloud Functions**
+- **Cloud Run functions** (by Google Cloud, formerly Google Cloud Functions)
+- **IBM Cloud Code Engine** (IBM Cloud Functions was retired in 2024)
 
 ### Key Concepts of Serverless:
 1. **Event-driven execution**: Functions are triggered by events such as HTTP requests, file changes, database updates, etc.
@@ -25,7 +31,7 @@ Examples of serverless platforms include:
 To use serverless technologies, follow these general steps:
 
 #### 1. **Choose a Cloud Provider**
-   - Select a cloud provider that offers serverless computing (e.g., AWS Lambda, Azure Functions, or Google Cloud Functions).
+   - Select a cloud provider that offers serverless computing (e.g., AWS Lambda, Azure Functions, or Google Cloud Run functions).
    
 #### 2. **Write Your Code**
    - Develop your application as a set of independent functions. Each function should have a specific task (e.g., processing an API request, transforming data).

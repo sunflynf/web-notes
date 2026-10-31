@@ -1,4 +1,19 @@
+---
+description: SQL command groups (DDL, DML, DCL, TCL) with examples of CTEs, window functions, pivots and transactions
+tags:
+  - SQL
+  - DBMS
+---
+
 # SQL Fundamentals
+
+> **Quick reference:** [SQL Cheatsheet](./sql-cheatsheet.mdx)
+
+:::note Dialects
+
+Examples mix dialects: partitioning below is MySQL syntax, two-phase commit is PostgreSQL, and dynamic SQL, `PIVOT` and the stored procedure are SQL Server (T-SQL). Check your database's docs before copying.
+
+:::
 
 ## Data Definition Language (DDL)
 
@@ -58,7 +73,7 @@ DDL commands are used to define and manage the structure of the database and its
       SaleID INT,
       SaleDate DATE,
       Amount DECIMAL(10, 2)
-  ) PARTITION BY RANGE (SaleDate) (
+  ) PARTITION BY RANGE COLUMNS (SaleDate) ( -- MySQL; PostgreSQL uses CREATE TABLE ... PARTITION OF
       PARTITION p0 VALUES LESS THAN ('2023-01-01'),
       PARTITION p1 VALUES LESS THAN ('2024-01-01')
   );
@@ -143,13 +158,13 @@ DCL commands are used to control access to data within the database.
 - **GRANT**: Gives users privileges to access the database.
 
   ```sql
-  GRANT SELECT, INSERT ON Employees TO 'username';
+  GRANT SELECT, INSERT ON Employees TO username; -- MySQL: 'username'@'host'
   ```
 
 - **REVOKE**: Removes user access privileges.
 
   ```sql
-  REVOKE SELECT, INSERT ON Employees FROM 'username';
+  REVOKE SELECT, INSERT ON Employees FROM username;
   ```
 
 ### Role-Based Access Control
@@ -159,7 +174,7 @@ DCL commands are used to control access to data within the database.
   ```sql
   CREATE ROLE Manager;
   GRANT SELECT, INSERT, UPDATE ON Employees TO Manager;
-  GRANT Manager TO 'username';
+  GRANT Manager TO username;
   ```
 
 ## Transaction Control Language (TCL)
@@ -183,6 +198,9 @@ TCL commands are used to manage transactions in the database to ensure data inte
 - **Two-Phase Commit**: A protocol used to ensure that distributed transactions (across multiple databases) are committed atomically.
 
   ```sql
+  -- PostgreSQL syntax (needs max_prepared_transactions > 0)
+  BEGIN;
+  -- ... statements ...
   -- Phase 1: Prepare
   PREPARE TRANSACTION 'tx1';
   -- Phase 2: Commit
@@ -206,7 +224,7 @@ TCL commands are used to manage transactions in the database to ensure data inte
 - **Dynamic SQL**: Allows for building and executing SQL statements dynamically at runtime.
 
 ```sql
--- Example of Dynamic SQL
+-- Example of Dynamic SQL (SQL Server / T-SQL; validate or QUOTENAME() identifiers to avoid SQL injection)
 DECLARE @sql NVARCHAR(MAX);
 SET @sql = 'SELECT * FROM ' + @tableName;
 EXEC sp_executesql @sql;
@@ -252,7 +270,7 @@ SELECT
     LastName,
     d.DepartmentName,
     Salary,
-    RANK() OVER (PARTITION BY DepartmentID ORDER BY Salary DESC) as SalaryRank
+    RANK() OVER (PARTITION BY e.DepartmentID ORDER BY Salary DESC) as SalaryRank
 FROM
     Employees e
 JOIN
@@ -264,6 +282,7 @@ JOIN
 Pivoting transforms data from rows to columns. This is useful for creating summary reports, such as converting quarterly sales data into a yearly summary with a column for each quarter.
 
 ```sql
+-- SQL Server / T-SQL syntax (portable alternative: SUM(CASE WHEN Quarter = 'Q1' THEN Sales END))
 -- Assumes a SalesData table with Year, Quarter, and Sales amount
 SELECT Year, [Q1], [Q2], [Q3], [Q4]
 FROM (
@@ -281,6 +300,7 @@ PIVOT (
 Stored procedures can encapsulate complex logic, and TCL commands ensure that operations are atomic (either all succeed or all fail). This example creates a procedure to transfer funds between two accounts, wrapping the logic in a transaction.
 
 ```sql
+-- SQL Server / T-SQL syntax
 CREATE PROCEDURE TransferFunds
     @FromAccount INT,
     @ToAccount INT,

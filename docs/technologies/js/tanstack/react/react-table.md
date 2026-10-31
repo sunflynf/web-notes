@@ -8,7 +8,9 @@ tags:
 
 # React Table
 
-> Current version: v8
+> **Quick reference:** [TanStack Cheatsheet](../cheatsheet.mdx)
+
+> These notes cover **v8** (`useReactTable`). The current major is **v9** (stable since 2026-08-04): `useReactTable` becomes `useTable`, and features and row models are registered explicitly with `tableFeatures()`. See the [TanStack Cheatsheet](../cheatsheet.mdx) and the [v9 migration guide](https://tanstack.com/table/latest/docs/framework/react/guide/migrating).
 
 ## Quick Start
 

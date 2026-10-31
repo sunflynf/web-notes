@@ -1,0 +1,137 @@
+---
+title: Node.js Cheatsheet
+sidebar_label: Node.js Cheatsheet
+sidebar_position: 1
+description: One-page refresher for the Node.js runtime, covering release lines, CLI flags, npm, core modules, ESM and CommonJS, and recent releases.
+tags:
+  - Environment
+  - JavaScript
+  - Cheatsheet
+---
+
+# Node.js Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | JavaScript runtime built on V8 with an event loop (libuv) for non-blocking I/O |
+| Use it for | HTTP APIs and servers, CLIs and build tooling, scripts, real-time apps (WebSocket), serverless functions |
+| Latest stable | v26.13.0 (released 2026-10-28), line 26 "Lithium" became Active LTS on 2026-10-28. Line 24 "Krypton" (v24.22.2) is now Maintenance LTS until 2028-04-30 - checked 2026-10-31 |
+| Official docs | [nodejs.org/docs](https://nodejs.org/docs/latest/api/) · [Releases](https://nodejs.org/en/about/previous-releases) · [Release schedule](https://github.com/nodejs/Release) |
+
+## Core concepts
+
+- **Event loop**: one JS thread runs callbacks. I/O is handed to libuv and the OS, so it never blocks the thread.
+- **Release lines**: even majors become **LTS** (Active, then Maintenance, about 30 months in total). Odd majors (up to 25) were short-lived "Current" lines. Use LTS in production.
+- **Modules**: ES modules (`.mjs` or `"type": "module"`) and CommonJS (`.cjs` / default). `require()` of synchronous ESM works on 20.19+ / 22.12+.
+- **Streams**: process data in chunks (`Readable`, `Writable`, `Transform`). Use `pipeline()` to get error handling and cleanup.
+- **EventEmitter**: the pub/sub base class behind streams, servers and sockets.
+- **Worker threads**: real threads for CPU-heavy work. `cluster` / multiple processes scale an HTTP server across cores.
+- **Web-standard globals**: `fetch`, `Request`/`Response`, `URL`, `AbortController`, `structuredClone`, `WebSocket`, `crypto.randomUUID()`.
+- **`node:` prefix**: import core modules as `node:fs`, `node:path` to make it clear they are built in.
+
+## Syntax & commands
+
+```bash
+node app.js                    # run a script
+node app.ts                    # run TypeScript directly (type stripping, 22.18+ / 23.6+)
+node --watch app.js            # restart on file change
+node --env-file=.env app.js    # load env vars without dotenv
+node --run dev                 # run a package.json script (faster than npm run)
+node --test                    # built-in test runner
+node --inspect app.js          # debugger (chrome://inspect)
+node --permission --allow-fs-read=./data app.js  # permission model
+```
+
+```bash
+npm init -y
+npm i express            # dependency
+npm i -D typescript      # dev dependency
+npm ci                   # clean install from lockfile (CI)
+npm outdated && npm update
+npm run build            # run a script
+npx some-cli             # run a package binary
+npm ls pkg               # why is this installed?
+corepack enable          # yarn/pnpm shims (no longer bundled from Node.js 25, install with npm i -g corepack)
+```
+
+```js
+// Files and paths (ESM)
+import { readFile, writeFile, mkdir } from "node:fs/promises";
+import path from "node:path";
+
+const file = path.join(import.meta.dirname, "data", "users.json");
+const users = JSON.parse(await readFile(file, "utf8"));
+await mkdir("out", { recursive: true });
+await writeFile("out/count.txt", String(users.length));
+```
+
+```js
+// Minimal HTTP server
+import { createServer } from "node:http";
+
+createServer((req, res) => {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  res.writeHead(200, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ path: url.pathname, q: url.searchParams.get("q") }));
+}).listen(3000);
+```
+
+## Common patterns
+
+| Need | Use |
+|---|---|
+| Config from env | `process.env.PORT ?? 3000` plus `--env-file` or `process.loadEnvFile()` |
+| CLI arguments | `import { parseArgs } from "node:util"` |
+| Run a shell command | `execFile` / `spawn` from `node:child_process` (avoid `exec` with user input) |
+| Promise-based timers | `import { setTimeout as sleep } from "node:timers/promises"` |
+| Hashing / ids | `createHash("sha256")`, `crypto.randomUUID()` |
+| Embedded DB | `import { DatabaseSync } from "node:sqlite"` |
+| Graceful shutdown | listen for `SIGTERM`, call `server.close()`, then close DB pools |
+| Colored output | `util.styleText("green", "ok")` |
+
+```js
+// Stream a file through gzip with proper error handling
+import { pipeline } from "node:stream/promises";
+import { createReadStream, createWriteStream } from "node:fs";
+import { createGzip } from "node:zlib";
+
+await pipeline(createReadStream("big.log"), createGzip(), createWriteStream("big.log.gz"));
+```
+
+```js
+// Built-in test runner
+import { test, describe, mock } from "node:test";
+import assert from "node:assert/strict";
+
+describe("math", () => {
+  test("adds", () => assert.equal(1 + 1, 2));
+});
+```
+
+## Gotchas
+
+- Blocking the event loop (big `JSON.parse`, sync crypto, `fs.*Sync` in request handlers) stalls every request.
+- `__dirname` and `__filename` do not exist in ESM. Use `import.meta.dirname` / `import.meta.filename`.
+- In ESM, relative imports need the file extension: `import "./util.js"`.
+- Unhandled promise rejections crash the process (default since Node.js 15). Always `await` or `.catch()`.
+- `url.parse()` is deprecated. Use the WHATWG `new URL()` API.
+- Odd release lines up to 25 were never LTS, and line 20 reached end of life in April 2026. Pin the version with `.nvmrc` / `engines`.
+- Type stripping only removes types: `enum`, `namespace` and parameter properties need `--experimental-transform-types`, and that flag is removed in 26. Use `tsc` or a bundler for those.
+- `process.exit()` can cut off pending writes. Prefer setting `process.exitCode`.
+
+## What's new in recent releases
+
+- **26.x** (2026-05, LTS since 2026-10-28): `Temporal` enabled by default, V8 14.6 (`Map.prototype.getOrInsert`, `Iterator.concat`), Undici 8. Removed `http.Server.prototype.writeHeader()`, the legacy `_stream_*` modules and `--experimental-transform-types`. `module.register()` is runtime-deprecated.
+- **New release schedule**: from Node.js 27 there is one major a year, and every major becomes LTS. 27 has an alpha channel (first alpha 2026-10), with 27.0.0 scheduled for 2027-04.
+- **25.x** (2025-10, never LTS): V8 14.1, Web Storage (`localStorage`) on by default, `--allow-net` in the permission model, corepack no longer bundled, `fs.F_OK`-style constants removed (use `fs.constants`).
+- **24.x** (2025): npm 11, `URLPattern` global, `AsyncLocalStorage` on `AsyncContextFrame`, `--experimental-permission` renamed to `--permission`, Undici 7, V8 13.6 (`Float16Array`, `RegExp.escape`, `Error.isError`).
+- **22.18 / 23.6+**: type stripping on by default (`node file.ts`).
+
+## In these notes
+
+- [Node.js notes (modules, core modules, HTTP, streams, threads)](./nodejs.md)
+- [JavaScript Cheatsheet](../cheatsheet.mdx) · [TypeScript Cheatsheet](../ts-cheatsheet.mdx)
+- [Testing Cheatsheet](../testing/cheatsheet.mdx) · [Node.js ORM Cheatsheet](../api/orm/cheatsheet.mdx)
+- [Axios](../api/axios.mdx) · [Socket.IO](../api/socket-io.mdx) · [Knex.js](../api/query-builder/knexjs.md) · [node-postgres](../api/query-builder/node-postgres.md)

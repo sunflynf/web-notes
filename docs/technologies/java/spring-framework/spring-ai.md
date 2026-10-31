@@ -28,10 +28,11 @@ Spring AI simplifies AI integration by providing:
 ```xml title="pom.xml"
 <dependency>
     <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
-    <version>1.x.x</version>
+    <artifactId>spring-ai-starter-model-openai</artifactId>
 </dependency>
 ```
+
+Manage the version with the `spring-ai-bom` in `dependencyManagement`. Since Spring AI 1.0 GA, starters are named `spring-ai-starter-model-*` (the old `spring-ai-*-spring-boot-starter` names were milestone-only).
 
 ### Configuration
 
@@ -340,11 +341,11 @@ Spring AI supports multiple LLM providers:
 
 | Provider | Artifact ID |
 |----------|-------------|
-| OpenAI | spring-ai-openai-spring-boot-starter |
-| Anthropic | spring-ai-anthropic-spring-boot-starter |
-| Google | spring-ai-google-generativeai-spring-boot-starter |
-| Azure | spring-ai-azure-openai-spring-boot-starter |
-| Ollama | spring-ai-ollama-spring-boot-starter |
+| OpenAI | spring-ai-starter-model-openai |
+| Anthropic | spring-ai-starter-model-anthropic |
+| Google (Vertex AI Gemini) | spring-ai-starter-model-vertex-ai-gemini |
+| Azure | spring-ai-starter-model-azure-openai |
+| Ollama | spring-ai-starter-model-ollama |
 
 ## Related Spring Projects
 

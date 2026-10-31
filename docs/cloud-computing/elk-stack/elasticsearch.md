@@ -1,3 +1,7 @@
+---
+description: Elasticsearch local setup, index design, mappings, indexing and query patterns for developers
+---
+
 # Elasticsearch Integration Guide
 
 Elasticsearch is the storage and query engine in the ELK stack. Developers integrate with it by sending JSON documents, defining index mappings, and querying data through REST APIs or official client libraries.
@@ -11,6 +15,8 @@ Elasticsearch is the storage and query engine in the ELK stack. Developers integ
 
 ## Local Setup
 
+Keep Elasticsearch, Logstash and Kibana on the same version (9.5.5 is the latest 9.x patch as of 2026-10). Disabling security is for local development only.
+
 Use Docker for repeatable development:
 
 ```bash
@@ -18,7 +24,7 @@ docker network create elk
 docker run --name elasticsearch --net elk -p 9200:9200 \
   -e discovery.type=single-node \
   -e xpack.security.enabled=false \
-  docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+  docker.elastic.co/elasticsearch/elasticsearch:9.5.5
 ```
 
 Check the node:

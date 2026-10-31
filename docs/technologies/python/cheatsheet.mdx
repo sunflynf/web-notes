@@ -1,0 +1,145 @@
+---
+title: Python Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page Python refresher - tooling, syntax, collections, classes, typing, async and Python 3.14/3.15 features.
+---
+
+# Python Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Dynamically typed, interpreted general-purpose language with a huge standard library |
+| Use it for | Scripting and automation, web back ends (Django, FastAPI, Flask), data/ML, CLIs |
+| Latest stable | 3.15.2 (released 2026-10-25) - checked 2026-10-31 |
+| Official docs | [docs.python.org/3](https://docs.python.org/3/) |
+
+## Core concepts
+
+- **Everything is an object**; names are references, and assignment never copies.
+- **Mutable vs immutable**: `list`, `dict`, `set` mutate in place; `str`, `tuple`, `int`, `frozenset` do not.
+- **Indentation is syntax**; blocks start after `:`.
+- **Duck typing + type hints**: hints are not enforced at runtime; check them with mypy/pyright.
+- **Iterables, iterators, generators**: `yield` produces values lazily.
+- **Context managers** (`with`) guarantee cleanup.
+- **Virtual environments** isolate dependencies per project (`venv`, `uv`, Poetry).
+- **GIL**: one thread runs Python bytecode at a time in the default build; the free-threaded build removes it.
+- **asyncio**: single-threaded concurrency for I/O with `async`/`await`.
+
+## Syntax & commands
+
+```bash
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python -m pip install --upgrade pip
+uv init && uv add httpx && uv run main.py           # fast all-in-one tool (Astral)
+python -m pytest -q
+python -m http.server 8000
+```
+
+```python
+name = "Ada"
+print(f"Hi {name!r}, {3.14159:.2f}")       # f-strings
+nums = [1, 2, 3]
+squares = [n * n for n in nums if n > 1]    # list comprehension
+lookup = {n: n * n for n in nums}           # dict comprehension
+first, *rest = nums                          # unpacking
+nums[::-1]                                   # reversed copy
+value = lookup.get(9, 0)                     # default on missing key
+for i, n in enumerate(nums, start=1): ...
+for a, b in zip(nums, nums[1:], strict=True): ...
+```
+
+```python
+def greet(name: str, *, loud: bool = False) -> str:   # keyword-only after *
+    msg = f"Hello {name}"
+    return msg.upper() if loud else msg
+
+match command.split():
+    case ["go", direction]:
+        move(direction)
+    case ["quit" | "exit"]:
+        stop()
+    case _:
+        print("unknown")
+```
+
+| Collection | Literal | Ordered | Mutable | Notes |
+|---|---|---|---|---|
+| list | `[1, 2]` | yes | yes | O(1) append, O(n) insert at front |
+| tuple | `(1, 2)` | yes | no | hashable if items are |
+| dict | `{"a": 1}` | insertion | yes | keys must be hashable |
+| set | `{1, 2}` | no | yes | `set()` for empty |
+| deque | `deque()` | yes | yes | O(1) both ends (`collections`) |
+
+## Common patterns
+
+```python
+from dataclasses import dataclass, field
+
+@dataclass(slots=True)
+class User:
+    id: int
+    name: str
+    tags: list[str] = field(default_factory=list)   # never use a mutable default
+```
+
+```python
+from pathlib import Path
+import json
+
+data = json.loads(Path("config.json").read_text(encoding="utf-8"))
+Path("out.txt").write_text("done\n", encoding="utf-8")
+```
+
+```python
+import asyncio, httpx
+
+async def fetch_all(urls: list[str]) -> list[int]:
+    async with httpx.AsyncClient() as client:
+        async with asyncio.TaskGroup() as tg:               # 3.11+
+            tasks = [tg.create_task(client.get(u)) for u in urls]
+    return [t.result().status_code for t in tasks]
+
+asyncio.run(fetch_all(["https://example.com"]))
+```
+
+```python
+# Script entry point + logging
+import logging
+log = logging.getLogger(__name__)
+
+def main() -> None:
+    logging.basicConfig(level=logging.INFO)
+    log.info("started")
+
+if __name__ == "__main__":
+    main()
+```
+
+## Gotchas
+
+- **Mutable default arguments** (`def f(x=[])`) are shared across calls; use `None` and create inside.
+- **`is` vs `==`**: `is` checks identity; use it only for `None`, `True`, `False`.
+- **Shallow copies**: `list(a)` / `a.copy()` copy one level; use `copy.deepcopy` for nested data.
+- **Late-binding closures**: lambdas in a loop see the last loop value; bind with a default arg.
+- **Integer division**: `/` always returns float, `//` floors (also for negatives: `-7 // 2 == -4`).
+- **Modifying a list while iterating** skips items; iterate over a copy or build a new list.
+- **Blocking calls inside `async def`** freeze the event loop; use async libraries or `asyncio.to_thread`.
+- **Global `pip install`** into the system Python; always use a virtual environment.
+
+## What's new in recent releases
+
+- **Python 3.15** (2026-10-09): explicit lazy imports with the `lazy` keyword (PEP 810), `frozendict` built-in (PEP 814), UTF-8 is the default encoding (PEP 686), unpacking in comprehensions (`[*it for it in its]`), new `profiling` package with the Tachyon sampling profiler (PEP 799), stable ABI for free-threaded builds.
+- **Python 3.14** (2025-10-07): template strings / t-strings (PEP 750), deferred evaluation of annotations (PEP 649), free-threaded build officially supported (PEP 779), multiple interpreters in the stdlib (`concurrent.interpreters`), `compression.zstd`, `except A, B:` without parentheses (PEP 758).
+- Each minor gets about 2 years of bug fixes and 5 years total of security support.
+
+## In these notes
+
+- [Python language notes](./index.mdx)
+- [Python frameworks comparison](./frameworks/index.md)
+- [Django](./frameworks/django.md) and [Django Cheatsheet](./frameworks/django-cheatsheet.mdx)
+- [FastAPI](./frameworks/fastapi.md) and [FastAPI Cheatsheet](./frameworks/fastapi-cheatsheet.mdx)
+- [Flask](./frameworks/flask.md)

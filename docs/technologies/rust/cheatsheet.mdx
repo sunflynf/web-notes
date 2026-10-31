@@ -1,0 +1,155 @@
+---
+title: Rust Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: Rust at a glance - ownership, borrowing, traits, Result and ?, cargo, tokio and recent releases
+---
+
+# Rust Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Compiled, memory-safe systems language with no garbage collector |
+| Use it for | CLI tools, fast network services, embedded, WebAssembly, replacing unsafe C/C++ |
+| Latest stable | v1.99.1 (released 2026-10-15) - checked 2026-10-31 |
+| Edition | Rust 2024 (stable since 1.85.0, 2025-02-20) |
+| Async runtime | tokio v1.54.1 (released 2026-10-21) - checked 2026-10-31 |
+| Official docs | [doc.rust-lang.org](https://doc.rust-lang.org/) - [The Book](https://doc.rust-lang.org/book/) - [std](https://doc.rust-lang.org/std/) |
+
+## Core concepts
+
+- **Ownership**: each value has one owner; dropped when the owner leaves scope
+- **Move vs Copy**: heap types (`String`, `Vec<T>`) move on assignment; `Copy` types (ints, `bool`) are copied
+- **Borrowing**: many `&T` or exactly one `&mut T` at a time
+- **Lifetimes**: `'a` annotations tell the compiler how long references live; mostly inferred
+- **Traits**: shared behavior; generics (`impl Trait`, static) or trait objects (`dyn Trait`, dynamic)
+- **Enums + match**: sum types with data; `match` must be exhaustive
+- **No null, no exceptions**: `Option<T>` for absence, `Result<T, E>` + `?` for errors, `panic!` for bugs
+- **Cargo**: build, deps, test, docs, publish in one tool; packages are crates
+- **Editions**: per-crate opt-in language changes (`2015`, `2018`, `2021`, `2024`)
+- **Async**: `async`/`await` in the language, runtime (tokio) from a crate
+
+## Syntax & commands
+
+```bash
+rustup update                 # update toolchain
+rustup default stable
+rustc --version
+cargo new app && cd app       # --lib for a library
+cargo add serde -F derive     # add a dependency
+cargo run                     # debug build + run
+cargo build --release
+cargo test                    # unit + integration + doc tests
+cargo fmt && cargo clippy -- -D warnings
+cargo doc --open
+```
+
+```rust
+let x = 5;                      // immutable
+let mut y = 10;                 // mutable
+const MAX: u32 = 100;
+let s: String = "hi".to_string();
+let v: Vec<i32> = vec![1, 2, 3];
+let t = (1, "a");               // tuple
+
+fn add(a: i32, b: i32) -> i32 { a + b }  // last expression is returned
+
+struct User { name: String, age: u8 }
+impl User {
+    fn new(name: &str) -> Self { Self { name: name.into(), age: 0 } }
+    fn greet(&self) -> String { format!("Hi {}", self.name) }
+}
+
+enum Shape { Circle(f64), Rect { w: f64, h: f64 } }
+let area = match shape {
+    Shape::Circle(r) => 3.14 * r * r,
+    Shape::Rect { w, h } => w * h,
+};
+
+for (i, n) in v.iter().enumerate() { println!("{i}: {n}"); }
+let doubled: Vec<i32> = v.iter().map(|n| n * 2).filter(|n| *n > 2).collect();
+```
+
+| Type | Use |
+|---|---|
+| `String` / `&str` | owned / borrowed text |
+| `Vec<T>` / `&[T]` | owned / borrowed list |
+| `HashMap<K, V>` | key-value map (`std::collections`) |
+| `Box<T>` | heap allocation, recursive types, `dyn Trait` |
+| `Rc<T>` / `Arc<T>` | shared ownership (single thread / threads) |
+| `RefCell<T>` / `Mutex<T>` | interior mutability (single thread / threads) |
+
+## Common patterns
+
+```rust
+// Error propagation with ?
+fn read_port(path: &str) -> Result<u16, Box<dyn std::error::Error>> {
+    let text = std::fs::read_to_string(path)?;
+    Ok(text.trim().parse()?)
+}
+
+// Option handling
+let name = user.nickname.as_deref().unwrap_or("anon");
+let Some(cfg) = load() else { return; };          // let-else
+if let Some(x) = opt && x > 0 { /* ... */ }       // let chains (2024 edition)
+
+// Builder-ish defaults
+#[derive(Debug, Default, Clone)]
+struct Config { port: u16, verbose: bool }
+let c = Config { port: 8080, ..Default::default() };
+
+// Conversions
+impl From<std::io::Error> for MyError { fn from(e: std::io::Error) -> Self { MyError::Io(e) } }
+```
+
+```rust
+// tokio
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let (a, b) = tokio::join!(task_a(), task_b());   // concurrent
+    let h = tokio::spawn(async move { work().await }); // background task
+    h.await?;
+    Ok(())
+}
+```
+
+```toml
+[package]
+name = "app"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+anyhow = "1"
+
+[profile.release]
+lto = true
+```
+
+## Gotchas
+
+- **Use after move**: `let b = a;` then using `a` fails for non-`Copy` types; `.clone()` or borrow `&a`
+- **Borrow conflicts**: cannot hold `&v[0]` while calling `v.push(...)`; shorten the borrow's scope
+- **`String` vs `&str`**: take `&str` in params, return `String` when you create new text
+- **Integer overflow** panics in debug, wraps in release; use `checked_add`, `wrapping_add`, `saturating_add`
+- **`.unwrap()`** panics on `None`/`Err`; prefer `?`, `match`, or `.expect("why")`
+- **Blocking in async** stalls the tokio worker; use `tokio::task::spawn_blocking` or async APIs
+- **`tokio::spawn`** needs `'static + Send` futures: move owned data in (`async move`), share with `Arc`
+- **Holding a `std::sync::Mutex` guard across `.await`** is a bug magnet; drop it first or use `tokio::sync::Mutex`
+- **Compile times**: split into a workspace, keep generics in check, `cargo check` for fast feedback
+
+## What's new in recent releases
+
+- **1.99.1 (2026-10-15)**: point fixes, including a miscompilation of FFI `bool` return values on x86_64
+- **1.99.0 (2026-10-01)**: C-variadic function definitions stabilized; `Vec::into_parts` / `Vec::from_parts`, `String::from_utf8_lossy_owned`, `std::fs::set_times`; new Cargo `debug` profile; Cargo disables incremental builds in CI; legacy integer modules like `std::i32::MAX` fully deprecated (use `i32::MAX`); LLVM 23
+- **1.98.0 (2026-08-20)**: `str::substr_range`, `bool::ok_or` / `ok_or_else`, `String::from_utf16le` / `from_utf16be`, `std::range::legacy`; new lints for runtime symbol definitions (`memcmp`, `memset`, ...)
+- **Rust 2024 edition (1.85.0, 2025-02-20)**: async closures, `if let` temporary scope changes, `extern` blocks must be written `unsafe extern`; let chains followed in 1.88.0
+- Full notes: [RELEASES.md](https://github.com/rust-lang/rust/blob/main/RELEASES.md) and [blog.rust-lang.org/releases](https://blog.rust-lang.org/releases/)
+
+## In these notes
+
+- [Rust overview](./index.mdx) - ownership, borrowing, lifetimes, traits, enums, errors, cargo, tokio, when to choose Rust

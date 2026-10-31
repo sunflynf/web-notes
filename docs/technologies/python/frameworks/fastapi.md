@@ -1,6 +1,12 @@
+---
+description: FastAPI basics - setup, endpoints, Pydantic models, dependency injection, background tasks, middleware and SQLAlchemy integration.
+---
+
 # FastAPI
 
-FastAPI is a modern, fast (high-performance), web framework for building APIs with Python 3.7+ based on standard Python type hints. It is designed to be easy to use and highly performant.
+> **Quick reference:** [FastAPI Cheatsheet](./fastapi-cheatsheet.mdx)
+
+FastAPI is a modern, fast (high-performance), web framework for building APIs with Python 3.10+ based on standard Python type hints. It is designed to be easy to use and highly performant.
 
 ## Setting Up Your Environment
 
@@ -9,7 +15,8 @@ FastAPI is a modern, fast (high-performance), web framework for building APIs wi
 You can install FastAPI and Uvicorn (an ASGI server) using pip:
 
 ```bash
-pip install fastapi uvicorn
+pip install "fastapi[standard]"   # FastAPI + Uvicorn + the `fastapi` CLI
+# minimal: pip install fastapi uvicorn
 ```
 
 ### Create a Virtual Environment (Optional but Recommended)
@@ -43,7 +50,8 @@ def read_root():
 ### Run the Development Server
 
 ```bash
-uvicorn main:app --reload
+fastapi dev main.py          # dev server with auto-reload
+# or: uvicorn main:app --reload
 ```
 
 Visit `http://127.0.0.1:8000/` to see the default FastAPI welcome message.
@@ -54,7 +62,7 @@ Visit `http://127.0.0.1:8000/` to see the default FastAPI welcome message.
 
 ```py
 @app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = None):
+def read_item(item_id: int, q: str | None = None):
     return {"item_id": item_id, "q": q}
 ```
 
@@ -75,9 +83,9 @@ from pydantic import BaseModel
 
 class Item(BaseModel):
     name: str
-    description: str = None
+    description: str | None = None
     price: float
-    tax: float = None
+    tax: float | None = None
 ```
 
 ### Use the Model in an Endpoint
@@ -93,7 +101,9 @@ def create_item(item: Item):
 ### Create a Dependency
 
 ```py
-def common_parameters(q: str = None, skip: int = 0, limit: int = 10):
+from fastapi import Depends
+
+def common_parameters(q: str | None = None, skip: int = 0, limit: int = 10):
     return {"q": q, "skip": skip, "limit": limit}
 ```
 
@@ -155,15 +165,14 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 ### Install SQLAlchemy and Databases
 
 ```bash
-pip install sqlalchemy databases
+pip install sqlalchemy
 ```
 
 ### Configure the Database
 
 ```py
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker  # SQLAlchemy 2.x location
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
@@ -216,6 +225,8 @@ def get_db():
     finally:
         db.close()
 
+# Note: in a real app keep separate names for the Pydantic schema (request/response_model)
+# and the SQLAlchemy model; both are called `Item` here for brevity.
 @app.post("/items/", response_model=Item)
 def create_item_for_user(item: Item, db: Session = Depends(get_db)):
     return create_item(db=db, item=item)

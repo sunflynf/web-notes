@@ -1,0 +1,162 @@
+---
+title: HTML Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: HTML at a glance - document skeleton, semantic elements, forms, media, accessibility and recently Baseline features
+---
+
+# HTML Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | The markup language that describes the structure and meaning of web pages |
+| Use it for | Page structure, semantics for accessibility/SEO, forms, embedding media |
+| Latest stable | HTML Living Standard (WHATWG), continuously updated - checked 2026-10-31 |
+| Versioning | No version numbers: "HTML5" is a marketing term; W3C HTML 5.x snapshots are retired in favor of the WHATWG Living Standard |
+| Official docs | [html.spec.whatwg.org](https://html.spec.whatwg.org/) - [MDN HTML reference](https://developer.mozilla.org/en-US/docs/Web/HTML) - [Baseline status](https://web.dev/baseline) |
+
+## Core concepts
+
+- **Element**: start tag + content + end tag, e.g. `<p>text</p>`; void elements (`<img>`, `<input>`, `<br>`, `<meta>`) have no end tag
+- **Attribute**: name/value pairs on the start tag (`id`, `class`, `lang`, `hidden`, `data-*`)
+- **DOM**: the browser parses HTML into a tree of nodes that CSS styles and JS manipulates
+- **Semantics**: pick elements by meaning (`<nav>`, `<button>`), not looks; styling belongs in CSS
+- **Content categories**: flow, phrasing, interactive... decide which elements may nest inside which
+- **Accessibility tree**: built from semantics + ARIA; native elements come with roles, focus and keyboard support for free
+- **Forms**: `<form>` collects named controls and submits them; built-in constraint validation
+- **Baseline**: the web-features label for "works in all major browsers" (newly vs widely available)
+
+## Syntax & commands
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Page title</title>
+    <meta name="description" content="One-line summary for search results" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/app.js"></script> <!-- modules are deferred by default -->
+  </head>
+  <body>
+    <header><nav aria-label="Main">...</nav></header>
+    <main>
+      <article>
+        <h1>Title</h1>
+        <section><h2>Part</h2><p>Text</p></section>
+      </article>
+      <aside>Related</aside>
+    </main>
+    <footer>&copy; 2026</footer>
+  </body>
+</html>
+```
+
+| Need | Element |
+|---|---|
+| Headings / text | `h1`-`h6`, `p`, `strong`, `em`, `mark`, `code`, `pre`, `blockquote`, `abbr`, `time` |
+| Links / lists | `a href`, `ul`/`ol` + `li`, `dl` + `dt`/`dd` |
+| Page regions | `header`, `nav`, `main` (one per page), `article`, `section`, `aside`, `footer` |
+| Tables | `table`, `caption`, `thead`/`tbody`, `tr`, `th scope`, `td` |
+| Interactive | `button`, `details` + `summary`, `dialog`, `[popover]` |
+| Media | `img`, `picture` + `source`, `video`, `audio`, `track`, `iframe`, `svg`, `canvas` |
+
+```html
+<form action="/signup" method="post">
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" required autocomplete="email" />
+
+  <label>Age <input name="age" type="number" min="18" max="120" /></label>
+
+  <select name="plan">
+    <option value="free" selected>Free</option>
+    <option value="pro">Pro</option>
+  </select>
+
+  <fieldset>
+    <legend>Contact by</legend>
+    <label><input type="radio" name="contact" value="mail" checked /> Mail</label>
+    <label><input type="radio" name="contact" value="phone" /> Phone</label>
+  </fieldset>
+
+  <textarea name="note" rows="3" maxlength="500"></textarea>
+  <button type="submit">Sign up</button>
+</form>
+```
+
+```html
+<!-- Responsive image: browser picks the best file -->
+<img
+  src="photo-800.jpg"
+  srcset="photo-400.jpg 400w, photo-800.jpg 800w, photo-1600.jpg 1600w"
+  sizes="(max-width: 600px) 100vw, 50vw"
+  width="800" height="600"
+  alt="Describe the image"
+  loading="lazy" decoding="async"
+/>
+
+<video controls preload="metadata" poster="poster.jpg">
+  <source src="clip.webm" type="video/webm" />
+  <source src="clip.mp4" type="video/mp4" />
+  <track kind="captions" src="captions.vtt" srclang="en" label="English" />
+</video>
+```
+
+## Common patterns
+
+```html
+<!-- Popover: no JS needed -->
+<button popovertarget="menu">Menu</button>
+<div id="menu" popover>Menu content</div>
+
+<!-- Modal dialog via invoker commands -->
+<button commandfor="confirm" command="show-modal">Delete</button>
+<dialog id="confirm">
+  <p>Are you sure?</p>
+  <button commandfor="confirm" command="close">Cancel</button>
+</dialog>
+
+<!-- Exclusive accordion: only one open per name group -->
+<details name="faq" open><summary>Question 1</summary>Answer 1</details>
+<details name="faq"><summary>Question 2</summary>Answer 2</details>
+
+<!-- Collapsed content still found by Ctrl+F -->
+<div hidden="until-found">Long section...</div>
+```
+
+- **Skip link**: first focusable element `<a href="#main" class="skip">Skip to content</a>`
+- **Icon-only button**: `<button aria-label="Close">×</button>`
+- **External link**: `<a href="..." target="_blank" rel="noopener">` (modern browsers imply `noopener`, explicit is fine)
+- **Custom data for JS**: `data-user-id="42"` -> `el.dataset.userId`
+- **Preload critical assets**: `<link rel="preload" href="font.woff2" as="font" type="font/woff2" crossorigin>`
+- **Social cards**: `<meta property="og:title" ...>`, `og:image`, `twitter:card`
+
+## Gotchas
+
+- `<button>` inside a `<form>` defaults to `type="submit"`; set `type="button"` for non-submit buttons
+- Always give `<img>` an `alt` (empty `alt=""` for decorative images) and `width`/`height` to avoid layout shift
+- `<label>` must point to a control (`for` = control `id`, or wrap it) or the input has no accessible name
+- Use one `<h1>`-led heading outline and do not skip levels for styling; the "document outline algorithm" was never implemented and is removed from the spec
+- Prefer native elements over `div` + ARIA ("no ARIA is better than bad ARIA")
+- Boolean attributes are on when present: `disabled="false"` still disables
+- `<p>` cannot contain block elements; the parser closes it early (e.g. a `<div>` inside a `<p>`)
+- Classic `<script>` in `<head>` blocks parsing; use `defer` or `type="module"`
+- Self-closing slash (`<br />`) is allowed but ignored on void elements and meaningless on others (`<div />` is not closed)
+
+## What's new in recent releases
+
+The Living Standard has no releases; track features by Baseline status instead.
+
+- **Invoker commands** (`commandfor` + `command` on `<button>`): open/close dialogs and popovers declaratively; Baseline newly available since December 2025 ([MDN](https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API))
+- **`hidden="until-found"`**: collapsed content that find-in-page can reveal (fires `beforematch`); Baseline with Safari 26.2 in December 2025 ([web.dev](https://web.dev/blog/web-platform-12-2025))
+- **Popover API** (`popover`, `popovertarget`): top-layer popups with light dismiss, no JS; Baseline since 2024
+- **Exclusive accordions** (`<details name="...">`): grouped details where only one stays open; Baseline since 2024
+- **Customizable `<select>`** (`appearance: base-select`): shipping in Chrome and Safari 27, not Baseline yet - use with a fallback
+
+## In these notes
+
+- [HTML overview: basics, forms, graphics, media](./index.mdx)
+- [CSS Cheatsheet](../styles/css/cheatsheet.mdx)

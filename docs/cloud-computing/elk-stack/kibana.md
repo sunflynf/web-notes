@@ -1,3 +1,7 @@
+---
+description: Kibana setup, data views, KQL queries, dashboards and troubleshooting for Elasticsearch data
+---
+
 # Kibana Integration Guide
 
 Kibana is the exploration and visualization layer for Elasticsearch data. Developers use it to validate ingestion, inspect logs, create dashboards, and troubleshoot application behavior.
@@ -9,7 +13,7 @@ Run Kibana on the same Docker network as Elasticsearch:
 ```bash
 docker run --rm --name kibana --net elk -p 5601:5601 \
   -e ELASTICSEARCH_HOSTS=http://elasticsearch:9200 \
-  docker.elastic.co/kibana/kibana:8.15.0
+  docker.elastic.co/kibana/kibana:9.5.5
 ```
 
 Open `http://localhost:5601` and create a data view that matches your indices, for example:

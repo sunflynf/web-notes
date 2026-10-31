@@ -1,5 +1,5 @@
 ---
-description: Backend Frameworks in JavaScript ecosystem.
+description: NestJS notes - modules, controllers, providers, middleware, guards, interceptors, pipes, popular packages and the Nest CLI.
 tags:
   - Backend
   - JavaScript
@@ -9,6 +9,8 @@ tags:
 ---
 
 # NestJS
+
+> **Quick reference:** [NestJS Cheatsheet](./cheatsheet.mdx)
 
 ## 1. Core Concepts
 
@@ -151,7 +153,7 @@ export class CatsController {
 
 | Feature Group               | Package                                                                          | Use For                                                                                           |
 | --------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| Validation & Transformation | [class-validator](https://github.com/typestack/class-validator)                  | Decorator-based validation for DTOs, works with `ValidationPipe` to ensure request data integrity |
+| Validation & Transformation | [class-validator](https://github.com/typestack/class-validator)                  | Decorator-based validation for DTOs, works with `ValidationPipe` to ensure request data integrity (v12 also ships `StandardSchemaValidationPipe` for Zod/Valibot) |
 |                             | [class-transformer](https://github.com/typestack/class-transformer)              | Transform and serialize objects, often used with `class-validator` for DTOs                       |
 | Authentication & Security   | [@nestjs/passport](https://docs.nestjs.com/security/authentication)              | Integrate Passport strategies for authentication (JWT, OAuth2, local, etc.)                       |
 |                             | [passport-jwt](https://github.com/mikenicholson/passport-jwt)                    | JWT authentication strategy for Passport (used with `@nestjs/passport`)                           |
@@ -283,8 +285,11 @@ graph TD
 ## Nest CLI
 
 ```bash
-# Project Initialization
+# Project Initialization (v12 asks CommonJS or ESM; ESM projects use Vitest, CJS use Jest)
 nest new <project-name>
+
+# Upgrade every @nestjs/* package to the CLI's major (v12+); try --dry-run first
+nest upgrade
 ```
 
 ```bash

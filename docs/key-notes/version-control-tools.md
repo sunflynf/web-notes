@@ -4,6 +4,8 @@ description: Github | Gitlab | Bitbucket | Azure DevOps
 
 # Version Control Tools
 
+> **Quick reference:** [Git Cheatsheet](./git-cheatsheet.mdx)
+
 ## **GitHub**
 
 - **Ownership**: Acquired by Microsoft in 2018.
@@ -76,7 +78,7 @@ Each of these tools has its strengths and is suited to different types of users 
 | **Code Review**              | Yes                                         | Yes                                        | Yes                                               | Yes                                               |
 | **Project Management**       | Basic Kanban board (Jira integration)       | GitHub Projects                            | Advanced features (integrated Agile tools)        | Advanced features (Azure Boards, Sprints)         |
 | **Third-Party Integrations** | Extensive integrations (Jira, Trello, etc.) | Extensive integrations (Slack, AWS, etc.)  | Extensive integrations (Jira, Slack, etc.)        | Extensive integrations (Microsoft ecosystem)      |
-| **Self-Hosted Option**       | Bitbucket Server                            | GitHub Enterprise Server                   | Yes                                               | Azure DevOps Server                               |
+| **Self-Hosted Option**       | Bitbucket Data Center (Server ended 2024)   | GitHub Enterprise Server                   | Yes                                               | Azure DevOps Server                               |
 | **User Interface**           | Modern, clean                               | Modern, clean                              | Modern, clean                                     | Modern, clean                                     |
 | **Access Control**           | Fine-grained permissions                    | Fine-grained permissions                   | Fine-grained permissions                          | Fine-grained permissions                          |
 | **Code Search**              | Yes                                         | Yes                                        | Yes                                               | Yes                                               |

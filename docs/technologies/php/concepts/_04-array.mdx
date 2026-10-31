@@ -42,7 +42,7 @@ array_unshift($numbers, 0);  // Beginning
 array_shift($numbers);       // Remove first
 
 // Iteration
-array_map(function($n) {
+$doubled = array_map(function($n) { // returns a new array
     return $n * 2;
 }, $numbers);
 

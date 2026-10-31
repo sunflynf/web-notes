@@ -1,0 +1,154 @@
+---
+title: Microservices Cheatsheet
+sidebar_label: Microservices Cheatsheet
+sidebar_position: 1
+description: One-page microservices refresher - when to use them, core infrastructure, communication and data patterns, resilience, observability and anti-patterns.
+---
+
+# Microservices Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | An architecture style: an application split into small services, each owning one business capability and its data, deployed and scaled independently |
+| Use it for | Large domains with several autonomous teams, parts with very different scaling needs, independent release cadences |
+| Latest stable | n/a - architecture style. Observability standard: [OpenTelemetry specification](https://github.com/open-telemetry/opentelemetry-specification) v1.62.0 (tagged 2026-10-22) - checked 2026-10-31 |
+| Official docs | [microservices.io patterns](https://microservices.io/patterns/) · [Martin Fowler: Microservices](https://martinfowler.com/articles/microservices.html) · [OpenTelemetry docs](https://opentelemetry.io/docs/) |
+
+## Core concepts
+
+- **Bounded context** (DDD): a service boundary where one model and vocabulary apply; split by business capability, not by technical layer.
+- **Database per service**: each service owns its data; others read it only via API or events.
+- **Independent deployability**: the main test; if two services must always ship together, they are one service.
+- **Sync vs async communication**: REST/gRPC request-response vs events/messages through a broker.
+- **Eventual consistency**: no cross-service ACID transactions; use sagas and accept temporary inconsistency.
+- **API gateway**: single entry point for clients (routing, auth, rate limiting, aggregation).
+- **Service discovery**: services find each other by name (Kubernetes DNS, Consul), not hard-coded IPs.
+- **Observability**: logs + metrics + distributed traces correlated by a trace id across every hop.
+- **Conway's law**: system boundaries mirror team boundaries; design both together.
+
+## Syntax & commands
+
+**Service-to-service call with timeout, retry and trace context (Node)**
+
+```ts
+const res = await fetch("http://inventory/api/items/42", {
+  headers: { traceparent: currentTraceparent(), "Idempotency-Key": requestId },
+  signal: AbortSignal.timeout(2000), // always set a timeout
+});
+if (res.status === 503) {
+  // retry with exponential backoff + jitter, only for idempotent calls
+}
+```
+
+**W3C Trace Context header** (propagated on every hop, used by OpenTelemetry)
+
+```text
+traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+             ver-trace-id (16 bytes)            -parent span id -flags
+```
+
+**Publish a domain event (outbox style)**
+
+```sql
+BEGIN;
+UPDATE orders SET status = 'PAID' WHERE id = 42;
+INSERT INTO outbox (id, aggregate_id, type, payload)
+VALUES (gen_random_uuid(), 42, 'OrderPaid', '{"orderId":42,"amount":99.5}');
+COMMIT;
+-- a relay (poller or CDC such as Debezium) publishes outbox rows to Kafka/RabbitMQ
+```
+
+**Kubernetes basics for one service**
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: orders }
+spec:
+  replicas: 3
+  selector: { matchLabels: { app: orders } }
+  template:
+    metadata: { labels: { app: orders } }
+    spec:
+      containers:
+        - name: orders
+          image: ghcr.io/acme/orders:1.4.2
+          ports: [{ containerPort: 8080 }]
+          readinessProbe: { httpGet: { path: /health/ready, port: 8080 } }
+          livenessProbe: { httpGet: { path: /health/live, port: 8080 } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: orders }   # reachable as http://orders inside the namespace
+spec:
+  selector: { app: orders }
+  ports: [{ port: 80, targetPort: 8080 }]
+```
+
+## Common patterns
+
+**Communication**
+
+| Style | Tools | Use when | Cost |
+|---|---|---|---|
+| REST / HTTP+JSON | any framework | public APIs, simple queries | chatty calls add latency and coupling |
+| gRPC | Protobuf, HTTP/2 | internal low-latency calls, streaming | needs schema tooling, less browser-friendly |
+| Async messaging / events | Kafka, RabbitMQ, NATS | decoupling, fan-out, workflows | eventual consistency, harder debugging |
+
+**Data and consistency**
+
+| Pattern | Solves |
+|---|---|
+| Database per service | coupling at the data layer |
+| Saga (choreography = events, orchestration = coordinator) | multi-service business transaction with compensating steps |
+| Transactional outbox | "update DB and publish event" atomically, no dual write |
+| Idempotent consumer | at-least-once delivery means duplicates; dedupe by message id |
+| CQRS | separate read model (denormalized view) from write model |
+| Event sourcing | full audit history; state = replay of events |
+| API composition / BFF | queries that span several services |
+
+**Resilience**
+
+| Pattern | Rule of thumb |
+|---|---|
+| Timeout | every remote call, shorter than the caller's own timeout |
+| Retry + backoff + jitter | idempotent operations only, cap attempts |
+| Circuit breaker | Closed → Open on repeated failures → Half-open to probe |
+| Bulkhead | separate pools per dependency so one slow service cannot drain all threads |
+| Fallback / degrade | cached or default data instead of a hard failure |
+| Rate limiting | protect services at the gateway and per client |
+
+**Delivery**: one repo or pipeline per service, container image per version, deploy with rolling / blue-green / canary, consumer-driven contract tests (Pact) instead of big end-to-end suites.
+
+**Migration**: strangler fig - put a gateway in front of the monolith and move one capability at a time.
+
+## Gotchas
+
+- Start with a modular monolith unless team size and domain clearly need microservices; CI/CD and monitoring are prerequisites.
+- **Distributed monolith**: services that must deploy together or share tables give you all the cost and none of the benefit.
+- Network calls fail: always set timeouts, and do not retry non-idempotent requests blindly.
+- Retries across several layers multiply load (retry storms); retry at one layer.
+- No foreign keys or JOINs across services; plan read models and data ownership up front.
+- Messages arrive out of order and more than once; design consumers for both.
+- Shared libraries for domain models re-couple services; share contracts (OpenAPI, Protobuf, AsyncAPI), not code.
+- Breaking API changes need versioning and a deprecation window, since services release independently.
+- Without trace ids, "which service is slow?" is unanswerable; add OpenTelemetry from day one.
+
+## What's new in recent releases
+
+- **OpenTelemetry**: traces, metrics and logs signals are stable in the spec; the OTLP protocol and W3C Trace Context are the de facto wire formats, and most vendors ingest OTLP natively.
+- **OpenAPI 3.2** (2025-09) adds streaming media types and the `query` operation, useful for service contracts (see [REST API Cheatsheet](./rest-api-cheatsheet.mdx)).
+
+## In these notes
+
+- [Microservices architecture (Vietnamese)](./microservices.mdx) - when to choose, ecosystem, core patterns, deployment, anti-patterns
+- [API Versioning](./api-versioning.md) - keeping service contracts backward compatible
+- [REST API Cheatsheet](./rest-api-cheatsheet.mdx) - status codes, error format, pagination
+- [Authentication Cheatsheet](./authentication-cheatsheet.mdx) - tokens at the gateway, client credentials between services
+- [Spring Cloud microservices](../technologies/java/spring-framework/spring-microservices.md)
+- [NestJS microservices](../technologies/js/be-frameworks/nest/in-depth.mdx#microservices)
+- [ELK stack](../cloud-computing/elk-stack/index.md) - centralized logging
+- [NGINX](../technologies/nginx.mdx) - reverse proxy / gateway
+- [Docker](../technologies/docker-knowledge.md)

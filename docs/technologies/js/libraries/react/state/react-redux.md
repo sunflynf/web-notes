@@ -104,16 +104,15 @@ my-app/
 
    ```tsx title="src/index.tsx"
    import React from 'react';
-   import ReactDOM from 'react-dom';
+   import { createRoot } from 'react-dom/client'; // ReactDOM.render was removed in React 19
    import { Provider } from 'react-redux';
    import store from './store/store';
    import App from './App';
 
-   ReactDOM.render(
+   createRoot(document.getElementById('root')!).render(
      <Provider store={store}>
        <App />
-     </Provider>,
-     document.getElementById('root')
+     </Provider>
    );
    ```
 

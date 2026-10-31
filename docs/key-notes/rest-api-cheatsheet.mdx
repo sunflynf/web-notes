@@ -1,0 +1,183 @@
+---
+title: REST API Cheatsheet
+sidebar_label: REST API Cheatsheet
+sidebar_position: 1
+description: One-page REST API refresher - HTTP methods and status codes, response and error formats (RFC 9457), pagination, versioning patterns and OpenAPI.
+---
+
+# REST API Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | An architectural style for HTTP APIs: resources identified by URLs, manipulated with standard methods and representations (usually JSON) |
+| Use it for | Public and internal web APIs, mobile/SPA backends, service-to-service calls where HTTP caching and simplicity matter |
+| Latest stable | HTTP Semantics [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) (June 2022) · Problem Details [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) (July 2023, obsoletes RFC 7807) · [OpenAPI 3.2.1](https://spec.openapis.org/oas/v3.2.1) (released 2026-09-10) - checked 2026-10-31 |
+| Official docs | [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110) · [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) · [OpenAPI Specification](https://spec.openapis.org/oas/latest.html) |
+
+## Core concepts
+
+- **Resource**: a noun with a stable URL (`/users/42`); collections are plural (`/users`).
+- **Representation**: what goes over the wire (JSON), negotiated with `Accept` / `Content-Type`.
+- **Safe method**: does not change state (`GET`, `HEAD`, `OPTIONS`).
+- **Idempotent method**: repeating it has the same effect as once (`GET`, `PUT`, `DELETE`, not `POST`/`PATCH`).
+- **Stateless**: each request carries everything needed (auth token, params); no server session per client.
+- **Status code**: the first thing clients branch on; the body adds detail.
+- **Problem Details**: standard error body, media type `application/problem+json` (RFC 9457).
+- **HATEOAS**: responses include links to related resources/actions; nice to have, rarely done fully.
+
+## Syntax & commands
+
+**Methods**
+
+| Method | Typical use | Safe | Idempotent | Success code |
+|---|---|---|---|---|
+| `GET /users` | list / read | yes | yes | 200 |
+| `POST /users` | create (server picks id) | no | no | 201 + `Location` |
+| `PUT /users/42` | full replace (or create at known id) | no | yes | 200 / 204 |
+| `PATCH /users/42` | partial update | no | no* | 200 / 204 |
+| `DELETE /users/42` | delete | no | yes | 204 |
+
+\* `PATCH` can be made idempotent by design (e.g. JSON Merge Patch on fields).
+
+**Status codes worth memorizing**
+
+| Code | Meaning | Use when |
+|---|---|---|
+| 200 OK | success with body | `GET`, `PUT`/`PATCH` returning the resource |
+| 201 Created | resource created | `POST`; add `Location: /users/43` |
+| 202 Accepted | queued, not done yet | async jobs; return a status URL |
+| 204 No Content | success, empty body | `DELETE`, updates without body |
+| 304 Not Modified | cache still valid | conditional `GET` with `If-None-Match` |
+| 400 Bad Request | malformed request | invalid JSON, wrong types |
+| 401 Unauthorized | not authenticated | missing/invalid token; send `WWW-Authenticate` |
+| 403 Forbidden | authenticated, not allowed | missing role/scope |
+| 404 Not Found | no such resource | also to hide existence from unauthorized users |
+| 409 Conflict | state conflict | duplicate, version mismatch |
+| 412 Precondition Failed | `If-Match` failed | optimistic locking with ETag |
+| 422 Unprocessable Content | valid syntax, failed validation | business/field validation errors |
+| 429 Too Many Requests | rate limited | add `Retry-After` |
+| 500 / 502 / 503 / 504 | server / upstream errors | 503 + `Retry-After` for maintenance |
+
+**Success body (pick one envelope and keep it everywhere)**
+
+```json
+{
+  "data": [{ "id": 1, "name": "John Doe" }],
+  "meta": { "total": 120, "page": 1, "per_page": 20 },
+  "links": { "self": "/users?page=1", "next": "/users?page=2" }
+}
+```
+
+**Error body - RFC 9457 Problem Details** (`Content-Type: application/problem+json`)
+
+```json
+{
+  "type": "https://api.example.com/problems/validation-error",
+  "title": "Your request is not valid.",
+  "status": 422,
+  "detail": "2 fields failed validation.",
+  "instance": "/users",
+  "errors": [
+    { "pointer": "#/email", "detail": "must be a valid email address" }
+  ]
+}
+```
+
+`type`, `title`, `status`, `detail`, `instance` are the standard members; extra members (like `errors`, `trace_id`) are allowed extensions.
+
+**Requests**
+
+```bash
+curl -s "https://api.example.com/v1/users?page=2&per_page=20" \
+  -H "Accept: application/json" -H "Authorization: Bearer $TOKEN"
+
+curl -s -X POST https://api.example.com/v1/users \
+  -H "Content-Type: application/json" -H "Idempotency-Key: 7f1c..." \
+  -d '{"name":"Jane","email":"jane@example.com"}'
+
+curl -s -X PATCH https://api.example.com/v1/users/42 \
+  -H "Content-Type: application/merge-patch+json" -H 'If-Match: "v7"' \
+  -d '{"name":"Jane D."}'
+```
+
+**OpenAPI skeleton**
+
+```yaml
+openapi: 3.2.0
+info: { title: Users API, version: 1.0.0 }
+paths:
+  /users/{id}:
+    get:
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      responses:
+        "200": { description: OK, content: { application/json: { schema: { $ref: "#/components/schemas/User" } } } }
+        "404": { description: Not found, content: { application/problem+json: { schema: { $ref: "#/components/schemas/Problem" } } } }
+```
+
+## Common patterns
+
+**URL design**
+
+| Do | Avoid |
+|---|---|
+| `GET /users/42/orders` (one level of nesting) | `/users/42/orders/7/items/3/notes` |
+| `GET /orders?status=paid&sort=-created_at` | `/getPaidOrders` (verbs in path) |
+| `POST /orders/7/cancel` for a real action | overloading `PUT` for actions |
+| kebab-case paths, consistent JSON keys (`snake_case` or `camelCase`) | mixing styles |
+
+**Pagination**
+
+| Style | Request | Good for | Watch out |
+|---|---|---|---|
+| Offset | `?page=3&per_page=20` or `?offset=40&limit=20` | admin tables, jump to page N | slow on deep pages, items shift on insert |
+| Cursor | `?cursor=eyJpZCI6...&limit=20` | feeds, large or live data | no "jump to page"; cursor must be opaque |
+
+Also: filtering `?status=paid`, sorting `?sort=-created_at,name`, sparse fields `?fields=id,name`.
+
+**API versioning patterns**
+
+| Style | Example | Pros | Cons |
+|---|---|---|---|
+| URL path | `/v1/users` | explicit, easy to route and cache | URL changes on upgrade |
+| Query param | `/users?version=1` | clean base URL | easy to forget, caching harder |
+| Custom header | `Api-Version: 2026-10-01` | clean URL, date-based versions work well | invisible in browser/logs, needs docs |
+| Media type | `Accept: application/vnd.example.v1+json` | fine-grained, true content negotiation | complex, poorly understood |
+
+- Version only on **breaking** changes (removing/renaming fields, changing types or semantics). Adding optional fields is not breaking.
+- Clients must ignore unknown fields (tolerant reader).
+- Announce removal with the `Deprecation` and `Sunset` response headers plus a changelog; keep old versions alive for a published window.
+
+**Reliability**
+
+- `Idempotency-Key` header on `POST` so retries do not double-charge.
+- `ETag` + `If-None-Match` for caching, `ETag` + `If-Match` for optimistic locking (412 on conflict).
+- Rate limit with 429 + `Retry-After`; long jobs return 202 + a status URL.
+
+## Gotchas
+
+- 401 means "who are you?", 403 means "I know you, no". Do not mix them.
+- Do not return 200 with `"success": false` in the body; use the right status code.
+- `PUT` replaces the whole resource: missing fields become null/default. Use `PATCH` for partial updates.
+- Return 404 vs 403 consciously: 404 hides that a resource exists.
+- Use ISO 8601 UTC timestamps (`2026-10-31T09:00:00Z`) and string IDs if they may exceed JS safe integers (2^53).
+- `DELETE` twice: second call can be 404 or 204; it is still idempotent (same server state).
+- RFC 7807 is obsolete; new code should reference RFC 9457 (same media type and members, so clients keep working).
+- Never leak stack traces or SQL in `detail`; log them with a `trace_id` instead.
+
+## What's new in recent releases
+
+- **OpenAPI 3.2.1** (2026-09-10): patch release clarifying 3.2.0; no new features.
+- **OpenAPI 3.2.0** (2025-09-19): hierarchical tags (`parent`, `kind`), `query` HTTP operation plus `additionalOperations` for other methods, `in: querystring` parameters, streaming/sequential media types (`itemSchema` for SSE, JSON Lines), OAuth 2.0 device authorization flow and `oauth2MetadataUrl`.
+- **OpenAPI 3.1.2 / 3.0.4**: clarification-only patch releases; 3.1 aligned schemas with JSON Schema 2020-12.
+- **RFC 9457** (July 2023): replaced RFC 7807, adds a shared registry of problem types and guidance for multiple problems in one response.
+- **RFC 9110** (June 2022): consolidated HTTP semantics for all HTTP versions; 422 renamed to "Unprocessable Content" and became core HTTP.
+
+## In these notes
+
+- [RESTful API Response](./rest-api-response.md) - JSON response best practices with examples
+- [API Versioning](./api-versioning.md) - versioning styles compared
+- [Authentication Cheatsheet](./authentication-cheatsheet.mdx) - tokens, OAuth 2.0 and OIDC for securing APIs
+- [Microservices Cheatsheet](./microservices-cheatsheet.mdx) - API gateway, service-to-service calls

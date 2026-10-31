@@ -1,5 +1,5 @@
 ---
-description: Frontend Frameworks
+description: Angular notes - CLI setup, components, templates, DI, HttpClient, routing, forms, testing and deployment.
 tags:
   - Frontend
   - JavaScript
@@ -7,6 +7,8 @@ tags:
 ---
 
 # Angular
+
+> **Quick reference:** [Angular Cheatsheet](./cheatsheet.mdx)
 
 Angular is a TypeScript-based open-source web application framework led by the Angular Team at Google.
 
@@ -30,9 +32,12 @@ src/
 └── main.ts       # Bootstraps app
 ```
 
-- **Key Files**:
-  - `app.module.ts` → Root module (`@NgModule`)
-  - `app.component.ts` → Root component (`@Component`)
+- **Key Files** (standalone apps, the default since v17):
+  - `main.ts` → `bootstrapApplication(App, appConfig)`
+  - `app.config.ts` → App-wide providers (`provideRouter`, `provideHttpClient`, ...)
+  - `app.routes.ts` → Route definitions
+  - `app.ts` (`app.component.ts` before v20) → Root component (`@Component`)
+  - Legacy NgModule apps: `app.module.ts` → Root module (`@NgModule`)
 
 ## 2. Core Concepts
 
@@ -64,6 +69,11 @@ export class ExampleComponent {
   <div *ngIf="condition">Content</div>
   <div *ngFor="let item of items">{{ item }}</div>
   ```
+  - Since v17 prefer built-in control flow (`*ngIf`/`*ngFor`/`*ngSwitch` are deprecated since v20):
+  ```html
+  @if (condition) { <div>Content</div> } @else { <div>Empty</div> }
+  @for (item of items; track item.id) { <div>{{ item.name }}</div> } @empty { <p>None</p> }
+  ```
 - **Attribute**:
   ```html
   <div [ngClass]="{ 'active': isActive }"></div>
@@ -82,6 +92,8 @@ export class DataService {
 
 - **Injecting Services**:
   ```typescript
+  private dataService = inject(DataService); // preferred `inject()` function
+  // or constructor injection:
   constructor(private dataService: DataService) {}
   ```
 
@@ -106,7 +118,7 @@ export class ApiService {
 
 ## 5. Routing
 
-- **Setup Routes**: (`app-routing.module.ts`)
+- **Setup Routes**: (`app.routes.ts`, registered with `provideRouter(routes)`; `app-routing.module.ts` in NgModule apps)
   ```typescript
   const routes: Routes = [
     { path: "", component: HomeComponent },
@@ -149,25 +161,27 @@ export class ApiService {
 
 - **Lazy Loading**:
   ```typescript
-  { path: 'admin', loadChildren: () => import('./admin.module') }
+  { path: 'admin', loadChildren: () => import('./admin/admin.routes') }
+  { path: 'profile', loadComponent: () => import('./profile/profile').then(m => m.Profile) }
   ```
-- **Change Detection**: `OnPush` strategy
-- **AOT Compilation**: `ng build --prod`
+- **Deferrable views**: `@defer (on viewport) { <heavy-cmp /> }`
+- **Change Detection**: `OnPush` strategy (the default for components since v22) + signals; zoneless is the default for new apps since v21
+- **AOT Compilation**: on by default (`ng build`; the `--prod` flag was removed)
 
 ## 9. Testing
 
 ```bash
-# Unit Tests (Jasmine/Karma)
+# Unit Tests (Vitest is the default for new projects since v21; Jasmine/Karma in older ones)
 ng test
 
-#  E2E (Protractor/Cypress)
+# E2E (Protractor is end-of-life; add Cypress/Playwright via `ng e2e`)
 ng e2e
 ```
 
 ## 10. Deployment
 
 ```bash
-ng build --prod
+ng build   # production configuration is the default
 # Deploy `/dist` folder to hosting (Netlify, Vercel, Firebase, etc.)
 ```
 
@@ -176,5 +190,5 @@ ng build --prod
 - [Angular Documentation](https://angular.dev/overview)
 - **Advanced Topics**:
   - Micro-frontends (Module Federation)
-  - Server-Side Rendering (Angular Universal)
+  - Server-Side Rendering (`@angular/ssr`, formerly Angular Universal)
   - Web Components Integration

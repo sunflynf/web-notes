@@ -10,6 +10,13 @@ tags:
 **SASS** is a stylesheet language that’s compiled to **CSS**
 > **Preprocessing**: `sass --watch input.scss output.css`
 
+:::warning Dart Sass is the only maintained implementation
+
+- `node-sass` / LibSass are deprecated; install `sass` (or `sass-embedded`). Latest: v1.107.0 (2026-10-28).
+- `@import` and global built-in functions (`map-get`, `nth`, `darken`...) are deprecated since Dart Sass 1.80 and will be removed in Dart Sass 3.0. Use `@use` / `@forward` and module functions (`map.get`, `list.nth`, `color.adjust`).
+
+:::
+
 ## Variables
 
 Code styles: `.sass` & `.scss` (use semicolon and curly brackets)
@@ -248,16 +255,18 @@ $backgrounds: (home, 'home.jpg'), (about, 'about.jpg');
 ### Lists
 
 ```scss
+@use 'sass:list';
 $list: (a b c);
-nth($list, 1)  // starts with 1
-length($list) // 3
+list.nth($list, 1)  // starts with 1 (old global: nth)
+list.length($list) // 3 (old global: length)
 ```
 
 ### Maps
 
 ```scss
+@use 'sass:map';
 $map: (key1: value1, key2: value2, key3: value3);
-map-get($map, key1)
+map.get($map, key1) // old global: map-get
 ```
 
 ### Conditionals

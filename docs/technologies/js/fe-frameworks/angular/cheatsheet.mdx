@@ -1,0 +1,182 @@
+---
+title: Angular Cheatsheet
+sidebar_label: Cheatsheet
+sidebar_position: 1
+description: One-page refresher for modern Angular - standalone components, signals, control flow, DI with inject(), routing, forms, HttpClient and the CLI.
+tags:
+  - Angular
+  - TypeScript
+  - Frontend
+  - Cheatsheet
+---
+
+# Angular Cheatsheet
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Google's batteries-included TypeScript framework: components, DI, router, forms, HTTP client, SSR and CLI in one package set |
+| Use it for | Large enterprise SPAs, long-lived apps with big teams, admin and line-of-business apps |
+| Latest stable | v22.2.4 (released 2026-10-29) - checked 2026-10-31 |
+| Official docs | [angular.dev](https://angular.dev/) · [API reference](https://angular.dev/api) · [Changelog](https://github.com/angular/angular/blob/main/CHANGELOG.md) · [Update guide](https://angular.dev/update-guide) |
+
+## Core concepts
+
+- **Standalone components**: the default since v17; declare dependencies in `imports` instead of an `NgModule`.
+- **Signals**: `signal`, `computed`, `effect`, `linkedSignal` drive fine-grained change detection.
+- **Signal inputs/outputs**: `input()`, `input.required()`, `output()`, `model()` replace `@Input`/`@Output` decorators.
+- **Built-in control flow**: `@if`, `@for` (with `track`), `@switch`, `@defer` in templates.
+- **Dependency injection**: services with `@Injectable({ providedIn: 'root' })`, consumed with `inject()`.
+- **Change detection**: zoneless by default for new apps (v21+) and `OnPush` is the default component strategy (v22+).
+- **Router**: route arrays + `provideRouter()`, lazy `loadComponent`/`loadChildren`, functional guards and resolvers.
+- **Forms**: Reactive Forms (`FormGroup`/`FormControl`), template-driven (`ngModel`) and Signal Forms (public API in v22).
+- **HttpClient**: Observable-based HTTP; `httpResource()` / `resource()` wrap async data as signals.
+- **RxJS**: Observables for streams; bridge with `toSignal()` / `toObservable()`.
+
+## Syntax & commands
+
+```bash
+npm install -g @angular/cli
+ng new my-app            # prompts for styles, SSR, AI tooling
+ng serve                 # dev server on http://localhost:4200
+ng generate component features/user-card   # ng g c
+ng generate service core/api               # ng g s
+ng build                 # production build into dist/
+ng test                  # unit tests (Vitest default since v21)
+ng add @angular/ssr      # add server-side rendering
+ng update @angular/core @angular/cli       # upgrade to the next major
+```
+
+```ts
+// user-card.ts - standalone component with signals
+import { Component, computed, input, output, signal } from "@angular/core";
+
+@Component({
+  selector: "app-user-card",
+  template: `
+    <h3>{{ name() }} ({{ likes() }})</h3>
+    <button (click)="like()">Like</button>
+    @if (isPopular()) { <span>Popular</span> }
+  `,
+})
+export class UserCard {
+  name = input.required<string>();
+  liked = output<number>();
+  likes = signal(0);
+  isPopular = computed(() => this.likes() > 10);
+
+  like() {
+    this.likes.update((n) => n + 1);
+    this.liked.emit(this.likes());
+  }
+}
+```
+
+| Template syntax | Example |
+|---|---|
+| Interpolation | `{{ user.name }}` |
+| Property binding | `[disabled]="isSaving()"` |
+| Event binding | `(click)="save()"` |
+| Two-way binding | `[(value)]="query"` (with `model()`) or `[(ngModel)]="query"` |
+| Class / style | `[class.active]="on"` · `[style.width.px]="w"` |
+| Template ref | `#box` then `box.focus()` |
+| Pipe | `{{ price \| currency:'EUR' }}` |
+| Loop | `@for (u of users(); track u.id) { ... } @empty { ... }` |
+| Lazy block | `@defer (on viewport) { <app-chart /> } @placeholder { ... }` |
+
+## Common patterns
+
+```ts
+// Service + inject() + HttpClient
+import { Injectable, inject } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+
+@Injectable({ providedIn: "root" })
+export class UserApi {
+  private http = inject(HttpClient);
+  list() {
+    return this.http.get<User[]>("/api/users");
+  }
+}
+```
+
+```ts
+// app.config.ts + main.ts
+import { ApplicationConfig } from "@angular/core";
+import { provideRouter, withComponentInputBinding } from "@angular/router";
+import { provideHttpClient, withInterceptors } from "@angular/common/http";
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes, withComponentInputBinding()),
+    provideHttpClient(withInterceptors([authInterceptor])),
+  ],
+};
+
+// main.ts
+bootstrapApplication(App, appConfig);
+```
+
+```ts
+// app.routes.ts - lazy routes + functional guard
+import { Routes, CanActivateFn, Router } from "@angular/router";
+import { inject } from "@angular/core";
+
+const authGuard: CanActivateFn = () =>
+  inject(AuthService).isLoggedIn() || inject(Router).parseUrl("/login");
+
+export const routes: Routes = [
+  { path: "", loadComponent: () => import("./home/home").then((m) => m.Home) },
+  { path: "admin", canActivate: [authGuard], loadChildren: () => import("./admin/admin.routes") },
+  { path: "**", redirectTo: "" },
+];
+```
+
+```ts
+// Functional HTTP interceptor
+import { HttpInterceptorFn } from "@angular/common/http";
+
+export const authInterceptor: HttpInterceptorFn = (req, next) =>
+  next(req.clone({ setHeaders: { Authorization: `Bearer ${getToken()}` } }));
+```
+
+```ts
+// Signals from async data
+users = toSignal(inject(UserApi).list(), { initialValue: [] });
+userId = input.required<string>();
+user = httpResource<User>(() => `/api/users/${this.userId()}`); // user.value(), user.isLoading()
+```
+
+```ts
+// Reactive form
+form = inject(FormBuilder).nonNullable.group({
+  email: ["", [Validators.required, Validators.email]],
+  password: ["", Validators.minLength(8)],
+});
+submit() {
+  if (this.form.valid) console.log(this.form.getRawValue());
+}
+```
+
+## Gotchas
+
+- **Read signals by calling them**: `count()` in templates and code; forgetting `()` binds the signal function itself.
+- **`@for` requires `track`**: use a stable id (`track item.id`), not `$index`, for lists that change.
+- **Subscriptions leak**: prefer the `async` pipe, `toSignal()` or `takeUntilDestroyed()` over manual `subscribe()`.
+- **`OnPush` / zoneless**: mutating an object in place does not re-render; update signals or pass new references.
+- **`inject()` only works in an injection context** (constructor, field initializers, factory functions) unless you use `runInInjectionContext`.
+- **Legacy syntax still compiles**: `*ngIf`/`*ngFor` (deprecated since v20), `NgModule` apps and `@Input()` decorators work, but new code should use the modern APIs.
+- **Upgrade one major at a time** with `ng update` and follow the update guide; v22 makes `OnPush` the default and requires TypeScript 6+.
+
+## What's new in recent releases
+
+- **v22.0** (2026-06-03): components default to `ChangeDetectionStrategy.OnPush` (`Eager` restores the old behavior; `ng update` adds it where needed); Signal Forms APIs graduate to public API.
+- **v22.0**: `FetchBackend` is the default for `HttpClient`, incremental hydration is the default, new `@Service` decorator and `injectAsync`, debounced signals; TypeScript older than 6.0 and Hammer.js integration removed.
+- **v22.1-22.2** (2026-07 to 2026-09): `linkedSignal` custom set option, ErrorBoundary APIs and `@boundary` blocks, templates can access private members, JSONP in `HttpClient` deprecated.
+- **v21.0** (2025-11-19): zoneless change detection by default for new apps, Vitest as the default test runner, experimental Signal Forms, Angular Aria.
+
+## In these notes
+
+- [Angular notes: setup, components, directives, DI, HTTP, routing, forms, testing](./index.mdx)
+- [Frontend frameworks comparison](../index.md)
