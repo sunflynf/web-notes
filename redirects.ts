@@ -39,4 +39,5 @@ export const redirects: Redirect[] = [
   { from: "/docs/technologies/llm/security", to: "/docs/llm/security/" },
   { from: "/docs/technologies/llm/structured-output-tool-calling", to: "/docs/llm/structured-output-tool-calling/" },
   { from: "/docs/technologies/llm/tokens-context-sampling", to: "/docs/llm/tokens-context-sampling/" },
+  { from: "/docs/category/net--c", to: "/docs/technologies/dotnet/" },
 ];

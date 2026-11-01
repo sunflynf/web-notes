@@ -10,6 +10,65 @@ tags:
 
 > **Quick reference:** [JavaScript Cheatsheet](./cheatsheet.mdx)
 
+import LayerFlow from "@site/src/components/LayerFlow";
+
+<LayerFlow
+  ariaLabel="JavaScript ecosystem"
+  layers={[
+    {
+      title: "Core",
+      nodes: [
+        { label: "Cheatsheet", to: "/docs/technologies/js/cheatsheet/" },
+        { label: "TypeScript", to: "/docs/technologies/js/ts/" },
+        { label: "TypeScript Cheatsheet", to: "/docs/technologies/js/ts-cheatsheet/" },
+      ],
+    },
+    {
+      title: "Runtime",
+      nodes: [
+        { label: "Node.js", to: "/docs/technologies/js/env/nodejs/" },
+        { label: "Node.js Cheatsheet", to: "/docs/technologies/js/env/nodejs-cheatsheet/" },
+        { label: "Bun" },
+        { label: "Deno" },
+      ],
+    },
+    {
+      title: "Frameworks",
+      nodes: [
+        { label: "React", to: "/docs/technologies/js/libraries/react/" },
+        { label: "Next.js", to: "/docs/technologies/js/fe-frameworks/react/nextjs/" },
+        { label: "Vue", to: "/docs/technologies/js/fe-frameworks/vue/" },
+        { label: "Angular", to: "/docs/technologies/js/fe-frameworks/angular/" },
+        { label: "Express", to: "/docs/technologies/js/be-frameworks/express/" },
+        { label: "NestJS", to: "/docs/technologies/js/be-frameworks/nest/" },
+        { label: "Fastify", to: "/docs/technologies/js/be-frameworks/fastify/" },
+      ],
+    },
+    {
+      title: "Data & API",
+      nodes: [
+        { label: "Axios", to: "/docs/technologies/js/api/axios/" },
+        { label: "Socket.IO", to: "/docs/technologies/js/api/socket-io/" },
+        { label: "Prisma", to: "/docs/technologies/js/api/orm/prisma/" },
+        { label: "TypeORM", to: "/docs/technologies/js/api/orm/type-orm/" },
+        { label: "Sequelize", to: "/docs/technologies/js/api/orm/sequelize/" },
+        { label: "Drizzle", to: "/docs/technologies/js/api/orm/drizzle/" },
+        { label: "Knex", to: "/docs/technologies/js/api/query-builder/knexjs/" },
+        { label: "node-postgres", to: "/docs/technologies/js/api/query-builder/node-postgres/" },
+      ],
+    },
+    {
+      title: "Quality",
+      nodes: [
+        { label: "Testing Cheatsheet", to: "/docs/technologies/js/testing/cheatsheet/" },
+        { label: "Jest", to: "/docs/technologies/js/testing/jest/" },
+        { label: "Mocha", to: "/docs/technologies/js/testing/mocha/" },
+        { label: "ESLint" },
+      ],
+    },
+  ]}
+/>
+
 import Position from "./concepts/_position.mdx";
 import Syntax from "./concepts/_syntax.mdx";
 import DataType from "./concepts/_datatype.mdx";

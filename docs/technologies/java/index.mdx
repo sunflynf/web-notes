@@ -10,6 +10,58 @@ tags:
 
 > **Quick reference:** [Java Cheatsheet](./cheatsheet.mdx)
 
+import LayerFlow from "@site/src/components/LayerFlow";
+
+<LayerFlow
+  ariaLabel="Java ecosystem"
+  layers={[
+    {
+      title: "Core",
+      nodes: [
+        { label: "Cheatsheet", to: "/docs/technologies/java/cheatsheet/" },
+        { label: "Syntax & types", plain: true },
+        { label: "OOP", plain: true },
+        { label: "Collections", plain: true },
+        { label: "Streams", plain: true },
+      ],
+    },
+    {
+      title: "Runtime",
+      nodes: [
+        { label: "JVM & JDK" },
+        { label: "Maven & Gradle" },
+      ],
+    },
+    {
+      title: "Frameworks",
+      nodes: [
+        { label: "Spring Framework", to: "/docs/technologies/java/spring-framework/" },
+        { label: "Spring Cheatsheet", to: "/docs/technologies/java/spring-framework/cheatsheet/" },
+        { label: "Spring Security", to: "/docs/technologies/java/spring-framework/spring-security/" },
+        { label: "Spring Batch", to: "/docs/technologies/java/spring-framework/spring-batch/" },
+        { label: "Spring Event-Driven", to: "/docs/technologies/java/spring-framework/spring-event-driven/" },
+        { label: "Spring Microservices", to: "/docs/technologies/java/spring-framework/spring-microservices/" },
+        { label: "Spring AI", to: "/docs/technologies/java/spring-framework/spring-ai/" },
+      ],
+    },
+    {
+      title: "Data & API",
+      nodes: [
+        { label: "JDBC", to: "/docs/technologies/java/api/jdbc/" },
+        { label: "JPA", to: "/docs/technologies/java/api/jpa/" },
+        { label: "JPA Cheatsheet", to: "/docs/technologies/java/api/jpa-cheatsheet/" },
+      ],
+    },
+    {
+      title: "Quality",
+      nodes: [
+        { label: "Spring Test", to: "/docs/technologies/java/spring-framework/spring-test/" },
+        { label: "JUnit & Mockito" },
+      ],
+    },
+  ]}
+/>
+
 import Introduce from "./concepts/_introduce.mdx";
 import Syntax from "./concepts/_syntax.mdx";
 import DataType from "./concepts/_datatype.mdx";
