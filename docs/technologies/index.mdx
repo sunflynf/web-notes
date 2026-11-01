@@ -1,0 +1,80 @@
+---
+title: Software Technologies
+description: A web developer roadmap in eight stages, each linking into the notes.
+---
+
+import LayerFlow from "@site/src/components/LayerFlow";
+
+# Software Technologies
+
+Summarize anything. Maybe I can't remember all of this.
+
+<LayerFlow
+  ariaLabel="Web developer roadmap"
+  layers={[
+    {
+      title: "1 Web basics",
+      nodes: [
+        { label: "HTML", to: "/docs/technologies/web-basics/html/" },
+        { label: "CSS", to: "/docs/technologies/web-basics/styles/css/" },
+      ],
+    },
+    {
+      title: "2 JavaScript / TypeScript",
+      nodes: [
+        { label: "JavaScript", to: "/docs/technologies/js/" },
+        { label: "TypeScript", to: "/docs/technologies/js/ts/" },
+      ],
+    },
+    {
+      title: "3 Frontend framework",
+      nodes: [
+        { label: "React", to: "/docs/technologies/js/libraries/react/" },
+        { label: "Vue", to: "/docs/technologies/js/fe-frameworks/vue/" },
+        { label: "Angular", to: "/docs/technologies/js/fe-frameworks/angular/" },
+        { label: "Next.js", to: "/docs/technologies/js/fe-frameworks/react/nextjs/" },
+      ],
+    },
+    {
+      title: "4 Backend language",
+      nodes: [
+        { label: "JS / Node", to: "/docs/technologies/js/" },
+        { label: "Java", to: "/docs/technologies/java/" },
+        { label: "C#", to: "/docs/technologies/dotnet/" },
+        { label: "Go", to: "/docs/technologies/go/" },
+        { label: "Python", to: "/docs/technologies/python/" },
+        { label: "PHP", to: "/docs/technologies/php/" },
+        { label: "Rust", to: "/docs/technologies/rust/" },
+      ],
+    },
+    {
+      title: "5 Databases",
+      nodes: [
+        { label: "SQL", to: "/docs/technologies/database/relational/sql-fundamental/" },
+        { label: "PostgreSQL", to: "/docs/technologies/database/relational/postgre/" },
+        { label: "MySQL", to: "/docs/technologies/database/relational/mysql/" },
+        { label: "MongoDB", to: "/docs/technologies/database/no-sql/mongodb/" },
+      ],
+    },
+    {
+      title: "6 APIs and auth",
+      nodes: [
+        { label: "REST API", to: "/docs/key-notes/rest-api-cheatsheet/" },
+        { label: "API versioning", to: "/docs/key-notes/api-versioning/" },
+        { label: "Authentication", to: "/docs/key-notes/authentication/" },
+      ],
+    },
+    {
+      title: "7 Cloud",
+      nodes: [{ label: "Cloud computing", to: "/docs/cloud-computing/" }],
+    },
+    {
+      title: "8 DevOps",
+      nodes: [{ label: "DevOps (coming later)" }],
+    },
+  ]}
+/>
+
+## How to use this
+
+Read the stages left to right: each one builds on the one before it. Pick one backend language in stage 4 rather than all seven. A faded box marks a stage without notes yet.
