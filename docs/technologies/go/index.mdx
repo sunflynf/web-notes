@@ -6,6 +6,61 @@ description: Statically typed, compiled - simplicity and efficiency
 
 > **Quick reference:** [Go Cheatsheet](./cheatsheet.mdx)
 
+import LayerFlow from "@site/src/components/LayerFlow";
+
+<LayerFlow
+  ariaLabel="Go ecosystem"
+  layers={[
+    {
+      title: "Core",
+      nodes: [
+        { label: "Cheatsheet", to: "/docs/technologies/go/cheatsheet/" },
+        { label: "Basics", to: "/docs/technologies/go/#variables--data-types" },
+        { label: "Control flow", to: "/docs/technologies/go/#control-flow" },
+        { label: "Functions", to: "/docs/technologies/go/#functions" },
+        { label: "Structs", to: "/docs/technologies/go/#struct" },
+        { label: "Pointers", to: "/docs/technologies/go/#pointers--reference-types" },
+        { label: "Interfaces", to: "/docs/technologies/go/#interface-in-go" },
+        { label: "Generics", to: "/docs/technologies/go/#generics" },
+        { label: "Concurrency", to: "/docs/technologies/go/#concurrency" },
+        { label: "File I/O", to: "/docs/technologies/go/#file--io" },
+      ],
+    },
+    {
+      title: "Runtime",
+      nodes: [
+        { label: "Setup & commands", to: "/docs/technologies/go/#setting" },
+        { label: "Modules", to: "/docs/technologies/go/#modules-101-go-modules-on-by-default" },
+        { label: "Packages", to: "/docs/technologies/go/#packages--imports-in-go" },
+      ],
+    },
+    {
+      title: "Frameworks",
+      nodes: [
+        { label: "Web frameworks", to: "/docs/technologies/go/frameworks/" },
+        { label: "Gin", to: "/docs/technologies/go/frameworks/gin/" },
+        { label: "Gin Cheatsheet", to: "/docs/technologies/go/frameworks/gin-cheatsheet/" },
+        { label: "Folder structure", to: "/docs/technologies/go/folder-structure/" },
+      ],
+    },
+    {
+      title: "Data & API",
+      nodes: [
+        { label: "Databases", to: "/docs/technologies/go/databases/" },
+      ],
+    },
+    {
+      title: "Quality",
+      nodes: [
+        { label: "Testing", to: "/docs/technologies/go/#testing" },
+        { label: "Mocking", to: "/docs/technologies/go/#using-interfaces-for-mocking-in-tests" },
+        { label: "golangci-lint" },
+        { label: "Testify" },
+      ],
+    },
+  ]}
+/>
+
 - Open-source programming language developed by **Google**
 - **Features**
   - Focus on simplicity, clarity & scalability

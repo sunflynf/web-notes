@@ -284,3 +284,10 @@ const UserProfile = ({ userId }) => {
    - You’re already using **Redux Toolkit** and want a fully integrated solution for managing API data.
 
 In summary, **Redux Thunk** is great for custom async logic, but **RTK Query** offers a higher-level, out-of-the-box solution for handling API requests with less effort and built-in features like caching, automatic refetching, and error handling. RTK Query is the recommended choice for most API-heavy applications due to its simplicity and powerful features.
+
+## Related notes
+
+- [React Redux](./react-redux.md)
+- [Redux technologies](./redux-technologies.md)
+- [TanStack Query](../../../tanstack/react/react-query.md) - a standalone alternative
+- [Axios](../../../api/axios.mdx)

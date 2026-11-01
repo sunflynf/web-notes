@@ -57,3 +57,10 @@ import { NumericFormat, PatternFormat } from 'react-number-format'
 | `valueIsNumericString` | boolean | Input number only |
 | `allowEmptyFormatting` | boolean | fit empty space with `mask` character |
 | `mask` | string \| string[] |  |
+
+## Related notes
+
+- [React Select](./react-select.md)
+- [Formik](../extensions/formik.md)
+- [React Hook Form](../extensions/react-hook-form.md)
+- [React cheatsheet](../cheatsheet.mdx)

@@ -6,6 +6,52 @@ description: Memory-safe systems language without a garbage collector - ownershi
 
 > **Quick reference:** [Rust Cheatsheet](./cheatsheet.mdx)
 
+import LayerFlow from "@site/src/components/LayerFlow";
+
+<LayerFlow
+  ariaLabel="Rust ecosystem"
+  layers={[
+    {
+      title: "Core",
+      nodes: [
+        { label: "Cheatsheet", to: "/docs/technologies/rust/cheatsheet/" },
+        { label: "Ownership", to: "/docs/technologies/rust/#ownership" },
+        { label: "Borrowing", to: "/docs/technologies/rust/#borrowing" },
+        { label: "Lifetimes", to: "/docs/technologies/rust/#lifetimes" },
+        { label: "Traits", to: "/docs/technologies/rust/#traits" },
+        { label: "Enums & matching", to: "/docs/technologies/rust/#enums-and-pattern-matching" },
+        { label: "Error handling", to: "/docs/technologies/rust/#error-handling-with-result-and-" },
+      ],
+    },
+    {
+      title: "Runtime",
+      nodes: [
+        { label: "Cargo & crates", to: "/docs/technologies/rust/#cargo-and-crates" },
+        { label: "Async with tokio", to: "/docs/technologies/rust/#async-with-tokio" },
+        { label: "When to use Rust", to: "/docs/technologies/rust/#when-to-choose-rust" },
+      ],
+    },
+    {
+      title: "Frameworks",
+      nodes: [
+        { label: "Axum" },
+      ],
+    },
+    {
+      title: "Data & API",
+      nodes: [
+        { label: "Serde" },
+      ],
+    },
+    {
+      title: "Quality",
+      nodes: [
+        { label: "Clippy", to: "/docs/technologies/rust/#cargo-and-crates" },
+      ],
+    },
+  ]}
+/>
+
 - Open-source systems programming language, started at **Mozilla**, now run by the **Rust Project** / Rust Foundation
 - **Features**
   - Memory safety **without a garbage collector** (checked at compile time by the borrow checker)

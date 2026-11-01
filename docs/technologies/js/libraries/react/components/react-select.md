@@ -39,3 +39,9 @@ const MyComponent = () => (
 ## Creatable
 
 ## Async
+
+## Related notes
+
+- [React Number Format](./react-number-format.md)
+- [Formik](../extensions/formik.md)
+- [React Hook Form](../extensions/react-hook-form.md)

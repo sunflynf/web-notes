@@ -460,3 +460,9 @@ flowchart TD
 - [JWT.io Debugger](https://jwt.io)
 - [MSAL .NET](https://learn.microsoft.com/azure/active-directory/develop/msal-overview)
 - [ASP.NET Core Security](https://learn.microsoft.com/aspnet/core/security/)
+
+## Related notes
+
+- [ASP.NET Core](./asp-net-core.md) - the authentication middleware pipeline
+- [Authentication](../../key-notes/authentication.md) - sessions, tokens and OAuth concepts
+- [Cloud identity](../../cloud-computing/identity.mdx) - managed identity services

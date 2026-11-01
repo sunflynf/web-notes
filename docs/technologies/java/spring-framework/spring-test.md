@@ -275,3 +275,9 @@ public void testWithRealDatabase() {
 - **@BeforeAll**: Executes once before all tests.
 - **@BeforeEach**: Executes before each test.
 - **@AfterEach** and **@AfterAll**: Similar to the above but after tests.
+
+## Related notes
+
+- [Spring cheatsheet](./cheatsheet.mdx)
+- [Spring Security](./spring-security.md) - testing secured endpoints
+- [JPA](../api/jpa.md) - data-layer tests with test slices

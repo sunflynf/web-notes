@@ -58,3 +58,9 @@ description: Server-side view template engines for Node.js and other languages, 
 | --------------- | ---------------------- | ------------------------------------------------------------------------------- |
 | **Razor**       | ASP.NET’s default.     | When using ASP.NET MVC, Razor Pages, or Blazor; great for mixing C# and HTML.   |
 | **Spark**       | Flexible DSL for HTML. | When you want an alternative to Razor with different syntax; less common today. |
+
+## Related notes
+
+- [Express](../be-frameworks/express/index.mdx) - uses view engines for server rendering
+- [Backend frameworks](../be-frameworks/index.mdx)
+- [Frontend frameworks](../fe-frameworks/index.md) - the client-rendered alternative

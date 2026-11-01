@@ -63,3 +63,10 @@ Local servers usually implement the Chat Completions endpoint; support for the n
 - Use the model's **chat template**; wrong templates silently degrade quality (Ollama/vLLM apply it for you).
 - Tool calling and JSON modes depend on the model and server version.
 - Default context length in local runners may be smaller than the model supports; set it explicitly.
+
+## Related notes
+
+- [Model landscape](./model-landscape.mdx) - which models to run
+- [Cost & latency](./cost-latency.mdx) - compare with hosted APIs
+- [Prompting vs RAG vs fine-tuning](./fine-tuning-vs-rag-vs-prompting.mdx) - adapt an open-weight model
+- [Tokens, context & sampling](./tokens-context-sampling.mdx) - context length and sampling settings

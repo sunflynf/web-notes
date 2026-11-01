@@ -178,3 +178,10 @@ public class JDBCExample {
 - **Custom Queries**: In Spring Data JDBC, add custom query methods using `@Query` or in a custom repository implementation if needed.
 - **Testing**: Use H2 or another in-memory database for testing, or Spring’s test modules with transactional support.
 - **Optimizing Performance**: Use connection pooling (e.g., HikariCP) in production environments for JDBC.
+
+## Related notes
+
+- [JPA](./jpa.md) - the higher-level abstraction over JDBC
+- [Spring](../spring-framework/index.mdx)
+- [SQL cheatsheet](../../database/relational/sql-cheatsheet.mdx)
+- [Cloud databases](../../../cloud-computing/databases.mdx)

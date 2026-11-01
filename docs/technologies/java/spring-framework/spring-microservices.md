@@ -213,3 +213,10 @@ spring:
 
 - [Spring Cloud Documentation](https://spring.io/projects/spring-cloud)
 - [Spring Initializr](https://start.spring.io)
+
+## Related notes
+
+- [Spring event-driven](./spring-event-driven.md) - messaging between services
+- [Spring Security](./spring-security.md) - securing service-to-service calls
+- [Microservices](../../../key-notes/microservices.mdx) - the architecture concepts
+- [Cloud compute](../../../cloud-computing/compute.mdx) - deploying services

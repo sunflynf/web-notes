@@ -12,6 +12,9 @@ tags:
 
 > **Quick reference:** [NestJS Cheatsheet](./cheatsheet.mdx)
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 ## 1. Core Concepts
 
 ### 1.1. Module
@@ -68,6 +71,11 @@ export class CatsService {
 
 Processes requests before reaching controllers.
 
+Middleware can be written as a class or as a plain function, and registered per route or globally:
+
+<Tabs groupId="nest-middleware">
+<TabItem value="class" label="Class middleware" default>
+
 ```typescript title="logger.middleware.ts"
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { Request, Response, NextFunction } from "express";
@@ -80,6 +88,46 @@ export class LoggerMiddleware implements NestMiddleware {
   }
 }
 ```
+
+```typescript title="app.module.ts"
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes("cats");
+  }
+}
+```
+
+</TabItem>
+<TabItem value="functional" label="Functional middleware">
+
+Use it when the middleware needs no dependencies.
+
+```typescript title="logger.middleware.ts"
+export function logger(req: Request, res: Response, next: NextFunction) {
+  console.log("Request...");
+  next();
+}
+```
+
+```typescript title="app.module.ts"
+consumer.apply(logger).forRoutes(CatsController);
+```
+
+</TabItem>
+<TabItem value="global" label="Global middleware">
+
+```typescript title="main.ts"
+const app = await NestFactory.create(AppModule);
+app.use(logger); // functional only; global middleware cannot use the DI container
+await app.listen(process.env.PORT ?? 3000);
+```
+
+Several middleware in one call run in order: `consumer.apply(cors(), helmet(), logger).forRoutes(CatsController);`
+
+</TabItem>
+</Tabs>
+
+Source: [NestJS middleware](https://docs.nestjs.com/middleware).
 
 ### 1.5. Guard
 

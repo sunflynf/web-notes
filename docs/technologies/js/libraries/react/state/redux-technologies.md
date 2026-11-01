@@ -33,3 +33,10 @@ If your app’s main challenge is data fetching and state management without muc
 - [**Redux thunk**](https://www.npmjs.com/package/redux-thunk): Use for _simple async tasks or small projects_ where you don’t need complex workflows or data caching.
 - [**Redux Saga**](https://redux-saga.js.org/): Best for complex workflows, parallel tasks, and intricate business logic that require _high control_.
 - [**Redux Query**](https://redux-toolkit.js.org/rtk-query/usage/queries): Ideal for data-heavy applications where caching, efficient data fetching, and automated state updates are priorities.
+
+## Related notes
+
+- [React Redux](./react-redux.md)
+- [RTK Query](./rtk-query.md)
+- [Immer](./immerjs.mdx)
+- [State management](./index.mdx)

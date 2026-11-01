@@ -1,6 +1,12 @@
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 ## Control flow
 
 ### Conditional
+
+<Tabs groupId="go-conditional">
+<TabItem value="if" label="if" default>
 
 ```go
 if age > 18 {
@@ -11,6 +17,9 @@ if age > 18 {
     fmt.Println("Child")
 }
 ```
+
+</TabItem>
+<TabItem value="switch" label="switch">
 
 ```go
 switch day {
@@ -56,19 +65,33 @@ default:
 // C or below
 ```
 
+</TabItem>
+</Tabs>
+
 ### Loops
+
+<Tabs groupId="go-loops">
+<TabItem value="for" label="for (classic)" default>
 
 ```go
 // declare; condition; update
 for i := 0; i < 5; i++ {
     fmt.Println(i)
 }
+```
 
+</TabItem>
+<TabItem value="while" label="for (condition / infinite)">
+
+```go
 // Infinity -> for condition {}
 for {
     // do something and break or return
 }
 ```
+
+</TabItem>
+<TabItem value="range" label="for range">
 
 ```go
 // Iterate over collection
@@ -80,6 +103,9 @@ for _, value := range collection {
     fmt.Println(value)
 }
 ```
+
+</TabItem>
+<TabItem value="label" label="labels">
 
 ```go
 // Nested loops with label, this can be used with break and continue
@@ -94,3 +120,6 @@ outer:
         }
     }
 ```
+
+</TabItem>
+</Tabs>

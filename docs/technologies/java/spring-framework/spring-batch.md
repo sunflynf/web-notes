@@ -289,3 +289,10 @@ new JobBuilder("importUsersJob", jobRepository)
 
 - [Spring Batch Reference](https://spring.io/projects/spring-batch)
 - [Spring Initializr](https://start.spring.io)
+
+## Related notes
+
+- [Spring cheatsheet](./cheatsheet.mdx)
+- [JPA](../api/jpa.md) - readers and writers for databases
+- [Spring event-driven](./spring-event-driven.md) - trigger jobs from messages
+- [Cloud compute](../../../cloud-computing/compute.mdx) - where batch jobs run

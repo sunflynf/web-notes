@@ -100,3 +100,58 @@ Each framework names things differently (e.g. `Bind`, `Decode`, `Render`, `Conte
 - **Maximum raw performance**: FastHTTP
 
 [1]: https://blog.logrocket.com/top-go-frameworks-2025/ "The 8 best Go web frameworks for 2025: Updated list"
+
+## Side by side
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+One route with a JSON response, `GET /users/{id}`, with the standard library and with Gin.
+
+<Tabs groupId="go-web">
+<TabItem value="nethttp" label="net/http" default>
+
+```go title="main.go"
+package main
+
+import (
+	"encoding/json"
+	"net/http"
+)
+
+func main() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /users/{id}", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{
+			"id":   r.PathValue("id"),
+			"name": "Ada",
+		})
+	})
+	http.ListenAndServe(":8080", mux)
+}
+```
+
+Source: [net/http](https://pkg.go.dev/net/http) (patterns can match the method, such as `"GET /static/"`; `Request.PathValue` since Go 1.22). Error handling for `Encode` and `ListenAndServe` is left out.
+
+</TabItem>
+<TabItem value="gin" label="Gin">
+
+```go title="main.go"
+package main
+
+import "github.com/gin-gonic/gin"
+
+func main() {
+	r := gin.Default()
+	r.GET("/users/:id", func(c *gin.Context) {
+		c.JSON(200, gin.H{"id": c.Param("id"), "name": "Ada"})
+	})
+	r.Run(":8080")
+}
+```
+
+Source: [Gin quickstart](https://gin-gonic.com/en/docs/quickstart/) (requires Go 1.25 or above); `c.Param` follows the style of the [Gin note](./gin.mdx). Full note: [Gin](./gin.mdx) · [Gin cheatsheet](./gin-cheatsheet.mdx).
+
+</TabItem>
+</Tabs>

@@ -299,3 +299,10 @@ const Dashboard = () => {
   // ...
 };
 ```
+
+## Related notes
+
+- [React Helmet](./react-helmet.md) - per-route document head
+- [React](../index.mdx)
+- [Remix](../../../fe-frameworks/react/remix.mdx) - built on React Router
+- [React cheatsheet](../cheatsheet.mdx)

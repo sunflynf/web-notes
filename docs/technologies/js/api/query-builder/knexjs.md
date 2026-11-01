@@ -235,3 +235,10 @@ async function getUser(id) {
 ## Reference
 
 - [Knex - Official Documents](https://www.npmjs.com/package/knex)
+
+## Related notes
+
+- [node-postgres](./node-postgres.md)
+- [ORMs](../orm/index.mdx) - when you want models instead of queries
+- [SQL cheatsheet](../../../database/relational/sql-cheatsheet.mdx)
+- [Cloud databases](../../../../cloud-computing/databases.mdx)

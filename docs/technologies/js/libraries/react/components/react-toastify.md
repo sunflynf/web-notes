@@ -153,3 +153,9 @@ export default function App() {
   );
 }
 ```
+
+## Related notes
+
+- [React](../index.mdx)
+- [React cheatsheet](../cheatsheet.mdx)
+- [RTK Query](../state/rtk-query.md) - show toasts on request results

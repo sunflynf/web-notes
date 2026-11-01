@@ -96,7 +96,7 @@ function Hero(): JSX.Element {
         <div className={styles.actions}>
           <Link
             className="button button--primary button--lg"
-            to="/docs/category/software-technologies"
+            to="/docs/technologies/"
           >
             Browse the notes
           </Link>

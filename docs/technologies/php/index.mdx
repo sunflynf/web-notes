@@ -7,6 +7,55 @@ description: PHP language notes - syntax, control flow, functions, arrays, OOP, 
 
 > **Quick reference:** [PHP Cheatsheet](./cheatsheet.mdx)
 
+import LayerFlow from "@site/src/components/LayerFlow";
+
+<LayerFlow
+  ariaLabel="PHP ecosystem"
+  layers={[
+    {
+      title: "Core",
+      nodes: [
+        { label: "Cheatsheet", to: "/docs/technologies/php/cheatsheet/" },
+        { label: "Introduction", to: "/docs/technologies/php/#1-introduction-to-php" },
+        { label: "Control structures", to: "/docs/technologies/php/#2-control-structures" },
+        { label: "Functions", to: "/docs/technologies/php/#3-functions-in-php" },
+        { label: "Arrays", to: "/docs/technologies/php/#4-working-with-arrays" },
+        { label: "OOP", to: "/docs/technologies/php/#5-object-oriented-programming-oop" },
+        { label: "Modern PHP", to: "/docs/technologies/php/#8-modern-php-features-7x--8x" },
+      ],
+    },
+    {
+      title: "Runtime",
+      nodes: [
+        { label: "Composer" },
+        { label: "Request handling", to: "/docs/technologies/php/#6-superglobals--request-handling" },
+      ],
+    },
+    {
+      title: "Frameworks",
+      nodes: [
+        { label: "Laravel", to: "/docs/technologies/php/laravel/" },
+        { label: "Laravel Cheatsheet", to: "/docs/technologies/php/laravel/cheatsheet/" },
+        { label: "Laravel architecture", to: "/docs/technologies/php/laravel/architecture/" },
+      ],
+    },
+    {
+      title: "Data & API",
+      nodes: [
+        { label: "PDO" },
+      ],
+    },
+    {
+      title: "Quality",
+      nodes: [
+        { label: "Exceptions", to: "/docs/technologies/php/#7-error-handling--exceptions" },
+        { label: "Logging", to: "/docs/technologies/php/#73-basic-logging" },
+        { label: "PHPUnit" },
+      ],
+    },
+  ]}
+/>
+
 import Intro from "./concepts/_01-intro.mdx";
 import ControlStructures from "./concepts/_02-control_structures.mdx";
 import Functions from "./concepts/_03-function.mdx";

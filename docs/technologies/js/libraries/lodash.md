@@ -249,3 +249,9 @@ times(n: number, identity) => any[];
 mixin()
 runInContext()
 ```
+
+## Related notes
+
+- [JavaScript cheatsheet](../cheatsheet.mdx)
+- [TypeScript cheatsheet](../ts-cheatsheet.mdx)
+- [jQuery](./jquery.md) - another older utility library

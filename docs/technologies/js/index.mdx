@@ -10,6 +10,83 @@ tags:
 
 > **Quick reference:** [JavaScript Cheatsheet](./cheatsheet.mdx)
 
+import LayerFlow from "@site/src/components/LayerFlow";
+
+<LayerFlow
+  ariaLabel="JavaScript ecosystem"
+  layers={[
+    {
+      title: "Core",
+      nodes: [
+        { label: "Cheatsheet", to: "/docs/technologies/js/cheatsheet/" },
+        { label: "TypeScript", to: "/docs/technologies/js/ts/" },
+        { label: "TypeScript Cheatsheet", to: "/docs/technologies/js/ts-cheatsheet/" },
+        { label: "Syntax", to: "/docs/technologies/js/#syntax" },
+        { label: "Control flow", to: "/docs/technologies/js/#conditions" },
+        { label: "Data types", to: "/docs/technologies/js/#data-types" },
+        { label: "Functions", to: "/docs/technologies/js/#functions" },
+        { label: "Objects", to: "/docs/technologies/js/#object" },
+        { label: "Arrays", to: "/docs/technologies/js/#arrays" },
+        { label: "Classes", to: "/docs/technologies/js/#class-es6" },
+        { label: "Modules", to: "/docs/technologies/js/#module" },
+        { label: "Promises & async", to: "/docs/technologies/js/#promise--async" },
+        { label: "DOM", to: "/docs/technologies/js/#document-object-model" },
+      ],
+    },
+    {
+      title: "Runtime",
+      nodes: [
+        { label: "Node.js", to: "/docs/technologies/js/env/nodejs/" },
+        { label: "Node.js Cheatsheet", to: "/docs/technologies/js/env/nodejs-cheatsheet/" },
+        { label: "Bun" },
+        { label: "Deno" },
+      ],
+    },
+    {
+      title: "Frameworks",
+      nodes: [
+        { label: "React", to: "/docs/technologies/js/libraries/react/" },
+        { label: "Next.js", to: "/docs/technologies/js/fe-frameworks/react/nextjs/" },
+        { label: "Vue", to: "/docs/technologies/js/fe-frameworks/vue/" },
+        { label: "Angular", to: "/docs/technologies/js/fe-frameworks/angular/" },
+        { label: "Express", to: "/docs/technologies/js/be-frameworks/express/" },
+        { label: "NestJS", to: "/docs/technologies/js/be-frameworks/nest/" },
+        { label: "Fastify", to: "/docs/technologies/js/be-frameworks/fastify/" },
+        { label: "Nuxt", to: "/docs/technologies/js/fe-frameworks/vue/nuxt/" },
+        { label: "Remix", to: "/docs/technologies/js/fe-frameworks/react/remix/" },
+        { label: "TanStack Table", to: "/docs/technologies/js/tanstack/react/react-table/" },
+        { label: "TanStack Form", to: "/docs/technologies/js/tanstack/react/react-form/" },
+      ],
+    },
+    {
+      title: "Data & API",
+      nodes: [
+        { label: "Axios", to: "/docs/technologies/js/api/axios/" },
+        { label: "TanStack Query", to: "/docs/technologies/js/tanstack/react/react-query/" },
+        { label: "TanStack Cheatsheet", to: "/docs/technologies/js/tanstack/cheatsheet/" },
+        { label: "Redux & state", to: "/docs/technologies/js/libraries/react/state/" },
+        { label: "RTK Query", to: "/docs/technologies/js/libraries/react/state/rtk-query/" },
+        { label: "Socket.IO", to: "/docs/technologies/js/api/socket-io/" },
+        { label: "Prisma", to: "/docs/technologies/js/api/orm/prisma/" },
+        { label: "TypeORM", to: "/docs/technologies/js/api/orm/type-orm/" },
+        { label: "Sequelize", to: "/docs/technologies/js/api/orm/sequelize/" },
+        { label: "Drizzle", to: "/docs/technologies/js/api/orm/drizzle/" },
+        { label: "Knex", to: "/docs/technologies/js/api/query-builder/knexjs/" },
+        { label: "node-postgres", to: "/docs/technologies/js/api/query-builder/node-postgres/" },
+      ],
+    },
+    {
+      title: "Quality",
+      nodes: [
+        { label: "Testing Cheatsheet", to: "/docs/technologies/js/testing/cheatsheet/" },
+        { label: "Jest", to: "/docs/technologies/js/testing/jest/" },
+        { label: "Mocha", to: "/docs/technologies/js/testing/mocha/" },
+        { label: "ESLint" },
+      ],
+    },
+  ]}
+/>
+
 import Position from "./concepts/_position.mdx";
 import Syntax from "./concepts/_syntax.mdx";
 import DataType from "./concepts/_datatype.mdx";

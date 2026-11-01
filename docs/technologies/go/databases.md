@@ -317,3 +317,10 @@ col.InsertOne(ctx, bson.M{"name": "Fee"})
 | 🚀 Mid-size service            | `pgx` or `Bun`            | Strong performance + dev ergonomics |
 | 🧠 Full app / SaaS             | `GORM` or `Ent`           | Rich ORM + migration system         |
 | ⚡ Data-intensive / custom SQL | `pgxpool` + query builder | Max control                         |
+
+## Related notes
+
+- [Go index](./index.mdx)
+- [Go cheatsheet](./cheatsheet.mdx)
+- [SQL cheatsheet](../database/relational/sql-cheatsheet.mdx)
+- [Cloud databases](../../cloud-computing/databases.mdx) - managed database services

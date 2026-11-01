@@ -195,3 +195,9 @@ _Recommend add-ons_
 - [React-bootstrap](https://react-bootstrap.github.io/)
 - [Angular + bootstrap](https://ng-bootstrap.github.io/#/home)
 - [Vue + bootstrap](https://bootstrap-vue-next.github.io/bootstrap-vue-next/)
+
+## Related notes
+
+- [Tailwind CSS](./tailwindcss.md)
+- [CSS](../css/index.mdx)
+- [CSS cheatsheet](../css/cheatsheet.mdx)

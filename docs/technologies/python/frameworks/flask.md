@@ -232,3 +232,10 @@ pip install Flask-Migrate
 ## References
 
 - [Flask documentation](https://flask.palletsprojects.com/).
+
+## Related notes
+
+- [Django](./django.md)
+- [FastAPI](./fastapi.md)
+- [Python frameworks](./index.md)
+- [Python cheatsheet](../cheatsheet.mdx)

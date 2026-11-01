@@ -101,3 +101,11 @@ flowchart TD
     J -->|Want minimal runtime| N[SvelteKit]
     J -->|Enterprise scale| O[Angular]
 ```
+
+## Related notes
+
+- [React](../libraries/react/index.mdx)
+- [Next.js](./react/nextjs.mdx)
+- [Vue](./vue/index.mdx)
+- [Angular](./angular/index.mdx)
+- [Backend frameworks](../be-frameworks/index.mdx) - the server side

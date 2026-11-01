@@ -40,7 +40,8 @@ yarn write-heading-ids    # Add heading IDs to markdown files
 ```
 web-notes/
 ├── docs/                   # Main documentation content (MDX)
-│   ├── technologies/       # Programming languages, frameworks
+│   ├── llm/                # LLM notes
+│   ├── technologies/       # Programming languages, frameworks (opens with the roadmap, index.mdx)
 │   ├── key-notes/         # Best practices, patterns, interviews
 │   ├── cloud-computing/   # Entry page (index.mdx) + 8 building blocks, plus Ubuntu and ELK
 │   ├── assets/            # Images shared by docs pages
@@ -108,14 +109,15 @@ Never edit generated output in `build/` or `.docusaurus/`; update source files i
 **LayerFlow** (`src/components/LayerFlow/`):
 - Architecture map: layers left to right, with an optional band underneath
 - Props: `ariaLabel`, `layers` (`{title, nodes}[]`), `around` (one layer), `caption`
-- Node shape: `{label, to?, detail?, plain?}`; `to` is a site URL such as `/docs/cloud-computing/compute/#lambda`, `detail` is the small second line, `plain` marks a non-link box
+- Node shape: `{label, to?, detail?, plain?}`; `to` is a site URL such as `/docs/cloud-computing/compute/#lambda`, `detail` is the small second line, `plain` marks a non-link box; a node with neither `to` nor `plain` renders as a faded "no note yet" gap box
+- Wrapping: layers wrap onto further rows with whole words; compact columns only when every word fits; 5 layers wrap 3+2, never 4+1
 
 **ZoomBlock** (`src/components/ZoomBlock/`):
 - Wraps wide content (diagrams, images) with zoom in/out/reset buttons
 
 ### Content Organization
 
-- Documentation is organized by topic (technologies, key-notes, cloud-computing); project blueprints live in the separate `projects/` instance
+- Documentation is organized by topic (technologies, key-notes, cloud-computing, llm); project blueprints live in the separate `projects/` instance
 - Cloud Computing is an entry page (`index.mdx`: architecture map, service mapping, platform comparison) plus 8 building blocks: Foundations, Identity, Compute, Storage, Databases, Networking, Messaging, Monitoring (`scripts/checks/cloud-blocks.mjs` checks them)
 - Folders use `_category_.json` (or `_category_.yml`) for label and ordering
 - Markdown/MDX files support:
@@ -187,7 +189,7 @@ Add to `prism.additionalLanguages` in `docusaurus.config.ts` (check the existing
 
 There is no unit test framework. `yarn typecheck` and `yarn build` are the required validation suite — run both before opening a PR.
 
-- After `yarn build`, run `node --no-warnings scripts/checks/redirects.mjs`, `cloud-blocks.mjs` and `ledger.mjs` (from the repo root). `redirects.mjs` reads `build/`; `cloud-blocks.mjs` reads the block pages; `ledger.mjs` reads the retired pages from the `v1.1.1` tag. CI runs `redirects.mjs`.
+- After `yarn build`, run `node --no-warnings scripts/checks/redirects.mjs`, `cloud-blocks.mjs`, `ledger.mjs` and `orphans.mjs` (from the repo root). `redirects.mjs` reads `build/`; `cloud-blocks.mjs` reads the block pages; `ledger.mjs` reads the retired pages from the `v1.1.1` tag; `orphans.mjs` reads `build/` and fails on any technologies, cloud-computing or llm page that links to no other note (fix: add a "Related notes" section). CI runs `redirects.mjs`.
 - Content changes: confirm links, imports, frontmatter, Mermaid diagrams, and custom MDX components compile.
 - UI/style changes: check the affected page in `yarn start` in both light and dark themes.
 

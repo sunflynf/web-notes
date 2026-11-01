@@ -228,3 +228,10 @@ Fastify uses hooks and plugins instead of middleware.
    Visit the [Fastify Docs](https://fastify.dev/docs/latest/) for in-depth explanations and examples.
 
 :::
+
+## Related notes
+
+- [Express](./express/index.mdx)
+- [NestJS](./nest/index.md)
+- [ORMs](../api/orm/index.mdx)
+- [Cloud compute](../../../cloud-computing/compute.mdx) - deploying Node services

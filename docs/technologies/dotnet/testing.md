@@ -382,3 +382,10 @@ tests/
 | Fake | Simplified implementation |
 | Spy | Tracks interactions |
 | Regression Test | Prevent reintroduced bugs |
+
+## Related notes
+
+- [ASP.NET Core](./asp-net-core.md) - integration-testing the pipeline
+- [Entity Framework Core](./entity-framework-core.md) - testing data access
+- [Project structure](./project-structure.md) - where test projects live
+- [.NET cheatsheet](./cheatsheet.mdx)

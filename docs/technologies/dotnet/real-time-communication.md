@@ -418,3 +418,10 @@ flowchart TD
 3. Explain distributed event ordering.
 4. Design a multiplayer game backend.
 5. How do you prevent connection storms?
+
+## Related notes
+
+- [ASP.NET Core](./asp-net-core.md)
+- [Socket.IO](../js/api/socket-io.mdx) - the same idea in Node.js
+- [Cloud messaging](../../cloud-computing/messaging.mdx) - scale out with a backplane
+- [Cloud networking](../../cloud-computing/networking.mdx) - load balancers and WebSocket support

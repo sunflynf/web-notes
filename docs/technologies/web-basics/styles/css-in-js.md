@@ -49,3 +49,9 @@ tags: [Frontend, CSS, JavaScript]
 - [**goober**](https://www.npmjs.com/package/goober) is a performant and lightweight alternative to **emotion**, with a similar API and feature set.
 - [**twind**](https://twind.style/) is a utility-first CSS-in-JS library that focuses on simplicity and ease of use. It's a good choice if you prefer a more functional and composable approach to styling.
 - [**vanilla-extract**](https://vanilla-extract.style/) is a newer CSS-in-JS library that focuses on type safety and performance. It's a good choice if you prefer a more functional and type-safe approach to styling, and if you're using TypeScript.
+
+## Related notes
+
+- [CSS](./css/index.mdx)
+- [Tailwind CSS](./frameworks/tailwindcss.md) - utility classes instead
+- [React](../../js/libraries/react/index.mdx)
