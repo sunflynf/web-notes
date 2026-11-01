@@ -16,7 +16,7 @@ This report is the commit after those four.
 | Path | Role |
 |---|---|
 | `docs/devops/index.mdx` | Entry: deploy-path map, "Where should this run?", moving between options |
-| `docs/devops/platforms/index.mdx` | Decision chart and one comparison table |
+| `docs/devops/platforms/index.mdx` | Decision chart and a comparison grouped by service: frontend hosting, application hosting, backend services, tunnels |
 | `docs/devops/platforms/vercel.mdx` | Platform page |
 | `docs/devops/platforms/netlify.mdx` | Platform page |
 | `docs/devops/platforms/cloudflare.mdx` | Pages, Workers, R2, DNS, Tunnel |
@@ -122,16 +122,19 @@ A line below is something that was not confirmed on 2026-11-01. Open the linked 
 
 Two hits are ordinary English in moved pages, not an unconfirmed claim: `docs/devops/vps/ubuntu-server-cheatsheet.mdx:129` ("verify with `sshd -T`") and `docs/devops/observability/elk-stack/logstash.md:78` ("verify field types in Kibana").
 
-### Comparison table (`docs/devops/platforms/index.mdx`)
+### Comparison (`docs/devops/platforms/index.mdx`)
 
-- 64: Vercel first-party Postgres; full region name list
-- 65: Netlify database engine and extra caps; region list
-- 66: D1 free limits; Cloudflare city list
-- 67: Render free Postgres storage and expiry; region list
-- 68: Railway domains doc; region list; which unit-rate table the invoice uses
-- 69: Fly.io live region list (`fly platform regions`)
-- 70: Supabase API custom domain; region list in the dashboard
-- 71: ngrok edge region list
+Grouped by service. Line numbers are the grouped tables.
+
+- 68: Vercel first-party Postgres; full region name list
+- 69: Netlify database engine and extra caps; region list
+- 70: D1 free limits; Cloudflare city list
+- 82: Render free Postgres storage and expiry; region list
+- 83: Railway domains doc; region list; which unit-rate table the invoice uses
+- 84: Fly.io live region list (`fly platform regions`)
+- 96: Supabase API custom domain; region list in the dashboard
+- 108: ngrok edge region list
+- 109: Cloudflare Tunnel price; city list; `cloudflared` version
 
 ### Vercel (`vercel.mdx`)
 
