@@ -1,0 +1,113 @@
+---
+title: Cloudflare
+sidebar_label: Cloudflare
+sidebar_position: 4
+description: Cloudflare Pages, Workers, R2, DNS, and Tunnel. Limits checked 2026-11-01.
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Cloudflare
+
+Cloudflare is a network in front of your origin, plus products that run on that network: Pages for sites, Workers for compute, R2 for objects, DNS, and Tunnel for an origin that has no public inbound ports.
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | An edge network. Pages serves sites. Workers runs JavaScript, Wasm, and static assets at the edge. R2 stores objects. Tunnel publishes a private origin. |
+| Use it for | A static or SSR frontend on Pages, a small API on Workers, off-site backups in R2, DNS cutovers, and a stable tunnel instead of ngrok. |
+| Don't use it for | A long-running container, a relational database server, or a Worker that needs more CPU per request than the plan allows. |
+| Free tier (checked 2026-11-01) | [Workers](https://developers.cloudflare.com/workers/platform/pricing/) (updated 2026-10-02): 100,000 requests/day and 10 ms of CPU per invocation. No duration charge. Workers Logs: 200,000 events/day, kept 3 days. KV: 100,000 reads/day, 1,000 writes/day, 1 GB stored. [Pages Functions](https://developers.cloudflare.com/pages/functions/pricing/) (updated 2026-09-08): function requests count as Workers requests. Static asset requests are free and unlimited on Free and Paid. The free daily quota resets at midnight UTC. [R2](https://developers.cloudflare.com/r2/pricing/) (updated 2026-10-30), Standard only: 10 GB-month, 1 million Class A operations, 10 million Class B operations, egress free. Pages build minutes: `verify`. D1 free limits: `verify`. |
+| Pricing model (checked 2026-11-01) | Workers Paid (Standard) has a $5/month minimum, then 10 million requests included and $0.30 per extra million. Paid logs: 20 million events/month, then $0.60 per million, kept 7 days. R2 Standard: $0.015/GB-month, Class A $4.50 per million, Class B $0.36 per million, egress free (S3 API, Workers API, and the r2.dev domain). Infrequent Access has no free tier: $0.01/GB-month, retrieval $0.01/GB, 30-day minimum. Deletes are free. No separate Tunnel price was found. Quick Tunnels are described as free (`verify` any cap on named hostnames on the Free plan). |
+| CLI and latest version (checked 2026-11-01) | Wrangler 4.156.0, released 2026-10-29 (`wrangler@4.156.0`). `cloudflared` version: `verify`. |
+| Official docs | [developers.cloudflare.com](https://developers.cloudflare.com/) |
+
+## Core concepts
+
+- **Pages**: a Git-built site. Static files are unlimited on the request meter. Pages Functions are Workers and share that meter.
+- **Workers**: the compute product. A Worker has a script, bindings (KV, R2, D1), and routes. It is not a container.
+- **CPU time**: the billed part of a request on Workers. Waiting on a fetch does not use CPU the same way (`verify` the current "duration vs CPU" wording on the pricing page before you size a chatty Worker).
+- **R2**: S3-compatible object storage. Egress to the internet is free on the Standard numbers above. This is the bucket for off-site database dumps.
+- **DNS, proxied vs DNS-only**: a proxied record (orange cloud) sends traffic through Cloudflare. A DNS-only record sends it straight to the origin. [Proxy status](https://developers.cloudflare.com/dns/proxy-status/).
+- **Tunnel**: `cloudflared` makes an outbound connection. Nothing on the origin has to accept inbound traffic. A named tunnel is a stable hostname. A Quick Tunnel is a random `trycloudflare.com` name.
+- **Bindings**: how a Worker reaches KV, R2, or D1 without embedding a key in the script.
+
+## Deploy
+
+<Tabs>
+  <TabItem value="dashboard" label="Dashboard" default>
+
+1. **Pages**: Workers and Pages, Create, Pages, Connect to Git. Set the root directory, build command, and output directory. Add environment variables for production and preview.
+2. **Workers**: create a Worker, or connect a Git repo. Secrets go in the Worker's settings, not in the script.
+3. **R2**: create a bucket. Create an API token with object read and write on that bucket only. Use it from the backup job. Do not use the global API key.
+4. **DNS**: add the zone, then add a record. Leave it DNS-only until the origin answers correctly, then switch it to proxied. During a cutover, switch the record back to DNS-only to send traffic at the origin directly, or change the target and keep it proxied to move the name without exposing the origin.
+5. **Rollback**: Workers and Pages both keep previous deployments. Roll back from the deployment list in the dashboard. Workers can also roll back with Wrangler (next tab).
+
+  </TabItem>
+  <TabItem value="cli" label="CLI">
+
+1. `npx wrangler login`.
+2. Pages: `npx wrangler pages deploy <directory> --project-name <name>`.
+3. Workers: `npx wrangler deploy`. Put secrets in with `npx wrangler secret put NAME`.
+4. A custom domain for a Worker is `npx wrangler domains` or the `routes` / `workers_dev` keys in the config (`verify` the current subcommand with `npx wrangler --help`).
+5. Roll a Worker back: `npx wrangler rollback` (`verify` the version argument with `--help`).
+
+  </TabItem>
+  <TabItem value="config" label="Config file">
+
+Wrangler accepts `wrangler.toml` or `wrangler.jsonc`. Docs: [configuration](https://developers.cloudflare.com/workers/wrangler/configuration/).
+
+```jsonc
+{
+  "name": "api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true
+}
+```
+
+`compatibility_date` opts the Worker into runtime behaviour as of that date. Set it on purpose. Secrets are not in this file. Use `wrangler secret put` or a dashboard secret. Pages projects built by Git still use the dashboard for the build command; Wrangler config covers Workers and direct Pages deploys.
+
+  </TabItem>
+</Tabs>
+
+## Common patterns
+
+- **Pages vs Workers**: use Pages when the thing you ship is a site with a build step. Use Workers when the thing you ship is a request handler, a cron trigger, or a small API. A Pages Function is a Worker under the Pages request quota.
+- **Preview per pull request**: Pages builds a preview deployment for each PR when the Git connection is on.
+- **Cron**: a Worker can use a `triggers.crons` entry. Confirm the syntax on the [cron triggers](https://developers.cloudflare.com/workers/configuration/cron-triggers/) page.
+- **R2 backups**: a nightly `pg_dump` from the VPS uploads with the S3 API. Egress from R2 is free on the Standard price above, which is why this bucket is a good off-site copy. See [Backups](../vps/self-host-a-docker-stack.mdx#backups-and-restore).
+- **DNS cutover**: lower the TTL first (on the current DNS host). At cutover, point the record at the new origin. Prefer DNS-only until TLS on the new origin is good, then proxy it. Keep the old origin running so you can point the record back.
+- **Tunnel**: a named tunnel plus a DNS CNAME to `<tunnel-uuid>.cfargotunnel.com` is the stable alternative to ngrok. See the comparison on the [ngrok](./ngrok.mdx) page.
+
+### Tunnel {#tunnel}
+
+Quick Tunnels (`cloudflared tunnel --url`) get a random `trycloudflare.com` name, have no SLA, and stop at 200 in-flight requests (HTTP 429). The docs (updated 2026-08-24) say they are for testing, not production. Named tunnels are the production form. Account limits (updated 2026-10-16): 1,000 tunnels and 25 replicas. `cloudflared` version: `verify`.
+
+## Gotchas
+
+- **CPU time** (checked 2026-11-01): Free Workers get 10 ms of CPU per invocation. A slow JSON transform can hit that even when the request is short on the wall clock.
+- **Pages build minutes**: not confirmed on this pass (`verify`).
+- **D1 free limits**: not confirmed (`verify`). Do not assume they match the KV numbers.
+- **R2 Infrequent Access** (checked 2026-11-01): no free tier, and a 30-day minimum storage duration. Backups that you delete the next morning belong on Standard.
+- **Proxied records hide the origin**. A security group that only allows Cloudflare is a different setup from a DNS-only record that exposes the origin. Do not switch one without checking the firewall.
+- **Named tunnel price**: no separate price was found (`verify` before you put production traffic on a Free-plan hostname).
+- **Durable Objects and D1 location hints**: not confirmed (`verify`).
+
+## What's new in recent releases
+
+- **2026-10-30**: Workers subrequests to BYOIP destinations keep Workers context. [Changelog](https://developers.cloudflare.com/changelog/post/2026-10-30-byoip-workers-subrequest-context/).
+- **2026-10-30**: R2 pricing page updated. Standard free tier and the Infrequent Access price above are from that update.
+- **2026-10-29**: Wrangler 4.156.0 adds an experimental `wrangler d1 insights` across every D1 database.
+- **2026-10-23**: Workers Builds and Pages build images reject compromised eMudhra certificates. Update pinned Bun versions below 1.4.4. [Changelog](https://developers.cloudflare.com/changelog/post/2026-10-23-build-images-emudhra-certificates/).
+- **2026-10-02**: Workers pricing page updated (the Free and Paid figures above).
+- **2026-08-11**: Pages skips a queued build when a newer build for the same project, branch, and target is already queued. [Pages changelog](https://developers.cloudflare.com/changelog/product/pages/).
+
+## Connects to
+
+- [ngrok](./ngrok.mdx): the other way to expose a local port.
+- [Self-host a Docker stack](../vps/self-host-a-docker-stack.mdx): R2 backups and the DNS cutover from a PaaS.
+- [Caddy](../web-servers/caddy.mdx): a DNS-01 certificate through Cloudflare when the proxy is on your VPS.
+- [CI/CD](../ci-cd.mdx): build a container yourself when Workers is the wrong runtime.

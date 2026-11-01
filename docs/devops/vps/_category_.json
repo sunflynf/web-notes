@@ -1,0 +1,8 @@
+{
+  "label": "VPS",
+  "position": 3,
+  "link": {
+    "type": "doc",
+    "id": "devops/vps/self-host-a-docker-stack"
+  }
+}

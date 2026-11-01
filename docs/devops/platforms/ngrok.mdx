@@ -1,0 +1,122 @@
+---
+title: ngrok
+sidebar_label: ngrok
+sidebar_position: 9
+description: ngrok for exposing a local port, and how it compares with Cloudflare Tunnel. Checked 2026-11-01.
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# ngrok
+
+ngrok is an agent that opens an outbound tunnel and gives you a public URL to a port on your machine. Use it for a demo or a webhook. Use a platform or a VPS when the service should stay up without your laptop.
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | A tunnel agent and an edge. The agent dials out. Internet clients hit the ngrok edge, which forwards to your port. |
+| Use it for | A webhook that must reach your laptop, or a demo you will shut down the same day. |
+| Don't use it for | Production traffic, or a hostname you do not want an interstitial page on, while you are on the Free plan. |
+| Free tier (checked 2026-11-01) | Free is $0 and includes a $5 one-time usage credit that lasts one year, only on Free. That credit cannot be spent on data transfer out. When it is gone, usage stops. There is no overage bill. Also: up to 3 online endpoints, up to 1 GB of data transfer out, up to 20,000 HTTP requests (you can spend credit at $2 per 100,000 extra), an interstitial page on HTTP endpoints, 1 development domain, 1 team member. TCP needs a verified card, which is not charged, and the TCP address is random. The agent itself has no extra charge. Rate limits: 4,000 HTTP requests per minute and 100 TCP connections per minute. Inspector retention is 24 hours. [Pricing](https://ngrok.com/pricing) and [pricing.md](https://ngrok.com/pricing.md). |
+| Pricing model (checked 2026-11-01) | Hobbyist is $10/month with $10 of credit, or $8/month billed annually ($96/year). It stops at the credit. There is no overage. 3 online endpoints, 5 GB of data transfer, 100,000 HTTP requests included then $1 per 100,000 if credit remains, 10 ngrok-branded domains, no bring-your-own domain, inspector retention 72 hours. Pay-as-you-go is $20/month with $20 of credit, then billed monthly: unlimited endpoints, 5 GB included then $0.10/GB, 100,000 HTTP requests included then $1 per 100,000, bring-your-own domains at $0.01 per active hour, no interstitial. The pricing.md page says dollar amounts are fetched live. The HTML page agreed with these figures on this check. |
+| CLI and latest version (checked 2026-11-01) | Agent 3.39.13 (2026-10-22), from the [agent changelog](https://ngrok.com/docs/agent/changelog.md). The GitHub releases page for the agent was not the source (it did not resolve). 3.39.12 (2026-10-21) updated Go and fixed a web inspector stall. |
+| Official docs | [ngrok.com/docs](https://ngrok.com/docs/) |
+
+## Core concepts
+
+- **Agent**: the process on your machine (`ngrok`). It holds the tunnel.
+- **Endpoint**: a public URL mapped to a local port. Free allows 3 online at once.
+- **Development domain**: one stable hostname on the Free plan, tied to the account. Endpoints without a reserved domain get a random URL.
+- **Interstitial**: the browser warning page on Free HTTP endpoints. API clients that do not follow the click-through will fail.
+- **Authtoken**: the credential that ties the agent to your account. It belongs in a local config or a secret store, never in a note or a git repo.
+- **Traffic inspector**: a local (and, on paid plans, retained) view of requests. Turning inspection off uses less memory.
+- **Config version 3**: agent settings nest under `agent`. Endpoints are not called tunnels in this version. `version: 3`. Upgrade an old file with `ngrok config upgrade`.
+
+## Deploy
+
+There is nothing to deploy. You run the agent where the server already is.
+
+<Tabs>
+  <TabItem value="dashboard" label="Dashboard" default>
+
+1. Create an account and copy the authtoken from the dashboard. Store it in your password manager.
+2. Claim the development domain if you want a stable name. On Free you get one.
+3. Start the agent (next tab). The dashboard shows the online endpoint.
+4. Open the traffic inspector to see the webhook that just arrived. Free keeps that view for 24 hours (checked 2026-11-01).
+5. Stop the agent to take the URL offline. That is the rollback: the local server was never moved.
+
+  </TabItem>
+  <TabItem value="cli" label="CLI">
+
+1. Install the agent (3.39.13 or later) and run `ngrok config add-authtoken <token>`. Do not paste the token into a ticket or a shell that is being recorded.
+2. `ngrok http 3000` publishes port 3000. Add `--url https://<your-dev-domain>` when you want the stable name (`verify` the flag with `ngrok http --help`).
+3. Without a reserved domain the URL changes every run.
+4. The inspector URL is printed at startup. Leave it bound to localhost.
+5. Ctrl-C stops the tunnel.
+
+  </TabItem>
+  <TabItem value="config" label="Config file">
+
+`ngrok.yml`, version 3. Reference: [agent config](https://ngrok.com/docs/agent/config/). The snippet below has no token. Add the authtoken locally, or reference it from the environment the way the docs show. Do not commit it.
+
+```yaml
+version: 3
+agent:
+  web_addr: localhost:4040
+endpoints:
+  - name: app
+    url: https://your-name.ngrok.app
+    upstream:
+      url: http://localhost:3000
+```
+
+`your-name.ngrok.app` is a placeholder for the development domain the dashboard assigned. A random endpoint omits `url`.
+
+  </TabItem>
+</Tabs>
+
+## Common patterns
+
+- **Webhook in development**: start the agent, put the HTTPS URL in the provider's dashboard, watch the inspector, stop the agent when you are done.
+- **Stable vs random**: the development domain stays put across restarts. A URL with no domain changes, which breaks a webhook you already registered.
+- **Teammate demo**: send the URL. Remember the interstitial on Free: a browser user must click through. A script will not.
+- **Not a deploy**: the process still runs on your computer. Sleep, a closed lid, or a dead agent takes the URL down.
+
+## ngrok vs Cloudflare Tunnel
+
+| | ngrok Free (checked 2026-11-01) | Cloudflare Quick Tunnel | Cloudflare named Tunnel |
+|---|---|---|---|
+| Hostname | 1 development domain, or a random URL | Random `trycloudflare.com` name | A name on your DNS |
+| Interstitial page | Yes, on HTTP | No page documented on this pass (`verify`) | No |
+| SLA | No | No. Docs say testing, not production (updated 2026-08-24) | The tunnel product. A separate price was not found (`verify`) |
+| In-flight cap | Rate limits above | 200 in-flight requests, then HTTP 429 | Account limits: 1,000 tunnels, 25 replicas (updated 2026-10-16) |
+| When to use it | A webhook today, on a laptop | A one-off test | A stable origin that should not open inbound ports |
+
+Named tunnels are documented on the [Cloudflare](./cloudflare.mdx#tunnel) page.
+
+## Gotchas
+
+- **Interstitial** (checked 2026-11-01): Free HTTP endpoints show a warning page. OAuth redirects and webhooks that expect a raw response will break until you move to a plan without it (Pay-as-you-go has none).
+- **Credit** (checked 2026-11-01): Free's $5 lasts one year and cannot pay for data transfer out. When the included 1 GB or the credit is gone, the endpoint stops. It does not quietly bill you.
+- **TCP** (checked 2026-11-01): needs a verified card even though the card is not charged, and the address is random.
+- **Three endpoints** (checked 2026-11-01): a fourth will not come online on Free or Hobbyist.
+- **Inspector memory**: the local inspector keeps bodies in memory. Disable inspection if the agent grows (`verify` the current config key in the agent docs).
+- **Token in the docs**: ngrok's own examples sometimes include a sample authtoken. Never copy one into this site or into git.
+
+## What's new in recent releases
+
+From the [agent changelog](https://ngrok.com/docs/agent/changelog.md):
+
+- **2026-10-22**: agent 3.39.13. Updates `golang.org/x/net` to v0.60.0.
+- **2026-10-21**: agent 3.39.12. Go 1.27.3, an MSIX config fix, and a fix for the web inspector stalling.
+- **Checked 2026-11-01**: config version 3 nests agent settings under `agent` and calls public URLs endpoints. `ngrok config upgrade` rewrites an older file.
+- A longer product changelog outside the agent was not pulled into this note (`verify` on [ngrok.com/docs](https://ngrok.com/docs/) if you need endpoint-product changes).
+
+## Connects to
+
+- [Cloudflare](./cloudflare.mdx#tunnel): the tunnel to use when the hostname should be yours.
+- [Caddy](../web-servers/caddy.mdx): what terminates TLS once the service has a real machine.
+- [Self-host a Docker stack](../vps/self-host-a-docker-stack.mdx): the permanent home for an API that outgrew a laptop.
+- [Networking](../../cloud-computing/networking.mdx): DNS and load balancers, the production version of "make this reachable".

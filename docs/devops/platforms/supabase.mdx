@@ -1,0 +1,118 @@
+---
+title: Supabase
+sidebar_label: Supabase
+sidebar_position: 8
+description: Supabase as a backend platform (Postgres, Auth, Storage), not an app host. Checked 2026-11-01.
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Supabase
+
+Supabase is a backend platform: Postgres, authentication, file storage, row level security, and edge functions around that database. It is not where a Node or Python API process runs. Run that process on [Render](./render.mdx), [Railway](./railway.mdx), [Fly.io](./fly-io.mdx), or a [VPS](../vps/self-host-a-docker-stack.mdx), and point it at Supabase.
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | Hosted Postgres plus Auth, Storage, Realtime, and Edge Functions. The Data API talks to Postgres over HTTP if you enable row level security. |
+| Use it for | A managed Postgres, user accounts, and file storage, with the API hosted somewhere else. |
+| Don't use it for | Running your own long-lived API server. There is no "deploy this Dockerfile" service here. |
+| Free tier (checked 2026-11-01) | Free is $0: 500 MB database per project, shared CPU / 500 MB RAM, 50,000 monthly active users, 5 GB egress, 5 GB cached egress, 1 GB file storage, 50 MB max upload, unlimited API requests. A project pauses after 1 week of inactivity. The limit is 2 active projects. No automatic backups and no point-in-time recovery. [Pricing](https://supabase.com/pricing). |
+| Pricing model (checked 2026-11-01) | Pro starts at $25/month: 8 GB disk, then $0.125/GB. 100,000 MAU, then $0.00325 per MAU. 250 GB egress, then $0.09/GB. 250 GB cached egress, then $0.03/GB. 100 GB file storage, then $0.0213/GB. The plan includes $10/month of compute credits, enough for one Micro instance. Projects on a paid plan are not paused for inactivity. Extra projects add compute. The pricing page's example: a Pro org with two Micro projects is $25 + $10 + $10 - $10 = $35. |
+| CLI and latest version (checked 2026-11-01) | Supabase CLI v2.122.0, published 2026-10-23. [GitHub release](https://github.com/supabase/cli/releases/tag/v2.122.0). |
+| Official docs | [supabase.com/docs](https://supabase.com/docs) |
+
+## Core concepts
+
+- **Project**: one Postgres database, one region, chosen when you create it. You do not move it later without a dump and restore.
+- **Auth**: email, OAuth, and sessions. Users live in `auth.users`. Your tables reference that id.
+- **Row level security (RLS)**: policies on each table decide which rows a request may see. With no policies, RLS denies every row. The Data API is unsafe without it.
+- **Service role**: a secret key that bypasses RLS. It belongs on a server you control, never in a frontend.
+- **Storage**: files in buckets, with policies that look like RLS.
+- **Edge Functions**: Deno handlers at the edge. They are not a replacement for your API server.
+- **Realtime**: Postgres changes streamed to clients. It uses the same authorization story as the database.
+- **Supavisor**: the shared connection pooler. Transaction mode is for short-lived clients. Direct connections are for migrations and for session features such as `LISTEN` / `NOTIFY`.
+
+## Deploy
+
+There is no app deploy. The work is: create the project, push the schema, and lock the tables down.
+
+<Tabs>
+  <TabItem value="dashboard" label="Dashboard" default>
+
+1. Create a project, pick the region, and store the database password in a password manager.
+2. In the SQL editor or the table editor, create tables. Enable RLS on every table in the exposed schema before you ship. Add policies for the operations you intend. A table with RLS and no policy returns nothing.
+3. Auth providers are under Authentication. Redirect URLs must list every frontend origin you use, including preview URLs.
+4. Storage: create a bucket and add policies. The service role bypasses them.
+5. Settings, Database, then **Connect**, shows the connection strings. Copy the one that matches the client (below). Roll back a schema change by writing a down migration or restoring a backup. Free projects have no automatic backups (checked 2026-11-01), so a dump you take yourself is the rollback.
+
+  </TabItem>
+  <TabItem value="cli" label="CLI">
+
+1. `supabase login` and `supabase init`. This creates `supabase/config.toml`.
+2. `supabase link --project-ref <ref>` ties the folder to the remote project.
+3. `supabase db push` applies migrations. `supabase db pull` reads the remote schema (`verify` both commands with `supabase db --help` if a flag has moved).
+4. Set secrets for Edge Functions with `supabase secrets set`. The service role key is a secret. Do not put it in `config.toml`.
+5. A custom domain for the API is a paid add-on on many accounts. `verify` the current price and whether your plan includes it.
+
+  </TabItem>
+  <TabItem value="config" label="Config file">
+
+`supabase/config.toml` after `supabase init`. Reference: [CLI config](https://supabase.com/docs/guides/local-development/cli/config).
+
+```toml
+[db]
+major_version = 17
+
+[auth]
+site_url = "https://app.example.com"
+```
+
+`app.example.com` is a placeholder. Local ports and auth settings live here. The database password, the service role key, and the anon key do not. Those are environment variables on the API host (Vercel, Render, the VPS), not keys in git.
+
+  </TabItem>
+</Tabs>
+
+## Common patterns
+
+- **API somewhere else**: the frontend uses the anon key and RLS. A trusted server uses the service role, or a direct Postgres connection with a role that has the grants you intend.
+- **Preview per pull request**: a branch database or a second project (`verify` whether database branching is on your plan). Do not point preview frontends at the production database with the service role.
+- **Edge Function as a cron**: Edge Functions can be scheduled (`verify` the current schedule syntax). They still are not the place for a long job.
+- **Pooling**: from [Connecting to Postgres](https://supabase.com/docs/guides/database/connecting-to-postgres), checked 2026-11-01.
+  - Direct: port `5432` on the database host. IPv6, unless you buy the IPv4 add-on. Use it for migrations, `pg_dump`, and session state.
+  - Shared pooler, session mode: port `5432` on the pooler host. IPv4. Use it for a persistent backend on an IPv4-only network, and for GUI tools.
+  - Shared pooler, transaction mode (Supavisor): port `6543` on the pooler host. IPv4. Use it for serverless and edge functions. Turn prepared statements off. `LISTEN` / `NOTIFY` and session variables do not survive between transactions.
+  - Dedicated pooler (PgBouncer, Pro and above): port `6543` on the database host. Transaction mode. It supports prepared statements on PgBouncer 1.21 and later.
+  - Copy the host from the Connect dialog. The pooler hostname is not something you can guess from the region name.
+
+## Gotchas
+
+- **RLS** (docs, checked 2026-11-01): enable it on every exposed table. The service role bypasses it. A leaked service role key is full database access.
+- **Pause** (checked 2026-11-01): a Free project pauses after one week without activity. The first request after that waits for the project to wake. Paid projects are not paused for inactivity.
+- **Two projects** (checked 2026-11-01): Free allows two active projects. A third will not start until you pause or delete one.
+- **No automatic backups on Free** (checked 2026-11-01). Take your own `pg_dump` if the data matters. See [Backups](../vps/self-host-a-docker-stack.mdx#backups-and-restore) for the drill, even when the database is managed.
+- **Egress** (checked 2026-11-01): 5 GB on Free, then you need a paid plan. Cached egress is a separate 5 GB.
+- **IPv4**: direct connections are IPv6 by default. An IPv4-only VPS cannot use the direct host unless you add the IPv4 add-on or use the shared pooler (checked 2026-11-01).
+- **Custom domain**: `verify` on the pricing page. Do not assume the API hostname can be renamed on Free.
+- **Region**: one region per project, chosen at creation. The list is in the dashboard (`verify` before you promise a city).
+
+## What's new in recent releases
+
+From the [changelog](https://supabase.com/changelog):
+
+- **2026-10-30**: older Postgres `tzdata` returned the wrong local time for `America/Vancouver`, `America/Edmonton`, and `Africa/Casablanca`. The fix is in 15.19.0.003 or 17.11.0.003 and later. The upgrade has downtime. Stored timestamps are unaffected.
+- **2026-10-23**: Knowledge Base public beta.
+- **2026-10-23**: CLI v2.122.0.
+- **2026-10-14**: the .NET SDK exports OpenTelemetry traces and metrics.
+- **2026-10-12**: TLS 1.2 CBC ciphers will be removed from project HTTP APIs on 2026-11-10 at the earliest. Direct Postgres, the pooler, and the Management API are not affected.
+- **2026-10-05**: `@supabase/server` framework adapters are deprecated and will be removed on 2026-12-01. `withSupabase` itself is not part of that removal. The Go SDK is in public alpha as of the same day.
+
+## Connects to
+
+- [Vercel](./vercel.mdx), [Render](./render.mdx), [Railway](./railway.mdx), [Fly.io](./fly-io.mdx): where the API runs.
+- [PostgreSQL](../../technologies/database/relational/postgre.md): the database this product is.
+- [Authentication](../../key-notes/authentication.md): sessions and tokens, the ideas behind Auth.
+- [Databases](../../cloud-computing/databases.mdx): RDS, when you want Postgres on AWS instead.
+- [Self-host a Docker stack](../vps/self-host-a-docker-stack.mdx): Postgres on the same VPS as the APIs, when you would rather not pause or pool.
