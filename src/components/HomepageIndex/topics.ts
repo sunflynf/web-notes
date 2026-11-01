@@ -120,7 +120,7 @@ export const areas: Area[] = [
   {
     name: "AI",
     marker: "y",
-    topics: [{ label: "LLM", doc: "technologies/llm/index" }],
+    topics: [{ label: "LLM", doc: "llm/index" }],
   },
   {
     name: "Practices",

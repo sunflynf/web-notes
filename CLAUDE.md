@@ -40,6 +40,7 @@ yarn write-heading-ids    # Add heading IDs to markdown files
 ```
 web-notes/
 ├── docs/                   # Main documentation content (MDX)
+│   ├── llm/                # LLM notes
 │   ├── technologies/       # Programming languages, frameworks
 │   ├── key-notes/         # Best practices, patterns, interviews
 │   ├── cloud-computing/   # Entry page (index.mdx) + 8 building blocks, plus Ubuntu and ELK
@@ -115,7 +116,7 @@ Never edit generated output in `build/` or `.docusaurus/`; update source files i
 
 ### Content Organization
 
-- Documentation is organized by topic (technologies, key-notes, cloud-computing); project blueprints live in the separate `projects/` instance
+- Documentation is organized by topic (technologies, key-notes, cloud-computing, llm); project blueprints live in the separate `projects/` instance
 - Cloud Computing is an entry page (`index.mdx`: architecture map, service mapping, platform comparison) plus 8 building blocks: Foundations, Identity, Compute, Storage, Databases, Networking, Messaging, Monitoring (`scripts/checks/cloud-blocks.mjs` checks them)
 - Folders use `_category_.json` (or `_category_.yml`) for label and ordering
 - Markdown/MDX files support:
