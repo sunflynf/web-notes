@@ -102,9 +102,6 @@ app.use("/api/users", router);
 
 **Middleware by scope** (Express docs: application-level, router-level, error-handling, built-in and third-party):
 
-<Tabs groupId="express-middleware">
-<TabItem value="app" label="Application-level" default>
-
 ```js
 // Middleware: logging, auth, validation
 const logger = (req, res, next) => {
@@ -127,6 +124,9 @@ const validate = (schema) => (req, res, next) => {
   next();
 };
 ```
+
+<Tabs groupId="express-middleware">
+<TabItem value="app" label="Application-level" default>
 
 ```js
 app.use(logger);                       // every request
