@@ -81,7 +81,7 @@ app.example.com {
 | | Caddy | Nginx |
 |---|---|---|
 | TLS | Automatic for public names when ports 80 and 443 are open. [Automatic HTTPS](https://caddyserver.com/docs/automatic-https) | You run a client such as Certbot, or you load a certificate yourself. See [Nginx](./nginx.mdx). |
-| Config | A Caddyfile, one site block per name | `server` blocks. The note is in Vietnamese. |
+| Config | A Caddyfile, one site block per name | `server` blocks. |
 | Reload | `caddy reload` | `nginx -s reload` after `nginx -t` |
 | Fit | One VPS, a handful of sites, certificates you do not want to operate | The same job, when you already know Nginx or you need a feature this Caddyfile does not show |
 

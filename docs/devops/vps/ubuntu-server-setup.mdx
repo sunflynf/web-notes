@@ -1,30 +1,30 @@
 ---
-title: Thiết lập máy chủ Ubuntu
+title: Ubuntu server setup
 sidebar_position: 20
-description: Từ VPS trống đến production — SSH key, tường lửa, Fail2ban, cơ sở dữ liệu, Nginx + SSL và quản lý tiến trình trên Ubuntu
+description: From a blank VPS to production — SSH key, firewall, Fail2ban, databases, Nginx + SSL, and process management on Ubuntu
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-# Thiết lập máy chủ Ubuntu
+# Ubuntu server setup
 
 > **Quick reference:** [Ubuntu Server Cheatsheet](./ubuntu-server-cheatsheet.mdx)
 
-Các bước đưa một VPS Ubuntu trống (24.04/26.04 LTS) thành máy chủ chạy ứng dụng: khóa truy cập trước, rồi mới cài cơ sở dữ liệu, reverse proxy và trình quản lý tiến trình.
+Steps that take a blank Ubuntu VPS (24.04/26.04 LTS) to a server that runs an app: lock down access first, then install the database, the reverse proxy, and the process manager.
 
 ```mermaid
 flowchart LR
-  A[1. User & cập nhật] --> B[2. SSH key]
+  A[1. User and updates] --> B[2. SSH key]
   B --> C[3. UFW + Fail2ban]
-  C --> D[4. Cơ sở dữ liệu]
+  C --> D[4. Database]
   D --> E[5. Nginx + SSL]
-  E --> F[6. Quản lý tiến trình]
+  E --> F[6. Process management]
 ```
 
-## 1. Chuẩn bị: user và cập nhật
+## 1. Prepare: user and updates
 
-Không làm việc trực tiếp bằng `root`. Tạo một user có quyền `sudo`, cập nhật hệ thống và bật cập nhật bảo mật tự động:
+Do not work directly as `root`. Create a user with `sudo`, update the system, and turn on automatic security updates:
 
 ```bash
 adduser deploy
@@ -37,18 +37,18 @@ sudo dpkg-reconfigure --priority=low unattended-upgrades
 
 ## 2. SSH key
 
-Xác thực bằng khóa an toàn và tiện hơn mật khẩu, chặn được các cuộc dò mật khẩu tự động.
+Key authentication is safer and easier than a password, and it blocks automated password guessing.
 
-**Trên máy của bạn (client)** — tạo cặp khóa rồi chép khóa công khai lên server:
+**On your machine (the client)** — create a key pair, then copy the public key to the server:
 
 ```bash
-ssh-keygen -t ed25519 -C "email_cua_ban@example.com" # hệ thống cũ: -t rsa -b 4096
-ssh-copy-id deploy@dia_chi_ip_may_chu
+ssh-keygen -t ed25519 -C "you@example.com" # older systems: -t rsa -b 4096
+ssh-copy-id deploy@server_ip
 ```
 
-`ssh-copy-id` tự thêm khóa vào `~/.ssh/authorized_keys` với quyền truy cập đúng.
+`ssh-copy-id` adds the key to `~/.ssh/authorized_keys` with the right permissions.
 
-**Trên server** — sau khi đã đăng nhập được bằng khóa, tắt đăng nhập bằng mật khẩu và đăng nhập `root`:
+**On the server** — once you can log in with the key, turn off password login and `root` login:
 
 ```bash title="/etc/ssh/sshd_config.d/00-hardening.conf"
 PasswordAuthentication no
@@ -57,50 +57,50 @@ PermitRootLogin no
 ```
 
 ```bash
-sudo sshd -t                     # kiểm tra cú pháp
-sudo sshd -T | grep -E 'passwordauthentication|permitrootlogin' # xem giá trị thực tế
+sudo sshd -t                     # check the syntax
+sudo sshd -T | grep -E 'passwordauthentication|permitrootlogin' # see the actual values
 sudo systemctl restart ssh
 ```
 
 :::warning
 
-- Với sshd, **giá trị đọc được đầu tiên sẽ thắng**. Ảnh cloud của Ubuntu thường có `/etc/ssh/sshd_config.d/50-cloud-init.conf` đặt `PasswordAuthentication yes`, nên file của bạn phải đặt tên xếp trước (`00-…`) hoặc sửa thẳng file đó. Luôn kiểm tra bằng `sshd -T`.
-- Giữ nguyên phiên SSH đang mở và thử đăng nhập ở một terminal khác trước khi đóng, để không tự khóa mình ở ngoài.
+- With sshd, **the first value read wins**. Ubuntu cloud images often have `/etc/ssh/sshd_config.d/50-cloud-init.conf` setting `PasswordAuthentication yes`, so your file must be named to sort first (`00-…`) or you edit that file directly. Always check with `sshd -T`.
+- Keep the current SSH session open and try a login from another terminal before you close it, so you do not lock yourself out.
 
 :::
 
-## 3. Tường lửa và chống brute-force
+## 3. Firewall and brute-force protection
 
-### UFW
+### UFW {#ufw}
 
-Nguyên tắc: chặn mọi kết nối vào theo mặc định, chỉ mở những gì cần.
+Deny all incoming connections by default. Open only what you need.
 
 ```bash
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
-sudo ufw allow OpenSSH       # mở SSH TRƯỚC khi bật tường lửa
+sudo ufw allow OpenSSH       # open SSH BEFORE you enable the firewall
 sudo ufw enable
 
-sudo ufw allow 'Nginx Full'  # 80 + 443, sau khi cài Nginx
+sudo ufw allow 'Nginx Full'  # 80 + 443, after you install Nginx
 sudo ufw status verbose
 ```
 
-:::danger Docker bỏ qua UFW
+:::danger Docker bypasses UFW
 
-Port publish bằng Docker (`-p 5432:5432`, `ports:` trong Compose) được Docker mở thẳng trong iptables, **không đi qua luật UFW** — cơ sở dữ liệu có thể lộ ra Internet dù `ufw status` không cho phép. Bind vào localhost (`127.0.0.1:5432:5432`) hoặc không publish port của các service nội bộ.
+Ports published by Docker (`-p 5432:5432`, `ports:` in Compose) are opened by Docker directly in iptables and **do not pass through UFW rules** — a database can be exposed on the internet even when `ufw status` does not allow it. Bind to localhost (`127.0.0.1:5432:5432`) or do not publish ports for internal services.
 
 :::
 
 ### Fail2ban
 
-Theo dõi log và tự cấm IP có hành vi đáng ngờ, ví dụ đăng nhập SSH sai nhiều lần. Trên Ubuntu, jail `sshd` được bật sẵn sau khi cài.
+Watches logs and bans IPs that look suspicious, for example many failed SSH logins. On Ubuntu, the `sshd` jail is enabled after you install it.
 
 ```bash
 sudo apt install fail2ban -y
 sudo fail2ban-client status sshd
 ```
 
-Tùy chỉnh trong `/etc/fail2ban/jail.local` (không sửa `jail.conf`, file này bị ghi đè khi cập nhật):
+Customize it in `/etc/fail2ban/jail.local` (do not edit `jail.conf`; that file is overwritten on upgrade):
 
 ```ini title="/etc/fail2ban/jail.local"
 [sshd]
@@ -109,26 +109,26 @@ findtime = 10m
 bantime  = 1h
 ```
 
-## 4. Cơ sở dữ liệu
+## 4. Database
 
-Luôn tạo user riêng cho ứng dụng thay vì dùng tài khoản quản trị, và giữ cơ sở dữ liệu chỉ lắng nghe trên `localhost` trừ khi thật sự cần truy cập từ xa.
+Always create a separate user for the app instead of using an admin account, and keep the database listening only on `localhost` unless you really need remote access.
 
 <Tabs groupId="database">
 <TabItem value="mysql" label="MySQL / MariaDB">
 
 ```bash
 sudo apt install mysql-server -y
-sudo mysql_secure_installation # xóa user ẩn danh, database test, chặn root đăng nhập từ xa
-sudo mysql                     # root trên Ubuntu đăng nhập qua auth_socket, không cần mật khẩu
+sudo mysql_secure_installation # remove anonymous users, the test database, and block remote root login
+sudo mysql                     # on Ubuntu, root logs in via auth_socket, no password
 ```
 
 ```sql
 CREATE DATABASE my_app_db;
-CREATE USER 'my_app_user'@'localhost' IDENTIFIED BY 'mat_khau_manh';
+CREATE USER 'my_app_user'@'localhost' IDENTIFIED BY 'strong_password';
 GRANT ALL PRIVILEGES ON my_app_db.* TO 'my_app_user'@'localhost';
 ```
 
-`FLUSH PRIVILEGES` không cần thiết khi dùng `CREATE USER` / `GRANT`. Xem thêm: [MySQL](../../technologies/database/relational/mysql.md).
+`FLUSH PRIVILEGES` is not needed when you use `CREATE USER` / `GRANT`. See also: [MySQL](../../technologies/database/relational/mysql.md).
 
 </TabItem>
 <TabItem value="postgres" label="PostgreSQL">
@@ -136,30 +136,30 @@ GRANT ALL PRIVILEGES ON my_app_db.* TO 'my_app_user'@'localhost';
 ```bash
 sudo apt install postgresql postgresql-contrib -y
 
-# PostgreSQL dùng "role": tạo role có mật khẩu và database do role đó sở hữu
+# PostgreSQL uses "roles": create a role with a password and a database owned by that role
 sudo -u postgres createuser --pwprompt my_app_user
 sudo -u postgres createdb -O my_app_user my_app_db
 ```
 
-Chỉ khi cần truy cập từ máy khác: đặt `listen_addresses` trong `postgresql.conf`, thêm một dòng cho đúng IP vào `pg_hba.conf` (trong `/etc/postgresql/<version>/main/`), mở port 5432 trên UFW **chỉ cho IP đó**, rồi `sudo systemctl restart postgresql`.
+Only when you need access from another machine: set `listen_addresses` in `postgresql.conf`, add one line for that exact IP in `pg_hba.conf` (in `/etc/postgresql/<version>/main/`), open port 5432 on UFW **only for that IP**, then `sudo systemctl restart postgresql`.
 
 ```bash title="pg_hba.conf"
 # TYPE  DATABASE   USER         ADDRESS        METHOD
 host    my_app_db  my_app_user  10.0.0.5/32    scram-sha-256
 ```
 
-Xem thêm: [PostgreSQL](../../technologies/database/relational/postgre.md).
+See also: [PostgreSQL](../../technologies/database/relational/postgre.md).
 
 </TabItem>
 <TabItem value="mongodb" label="MongoDB">
 
-MongoDB không có trong kho apt của Ubuntu — cài theo [hướng dẫn chính thức](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/) (thêm repo của MongoDB), rồi khởi động dịch vụ:
+MongoDB is not in Ubuntu's apt repositories — install it from the [official guide](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/) (add MongoDB's repo), then start the service:
 
 ```bash
 sudo systemctl enable --now mongod
 ```
 
-Tạo user quản trị trong `mongosh` **trước** khi bật xác thực:
+Create the admin user in `mongosh` **before** you enable authentication:
 
 ```js
 use admin
@@ -170,35 +170,35 @@ db.createUser({
 })
 ```
 
-Mặc định MongoDB **không bật xác thực**. Bật trong `/etc/mongod.conf` rồi `sudo systemctl restart mongod`:
+By default MongoDB **does not enable authentication**. Turn it on in `/etc/mongod.conf`, then `sudo systemctl restart mongod`:
 
 ```yaml title="/etc/mongod.conf"
 security:
   authorization: enabled
 net:
-  bindIp: 127.0.0.1 # giữ mặc định, chỉ lắng nghe localhost
+  bindIp: 127.0.0.1 # keep the default, listen on localhost only
 ```
 
-Xem thêm: [MongoDB](../../technologies/database/no-sql/mongodb.md).
+See also: [MongoDB](../../technologies/database/no-sql/mongodb.md).
 
 </TabItem>
 </Tabs>
 
-## 5. Nginx và SSL
+## 5. Nginx and SSL
 
-[Nginx](../web-servers/nginx.mdx) nhận traffic ở port 80/443, xử lý SSL rồi chuyển tiếp đến ứng dụng chạy trên port nội bộ. Nhờ đó một server chạy được nhiều ứng dụng, và ứng dụng không cần quyền mở port thấp.
+[Nginx](../web-servers/nginx.mdx) takes traffic on ports 80/443, handles SSL, then forwards to the app on an internal port. One server can then run several apps, and the app does not need permission to open a low port.
 
 ```mermaid
 flowchart LR
-  U([Người dùng]) -->|HTTPS 443| N[Nginx<br/>SSL termination]
-  N -->|HTTP| A[Ứng dụng<br/>localhost:3000]
+  U([User]) -->|HTTPS 443| N[Nginx<br/>SSL termination]
+  N -->|HTTP| A[Application<br/>localhost:3000]
 ```
 
 ```bash
 sudo apt install nginx certbot python3-certbot-nginx -y
 ```
 
-Tạo file cấu hình trong `/etc/nginx/sites-available/your_domain.com`:
+Create the config file in `/etc/nginx/sites-available/your_domain.com`:
 
 <Tabs groupId="app-runtime">
 <TabItem value="nodejs" label="Node.js">
@@ -211,9 +211,10 @@ server {
     location / {
         proxy_pass http://localhost:3000;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade; # cho WebSocket
+        proxy_set_header Upgrade $http_upgrade; # for WebSocket
         proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
@@ -254,11 +255,11 @@ server {
 
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/run/php/php8.3-fpm.sock; # đúng phiên bản: ls /run/php/
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock; # the right version: ls /run/php/
     }
 
     location ~ /\.(?!well-known) {
-        deny all; # chặn .env, .git…
+        deny all; # block .env, .git…
     }
 }
 ```
@@ -266,24 +267,24 @@ server {
 </TabItem>
 </Tabs>
 
-Kích hoạt site, kiểm tra cấu hình, rồi để Certbot lấy chứng chỉ và tự thêm chuyển hướng HTTPS:
+Enable the site, test the config, then let Certbot obtain the certificate and add the HTTPS redirect itself:
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/your_domain.com /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 sudo certbot --nginx -d your_domain.com -d www.your_domain.com
-sudo certbot renew --dry-run # kiểm tra gia hạn tự động
+sudo certbot renew --dry-run # test automatic renewal
 ```
 
-## 6. Quản lý tiến trình
+## 6. Process management
 
-Ứng dụng cần được tự khởi động lại khi crash và khi server reboot.
+The app needs to start again on its own after a crash and after a server reboot.
 
 <Tabs groupId="process-manager">
-<TabItem value="systemd" label="systemd (có sẵn)">
+<TabItem value="systemd" label="systemd (built in)">
 
-Có sẵn trên Ubuntu, chạy được mọi loại ứng dụng, không cần cài thêm.
+Already on Ubuntu. It can run any kind of app. Nothing extra to install.
 
 ```ini title="/etc/systemd/system/my-app.service"
 [Unit]
@@ -304,29 +305,29 @@ WantedBy=multi-user.target
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable --now my-app
-journalctl -u my-app -f # xem log
+journalctl -u my-app -f # view the log
 ```
 
 </TabItem>
 <TabItem value="pm2" label="PM2 (Node.js)">
 
-Phổ biến cho Node.js: chế độ cluster, quản lý log, giám sát.
+Common for Node.js: cluster mode, log management, and monitoring.
 
 ```bash
 sudo npm install -g pm2
 
-pm2 start app.js --name my-api -i max # cluster theo số CPU
+pm2 start app.js --name my-api -i max # cluster by CPU count
 pm2 list
 pm2 logs my-api
 
-pm2 startup # in ra một lệnh sudo — chạy lệnh đó
-pm2 save    # lưu danh sách tiến trình để khôi phục khi reboot
+pm2 startup # prints a sudo command — run that command
+pm2 save    # save the process list so it is restored on reboot
 ```
 
 </TabItem>
 <TabItem value="supervisor" label="Supervisor">
 
-Công cụ đa năng, quản lý được mọi tiến trình (Java, Python, worker, script).
+A general-purpose tool. It can manage any process (Java, Python, workers, scripts).
 
 ```ini title="/etc/supervisor/conf.d/my-app.conf"
 [program:my-java-app]
@@ -346,26 +347,26 @@ sudo supervisorctl status
 </TabItem>
 <TabItem value="docker" label="Docker">
 
-Đóng gói ứng dụng cùng phụ thuộc vào container; Docker Compose quản lý nhiều container (app + database). Dùng `restart: unless-stopped` trong Compose để container tự chạy lại.
+Packs the app and its dependencies into a container. Docker Compose manages several containers (app + database). Use `restart: unless-stopped` in Compose so the container starts again on its own.
 
 ```bash
-docker compose up -d # build và chạy nền
+docker compose up -d # build and run in the background
 docker compose logs -f
 docker compose down
 ```
 
-Xem thêm: [Docker](../containers/docker-knowledge.md). Nhớ cảnh báo [Docker bỏ qua UFW](#ufw) ở trên.
+See also: [Docker](../containers/docker-knowledge.md). Remember the [Docker bypasses UFW](#ufw) warning above.
 
 </TabItem>
 </Tabs>
 
-## Tổng kết: các lớp phòng thủ
+## Summary: defense layers
 
-| Lớp | Biện pháp | Chống lại |
+| Layer | Measure | Against |
 | --- | --- | --- |
-| Truy cập | SSH key, tắt mật khẩu và đăng nhập root | Dò mật khẩu, lộ mật khẩu |
-| Mạng | UFW chỉ mở 22, 80, 443 | Truy cập vào các dịch vụ nội bộ |
-| Phát hiện | Fail2ban | Brute-force kéo dài |
-| Hệ điều hành | `unattended-upgrades` | Lỗ hổng đã có bản vá |
-| Web | Nginx + HTTPS (Certbot), chặn file ẩn | Nghe lén, lộ `.env`/`.git` |
-| Dữ liệu | User riêng cho ứng dụng, chỉ lắng nghe localhost, bật xác thực | Truy cập trái phép vào CSDL |
+| Access | SSH key, password login and root login off | Password guessing, leaked passwords |
+| Network | UFW opens only 22, 80, 443 | Access to internal services |
+| Detection | Fail2ban | Prolonged brute-force |
+| Operating system | `unattended-upgrades` | Vulnerabilities that already have a patch |
+| Web | Nginx + HTTPS (Certbot), block hidden files | Eavesdropping, leaked `.env`/`.git` |
+| Data | A separate app user, listen on localhost only, authentication on | Unauthorized database access |

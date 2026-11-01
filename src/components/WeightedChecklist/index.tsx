@@ -26,7 +26,7 @@ export default function WeightedChecklist({
   items,
   verdicts,
   blockedVerdict,
-  emptyText = "Chọn các tiêu chí đúng với dự án của bạn.",
+  emptyText = "Select the criteria that match your project.",
 }: WeightedChecklistProps) {
   const id = useId();
   const [checked, setChecked] = useState<boolean[]>(() => items.map(() => false));
@@ -58,9 +58,9 @@ export default function WeightedChecklist({
               />
               <span>
                 {item.text}
-                {item.required && <span className={styles.required}> (điều kiện tiên quyết)</span>}
+                {item.required && <span className={styles.required}> (prerequisite)</span>}
               </span>
-              <span className={styles.weight} title="Trọng số">
+              <span className={styles.weight} title="Weight">
                 ×{item.weight}
               </span>
             </label>

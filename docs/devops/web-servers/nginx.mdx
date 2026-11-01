@@ -1,5 +1,5 @@
 ---
-description: Web server, reverse proxy và load balancer hiệu năng cao
+description: High-performance web server, reverse proxy, and load balancer
 sidebar_position: 1
 ---
 
@@ -11,30 +11,30 @@ import LoadBalancerSimulator from "@site/src/components/LoadBalancerSimulator";
 
 > **Quick reference:** [Nginx Cheatsheet](./nginx-cheatsheet.mdx)
 
-Nginx là web server hiệu năng cao, đồng thời thường được dùng làm **reverse proxy**, **load balancer** và điểm kết thúc HTTPS (SSL termination) đứng trước các ứng dụng React, Next.js, Node.js hay Spring Boot.
+Nginx is a high-performance web server. It is also often used as a **reverse proxy**, a **load balancer**, and the HTTPS termination point (SSL termination) in front of React, Next.js, Node.js, or Spring Boot apps.
 
-:::info Dùng Nginx để
+:::info Use Nginx to
 
-- Phục vụ file tĩnh (bản build của SPA) nhanh và nhẹ
-- Đứng trước backend: định tuyến, ẩn port nội bộ, gắn header
-- Phân phối tải giữa nhiều instance
-- Quản lý HTTPS, security headers, nén, cache và rate limit tập trung
+- Serve static files (an SPA build) quickly and with little overhead
+- Sit in front of a backend: route, hide internal ports, set headers
+- Spread load across several instances
+- Manage HTTPS, security headers, compression, caching, and rate limits in one place
 
 :::
 
-## Kiến trúc hướng sự kiện
+## Event-driven architecture
 
-Thay vì tạo một tiến trình mới cho mỗi request, Nginx dùng một tiến trình `master` để đọc cấu hình và quản lý các tiến trình `worker`. Mỗi `worker` chạy một event loop bất đồng bộ, xử lý hàng nghìn kết nối đồng thời — nên tốn ít RAM và chịu tải tốt hơn mô hình process/thread-per-request.
+Nginx does not start a new process for each request. A `master` process reads the config and manages the `worker` processes. Each `worker` runs an async event loop and handles thousands of connections at once, so it uses little RAM and holds up under load better than a process/thread-per-request model.
 
 ```mermaid
 flowchart LR
   C1([Client]) & C2([Client]) & C3([Client]) --> W1 & W2
-  M[Master process<br/>đọc config, quản lý worker] -.-> W1[Worker 1<br/>event loop]
+  M[Master process<br/>reads config, manages workers] -.-> W1[Worker 1<br/>event loop]
   M -.-> W2[Worker N<br/>event loop]
-  W1 & W2 --> B[(Backend / file tĩnh)]
+  W1 & W2 --> B[(Backend / static files)]
 ```
 
-## Reverse proxy theo loại ứng dụng
+## Reverse proxy by application type
 
 <Tabs groupId="app-type">
 <TabItem value="react" label="React (Static)">
@@ -53,7 +53,7 @@ server {
 }
 ```
 
-Chỉ thị quan trọng là `try_files $uri $uri/ /index.html;`: mọi request không khớp file hoặc thư mục tĩnh sẽ trả về `index.html`, để React Router xử lý định tuyến phía client.
+The directive that matters is `try_files $uri $uri/ /index.html;`. Any request that matches neither a static file nor a directory returns `index.html`, so React Router can handle client-side routing.
 
 </TabItem>
 <TabItem value="nextjs" label="Next.js (SSR)">
@@ -73,7 +73,7 @@ server {
 }
 ```
 
-`proxy_pass` chuyển request đến server Next.js ở port 3000. Các `proxy_set_header` giúp backend biết thông tin thật của request gốc (host, IP client, giao thức).
+`proxy_pass` forwards the request to the Next.js server on port 3000. The `proxy_set_header` lines tell the backend the real details of the original request (host, client IP, protocol).
 
 </TabItem>
 <TabItem value="nodejs" label="Node.js API">
@@ -84,7 +84,7 @@ server {
     server_name api.your_domain.com;
 
     location / {
-        proxy_pass http://localhost:5000; # Port của API
+        proxy_pass http://localhost:5000; # API port
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -93,7 +93,7 @@ server {
 }
 ```
 
-Nginx đóng vai trò cổng vào (gateway) cho API Node.js, nhờ đó tận dụng được SSL termination, rate limiting và caching của Nginx.
+Nginx is the gateway for the Node.js API, so you can use its SSL termination, rate limiting, and caching.
 
 </TabItem>
 <TabItem value="springboot" label="Spring Boot API">
@@ -104,7 +104,7 @@ server {
     server_name api.your_domain.com;
 
     location / {
-        proxy_pass http://localhost:8080; # Port mặc định
+        proxy_pass http://localhost:8080; # Default port
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -113,39 +113,39 @@ server {
 }
 ```
 
-Chuyển request đến Spring Boot ở port 8080. Đặt `server.forward-headers-strategy=framework` để Spring đọc đúng các header `X-Forwarded-*`.
+Forwards the request to Spring Boot on port 8080. Set `server.forward-headers-strategy=framework` so Spring reads the `X-Forwarded-*` headers correctly.
 
 </TabItem>
 </Tabs>
 
-## Load balancing
+## Load balancing {#load-balancing}
 
-Khai báo các instance trong một khối `upstream`, rồi trỏ `proxy_pass http://backend;` tới nó. Thuật toán được chọn bằng một chỉ thị trong `upstream`. Thử mô phỏng bên dưới: Server 3 xử lý chậm gấp 3 lần, hãy so sánh Round Robin với Least Connections.
+Declare the instances in an `upstream` block, then point `proxy_pass http://backend;` at it. A directive inside `upstream` selects the algorithm. Try the simulator below: Server 3 is 3 times slower. Compare Round Robin with Least Connections.
 
 <LoadBalancerSimulator />
 
-| Thuật toán        | Chỉ thị          | Khi nào dùng                                                   |
-| ----------------- | ---------------- | -------------------------------------------------------------- |
-| Round Robin       | _(mặc định)_     | Các server cấu hình tương đương, request xử lý nhanh như nhau  |
-| Least Connections | `least_conn;`    | Thời gian xử lý request chênh lệch nhiều                       |
-| IP Hash           | `ip_hash;`       | Cần session persistence (session lưu trong bộ nhớ server)      |
-| Weighted          | `server ... weight=3;` | Các server có cấu hình mạnh yếu khác nhau                |
+| Algorithm         | Directive              | When to use                                                |
+| ----------------- | ---------------------- | ---------------------------------------------------------- |
+| Round Robin       | _(default)_            | Servers with similar specs, requests that finish about as fast |
+| Least Connections | `least_conn;`          | Request processing times vary a lot                        |
+| IP Hash           | `ip_hash;`             | You need session persistence (session stored in server memory) |
+| Weighted          | `server ... weight=3;` | Servers differ in capacity                                 |
 
 :::tip
 
-`ip_hash` chỉ dùng 3 octet đầu của IPv4, nên mọi client trong cùng dải `/24` (ví dụ sau cùng một NAT công ty) đều vào một server. Nếu cần chia đều hơn, dùng `hash $remote_addr consistent;` — hoặc tốt hơn là lưu session ở Redis để không cần sticky session.
+`ip_hash` uses only the first 3 octets of an IPv4 address, so every client in the same `/24` (for example, behind one company NAT) lands on one server. To spread them more evenly, use `hash $remote_addr consistent;` — or, better, store the session in Redis so you do not need a sticky session.
 
 :::
 
-## Triển khai
+## Deployment
 
-| Cách triển khai          | Ưu điểm                                     | Nhược điểm                       |
-| ------------------------ | ------------------------------------------- | -------------------------------- |
-| Ubuntu Server (thủ công) | Kiểm soát hoàn toàn, tối ưu sâu ở mức OS    | Phức tạp, khó giữ nhất quán      |
-| Docker (Dockerfile)      | Đóng gói Nginx + cấu hình, nhất quán, di động | Phải quản lý từng container riêng |
-| Docker Compose           | Quản lý cả stack (frontend, backend, Nginx, DB) | Chỉ trên một host             |
+| How you deploy       | Pros                                              | Cons                                |
+| -------------------- | ------------------------------------------------- | ----------------------------------- |
+| Ubuntu Server (manual) | Full control, deep tuning at the OS level       | Complex, hard to keep consistent    |
+| Docker (Dockerfile)  | Packages Nginx plus its config; consistent and portable | Each container is managed on its own |
+| Docker Compose       | Manages the whole stack (frontend, backend, Nginx, DB) | One host only                  |
 
-Ví dụ một stack full-stack, trong đó Nginx là cổng vào duy nhất và định tuyến theo đường dẫn:
+One full stack, where Nginx is the only entry point and routes by path:
 
 ```yaml title="docker-compose.yml"
 services:
@@ -178,19 +178,19 @@ server {
 }
 ```
 
-Trong mạng của Compose, tên service (`frontend`, `backend`) chính là hostname, nên không cần IP. Chỉ có `nginx` mở port ra ngoài.
+On the Compose network, the service name (`frontend`, `backend`) is the hostname, so you do not need an IP. Only `nginx` publishes a port to the outside.
 
-## Bảo mật
+## Security
 
-### HTTPS với Let's Encrypt
+### HTTPS with Let's Encrypt
 
-`certbot` tự động lấy chứng chỉ SSL miễn phí, sửa cấu hình Nginx và gia hạn định kỳ:
+`certbot` obtains a free SSL certificate, edits the Nginx config, and renews it on a schedule:
 
 ```bash
 sudo certbot --nginx -d your_domain.com
 ```
 
-Chuyển hướng toàn bộ traffic HTTP sang HTTPS:
+Redirect all HTTP traffic to HTTPS:
 
 ```nginx
 server {
@@ -203,30 +203,30 @@ server {
 ### HTTP security headers
 
 ```nginx
-add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always; # Buộc dùng HTTPS
-add_header X-Frame-Options "SAMEORIGIN" always;                                     # Chống clickjacking
-add_header X-Content-Type-Options "nosniff" always;                                 # Chặn MIME sniffing
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always; # Force HTTPS
+add_header X-Frame-Options "SAMEORIGIN" always;                                     # Block clickjacking
+add_header X-Content-Type-Options "nosniff" always;                                 # Block MIME sniffing
 add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 ```
 
 :::warning
 
-- Thiếu `always` thì header không được gửi kèm các response lỗi (4xx, 5xx).
-- Nếu một `location` có `add_header` riêng, nó **không kế thừa** các `add_header` của khối cha — phải khai báo lại toàn bộ. Từ Nginx 1.29.3 (có trong bản stable 1.30) có thể dùng `add_header_inherit merge;` để gộp header của khối cha.
+- Without `always`, the header is not sent on error responses (4xx, 5xx).
+- If a `location` has its own `add_header`, it **does not inherit** the parent block's `add_header` lines — declare them all again. From Nginx 1.29.3 (included in stable 1.30) you can use `add_header_inherit merge;` to merge the parent headers.
 
 :::
 
-## Tối ưu hiệu năng
+## Performance tuning
 
-| Kỹ thuật      | Chỉ thị                                     | Tác dụng                                          |
-| ------------- | ------------------------------------------- | ------------------------------------------------- |
-| Caching       | `proxy_cache_path`, `proxy_cache`           | Lưu response hay dùng, giảm tải backend           |
-| Nén Gzip      | `gzip on;`, `gzip_types`                    | Giảm dung lượng HTML/CSS/JS, tải trang nhanh hơn  |
-| Rate limiting | `limit_req_zone`, `limit_req`               | Chống brute-force và lạm dụng tài nguyên          |
-| Worker        | `worker_processes`, `worker_connections`    | Tận dụng hết số lõi CPU và số kết nối đồng thời   |
+| Technique     | Directive                                  | Effect                                            |
+| ------------- | ------------------------------------------ | ------------------------------------------------- |
+| Caching       | `proxy_cache_path`, `proxy_cache`          | Store responses that are used often, cut backend load |
+| Gzip compression | `gzip on;`, `gzip_types`                | Shrink HTML/CSS/JS so pages load faster           |
+| Rate limiting | `limit_req_zone`, `limit_req`              | Slow brute-force and resource abuse               |
+| Worker        | `worker_processes`, `worker_connections`   | Use every CPU core and the concurrent connections |
 
 ```nginx title="nginx.conf"
-worker_processes auto; # bằng số lõi CPU
+worker_processes auto; # equal to the number of CPU cores
 
 events {
     worker_connections 1024;
@@ -234,7 +234,7 @@ events {
 
 http {
     gzip on;
-    gzip_types text/css application/javascript application/json image/svg+xml; # text/html luôn được nén
+    gzip_types text/css application/javascript application/json image/svg+xml; # text/html is always compressed
 
     proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=app_cache:10m max_size=1g inactive=60m;
     limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
@@ -250,12 +250,12 @@ http {
 }
 ```
 
-## Công cụ quản lý
+## Management tools
 
-Cấu hình bằng file văn bản là đủ mạnh, nhưng giao diện đồ họa giúp quản lý dễ hơn khi mới bắt đầu hoặc có nhiều host.
+A text config is already enough, but a graphical UI is easier when you are starting out or you have many hosts.
 
-| Công cụ                                                | Tốt nhất cho   | Ghi chú                                                         |
-| ------------------------------------------------------ | -------------- | --------------------------------------------------------------- |
-| [Nginx Proxy Manager](https://nginxproxymanager.com/)  | Quản lý proxy  | Web UI cho reverse proxy, tích hợp sẵn Let's Encrypt            |
-| [Portainer](https://www.portainer.io/)                 | Quản lý Docker | Xem log, quản lý container, image, volume, network trực quan    |
-| [Webmin](https://webmin.com/)                          | Quản trị server | Control panel cho Linux, có module Nginx, user, firewall…      |
+| Tool                                                   | Best for        | Notes                                                           |
+| ------------------------------------------------------ | --------------- | --------------------------------------------------------------- |
+| [Nginx Proxy Manager](https://nginxproxymanager.com/)  | Proxy management | Web UI for reverse proxy, with Let's Encrypt built in          |
+| [Portainer](https://www.portainer.io/)                 | Docker management | View logs; manage containers, images, volumes, and networks visually |
+| [Webmin](https://webmin.com/)                          | Server administration | Linux control panel, with modules for Nginx, users, firewall… |

@@ -1,33 +1,33 @@
 ---
-title: "Bản thiết kế ứng dụng học ngôn ngữ bằng flashcard"
-description: "Fluxlingo: ứng dụng flashcard kết hợp lặp lại ngắt quãng (SRS), cá nhân hóa bằng AI và học theo nhóm — phân tích đối thủ, tính năng, mô hình dữ liệu và kiến trúc."
+title: "Blueprint for a flashcard language-learning app"
+description: "Fluxlingo: a flashcard app built around spaced repetition (SRS), AI personalization, and group study — competitor analysis, features, data model, and architecture."
 sidebar_label: "Flashcard"
 sidebar_position: 2
 ---
 
-**Fluxlingo** là bản thiết kế một ứng dụng học ngôn ngữ thế hệ mới: lấy phương pháp flashcard với **lặp lại ngắt quãng** (spaced repetition) làm lõi, rồi thêm cá nhân hóa bằng AI, tính năng xã hội và một giao diện tối giản — để việc học vừa hiệu quả vừa đủ hấp dẫn để người dùng quay lại mỗi ngày.
+**Fluxlingo** is a blueprint for a next-generation language-learning app: flashcards with **spaced repetition** at the core, then AI personalization, social features, and a minimal interface — so study stays effective and compelling enough that people come back every day.
 
 
-## Bối cảnh thị trường
+## Market context
 
-| Ứng dụng | Điểm mạnh | Cơ hội cho Fluxlingo |
+| App | Strengths | Opportunity for Fluxlingo |
 | --- | --- | --- |
-| **Anki** | Thuật toán SRS rất hiệu quả, tùy biến sâu | UI/UX thân thiện với người mới; tích hợp AI liền mạch |
-| **Memrise** | Video người bản xứ, game hóa | Bài kiểm tra tạo từ lịch sử học; tính năng cộng đồng, học nhóm |
-| **Quizlet** | Thư viện nội dung khổng lồ do người dùng tạo, nhiều chế độ học | Lộ trình cá nhân hóa bằng AI thay vì chỉ dựa vào nội dung có sẵn; bảng xếp hạng |
-| **Duolingo** | Game hóa đứng đầu thị trường, rất cuốn hút | Cho tùy chỉnh bộ học liệu sâu hơn, chia sẻ bộ flashcard cá nhân, nhóm học chuyên sâu |
-| **Drops** | Học từ vựng trực quan, bài học 5 phút | Mở rộng sang ngữ pháp, bài kiểm tra, đồng bộ đa nền tảng, tính năng xã hội |
+| **Anki** | A very effective SRS algorithm, deep customization | A UI/UX that is friendly to beginners; seamless AI integration |
+| **Memrise** | Native-speaker videos, gamification | Tests generated from study history; community features and group study |
+| **Quizlet** | A huge library of user-created content, many study modes | An AI-personalized path instead of relying only on existing content; a leaderboard |
+| **Duolingo** | Market-leading gamification, very engaging | Deeper customization of study sets, sharing personal flashcard decks, focused study groups |
+| **Drops** | Visual vocabulary, 5-minute lessons | Extend it to grammar and tests, cross-platform sync, and social features |
 
-**Định vị:** sức mạnh SRS của Anki + sự cuốn hút của Duolingo + nội dung cá nhân của Quizlet, gói trong một giao diện dễ dùng.
+**Positioning:** Anki's SRS strength + Duolingo's appeal + Quizlet's personal content, in an interface that is easy to use.
 
-## Lõi: lặp lại ngắt quãng
+## Core: spaced repetition
 
-Mỗi thẻ được ôn lại ngay trước lúc người học sắp quên. Trả lời đúng thì khoảng cách đến lần ôn sau dài ra; quên thì quay lại khoảng ngắn. Thuật toán kinh điển là **SM-2**:
+Each card is reviewed just before the learner is about to forget it. A correct answer lengthens the gap until the next review; a miss sends the card back to a short gap. The classic algorithm is **SM-2**:
 
 ```ts title="sm2.ts"
 type CardState = { repetitions: number; intervalDays: number; easeFactor: number };
 
-// grade: 0 (quên hẳn) … 5 (nhớ ngay)
+// grade: 0 (total blackout) … 5 (recalled at once)
 export function review(card: CardState, grade: number): CardState {
   if (grade < 3) return { ...card, repetitions: 0, intervalDays: 1 };
 
@@ -40,44 +40,44 @@ export function review(card: CardState, grade: number): CardState {
 }
 ```
 
-Thẻ mới bắt đầu với `easeFactor = 2.5`. Khi đã có dữ liệu ôn tập, có thể chuyển sang **FSRS** — thuật toán Anki dùng mặc định từ bản 23.10, học tham số từ lịch sử của chính người dùng và dự đoán chính xác hơn. Đây cũng là chỗ "cá nhân hóa bằng AI" có giá trị thật nhất.
+A new card starts with `easeFactor = 2.5`. Once there is review data, you can move to **FSRS** — the algorithm Anki has used by default since version 23.10. It learns its parameters from that user's own history and predicts more accurately. This is also where "AI personalization" has the most real value.
 
-## Tính năng
+## Features
 
-| Tính năng | Mô tả | Giai đoạn |
+| Feature | Description | Phase |
 | --- | --- | --- |
-| 🔁 **Ôn tập SRS** | Bộ thẻ, phiên ôn tập hằng ngày, lịch ôn theo thuật toán | MVP |
-| 🔄 **Đồng bộ** | Lưu tiến độ trên server, đồng bộ tối đa 3 thiết bị | MVP |
-| 📝 **Bài kiểm tra tự tạo** | Tạo bài kiểm tra từ lịch sử học, tập trung vào thẻ hay sai | Sau MVP |
-| 🎯 **Cá nhân hóa bằng AI** | Lộ trình thích ứng, điều chỉnh độ khó, gợi ý nội dung | Sau MVP |
-| 🤖 **AI tạo học liệu** | Sinh bộ flashcard và câu ví dụ mới | Sau MVP |
-| 👥 **Học nhóm** | Tạo nhóm, chia sẻ bộ thẻ, thảo luận | Sau MVP |
-| 🏆 **Bảng xếp hạng** | Thi đua với bạn bè và cộng đồng | Sau MVP |
+| 🔁 **SRS review** | Decks, a daily review session, a schedule driven by the algorithm | MVP |
+| 🔄 **Sync** | Save progress on the server, sync up to 3 devices | MVP |
+| 📝 **Generated tests** | Build a test from study history, focused on cards the learner often misses | After MVP |
+| 🎯 **AI personalization** | An adaptive path, difficulty adjustment, content suggestions | After MVP |
+| 🤖 **AI-generated material** | Generate flashcard decks and new example sentences | After MVP |
+| 👥 **Group study** | Create a group, share decks, discuss | After MVP |
+| 🏆 **Leaderboard** | Compete with friends and the community | After MVP |
 
-Nội dung do AI sinh ra cần được người dùng xem lại trước khi thêm vào bộ thẻ — một câu ví dụ sai ngữ pháp sẽ được ôn đi ôn lại.
+AI-generated content needs a look from the user before it goes into a deck — a grammatically wrong example sentence will be reviewed over and over.
 
-## Thiết kế
+## Design
 
-| Nguyên tắc | Cách làm |
+| Principle | How |
 | --- | --- |
-| 🎨 Tối giản | Màn hình ôn tập chỉ có thẻ và nút đánh giá; giảm mọi thứ gây phân tâm |
-| 📱 Cá nhân hóa giao diện | Tùy chỉnh chủ đề, font chữ, cỡ chữ |
-| ✨ Hoạt ảnh tinh tế | Lật thẻ, chuyển thẻ mượt; tôn trọng `prefers-reduced-motion` |
-| 🌗 Sáng / tối | Theo hệ thống, cho phép đổi tay — người học thường ôn buổi tối |
+| 🎨 Minimal | The review screen shows only the card and the grade buttons; remove anything that distracts |
+| 📱 Personalized interface | Custom theme, font, and font size |
+| ✨ Subtle motion | Card flip and smooth transitions between cards; respect `prefers-reduced-motion` |
+| 🌗 Light / dark | Follow the system, with a manual switch — learners often review at night |
 
-## Kiến trúc
+## Architecture
 
 ```mermaid
 flowchart LR
-  U([Người dùng<br/>mobile, web]) --> FE[Frontend]
+  U([User<br/>mobile, web]) --> FE[Frontend]
   FE <--> API[Backend API]
-  API <--> DB[(Cơ sở dữ liệu)]
-  API <--> AI[Dịch vụ AI<br/>gợi ý, sinh nội dung]
+  API <--> DB[(Database)]
+  API <--> AI[AI service<br/>suggestions, content generation]
 ```
 
-Phiên ôn tập nên chạy được **offline**: lưu hàng đợi kết quả ôn trên thiết bị, đồng bộ khi có mạng. Lịch ôn tính lại từ lịch sử review nên không lo xung đột giữa các thiết bị.
+A review session should run **offline**: keep a queue of review results on the device and sync when the network is back. The schedule is recomputed from review history, so conflicts between devices are not a concern.
 
-### Mô hình dữ liệu
+### Data model
 
 ```mermaid
 erDiagram
@@ -90,6 +90,6 @@ erDiagram
   study_groups }o--o{ decks : shares
 ```
 
-- `card_states`: trạng thái SRS của từng người dùng với từng thẻ (`interval`, `ease_factor`, `due_at`) — tách khỏi `cards` để nhiều người học chung một bộ thẻ.
-- `reviews`: mỗi lần ôn (điểm, thời gian trả lời) — đầu vào cho bài kiểm tra tự tạo, thống kê và FSRS.
-- Truy vấn quan trọng nhất là "thẻ đến hạn hôm nay": đánh index `(user_id, due_at)`.
+- `card_states`: one user's SRS state for one card (`interval`, `ease_factor`, `due_at`) — kept separate from `cards` so many people can study the same deck.
+- `reviews`: one review (grade, response time) — the input for generated tests, statistics, and FSRS.
+- The most important query is "cards due today": index `(user_id, due_at)`.

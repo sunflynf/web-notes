@@ -39,7 +39,7 @@ The eight platform pages use the same heading order: At a glance, Core concepts,
 
 ## Pages moved
 
-Content was moved with `git mv`. Vietnamese pages stayed Vietnamese.
+Content was moved with `git mv`. Vietnamese originals of the published notes now sit beside the English pages as `_*.vi.mdx` files. A leading underscore keeps them in git and out of the site.
 
 | From | To |
 |---|---|

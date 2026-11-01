@@ -68,7 +68,7 @@ Monitoring listens on localhost. You reach it with an SSH tunnel. Host cron, not
 
 ## Server bootstrap order
 
-Do this once, before any application container exists. The command-level Ubuntu notes are [Ubuntu server setup](./ubuntu-server-setup.mdx) (Vietnamese) and the [cheatsheet](./ubuntu-server-cheatsheet.mdx). The order below is the part that matters for this stack.
+Do this once, before any application container exists. The command-level Ubuntu notes are [Ubuntu server setup](./ubuntu-server-setup.mdx) and the [cheatsheet](./ubuntu-server-cheatsheet.mdx). The order below is the part that matters for this stack.
 
 1. Create a normal user, add your SSH public key, and confirm you can log in as that user. Then disable SSH password login and root login.
 2. Put the SSH policy in a drop-in under `/etc/ssh/sshd_config.d/`, not only in the main file, so a package update does not silently restore defaults. The drop-in sets `PermitRootLogin no`, `PasswordAuthentication no`, and `PubkeyAuthentication yes`. Reload `ssh` and test a second session before you close the first one.

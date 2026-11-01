@@ -1,46 +1,46 @@
 ---
-title: NestJS chuyên sâu
-description: Request lifecycle, DI scopes, validation, các gói phổ biến, microservices, WebSocket và bảo mật trong NestJS
+title: NestJS in depth
+description: Request lifecycle, DI scopes, validation, common packages, microservices, WebSockets, and security in NestJS
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-# NestJS chuyên sâu
+# NestJS in depth
 
-Trang này đi sâu hơn [NestJS handbook](./index.md): thứ tự các thành phần chạy trong một request, cách DI quản lý vòng đời provider, và các vấn đề thực tế khi đưa NestJS vào microservices, real-time và production.
+This page goes deeper than the [NestJS handbook](./index.md): the order components run in during a request, how DI manages provider lifetime, and the practical issues of using NestJS for microservices, real-time, and production.
 
-## Vòng đời request
+## Request lifecycle
 
 ```mermaid
 flowchart LR
   Req([Request]) --> MW[Middleware]
   MW --> G[Guards]
-  G --> IPre[Interceptors<br/>trước handler]
+  G --> IPre[Interceptors<br/>before the handler]
   IPre --> P[Pipes]
   P --> C[Controller]
   C --> S[Service]
-  S --> IPost[Interceptors<br/>sau handler]
+  S --> IPost[Interceptors<br/>after the handler]
   IPost --> Res([Response])
-  G & P & C & S -. ném exception .-> EF[Exception filters]
+  G & P & C & S -. throws an exception .-> EF[Exception filters]
   EF --> Res
 ```
 
-| Bước | Dùng để | Ví dụ |
+| Step | Used for | Example |
 | --- | --- | --- |
-| **Middleware** | Logic chung trước routing, có thể sửa `req`/`res` | logging, `helmet`, CORS |
-| **Guards** | Quyết định request có được đi tiếp hay không; trả `false` → `403` | `AuthGuard('jwt')`, `RolesGuard` |
-| **Interceptors** (trước) | Bọc quanh handler: đo thời gian, cache, ghi đè hành vi | `CacheInterceptor`, timeout |
-| **Pipes** | Biến đổi và validate tham số (body, params, query) | `ValidationPipe`, `ParseIntPipe` |
-| **Controller → Service** | Xử lý request, logic nghiệp vụ | |
-| **Interceptors** (sau) | Biến đổi kết quả trả về | bọc `{ data }`, serialize |
-| **Exception filters** | Bắt exception ở bất kỳ bước nào, định dạng response lỗi | `HttpExceptionFilter` |
+| **Middleware** | Shared logic before routing; can modify `req`/`res` | logging, `helmet`, CORS |
+| **Guards** | Decide whether the request continues; return `false` → `403` | `AuthGuard('jwt')`, `RolesGuard` |
+| **Interceptors** (before) | Wrap the handler: timing, cache, override behavior | `CacheInterceptor`, timeout |
+| **Pipes** | Transform and validate parameters (body, params, query) | `ValidationPipe`, `ParseIntPipe` |
+| **Controller → Service** | Handle the request, business logic | |
+| **Interceptors** (after) | Transform the returned result | wrap `{ data }`, serialize |
+| **Exception filters** | Catch an exception at any step and format the error response | `HttpExceptionFilter` |
 
-Guards, interceptors, pipes và filters đều gắn được ở 3 mức: **global** (`app.useGlobal*()` hoặc provider `APP_*`), **controller** và **method** (`@UseGuards()`, `@UseInterceptors()`…). Khi request đi vào, chúng chạy từ global → controller → method; interceptors sau handler và filters chạy theo chiều ngược lại.
+Guards, interceptors, pipes, and filters can all be attached at 3 levels: **global** (`app.useGlobal*()` or an `APP_*` provider), **controller**, and **method** (`@UseGuards()`, `@UseInterceptors()`…). On the way in they run global → controller → method; interceptors after the handler and filters run in reverse.
 
 ## Dependency injection & provider scopes
 
-Khai báo dependency trong constructor, Nest IoC container sẽ tạo và inject instance:
+Declare the dependency in the constructor. The Nest IoC container creates the instance and injects it:
 
 ```ts title="users.controller.ts"
 @Controller("users")
@@ -49,11 +49,11 @@ export class UsersController {
 }
 ```
 
-| Scope | Instance | Khi nào dùng |
+| Scope | Instance | When to use |
 | --- | --- | --- |
-| `DEFAULT` (singleton) | Một instance cho cả ứng dụng | Hầu hết service — nhanh nhất, nên giữ stateless |
-| `REQUEST` | Một instance mới cho mỗi request | Cần dữ liệu riêng của request (tenant, user) |
-| `TRANSIENT` | Một instance mới mỗi lần được inject | Helper có state riêng cho từng consumer (logger có context) |
+| `DEFAULT` (singleton) | One instance for the whole application | Most services — fastest; keep them stateless |
+| `REQUEST` | A new instance for each request | Need data that belongs to that request (tenant, user) |
+| `TRANSIENT` | A new instance each time it is injected | A helper with its own state per consumer (a logger with context) |
 
 ```ts
 @Injectable({ scope: Scope.REQUEST })
@@ -64,11 +64,11 @@ export class TenantService {
 
 :::warning
 
-Scope `REQUEST` lan ngược lên chuỗi phụ thuộc: controller inject một provider request-scoped cũng trở thành request-scoped và bị tạo lại mỗi request. Dùng có chọn lọc vì ảnh hưởng hiệu năng.
+The `REQUEST` scope propagates up the dependency chain: a controller that injects a request-scoped provider also becomes request-scoped and is recreated on every request. Use it selectively — it costs performance.
 
 :::
 
-Ngoài class, provider còn có thể là giá trị, class thay thế hoặc factory:
+Besides a class, a provider can also be a value, a replacement class, or a factory:
 
 ```ts title="app.module.ts"
 providers: [
@@ -82,9 +82,9 @@ providers: [
 ],
 ```
 
-## Validation với DTO
+## Validation with DTOs
 
-**DTO** (Data Transfer Object) là class mô tả dữ liệu đi qua mạng. Decorator của `class-validator` khai báo luật, `ValidationPipe` thực thi chúng.
+A **DTO** (Data Transfer Object) is a class that describes data sent over the network. `class-validator` decorators declare the rules; `ValidationPipe` enforces them.
 
 ```ts title="create-post.dto.ts"
 import { IsString, IsNotEmpty, MinLength } from "class-validator";
@@ -103,18 +103,18 @@ export class CreatePostDto {
 ```ts title="main.ts"
 app.useGlobalPipes(
   new ValidationPipe({
-    whitelist: true, // bỏ các field không có decorator
-    forbidNonWhitelisted: true, // ...hoặc trả 400 nếu có field lạ
-    transform: true, // chuyển plain object thành instance của DTO, ép kiểu params
+    whitelist: true, // remove fields that have no decorator
+    forbidNonWhitelisted: true, // ...or return 400 if an unknown field is present
+    transform: true, // turn the plain object into a DTO instance and coerce param types
   }),
 );
 ```
 
-Khi validate thất bại, pipe ném `BadRequestException` kèm danh sách lỗi theo từng field.
+If validation fails, the pipe throws `BadRequestException` with an error list per field.
 
-## Các gói phổ biến
+## Common packages
 
-Bảng tổng hợp có trong [handbook](./index.md#2-popular-packages). Cách tích hợp từng gói:
+The summary table is in the [handbook](./index.md#2-popular-packages). How to integrate each package:
 
 <Tabs groupId="nest-package">
 <TabItem value="config" label="config">
@@ -173,7 +173,7 @@ constructor(@InjectModel(Cat.name) private readonly catModel: Model<Cat>) {}
 ```ts title="main.ts"
 const config = new DocumentBuilder().setTitle("API").setVersion("1.0").addBearerAuth().build();
 const document = SwaggerModule.createDocument(app, config);
-SwaggerModule.setup("api", app, document); // UI tại /api
+SwaggerModule.setup("api", app, document); // UI at /api
 ```
 
 </TabItem>
@@ -187,7 +187,7 @@ SwaggerModule.setup("api", app, document); // UI tại /api
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        secret: config.get("JWT_SECRET"), // không hard-code secret
+        secret: config.get("JWT_SECRET"), // do not hard-code the secret
         signOptions: { expiresIn: "15m" },
       }),
     }),
@@ -216,7 +216,7 @@ getProfile(@Req() req) {
 // some.module.ts
 imports: [HttpModule],
 
-// some.service.ts — HttpService trả về Observable
+// some.service.ts — HttpService returns an Observable
 constructor(private readonly http: HttpService) {}
 
 async fetchData() {
@@ -231,7 +231,7 @@ async fetchData() {
 ```ts title="app.module.ts"
 @Module({
   imports: [
-    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 10 }]), // 10 request / 60 giây (v5+: ttl tính bằng ms)
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 10 }]), // 10 requests / 60 seconds (v5+: ttl is in ms)
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
@@ -241,65 +241,65 @@ export class AppModule {}
 </TabItem>
 </Tabs>
 
-## Microservices
+## Microservices {#microservices}
 
-Package `@nestjs/microservices` trừu tượng hóa transport (TCP, Redis, NATS, RabbitMQ, Kafka, gRPC…): cùng một `@MessagePattern()` / `@EventPattern()` chạy được trên nhiều transport khác nhau.
+The `@nestjs/microservices` package abstracts the transport (TCP, Redis, NATS, RabbitMQ, Kafka, gRPC…): the same `@MessagePattern()` / `@EventPattern()` can run on many different transports.
 
-### Chọn kiểu giao tiếp
+### Choosing a communication style
 
 | | REST | gRPC | Kafka / RabbitMQ / NATS |
 | --- | --- | --- | --- |
-| Kiểu | Đồng bộ, request-response | Đồng bộ (RPC), streaming hai chiều | Bất đồng bộ, event / pub-sub |
-| Độ trễ | Trung bình | Rất thấp (HTTP/2 + Protobuf) | Thấp đến trung bình |
-| Độ tin cậy | Phải tự retry | Phải tự retry | Message được broker lưu bền, consumer xử lý lại được |
-| Dùng khi | API công khai, đơn giản | Gọi nội bộ giữa service, cần nhanh | Tách rời service, event-driven, data pipeline |
+| Type | Synchronous, request-response | Synchronous (RPC), bidirectional streaming | Asynchronous, event / pub-sub |
+| Latency | Medium | Very low (HTTP/2 + Protobuf) | Low to medium |
+| Reliability | You have to retry yourself | You have to retry yourself | The broker stores the message durably; the consumer can process it again |
+| Use when | A public, simple API | Internal calls between services that need to be fast | Decoupling services, event-driven, data pipelines |
 
 ### Database per service
 
-Mỗi service sở hữu database riêng; service khác chỉ đọc qua API hoặc event của nó. Đổi lại được **ghép nối lỏng**, **tự chọn loại DB** phù hợp (SQL cho giao dịch, NoSQL cho profile) và **scale độc lập** — nhưng phải xử lý giao dịch phân tán và tính nhất quán dữ liệu (xem bên dưới).
+Each service owns its own database; other services only read through its API or its events. In return you get **loose coupling**, a **choice of DB type** that fits (SQL for transactions, NoSQL for profiles), and **independent scaling** — but you have to handle distributed transactions and data consistency (see below).
 
 ### Scaling & logging
 
-| | Scale dọc (up) | Scale ngang (out) |
+| | Vertical scale (up) | Horizontal scale (out) |
 | --- | --- | --- |
-| Cách làm | Tăng CPU/RAM cho một máy | Thêm instance sau load balancer |
-| Giới hạn | Trần phần cứng, có downtime khi nâng cấp | Gần như không giới hạn |
-| Chi phí ở quy mô lớn | Tăng nhanh | Tuyến tính hơn |
-| Yêu cầu | Không | Service phải stateless |
+| How | Add CPU/RAM to one machine | Add instances behind a load balancer |
+| Limit | Hardware ceiling, with downtime when you upgrade | Almost unlimited |
+| Cost at large scale | Rises quickly | More linear |
+| Requirement | None | The service must be stateless |
 
-Với nhiều service, **logging tập trung** là bắt buộc ([ELK stack](../../../../devops/observability/elk-stack/index.md), Grafana Loki). Sinh một **correlation ID** (trace ID) ở điểm vào, truyền qua mọi lời gọi service và ghi vào mọi log để lần theo một request xuyên hệ thống. OpenTelemetry làm việc này tự động.
+With many services, **centralized logging** is required ([ELK stack](../../../../devops/observability/elk-stack/index.md), Grafana Loki). Generate a **correlation ID** (trace ID) at the entry point, pass it through every service call, and write it on every log so you can follow one request across the system. OpenTelemetry does this automatically.
 
-### Thách thức thường gặp
+### Common challenges
 
 <details>
-<summary>Giao dịch phân tán → Saga</summary>
+<summary>Distributed transactions → Saga</summary>
 
-Tạo đơn hàng cần trừ tồn kho (product service) và thanh toán (payment service) — không có transaction ACID xuyên service.
+Creating an order has to deduct stock (product service) and take payment (payment service) — there is no ACID transaction across services.
 
-**Saga** chia thao tác thành chuỗi transaction cục bộ: mỗi bước cập nhật DB của một service rồi phát event kích hoạt bước tiếp theo. Nếu một bước lỗi, các **transaction bù** (compensating) hoàn tác những bước đã xong (ví dụ: hoàn lại tồn kho).
+A **saga** splits the operation into a chain of local transactions: each step updates one service's database, then emits an event that triggers the next step. If a step fails, **compensating transactions** undo the steps already finished (for example, restore the stock).
 
 </details>
 
 <details>
-<summary>Truy vấn xuyên service → API composition hoặc CQRS</summary>
+<summary>Cross-service queries → API composition or CQRS</summary>
 
-Không thể `JOIN` giữa các database.
+You cannot `JOIN` across databases.
 
-- **API composition**: một aggregator hoặc API gateway gọi nhiều service rồi ghép kết quả.
-- **CQRS**: tách model ghi (command) và đọc (query). Model đọc là view đã denormalize, cập nhật bằng cách lắng nghe event từ nhiều service — xem `@nestjs/cqrs`.
+- **API composition**: an aggregator or API gateway calls several services, then combines the results.
+- **CQRS**: separate the write model (command) and the read model (query). The read model is a denormalized view, updated by listening to events from several services — see `@nestjs/cqrs`.
 
 </details>
 
 <details>
-<summary>Một service sập → Circuit breaker</summary>
+<summary>One service goes down → Circuit breaker</summary>
 
-Circuit breaker bọc lời gọi đến service khác. Khi lỗi liên tục, mạch **mở**: các lời gọi sau thất bại ngay, không chờ timeout. Sau một khoảng, mạch **nửa mở** và thử vài lời gọi; thành công thì **đóng** lại. Trong Node.js có thể dùng `opossum`.
+A circuit breaker wraps calls to another service. After repeated failures, the circuit **opens**: later calls fail immediately, without waiting for a timeout. After a while the circuit is **half-open** and tries a few calls; on success it **closes** again. In Node.js you can use `opossum`.
 
 </details>
 
-## WebSockets
+## WebSockets {#websockets}
 
-Trong NestJS, WebSocket server là **gateway** — class gắn `@WebSocketGateway()`, chạy trên Socket.IO (mặc định) hoặc `ws`.
+In NestJS, the WebSocket server is a **gateway** — a class decorated with `@WebSocketGateway()`, running on Socket.IO (the default) or `ws`.
 
 ```ts title="chat.gateway.ts"
 @WebSocketGateway({ cors: { origin: ["https://app.example.com"] } })
@@ -311,7 +311,7 @@ export class ChatGateway implements OnGatewayConnection {
 
   async handleConnection(client: Socket) {
     try {
-      // Client gửi token khi kết nối: io(url, { auth: { token } })
+      // The client sends the token on connect: io(url, { auth: { token } })
       client.data.user = await this.jwt.verifyAsync(client.handshake.auth.token);
     } catch {
       client.disconnect();
@@ -331,13 +331,13 @@ export class ChatGateway implements OnGatewayConnection {
 }
 ```
 
-- **Xác thực**: dùng chung JWT với REST API. Verify ở `handleConnection` để từ chối ngay khi bắt tay, hoặc viết guard cho từng message (`context.switchToWs().getClient()`).
-- **Scale nhiều instance**: user A ở instance 1 không nhận được message phát từ instance 2. Dùng Redis adapter (`@socket.io/redis-adapter`) để các instance phát event cho nhau qua Redis pub/sub; load balancer cần sticky session nếu Socket.IO dùng long-polling.
-- **Kết nối chết**: Socket.IO tự gửi heartbeat ping/pong (`pingInterval`, `pingTimeout`) và đóng kết nối không phản hồi, nên không cần tự xử lý.
+- **Authentication**: share the JWT with the REST API. Verify in `handleConnection` so you reject it during the handshake, or write a guard per message (`context.switchToWs().getClient()`).
+- **Scaling to many instances**: user A on instance 1 does not receive a message emitted from instance 2. Use the Redis adapter (`@socket.io/redis-adapter`) so instances publish events to each other over Redis pub/sub; the load balancer needs a sticky session if Socket.IO uses long-polling.
+- **Dead connections**: Socket.IO sends heartbeat ping/pong itself (`pingInterval`, `pingTimeout`) and closes connections that do not respond, so you do not handle that yourself.
 
-## Bảo mật
+## Security
 
-### Xác thực & phân quyền
+### Authentication & authorization
 
 ```mermaid
 sequenceDiagram
@@ -348,12 +348,12 @@ sequenceDiagram
   U->>A: POST /auth/login (username, password)
   A-->>U: { access_token }
   U->>G: GET /profile + Authorization: Bearer token
-  G->>G: verify chữ ký, hạn → gắn req.user
-  G->>P: cho đi tiếp
+  G->>G: verify signature and expiry → attach req.user
+  G->>P: let the request through
   P-->>U: profile
 ```
 
-Phân quyền theo vai trò bằng một guard đọc metadata:
+Role-based authorization with a guard that reads metadata:
 
 ```ts title="roles.guard.ts"
 export const Roles = Reflector.createDecorator<string[]>();
@@ -370,21 +370,21 @@ export class RolesGuard implements CanActivate {
   }
 }
 
-// Dùng: @Roles(["admin"]) @UseGuards(AuthGuard("jwt"), RolesGuard)
+// Use: @Roles(["admin"]) @UseGuards(AuthGuard("jwt"), RolesGuard)
 ```
 
 :::tip
 
-Lưu token ở cookie `HttpOnly` an toàn hơn `localStorage` trước XSS, nhưng khi đó phải chống CSRF (bên dưới).
+Storing the token in an `HttpOnly` cookie is safer than `localStorage` against XSS, but then you must defend against CSRF (below).
 
 :::
 
-### Các mối đe dọa phổ biến
+### Common threats
 
-| Mối đe dọa | Giải pháp trong NestJS |
+| Threat | Solution in NestJS |
 | --- | --- |
-| Brute-force, DoS | `@nestjs/throttler` với `ThrottlerGuard` global; giới hạn chặt hơn cho `/auth/login` bằng `@Throttle()` |
-| Gọi API từ domain khác | `app.enableCors({ origin: ["https://app.example.com"], credentials: true })` — không dùng `origin: "*"` cùng cookie |
-| HTTP header không an toàn | `app.use(helmet())` — đặt `Strict-Transport-Security`, `X-Content-Type-Options`, CSP… |
-| CSRF (khi xác thực bằng cookie) | Cookie `SameSite=Lax`/`Strict` và CSRF token, ví dụ `csrf-csrf` (`csurf` đã ngừng phát triển). API dùng header `Authorization: Bearer` không bị CSRF |
-| Dữ liệu đầu vào độc hại | `ValidationPipe` với `whitelist: true`, không truyền thẳng body vào query |
+| Brute-force, DoS | `@nestjs/throttler` with a global `ThrottlerGuard`; a tighter limit on `/auth/login` with `@Throttle()` |
+| API calls from another domain | `app.enableCors({ origin: ["https://app.example.com"], credentials: true })` — do not use `origin: "*"` together with cookies |
+| Unsafe HTTP headers | `app.use(helmet())` — sets `Strict-Transport-Security`, `X-Content-Type-Options`, CSP… |
+| CSRF (when authenticating with a cookie) | A `SameSite=Lax`/`Strict` cookie and a CSRF token, for example `csrf-csrf` (`csurf` is no longer developed). An API that uses the `Authorization: Bearer` header is not affected by CSRF |
+| Malicious input | `ValidationPipe` with `whitelist: true`; do not pass the body straight into a query |

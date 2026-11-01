@@ -1,96 +1,96 @@
 ---
-title: Tư duy lập trình
-description: Sáu tư duy cốt lõi của lập trình viên, lộ trình từ Fresher đến Senior, cách rèn luyện, giữ động lực và các sai lầm thường gặp
+title: Programming mindset
+description: Six core mindsets for a developer, the path from Fresher to Senior, how to practice, stay motivated, and the common mistakes
 ---
 
-# Tư duy lập trình cốt lõi
+# Core programming mindset
 
-Ngôn ngữ và framework thay đổi vài năm một lần; cách suy nghĩ thì theo bạn suốt sự nghiệp. Trang này tổng hợp các tư duy nền tảng, lộ trình phát triển theo cấp độ, cách rèn luyện và những cạm bẫy thường gặp.
+Languages and frameworks change every few years; how you think stays with you for the whole career. This page collects the foundational mindsets, a level-by-level development path, how to practice, and the common pitfalls.
 
-## Sáu tư duy cốt lõi
+## Six core mindsets
 
-| Tư duy | Là gì | Vì sao quan trọng | Rèn luyện |
+| Mindset | What it is | Why it matters | How to practice |
 | --- | --- | --- | --- |
-| 🧠 **Logic** | Phân tích vấn đề có cấu trúc, từng bước có căn cứ | Nền tảng cho mọi tư duy phức tạp hơn; code rõ ràng, ít lỗi | Chia nhỏ vấn đề, giải bài toán logic, học cấu trúc dữ liệu |
-| 💡 **Giải quyết vấn đề** | Xác định, phân tích và đưa ra giải pháp hiệu quả | Xử lý nhanh thách thức mới, thích ứng với công nghệ mới | Đi theo quy trình 6 bước bên dưới cho mọi vấn đề, kể cả nhỏ |
-| ⚙️ **Thuật toán** | Mô tả giải pháp thành các bước cụ thể, lặp lại được | "Ngôn ngữ" chính xác để chuyển ý tưởng thành code | Binary search, quick sort, merge sort, quy hoạch động; phân tích độ phức tạp |
-| 🧱 **Hướng đối tượng** | Mô hình hóa thế giới thực thành các đối tượng | Tái sử dụng, dễ bảo trì và mở rộng | Đóng gói, kế thừa, đa hình, trừu tượng; sau đó là SOLID và design pattern |
-| 🌐 **Hệ thống** | Nhìn vấn đề như một phần của tổng thể, chú ý tương tác giữa các phần | Dự đoán tác động của thay đổi, thiết kế tốt hơn, phối hợp nhóm tốt hơn | Vẽ sơ đồ luồng dữ liệu của dự án đang làm; đọc về kiến trúc (ví dụ [microservices](./microservices.mdx)) |
-| 🐞 **Debugging** | Xác định, phân tích và sửa lỗi một cách có hệ thống | Hiểu sâu cách chương trình chạy, kiểm soát mã nguồn | Dùng debugger thay vì đoán; đi theo quy trình bên dưới |
+| 🧠 **Logic** | Structured analysis of a problem, step by step, each step justified | The base for every more complex mindset; clearer code, fewer bugs | Break the problem down, solve logic problems, learn data structures |
+| 💡 **Problem solving** | Identify, analyze, and produce an effective solution | Handle new challenges quickly, adapt to new technology | Follow the 6-step process below for every problem, including small ones |
+| ⚙️ **Algorithms** | Describe a solution as concrete, repeatable steps | The precise "language" for turning an idea into code | Binary search, quick sort, merge sort, dynamic programming; analyze complexity |
+| 🧱 **Object-oriented** | Model the real world as objects | Reuse, easier to maintain and extend | Encapsulation, inheritance, polymorphism, abstraction; then SOLID and design patterns |
+| 🌐 **Systems** | See a problem as part of a whole, and watch how the parts interact | Predict the effect of a change, design better, coordinate better with the team | Draw the data-flow diagram of the project you are on; read about architecture (for example [microservices](./microservices.mdx)) |
+| 🐞 **Debugging** | Find, analyze, and fix bugs systematically | A deeper understanding of how the program runs, and control over the code | Use a debugger instead of guessing; follow the process below |
 
-### Quy trình giải quyết vấn đề
+### Problem-solving process
 
 ```mermaid
 flowchart LR
-  A[1. Mô tả<br/>vấn đề] --> B[2. Phân tích<br/>nguyên nhân] --> C[3. Đề xuất<br/>giải pháp] --> D[4. Triển khai] --> E[5. Kiểm tra<br/>và đánh giá] --> F[6. Ghi chép]
-  E -. chưa đạt .-> B
+  A[1. Describe<br/>the problem] --> B[2. Analyze<br/>the cause] --> C[3. Propose<br/>a solution] --> D[4. Implement] --> E[5. Check<br/>and evaluate] --> F[6. Take notes]
+  E -. not met .-> B
 ```
 
-Debug là một trường hợp riêng của quy trình này:
+Debugging is a special case of this process:
 
-1. **Tái hiện** lỗi một cách ổn định — chưa tái hiện được thì chưa sửa được.
-2. **Thu hẹp** phạm vi: lỗi nằm ở tầng nào, commit nào (`git bisect`), input nào.
-3. **Đặt giả thuyết** và kiểm chứng bằng debugger, log, breakpoint — không sửa mò.
-4. **Sửa** nguyên nhân gốc, không chỉ triệu chứng.
-5. **Viết test** tái hiện lỗi để nó không quay lại; nhờ người khác review khi bế tắc.
+1. **Reproduce** the bug reliably — if you cannot reproduce it, you cannot fix it.
+2. **Narrow** the scope: which layer, which commit (`git bisect`), which input.
+3. **State a hypothesis** and check it with a debugger, logs, and breakpoints — do not fix by guessing.
+4. **Fix** the root cause, not only the symptom.
+5. **Write a test** that reproduces the bug so it does not come back; ask someone else to review when you are stuck.
 
-## Lộ trình phát triển
+## Development path
 
-Số năm chỉ mang tính tham khảo — cấp độ được quyết định bởi phạm vi trách nhiệm và mức độ tự chủ, không phải thời gian.
+The years are only a rough guide — level is set by the scope of responsibility and how independently you work, not by time.
 
-| Cấp độ | Phạm vi & trách nhiệm | Trọng tâm phát triển |
+| Level | Scope and responsibility | Development focus |
 | --- | --- | --- |
-| **Fresher** (0–1 năm) | Học và làm tác vụ cơ bản dưới sự hướng dẫn sát; làm quen ngôn ngữ, công cụ, quy trình | Tư duy logic cơ bản, giải quyết vấn đề nhỏ, làm quen thuật toán, debug cơ bản |
-| **Junior** (1–3 năm) | Tự làm các tác vụ đã được định nghĩa rõ, viết unit test, sửa lỗi phức tạp hơn | Logic vững, OOP, áp dụng CSDL và thuật toán, bắt đầu có tư duy hệ thống |
-| **Middle** (3–5 năm) | Tự xử lý tác vụ phức tạp, tham gia thiết kế, sở hữu một phần sản phẩm, hướng dẫn Junior | Thiết kế module, design pattern, tối ưu hiệu năng, tư duy hệ thống rõ ràng |
-| **Senior** (5+ năm) | Dẫn dắt kỹ thuật, thiết kế kiến trúc, cố vấn đội nhóm; biến yêu cầu mơ hồ thành vấn đề rõ ràng | Kiến trúc hệ thống, giải quyết vấn đề chiến lược, mentoring, ra quyết định công nghệ |
+| **Fresher** (0–1 year) | Learn and do basic tasks under close guidance; get used to the language, tools, and process | Basic logical thinking, small problems, a first look at algorithms, basic debugging |
+| **Junior** (1–3 years) | Do clearly defined tasks on your own, write unit tests, fix harder bugs | Solid logic, OOP, apply databases and algorithms, start thinking in systems |
+| **Middle** (3–5 years) | Handle complex tasks on your own, take part in design, own part of the product, guide Juniors | Module design, design patterns, performance optimization, a clear systems view |
+| **Senior** (5+ years) | Lead technically, design architecture, advise the team; turn a vague requirement into a clear problem | System architecture, strategic problem solving, mentoring, technology decisions |
 
-Qua mỗi cấp, câu hỏi chính thay đổi: từ **"làm sao cho chạy?"** (Fresher) → **"làm sao cho đúng và dễ bảo trì?"** (Junior, Middle) → **"có nên làm không, và ảnh hưởng gì đến cả hệ thống?"** (Senior).
+At each level the main question changes: from **"how do I make it run?"** (Fresher) → **"how do I make it correct and easy to maintain?"** (Junior, Middle) → **"should we do this, and what effect does it have on the whole system?"** (Senior).
 
-## Rèn luyện và giữ động lực
+## Practice and staying motivated
 
-### Phương pháp luyện tập
+### How to practice
 
-| Phương pháp | Mang lại |
+| Method | What you get |
 | --- | --- |
-| 🏆 Giải bài trên LeetCode, Codeforces | Tư duy thuật toán, chuẩn bị [phỏng vấn kỹ thuật](./interviews/index.mdx) |
-| 🚀 [Xây dự án cá nhân](./interviews/personal-project.mdx) | Áp dụng kiến thức vào thực tế, học công nghệ mới, có portfolio |
-| 📚 Học theo tầng: nền tảng trước, framework sau | Kiến thức bền vững, chuyển framework dễ dàng |
-| 📖 Đọc mã nguồn mở | Học giải pháp thực tế, phong cách code tốt, cách tổ chức dự án |
-| ✍️ Dạy lại cho người khác | Viết blog, chia sẻ giúp hệ thống hóa và hiểu sâu hơn |
+| 🏆 Solve problems on LeetCode, Codeforces | Algorithmic thinking, preparation for [technical interviews](./interviews/index.mdx) |
+| 🚀 [Build a personal project](./interviews/personal-project.mdx) | Apply what you know in practice, learn new technology, build a portfolio |
+| 📚 Learn in layers: foundations first, frameworks later | Knowledge that lasts, and an easier move between frameworks |
+| 📖 Read open-source code | Learn real solutions, good code style, how a project is organized |
+| ✍️ Teach it back to someone else | Writing a blog or sharing helps you organize it and understand it more deeply |
 
-### Giữ động lực
+### Staying motivated
 
-| Chiến lược | Cách làm |
+| Strategy | How |
 | --- | --- |
-| 🧘 Phòng tránh burnout | Nhận ra dấu hiệu sớm (mệt kéo dài, mất hứng thú, khó tập trung); nghỉ ngơi thật sự, ngủ đủ, vận động |
-| 🔥 Nuôi đam mê học hỏi | Nhớ lại lý do bắt đầu, chọn thử thách vừa sức, kết nối với cộng đồng |
-| 🎯 Gắn với mục tiêu nghề nghiệp | Đặt mục tiêu SMART (cụ thể, đo được, khả thi, liên quan, có thời hạn) để việc học có hướng |
-| 🤝 Môi trường tích cực | Không gian làm việc thoải mái, những người hỗ trợ nhau, chủ động chia sẻ |
+| 🧘 Prevent burnout | Notice the early signs (lasting fatigue, lost interest, trouble focusing); actually rest, sleep enough, exercise |
+| 🔥 Keep the desire to learn | Remember why you started, pick challenges you can handle, connect with a community |
+| 🎯 Tie it to a career goal | Set SMART goals (specific, measurable, achievable, relevant, time-bound) so learning has a direction |
+| 🤝 A positive environment | A comfortable place to work, people who support each other, share on purpose |
 
-## Sai lầm thường gặp
+## Common mistakes
 
-### Định hướng và cách học
+### Direction and how you learn
 
-| Sai lầm | Khắc phục |
+| Mistake | Fix |
 | --- | --- |
-| Chỉ xem video, không thực hành ("tutorial hell") | Học đi đôi với làm: áp dụng ngay vào một dự án nhỏ, tự làm lại không nhìn hướng dẫn |
-| Học quá nhiều thứ cùng lúc | Làm chủ một hai công nghệ cốt lõi trước khi mở rộng |
-| Bỏ qua kiến thức nền tảng | Ưu tiên cấu trúc dữ liệu & giải thuật, OOP, mạng máy tính, CSDL |
+| Only watching videos, not practicing ("tutorial hell") | Learn by doing: apply it at once in a small project, then redo it without the guide |
+| Learning too many things at once | Get solid at one or two core technologies before you widen |
+| Skipping the foundations | Put data structures and algorithms, OOP, computer networks, and databases first |
 
-### Kỹ thuật và viết code
+### Technique and writing code
 
-| Sai lầm | Khắc phục |
+| Mistake | Fix |
 | --- | --- |
-| Đặt tên biến, hàm không rõ nghĩa | Tên mô tả đúng chức năng, theo coding convention — xem [Naming](./naming.md) |
-| Lặp code (vi phạm DRY) | Tách hàm, lớp, module để tái sử dụng — xem [các nguyên tắc lập trình](/blog/2024/12/06/programming-princibles) |
-| Bỏ qua test | Coi test là một phần của quy trình, không phải việc làm thêm |
-| Chép code mà không hiểu | Hiểu từng dòng trước khi dùng — kể cả code do AI sinh ra; xem nó là tham khảo, không phải đáp án |
+| Vague variable and function names | Names that describe the job, following the coding convention — see [Naming](./naming.md) |
+| Duplicated code (a DRY violation) | Extract functions, classes, and modules so they can be reused — see [programming principles](/blog/2024/12/06/programming-princibles) |
+| Skipping tests | Treat tests as part of the process, not extra work |
+| Copying code you do not understand | Understand each line before you use it — including code an AI generated; treat it as a reference, not the answer |
 
-### Kỹ năng mềm và phát triển cá nhân
+### Soft skills and personal growth
 
-| Sai lầm | Khắc phục |
+| Mistake | Fix |
 | --- | --- |
-| Bỏ bê kỹ năng mềm | Rèn giao tiếp, làm việc nhóm, quản lý thời gian — quan trọng không kém kỹ năng cứng |
-| Sợ hỏi, sợ thất bại | Coi thất bại là dữ liệu để học; hỏi sau khi đã tự tìm hiểu và nói rõ mình đã thử gì |
-| Tự cô lập | Tham gia cộng đồng, diễn đàn, meetup để học hỏi và được hỗ trợ |
+| Neglecting soft skills | Practice communication, teamwork, and time management — they matter as much as hard skills |
+| Afraid to ask, afraid to fail | Treat failure as data to learn from; ask after you have looked into it yourself, and say clearly what you already tried |
+| Isolating yourself | Join communities, forums, and meetups to learn and to get help |
