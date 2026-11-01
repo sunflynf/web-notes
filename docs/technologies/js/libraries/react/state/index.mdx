@@ -1,0 +1,171 @@
+---
+description: React context | Zustand | Jotai | Recoil | MobX | Redux
+---
+
+# State Management
+
+:::note
+Recoil is no longer maintained (last release 0.7.7 in March 2023; the repo was archived in 2025) - prefer Jotai (similar atom model) or Zustand for new projects.
+:::
+
+| Feature                  | React Context | Zustand | Jotai   | Recoil   | Redux     | MobX    |
+| ------------------------ | ------------- | ------- | ------- | -------- | --------- | ------- |
+| **Complexity**           | Low           | Low     | Low     | Medium   | High      | High    |
+| **Learning Curve**       | Easy          | Easy    | Easy    | Moderate | Steep     | Steep   |
+| **State Management**     | Simple        | Simple  | Simple  | Complex  | Complex   | Complex |
+| **Boilerplate Code**     | Minimal       | Minimal | Minimal | Moderate | High      | High    |
+| **DevTools Support**     | Limited       | Good    | Good    | Good     | Excellent | Good    |
+| **Middleware Support**   | No            | No      | No      | Yes      | Yes       | Yes     |
+| **Asynchronous Actions** | No            | Yes     | Yes     | Yes      | Yes       | Yes     |
+
+## Summary
+
+- All techs have **good performance** & support **typeScript**
+- **Community & Ecosystem**
+  - Large (Redux, MobX)
+  - Growing (Zustand, Jotai, Recoil)
+- **Documentation**
+  - Good (React Context, Zustand, Jotai, Recoil, MobX)
+  - Excellent (Redux)
+- **Use Cases**
+  - Simple (React Context, Zustand, Jotai)
+  - Complex (Recoil, Redux, MobX)
+
+## Side by side
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+The Redux family covered in this folder, with the same counter in each approach and one data fetch in RTK Query. Immer is the helper that makes the "mutating" reducer style safe, so its tab shows the same counter with plain React state.
+
+<Tabs groupId="react-state">
+<TabItem value="react-redux" label="React Redux" default>
+
+A hand-written reducer, store and hooks (core Redux's `createStore` is deprecated, so the store is built with `configureStore`).
+
+```tsx
+import { configureStore } from "@reduxjs/toolkit";
+import { Provider, useDispatch, useSelector } from "react-redux";
+
+type Action = { type: "increment" } | { type: "decrement" };
+
+function counter(state = { value: 0 }, action: Action) {
+  switch (action.type) {
+    case "increment":
+      return { ...state, value: state.value + 1 };
+    case "decrement":
+      return { ...state, value: state.value - 1 };
+    default:
+      return state;
+  }
+}
+
+const store = configureStore({ reducer: { counter } });
+
+function Counter() {
+  const count = useSelector((state: any) => state.counter.value);
+  const dispatch = useDispatch();
+  return (
+    <div>
+      <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+      <span>{count}</span>
+      <button onClick={() => dispatch({ type: "increment" })}>+</button>
+    </div>
+  );
+}
+
+// <Provider store={store}><Counter /></Provider>
+```
+
+Source: [React Redux hooks](https://redux.js.org/react-redux/api/hooks). Full note: [React Redux](./react-redux.md).
+
+</TabItem>
+<TabItem value="rtk" label="Redux Toolkit">
+
+```ts
+import { configureStore, createSlice } from "@reduxjs/toolkit";
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState: { value: 0 },
+  reducers: {
+    increment: (state) => {
+      state.value += 1; // "mutating" syntax, safe because of Immer
+    },
+    decrement: (state) => {
+      state.value -= 1;
+    },
+  },
+});
+
+export const { increment, decrement } = counterSlice.actions;
+
+export const store = configureStore({
+  reducer: { counter: counterSlice.reducer },
+});
+```
+
+```tsx
+// Counter.tsx (same Provider and hooks as the React Redux tab)
+const count = useSelector((state: RootState) => state.counter.value);
+const dispatch = useDispatch();
+// onClick={() => dispatch(increment())}
+```
+
+Source: [Redux Toolkit Quick Start](https://redux.js.org/toolkit/tutorials/quick-start). Full note: [Redux add-ons](./redux-technologies.md).
+
+</TabItem>
+<TabItem value="immer" label="Immer">
+
+```tsx
+import { useState } from "react";
+import { produce } from "immer";
+
+function Counter() {
+  const [state, setState] = useState({ value: 0 });
+
+  const increment = () =>
+    setState(
+      produce((draft) => {
+        draft.value += 1; // write "mutating" code, Immer returns a new object
+      }),
+    );
+
+  return <button onClick={increment}>{state.value}</button>;
+}
+```
+
+`verify`: the Immer docs show `setTodos(produce(draft => { ... }))` and the `use-immer` package for `useImmer`; the curried `produce(recipe)` form used here is described on the curried producers page. Source: [Immer with React setState](https://immerjs.github.io/immer/example-setstate). Full note: [Immer](./immerjs.mdx).
+
+</TabItem>
+<TabItem value="rtkq" label="RTK Query">
+
+A data fetch rather than a counter:
+
+```ts
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+export const pokemonApi = createApi({
+  reducerPath: "pokemonApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "https://pokeapi.co/api/v2/" }),
+  endpoints: (build) => ({
+    getPokemonByName: build.query<Pokemon, string>({
+      query: (name) => `pokemon/${name}`,
+    }),
+  }),
+});
+
+export const { useGetPokemonByNameQuery } = pokemonApi;
+
+// store: add [pokemonApi.reducerPath]: pokemonApi.reducer to reducer and
+// pokemonApi.middleware via getDefaultMiddleware().concat(...)
+```
+
+```tsx
+const { data, error, isLoading } = useGetPokemonByNameQuery("bulbasaur");
+```
+
+Source: [RTK Query overview](https://redux.js.org/toolkit/rtk-query/overview). Full note: [RTK Query](./rtk-query.md).
+
+</TabItem>
+</Tabs>

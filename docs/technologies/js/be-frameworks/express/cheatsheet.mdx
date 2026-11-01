@@ -81,6 +81,9 @@ app.listen(3000, () => console.log("http://localhost:3000"));
 
 ## Common patterns
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 ```js
 // routes/users.js - Router module
 import { Router } from "express";
@@ -96,6 +99,11 @@ export default router;
 // app.js
 app.use("/api/users", router);
 ```
+
+**Middleware by scope** (Express docs: application-level, router-level, error-handling, built-in and third-party):
+
+<Tabs groupId="express-middleware">
+<TabItem value="app" label="Application-level" default>
 
 ```js
 // Middleware: logging, auth, validation
@@ -121,6 +129,28 @@ const validate = (schema) => (req, res, next) => {
 ```
 
 ```js
+app.use(logger);                       // every request
+app.get("/me", requireAuth, getMe);    // one route
+```
+
+</TabItem>
+<TabItem value="router" label="Router-level">
+
+```js
+// Router-level: same signature, bound to express.Router()
+const router = express.Router();
+
+router.use(requireAuth);              // runs for every request to this router
+router.get("/", listUsers);
+router.post("/", validate(createUserSchema), createUser);  // per-route middleware
+
+app.use("/api/users", router);
+```
+
+</TabItem>
+<TabItem value="error" label="Error-handling">
+
+```js
 // 404 + central error handler (register last)
 app.use((req, res) => res.status(404).json({ error: "Not found" }));
 
@@ -129,6 +159,9 @@ app.use((err, req, res, next) => {
   res.status(err.status ?? 500).json({ error: err.expose ? err.message : "Internal Server Error" });
 });
 ```
+
+</TabItem>
+<TabItem value="packages" label="Built-in and third-party">
 
 ```js
 // Typical production stack
@@ -141,6 +174,9 @@ app.use(helmet());
 app.use(cors({ origin: ["https://app.example.com"] }));
 app.use(rateLimit({ windowMs: 60_000, limit: 100 }));
 ```
+
+</TabItem>
+</Tabs>
 
 ```js
 // Express 5 path syntax (path-to-regexp v8)
@@ -173,4 +209,4 @@ app.get("/assets/{*path}", handler);         // optional wildcard, matches "/ass
 ## In these notes
 
 - [Express notes: folder structures, seeding, useful packages](./index.mdx)
-- [Backend frameworks comparison](../index.md) · [Fastify](../fastify.md) · [NestJS Cheatsheet](../nest/cheatsheet.mdx)
+- [Backend frameworks comparison](../index.mdx) · [Fastify](../fastify.md) · [NestJS Cheatsheet](../nest/cheatsheet.mdx)

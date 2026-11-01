@@ -30,3 +30,123 @@ description: Sequelize  | Prisma | TypeORM | Objection.js | Drizzle ORM
 **Further Reading:**
 
 - [Drizzle vs Prisma](https://www.bytebase.com/blog/drizzle-vs-prisma/)
+
+## Side by side
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+One task in every tool: find a user by email together with their posts. The tools fall into two groups:
+
+- **ORM**: [Prisma](./prisma.md), [Drizzle](./drizzle.md), [TypeORM](./type-orm.mdx) and [Sequelize](./sequelize.mdx) map tables to models or schemas and load relations for you.
+- **Query builder / driver**: [Knex.js](../query-builder/knexjs.md) builds SQL with a chainable API and [node-postgres](../query-builder/node-postgres.md) sends SQL you write yourself. Both return flat rows, so a join repeats the user on each post row.
+
+Each snippet assumes the schema or models are already defined (see the tool's own page).
+
+<Tabs groupId="js-orm">
+<TabItem value="prisma" label="Prisma" default>
+
+```ts
+// Prisma ORM 7 style (prisma/schema.prisma defines User and Post)
+const user = await prisma.user.findUnique({
+  where: { email: "user@example.com" },
+  include: { posts: true },
+});
+```
+
+`verify`: the current Prisma docs describe Prisma ORM 8 with a different client API (`db.orm.public.User.where({ email }).include("posts").first()`). The snippet above matches Prisma ORM 7 and the [Prisma note](./prisma.md). Source: [Prisma relation queries](https://www.prisma.io/docs/orm/prisma-client/queries/relation-queries).
+
+Full note: [Prisma](./prisma.md).
+
+</TabItem>
+<TabItem value="drizzle" label="Drizzle">
+
+```ts
+import { defineRelations } from "drizzle-orm";
+
+// Relations (users and posts are the pgTable definitions)
+export const relations = defineRelations({ users, posts }, (r) => ({
+  users: { posts: r.many.posts() },
+  posts: {
+    author: r.one.users({ from: r.posts.authorId, to: r.users.id }),
+  },
+}));
+
+const db = drizzle(process.env.DATABASE_URL!, { relations });
+
+const user = await db.query.users.findFirst({
+  where: { email: "user@example.com" },
+  with: { posts: true },
+});
+```
+
+`verify`: the Drizzle docs show `where` with `findMany` and `with` with `findFirst`, not both on one call, and `r.many.posts()` may need `from`/`to` in a schema with several relations. Sources: [Relations v2](https://orm.drizzle.team/docs/relations-v2), [Relational queries](https://orm.drizzle.team/docs/rqb).
+
+Full note: [Drizzle](./drizzle.md).
+
+</TabItem>
+<TabItem value="typeorm" label="TypeORM">
+
+```ts
+const userRepository = AppDataSource.getRepository(User);
+
+const user = await userRepository.findOne({
+  where: { email: "user@example.com" },
+  relations: { posts: true },
+});
+```
+
+Source: [TypeORM find options](https://typeorm.io/docs/working-with-entity-manager/find-options) (`where` on `findOne`, `relations` on `find*`).
+
+Full note: [TypeORM](./type-orm.mdx).
+
+</TabItem>
+<TabItem value="sequelize" label="Sequelize">
+
+```ts
+// Once, when defining models: User.hasMany(Post);
+const user = await User.findOne({
+  where: { email: "user@example.com" },
+  include: Post,
+});
+```
+
+Sources: [Sequelize v6 finders](https://sequelize.org/docs/v6/core-concepts/model-querying-finders/) and [eager loading](https://sequelize.org/docs/v6/advanced-association-concepts/eager-loading/).
+
+Full note: [Sequelize](./sequelize.mdx).
+
+</TabItem>
+<TabItem value="knex" label="Knex.js">
+
+```js
+const rows = await db("users")
+  .leftJoin("posts", "users.id", "posts.user_id")
+  .where("users.email", "user@example.com")
+  .select("users.*", "posts.id as post_id", "posts.title as post_title");
+// one row per post; a user without posts gives one row with null post columns
+```
+
+`verify`: `leftJoin` takes the same arguments as `join` in the docs. Source: [Knex query builder](https://knexjs.org/guide/query-builder.html).
+
+Full note: [Knex.js](../query-builder/knexjs.md).
+
+</TabItem>
+<TabItem value="pg" label="node-postgres">
+
+```js
+const text = `
+  SELECT u.*, p.id AS post_id, p.title AS post_title
+  FROM users u
+  LEFT JOIN posts p ON p.user_id = u.id
+  WHERE u.email = $1`;
+
+const res = await pool.query(text, ["user@example.com"]);
+console.log(res.rows); // one row per post
+```
+
+Source: [node-postgres queries](https://node-postgres.com/features/queries) (parameterized `query(text, values)` and `res.rows`; `pool.query` delegates to `client.query`).
+
+Full note: [node-postgres](../query-builder/node-postgres.md).
+
+</TabItem>
+</Tabs>

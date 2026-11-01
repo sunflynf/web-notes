@@ -101,3 +101,70 @@ flowchart TD
 - **[AdonisJS](https://adonisjs.com/)**: A full-stack MVC framework with built-in tools like ORM and authentication, perfect for rapid development but less flexible for non-MVC use cases.
 - **[Hono](https://hono.dev/)**: A modern, edge-native framework for building fast APIs and web apps, TypeScript-first and ideal for serverless and edge deployments.
 - **[Fresh](https://fresh.deno.dev/)**: A Deno-first, islands architecture framework for SSR and minimal-JS web apps, perfect for edge/serverless and modern web standards.
+
+## Side by side
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+One route with a JSON response, `GET /users/:id`, in the three frameworks that have their own notes.
+
+<Tabs groupId="js-be-framework">
+<TabItem value="express" label="Express" default>
+
+```js
+import express from "express";
+
+const app = express();
+
+app.get("/users/:id", (req, res) => {
+  res.json({ id: req.params.id, name: "Ada" });
+});
+
+app.listen(3000, () => console.log("Example app listening on port 3000"));
+```
+
+Source: [Express hello world](https://expressjs.com/en/starter/hello-world.html) (v5, ESM); `res.json` is in the [Express 5 API](https://expressjs.com/en/5x/api.html). Full note: [Express](./express/index.mdx).
+
+</TabItem>
+<TabItem value="fastify" label="Fastify">
+
+```js
+import Fastify from "fastify";
+
+const fastify = Fastify({ logger: true });
+
+fastify.get("/users/:id", async (request, reply) => {
+  const { id } = request.params;
+  return { id, name: "Ada" }; // an object is sent as JSON
+});
+
+await fastify.listen({ port: 3000 });
+```
+
+Sources: [Fastify getting started](https://fastify.dev/docs/latest/Guides/Getting-Started/), [Routes](https://fastify.dev/docs/latest/Reference/Routes/). Full note: [Fastify](./fastify.md).
+
+</TabItem>
+<TabItem value="nest" label="NestJS">
+
+```ts title="users.controller.ts"
+import { Controller, Get, Param } from "@nestjs/common";
+
+@Controller("users")
+export class UsersController {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
+    return { id, name: "Ada" }; // objects are serialized to JSON
+  }
+}
+```
+
+```ts title="main.ts"
+const app = await NestFactory.create(AppModule); // AppModule lists UsersController in controllers
+await app.listen(3000);
+```
+
+Source: [NestJS controllers](https://docs.nestjs.com/controllers) ("when a route handler returns a JavaScript object or array, it is automatically serialized to JSON"). Full note: [NestJS](./nest/index.md).
+
+</TabItem>
+</Tabs>
