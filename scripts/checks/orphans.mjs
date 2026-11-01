@@ -1,6 +1,6 @@
 // Finds doc pages that link to no other note (run after `yarn build`).
-// Scope: build/docs/technologies, cloud-computing and llm, minus category pages, ubuntu-server-*
-// and elk-stack/*. A page is an orphan when its markdown content (the `theme-doc-markdown`
+// Scope: build/docs/technologies, cloud-computing, llm and devops, minus category pages.
+// A page is an orphan when its markdown content (the `theme-doc-markdown`
 // container) has no <a href> to a different page under /web-notes/docs/ or /web-notes/projects/.
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const BASE_URL = "/web-notes";
-const SECTIONS = ["technologies", "cloud-computing", "llm"];
+const SECTIONS = ["technologies", "cloud-computing", "llm", "devops"];
 const NOT_NOTES = [`${BASE_URL}/docs/tags/`, `${BASE_URL}/docs/category/`];
 const TARGETS = [`${BASE_URL}/docs/`, `${BASE_URL}/projects/`];
 
@@ -86,7 +86,6 @@ for (const section of SECTIONS) {
   for (const file of pagesUnder(sectionDir)) {
     const rel = relative(buildDocs, file).split(sep).join("/");
     const urlPath = `${BASE_URL}/docs/${rel.replace(/index\.html$/, "").replace(/\/$/, "")}`;
-    if (/(^|\/)(ubuntu-server-[^/]*|elk-stack)(\/|$)/.test(rel)) continue;
     const html = readFileSync(file, "utf8");
     if (isRedirectStub(html)) continue;
     const container = html.match(/class="[^"]*\btheme-doc-markdown\b/);

@@ -43,7 +43,14 @@ web-notes/
 │   ├── llm/                # LLM notes
 │   ├── technologies/       # Programming languages, frameworks (opens with the roadmap, index.mdx)
 │   ├── key-notes/         # Best practices, patterns, interviews
-│   ├── cloud-computing/   # Entry page (index.mdx) + 8 building blocks, plus Ubuntu and ELK
+│   ├── cloud-computing/   # Entry page (index.mdx) + 8 building blocks
+│   ├── devops/            # Which deploy path to use, then how to set it up
+│   │   ├── platforms/     # Managed platforms: PaaS, edge, backend services, tunnels
+│   │   ├── vps/           # Ubuntu server notes and the self-hosted Docker playbook
+│   │   ├── containers/    # Docker notes and Compose in production
+│   │   ├── web-servers/   # Nginx and Caddy
+│   │   ├── ci-cd.mdx      # Build images in CI, push to a registry, deploy over SSH
+│   │   └── observability/ # ELK stack
 │   ├── assets/            # Images shared by docs pages
 │   ├── _superpowers/      # Unpublished specs, plans and merge ledgers
 │   └── _test-features/    # Feature testing area (not published)
@@ -117,8 +124,9 @@ Never edit generated output in `build/` or `.docusaurus/`; update source files i
 
 ### Content Organization
 
-- Documentation is organized by topic (technologies, key-notes, cloud-computing, llm); project blueprints live in the separate `projects/` instance
+- Documentation is organized by topic (technologies, key-notes, cloud-computing, llm, devops); project blueprints live in the separate `projects/` instance
 - Cloud Computing is an entry page (`index.mdx`: architecture map, service mapping, platform comparison) plus 8 building blocks: Foundations, Identity, Compute, Storage, Databases, Networking, Messaging, Monitoring (`scripts/checks/cloud-blocks.mjs` checks them)
+- DevOps is an entry page (deploy-path map and a "where should this run?" chart) plus deployment platforms, a VPS playbook, containers, web servers, CI/CD and observability
 - Folders use `_category_.json` (or `_category_.yml`) for label and ordering
 - Markdown/MDX files support:
   - Mermaid diagrams
