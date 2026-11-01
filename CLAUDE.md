@@ -188,7 +188,7 @@ Add to `prism.additionalLanguages` in `docusaurus.config.ts` (check the existing
 
 There is no unit test framework. `yarn typecheck` and `yarn build` are the required validation suite — run both before opening a PR.
 
-- After `yarn build`, run `node --no-warnings scripts/checks/redirects.mjs`, `cloud-blocks.mjs` and `ledger.mjs` (from the repo root). `redirects.mjs` reads `build/`; `cloud-blocks.mjs` reads the block pages; `ledger.mjs` reads the retired pages from the `v1.1.1` tag. CI runs `redirects.mjs`.
+- After `yarn build`, run `node --no-warnings scripts/checks/redirects.mjs`, `cloud-blocks.mjs`, `ledger.mjs` and `orphans.mjs` (from the repo root). `redirects.mjs` reads `build/`; `cloud-blocks.mjs` reads the block pages; `ledger.mjs` reads the retired pages from the `v1.1.1` tag; `orphans.mjs` reads `build/` and fails on any technologies, cloud-computing or llm page that links to no other note (fix: add a ` runs `redirects.mjs`.
 - Content changes: confirm links, imports, frontmatter, Mermaid diagrams, and custom MDX components compile.
 - UI/style changes: check the affected page in `yarn start` in both light and dark themes.
 

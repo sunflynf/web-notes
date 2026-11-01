@@ -102,3 +102,9 @@ export const SignupForm = () => {
   );
 };
 ```
+
+## Related notes
+
+- [React Hook Form](./react-hook-form.md) - a lighter alternative
+- [React](../index.mdx)
+- [React cheatsheet](../cheatsheet.mdx)

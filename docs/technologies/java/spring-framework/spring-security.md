@@ -223,3 +223,10 @@ public void whenUserAccessUserPage_thenSuccess() throws Exception {
 - **Enable HTTPS**: Secure communications by configuring HTTPS in production.
 - **Restrict Sensitive Endpoints**: Limit access to admin or critical endpoints by roles or permissions.
 - **Use Custom Error Handling**: Customize error messages for failed authentications to avoid information disclosure.
+
+## Related notes
+
+- [Spring cheatsheet](./cheatsheet.mdx)
+- [Spring Testing](./spring-test.md) - test secured endpoints
+- [Authentication](../../../key-notes/authentication.md) - sessions, tokens and OAuth concepts
+- [Cloud identity](../../../cloud-computing/identity.mdx) - managed identity services

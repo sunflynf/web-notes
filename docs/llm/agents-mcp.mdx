@@ -85,3 +85,9 @@ await server.connect(new StdioServerTransport());
 - Tool descriptions and tool outputs go into the model's context, so a malicious server can inject instructions.
 - Use least-privilege credentials per server and require confirmation for writes.
 - For remote servers, use the spec's OAuth-based authorization rather than shared static keys.
+
+## Related notes
+
+- [Structured output & tool calling](./structured-output-tool-calling.mdx) - the tool-call format agents are built on
+- [LLM security](./security.mdx) - prompt injection and tool abuse
+- [Evals](./evals.mdx) - test agent behaviour before shipping

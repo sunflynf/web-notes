@@ -73,3 +73,10 @@ const batch = await client.messages.batches.create({
 - Smaller models and lower reasoning effort reduce latency.
 - Keep the prompt prefix stable so caching hits.
 - Route easy requests to a fast model; escalate only when needed.
+
+## Related notes
+
+- [Tokens, context & sampling](./tokens-context-sampling.mdx) - what you are billed for
+- [Model landscape](./model-landscape.mdx) - pick a cheaper or faster model
+- [Local models](./local-models.mdx) - run models on your own hardware
+- [Cloud monitoring](../cloud-computing/monitoring.mdx) - track latency and spend
