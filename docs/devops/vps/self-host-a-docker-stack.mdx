@@ -1,0 +1,235 @@
+---
+title: Self-host a Docker stack
+sidebar_label: Self-host a Docker stack
+sidebar_position: 1
+description: When a VPS is the right host, and the order of operations for a reverse proxy, two APIs, and one Postgres.
+---
+
+import LayerFlow from "@site/src/components/LayerFlow";
+
+# Self-host a Docker stack
+
+One VPS, one reverse proxy with automatic TLS, two API backends (production and staging for each), and one Postgres instance. The database holds one database and one role per app. Nothing on the host is built from source at deploy time. Images arrive from a registry.
+
+The provider is "the VPS provider". Names, addresses, and account paths stay out of this note on purpose.
+
+## When a VPS beats a platform
+
+Pick a VPS when several services should share one predictable monthly price, and you will actually operate the box: patch it, watch the disk, and restore a backup onto an empty database at least once.
+
+A platform is the better default when:
+
+- the thing you are shipping is a frontend ([Vercel](../platforms/frontend-hosting/vercel.mdx), [Netlify](../platforms/frontend-hosting/netlify.mdx), [Cloudflare Pages](../platforms/frontend-hosting/cloudflare.mdx));
+- you will not log in to patch OpenSSH this quarter ([Render](../platforms/application-hosting/render.mdx), [Railway](../platforms/application-hosting/railway.mdx), [Fly.io](../platforms/application-hosting/fly-io.mdx));
+- you want a managed Postgres and auth without running the database ([Supabase](../platforms/backend-services/supabase.mdx)).
+
+A VPS is one machine. It is a single point of failure. The disk, the provider, and you are the availability plan. Backups are yours: the provider's snapshot, if you buy one, is not a restore drill. A platform's free tier that sleeps is a different failure. You are choosing which failure you want to own.
+
+Frontends can stay on a platform. This playbook is for the APIs and the database.
+
+## The shape
+
+<LayerFlow
+  ariaLabel="VPS stack: proxy in front of apps and Postgres"
+  layers={[
+    {
+      title: "Internet",
+      nodes: [{ label: "Clients", plain: true }],
+    },
+    {
+      title: "Edge",
+      nodes: [{ label: "Proxy", to: "/docs/devops/web-servers/caddy/", detail: "TLS, 80 and 443" }],
+    },
+    {
+      title: "Apps",
+      nodes: [
+        { label: "API prod", detail: "two apps", plain: true },
+        { label: "API staging", detail: "two apps", plain: true },
+      ],
+    },
+    {
+      title: "Data",
+      nodes: [{ label: "Postgres", detail: "one role each", plain: true }],
+    },
+  ]}
+  around={{
+    title: "On the host, not on the public internet",
+    nodes: [
+      { label: "Monitor", to: "#monitoring", detail: "SSH tunnel" },
+      { label: "Backups", to: "#backups-and-restore", detail: "cron, R2" },
+      { label: "Secrets", to: "#secrets", detail: "sops, age" },
+    ],
+  }}
+/>
+
+The proxy is the only container with published ports, and only 80 and 443. Each app container joins the proxy network and a database network. Postgres joins only the database network. Staging is the same images and a different database, not a different server.
+
+Monitoring listens on localhost. You reach it with an SSH tunnel. Host cron, not a container, runs the nightly dump and the image prune. That way a stuck app container cannot skip the backup.
+
+## Server bootstrap order
+
+Do this once, before any application container exists. The command-level Ubuntu notes are [Ubuntu server setup](./ubuntu-server-setup.mdx) and the [cheatsheet](./ubuntu-server-cheatsheet.mdx). The order below is the part that matters for this stack.
+
+1. Create a normal user, add your SSH public key, and confirm you can log in as that user. Then disable SSH password login and root login.
+2. Put the SSH policy in a drop-in under `/etc/ssh/sshd_config.d/`, not only in the main file, so a package update does not silently restore defaults. The drop-in sets `PermitRootLogin no`, `PasswordAuthentication no`, and `PubkeyAuthentication yes`. Reload `ssh` and test a second session before you close the first one.
+3. Add a deploy user whose only job is the deploy script. The sudoers rule in `/etc/sudoers.d/` allows that one command and nothing else. Prefer a forced command on the deploy key so the key cannot open a shell.
+4. Add a status user for read-only checks (`docker ps`, reading logs). A second sudoers rule allows those commands and not a shell as root.
+5. Install fail2ban and enable the SSH jail, so repeated authentication failures are banned.
+6. Enable unattended upgrades for security updates. Reboot when the kernel needs it. Write down who is allowed to reboot.
+7. Cap journald (`SystemMaxUse`) and logrotate (size, not only time) so logs cannot fill the disk. A round example is 200 MB of journal and a few rotated files. Pick the number from the disk you have, not from this sentence.
+8. Add a small swap file and set `vm.swappiness` below the default of 60 (10 is a reasonable example) with a sysctl drop-in. Swap is a shock absorber, not extra RAM for Postgres.
+9. Install Docker, then set the daemon log limit so container logs rotate. [json-file options](https://docs.docker.com/config/containers/logging/json-file/):
+
+```json
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  },
+  "live-restore": true
+}
+```
+
+`live-restore` keeps containers running across a daemon restart. Confirm the key against [live restore](https://docs.docker.com/config/containers/live-restore/) (`verify` if your daemon version rejects it).
+
+## Docker networking gotcha
+
+Docker inserts its own iptables rules. Traffic to a published container port is accepted in the `DOCKER` chain before ufw sees it. A port you publish is public even when `ufw status` says the port is denied. Docs: [packet filtering and firewalls](https://docs.docker.com/engine/network/packet-filtering-firewalls/).
+
+Consequences for this stack:
+
+- Publish `80` and `443` on the proxy only.
+- Do not publish Postgres. Do not publish the app ports. They are reachable as Docker DNS names on the internal network.
+- If a status UI must be reached from the host, bind it to `127.0.0.1` only (`127.0.0.1:3001:3001`). Binding `3001:3001` listens on every interface, and ufw will not save you.
+- A database network with `internal: true` has no default route. The database cannot call the internet even if something else is misconfigured. See [Compose in production](../containers/compose-in-production.mdx).
+
+## Memory and connection budgets
+
+Give every container a `mem_limit`, and set `memswap_limit` to the same value so the limit is real. Then add the limits. The sum has to fit in RAM with room for the OS, page cache, and a spike. If it does not, lower a limit or move a service.
+
+Round example for a 4 GB VPS (4096 MB). These numbers are an illustration, not a measurement of any real server:
+
+| Container | mem_limit |
+|---|---|
+| Postgres | 1 GB |
+| First API, production | 512 MB |
+| Second API, production | 512 MB |
+| First API, staging | 256 MB |
+| Second API, staging | 256 MB |
+| Reverse proxy | 128 MB |
+| Monitor | 256 MB |
+| Sum | 2944 MB |
+
+Headroom is about 1.1 GB. That is the OS and the page cache. A fifth API at 512 MB would eat it.
+
+Inside the 1 GB Postgres container, set `shared_buffers` from the container's limit, not from the host's RAM. A quarter of the container (256 MB) is a starting point. `max_connections` comes from the clients, not from a hope:
+
+- each API process has a pool (example: 10);
+- four API containers means 40 connections if each runs one process;
+- add a handful for an admin session and for `pg_dump`;
+- set `max_connections` to 80 so there is room.
+
+`work_mem` is per operation, per connection. 8 MB times 80 connections is 640 MB in the worst case, on top of `shared_buffers`, which does not fit in 1 GB. Keep `work_mem` small (4 MB in this example is 320 MB worst case) until a slow query proves you need more. The [Compose](../containers/compose-in-production.mdx) page shows the limit keys.
+
+Postgres 18 images store data under a versioned directory inside `/var/lib/postgresql`. Mount that parent path as the volume. Pointing `PGDATA` at a path you invented is how an upgrade looks empty. `verify` the layout in the image README for the tag you pin.
+
+## Deploy
+
+Build images in CI and push them to GHCR. The server never runs `docker build`. The pipeline, the token permissions, and the SSH key are [CI/CD](../ci-cd.mdx).
+
+The deploy script on the host:
+
+1. Records the tag that is running now.
+2. Pulls the new tag.
+3. Runs the release or migration command in a one-shot container. If that command fails, it stops. The old containers keep serving.
+4. Runs `docker compose up -d`.
+5. Calls the health URL. On success, it writes the new tag down as the current one.
+6. On failure, it puts the previous tag back and runs `up -d` again.
+
+The migration is not undone by step 6. The old code has to work on the new schema. Expand first (add a column, deploy, backfill), then contract (drop the old column only after every running image has stopped reading it).
+
+Prune unused images only after a deploy has stayed healthy. A prune in the failure window can delete the tag you meant to roll back to.
+
+## Backups and restore
+
+Cron on the host, once a night:
+
+1. `pg_dump` in custom format (`-Fc`) for each database, as that database's role or as a role that can read it.
+2. Checksum the file (SHA-256) and write the checksum next to it.
+3. Keep a few days of dumps on the local disk, on a volume that is not the database volume. Three to seven days is enough to notice a bad dump. It is not the archive.
+4. Upload the dump and the checksum to object storage (R2). Egress from R2 is free on the Standard price; see [Cloudflare](../platforms/frontend-hosting/cloudflare.mdx). The bucket holds the archive. The local disk holds the recent copies.
+
+A backup you have not restored is a rumour. The drill:
+
+1. Create an empty database (a new name, or a scratch instance). Do not restore over the live database.
+2. `pg_restore` into that empty database.
+3. Compare row counts on the tables you care about with the counts you recorded before the dump.
+4. Throw the scratch database away, or keep it until the next drill.
+
+Record the counts in the same cron run that takes the dump, so the comparison has a source. If the counts disagree, the dump is not good, even if the upload succeeded.
+
+## Secrets
+
+Encrypt environment files with [sops](https://github.com/getsops/sops) and [age](https://github.com/FiloSottile/age). Commit the encrypted files. Commit a plain `.env.example` that lists the names and no values. The age private key is not in git. It lives on the server and in a password manager.
+
+Rotation:
+
+1. Generate the new value.
+2. Put it in the encrypted file and commit.
+3. Deploy, so the process restarts with the new value.
+4. Revoke the old value at the system that issued it (the registry, the object-storage token, the OAuth client).
+5. Confirm the app is healthy, then forget the old value.
+
+Do not rotate by editing a file only on the server. The next deploy would put the old secret back.
+
+## Monitoring
+
+Run Uptime Kuma (or the same idea) on the monitor network, bound to localhost. Open it with an SSH tunnel, not with a public DNS name. The status user from the bootstrap section is enough for a look. The deploy user is not required.
+
+Probes worth having:
+
+- the public health URL of each production API, from outside, so you notice DNS and TLS failures;
+- a latency check on those URLs, so a slow database shows up before users write to you;
+- certificate expiry. Caddy renews on its own, and a probe that fails at 14 days remaining tells you the renewal stopped.
+
+Logs for a single box can stay on the box (journald plus the Docker log cap). When you outgrow that, the [ELK stack](../observability/elk-stack/index.md) notes are the self-hosted path. They are not required on day one.
+
+## Moving from a PaaS to the VPS
+
+One app at a time. The frontends can stay where they are. Lower DNS TTL a day or two before you need to cut over, and keep the old platform running until the observation window ends.
+
+1. **Recon.** Write down every env var name, the database size, the health URL, and what still calls the old host (webhooks, cron, the frontend).
+2. **Prepare the code and CI.** The image builds in GitHub Actions and pushes to the registry. The server pulls. See [CI/CD](../ci-cd.mdx).
+3. **Server setup.** The bootstrap order above, then Compose, then Caddy with a staging name.
+4. **Staging rehearsal on copies of the data.** Restore a dump into the staging database. Run the migration. Compare row counts with the source. Fix the app until staging matches.
+5. **Production with no traffic.** Deploy the production containers against a restored copy, while DNS still points at the PaaS. Health checks pass. Nobody is using it yet.
+6. **Cut over one app at a time.** Move the first API. Watch it. Then the second. Do not move both in the same minute.
+7. **DNS.** TTL is already low. Point the name at the VPS. Keep the old target written down so you can point it back. If the name is on Cloudflare, DNS-only vs proxied is a separate switch: see [Cloudflare](../platforms/frontend-hosting/cloudflare.mdx).
+8. **Observe 48 to 72 hours.** Error rate, latency, disk, and the next successful backup. The old platform stays up during this window.
+9. **Decommission one resource at a time.** Delete a database, then a service, then a domain. After each deletion, check that production still answers. Do not delete the account on the same day.
+
+Before and after every dump in this list, compare row counts. Checksum the dump file and check the checksum after the upload, not only before.
+
+## Leaving the VPS
+
+Rebuilding on another host is the same playbook in reverse, plus a new machine.
+
+1. Take a fresh dump and a checksum. Confirm the upload.
+2. Bootstrap the new host (the order above). Install Docker. Copy the Compose file and the Caddyfile. Do not copy the age private key into git. Move it through a channel you trust.
+3. Restore into empty databases. Compare row counts.
+4. Deploy the current image tags. Health checks pass while DNS still points at the old host.
+5. Lower TTL if it is not already low, then move DNS. Keep the old host for the 48 to 72 hour window.
+6. On a planned move, generate new secrets (registry token, object-storage token, database roles) and deploy them before you cut over. On a disaster rebuild you may have to reuse the values stored in the encrypted files. Rotate them once the new host is serving.
+
+Decommission the old host only after a backup has succeeded on the new one.
+
+## Connects to
+
+- [Docker knowledge](../containers/docker-knowledge.md) and [Compose in production](../containers/compose-in-production.mdx): the file the script runs.
+- [Caddy](../web-servers/caddy.mdx): automatic HTTPS in front of the containers.
+- [Nginx](../web-servers/nginx.mdx): the alternative proxy, if you already run it.
+- [CI/CD](../ci-cd.mdx): build, push, SSH, health check, rollback.
+- [Cloud foundations](../../cloud-computing/foundations.mdx): accounts, regions, and pricing, when a single VPS is no longer the whole story.
+- [Cloudflare](../platforms/frontend-hosting/cloudflare.mdx): DNS during the cutover, and R2 for the dumps.
+- [Ubuntu server setup](./ubuntu-server-setup.mdx): the commands behind the bootstrap list.

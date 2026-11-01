@@ -1,0 +1,111 @@
+---
+title: Netlify
+sidebar_label: Netlify
+sidebar_position: 2
+description: Netlify at a glance, deploy steps, and the credit limits that bite. Checked 2026-11-01.
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Netlify
+
+Netlify builds static sites and JavaScript frameworks from Git, puts them on a CDN, and runs serverless functions beside the files.
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | A Git-based host for static output and for frameworks that need a serverless function at request time. |
+| Use it for | Marketing sites, SPAs, and framework apps whose bill you want expressed in credits. |
+| Don't use it for | A process that must stay running, or a workload that burns through credits on bandwidth. |
+| Free tier (checked 2026-11-01) | The Free plan is $0 and includes 300 credits/month. When the credits run out, projects pause until the next cycle. Custom domains with SSL, unlimited deploy previews, and a global CDN are included. [Pricing](https://www.netlify.com/pricing/) and [pricing.md](https://www.netlify.com/pricing.md). |
+| Pricing model (checked 2026-11-01) | Personal is $9/month for 1,000 credits, with optional auto-recharge. Pro is $20/month and starts at 3,000 credits (tiers up to 20,000). From pricing.md: a production deploy costs 15 credits, compute costs 10 credits per GB-hour, bandwidth costs 20 credits per GB, and web requests cost 2 credits per 10,000 requests. Extra credits: Personal $5 for 500, Pro $10 for 1,500. |
+| CLI and latest version (checked 2026-11-01) | Netlify CLI v27.16.1, published 2026-10-30. [GitHub release](https://github.com/netlify/cli/releases/tag/v27.16.1). |
+| Official docs | [docs.netlify.com](https://docs.netlify.com/) |
+
+## Core concepts
+
+- **Site**: one project, one build configuration, one set of deploys.
+- **Deploy**: the output of a build. Deploy previews exist for pull requests and for branch deploys.
+- **Production deploy**: the deploy currently published to the site's domains.
+- **Credits**: the meter. Builds, bandwidth, compute, and requests draw from the same monthly balance.
+- **Functions**: serverless handlers. Background functions exist for longer work (`verify` the current duration cap on the functions docs).
+- **Environment variables**: scoped to builds, to functions, or to both, and to a deploy context (production, deploy preview, branch).
+- **Rollback**: publishing an earlier successful deploy. It does not rebuild.
+
+## Deploy
+
+<Tabs>
+  <TabItem value="dashboard" label="Dashboard" default>
+
+1. Add a site from Git and set the base directory, build command, and publish directory.
+2. Add environment variables under **Site configuration**, **Environment variables**. Choose the deploy contexts that receive each one. Use a secret variable for tokens.
+3. Push to the production branch. Netlify builds and publishes.
+4. Add a custom domain under **Domain management**. Netlify provisions the certificate once DNS points at the site.
+5. Roll back under **Deploys**: open an older deploy and choose **Publish deploy**.
+
+  </TabItem>
+  <TabItem value="cli" label="CLI">
+
+1. `netlify login`, then `netlify init` in the repo (or `netlify link` if the site already exists).
+2. `netlify env:set NAME value` to add a variable. Scopes and contexts: `verify` with `netlify env:set --help`.
+3. `netlify deploy` uploads a draft. `netlify deploy --prod` publishes it.
+4. Roll back from the dashboard (Publish deploy). A CLI rollback command was not confirmed on this pass (`verify`).
+
+  </TabItem>
+  <TabItem value="config" label="Config file">
+
+`netlify.toml` in the repository root, or in the package if you set the base. Reference: [file-based configuration](https://docs.netlify.com/configure-builds/file-based-configuration/).
+
+```toml
+[build]
+  command = "yarn build"
+  publish = "build"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+Do not put secrets in the file. Set those in the UI or with `netlify env:set`. The domain is a site setting, not a toml key.
+
+  </TabItem>
+</Tabs>
+
+## Common patterns
+
+- **Monorepo**: set `base` in `netlify.toml` to the package directory so the build does not run at the repository root.
+- **Preview per pull request**: enabled when the Git provider is connected. Give previews their own API URL via a deploy-preview context variable.
+- **Scheduled functions**: Netlify can invoke a function on a cron expression (`verify` the current config key in the scheduled functions docs).
+- **External Postgres**: store the URL as an environment variable. A function is short-lived, so use a pooler and a small client pool. See [Supabase](../backend-services/supabase.mdx).
+
+## Gotchas
+
+- **Credits** (checked 2026-11-01): 300 credits on Free. A production deploy alone is 15. Bandwidth is 20 credits per GB. A site that ships images can pause mid-month.
+- **Pause** (checked 2026-11-01): when the balance hits zero, projects pause until the next cycle. That is a hard stop, not a bill.
+- **Build minutes** are no longer the public meter. The public meter is credits (checked 2026-11-01). If an older note of yours says "300 build minutes", replace it with the credit figures above.
+- **Netlify Database and Blob** are listed on the Free plan. The database engine and any cap beyond credits were not confirmed (`verify`).
+- **Region list**: the CDN is described as global. A pin-to-region control was not confirmed (`verify`).
+
+## What's new in recent releases
+
+From the [changelog](https://www.netlify.com/changelog/):
+
+- **2026-10-23**: build and deploy from Grok through the Netlify connector.
+- **2026-10-16**: Support Hub, for Enterprise.
+- **2026-10-14**: Next.js and React security note. Upgrade `next` to 15.5.28 or 16.4.1.
+- **2026-10-13**: TanStack Start 1.0 deploys on Netlify.
+- **2026-10-02**: SvelteKit 3 support.
+- **2026-10-30**: CLI v27.16.1 (dependency updates). [Release](https://github.com/netlify/cli/releases/tag/v27.16.1).
+
+## Connects to
+
+- [Vercel](./vercel.mdx) and [Cloudflare](./cloudflare.mdx): the other frontend hosts.
+- [Next.js](../../../technologies/js/fe-frameworks/react/nextjs.mdx): a common framework on this host.
+- [CI/CD](../../ci-cd.mdx): when the credit meter or the build image is no longer enough.
+- [Supabase](../backend-services/supabase.mdx): Postgres and auth next to a Netlify frontend.

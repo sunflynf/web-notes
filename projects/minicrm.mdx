@@ -1,40 +1,40 @@
 ---
-title: "Bản thiết kế Mini-CRM với MERN stack"
-description: "Mini-CRM cho doanh nghiệp nhỏ: quản lý lead, pipeline bán hàng dạng Kanban và dashboard báo cáo với MongoDB, Express, React, Node.js — mô hình dữ liệu, API, luồng xác thực."
+title: "Blueprint for a Mini-CRM on the MERN stack"
+description: "A Mini-CRM for a small business: lead management, a Kanban sales pipeline, and a reporting dashboard with MongoDB, Express, React, and Node.js — data model, API, and authentication flow."
 sidebar_label: "Mini-CRM"
 sidebar_position: 4
 ---
 
-Một **Mini-CRM** gọn nhẹ xây trên MERN stack (MongoDB, Express, React, Node.js): quản lý khách hàng tiềm năng (lead) tập trung, theo dõi pipeline bán hàng dạng Kanban và xem báo cáo cơ bản — thay cho spreadsheet và ghi chú rời rạc của cá nhân kinh doanh, doanh nghiệp nhỏ và startup.
+A small **Mini-CRM** on the MERN stack (MongoDB, Express, React, Node.js): one place for leads, a Kanban sales pipeline, and basic reports — instead of the spreadsheets and scattered notes of self-employed sellers, small businesses, and startups.
 
 
-## Tổng quan
+## Overview
 
-| Mục tiêu | Người dùng |
+| Goal | Users |
 | --- | --- |
-| Quản lý lead tập trung | Cá nhân kinh doanh tự do |
-| Theo dõi tiến độ pipeline | Doanh nghiệp nhỏ và siêu nhỏ |
-| Nâng cao hiệu suất làm việc | Đội bán hàng nhỏ |
-| Báo cáo cơ bản | Startup giai đoạn đầu |
-| Dễ dùng, không cần đào tạo | |
+| Centralized lead management | Self-employed salespeople |
+| Track pipeline progress | Small and micro businesses |
+| Higher productivity | Small sales teams |
+| Basic reports | Early-stage startups |
+| Easy to use, no training required | |
 
-**Giá trị:** thay spreadsheet bằng một hệ thống tập trung, nhìn thấy cả quy trình bán hàng để không bỏ lỡ cơ hội, lưu lịch sử trao đổi với từng khách, và ra quyết định dựa trên số liệu — với chi phí thấp.
+**Value:** replace the spreadsheet with one system, see the whole sales process so opportunities are not missed, keep the history of each customer conversation, and decide from the numbers — at a low cost.
 
-## Pipeline bán hàng
+## Sales pipeline
 
-Mỗi lead đi qua các giai đoạn, hiển thị thành các cột Kanban; kéo thẻ sang cột khác để đổi giai đoạn.
+Each lead moves through stages, shown as Kanban columns; drag a card to another column to change its stage.
 
 ```mermaid
 flowchart LR
-  A[Mới] --> B[Đang liên hệ] --> C[Đề xuất] --> D[Thương lượng]
-  D --> W([Thắng])
-  D --> L([Thua])
+  A[New] --> B[Contacting] --> C[Proposal] --> D[Negotiation]
+  D --> W([Won])
+  D --> L([Lost])
   B & C -.-> L
 ```
 
-Thẻ lead hiển thị tên, công ty và giá trị dự kiến; mở thẻ để xem chi tiết và lịch sử ghi chú.
+A lead card shows the name, company, and expected value; open the card for the detail and the note history.
 
-## Mô hình dữ liệu
+## Data model
 
 ```mermaid
 erDiagram
@@ -44,36 +44,36 @@ erDiagram
   users ||--o{ activities : writes
 ```
 
-| Collection | Trường chính | Ghi chú |
+| Collection | Main fields | Notes |
 | --- | --- | --- |
-| `users` | `email`, `passwordHash`, `role` | Mật khẩu băm bằng bcrypt hoặc Argon2 |
-| `leads` | `name`, `company`, `value`, `stage`, `ownerId` | `stage` là enum cố định; `value` lưu số nguyên (VNĐ), không dùng số thực |
-| `activities` | `leadId`, `type` (ghi chú, cuộc gọi, email), `content`, `createdAt` | Lịch sử tương tác với khách |
-| `stage_changes` | `leadId`, `from`, `to`, `changedAt` | Lưu mỗi lần đổi giai đoạn — đầu vào cho tỉ lệ chuyển đổi và thời gian chốt deal |
+| `users` | `email`, `passwordHash`, `role` | Password hashed with bcrypt or Argon2 |
+| `leads` | `name`, `company`, `value`, `stage`, `ownerId` | `stage` is a fixed enum; `value` is stored as an integer (VND), not a float |
+| `activities` | `leadId`, `type` (note, call, email), `content`, `createdAt` | History of interaction with the customer |
+| `stage_changes` | `leadId`, `from`, `to`, `changedAt` | Stored on every stage change — input for conversion rate and time to close |
 
-Đánh index `{ ownerId: 1, stage: 1 }` cho truy vấn Kanban.
+Index `{ ownerId: 1, stage: 1 }` for the Kanban query.
 
 ## API
 
-| Method | Endpoint | Mô tả |
+| Method | Endpoint | Description |
 | --- | --- | --- |
-| `POST` | `/api/auth/login` | Đăng nhập, trả JWT |
-| `GET` | `/api/leads?stage=&q=` | Danh sách lead của người dùng, lọc và tìm kiếm |
-| `POST` | `/api/leads` | Tạo lead |
-| `PATCH` | `/api/leads/:id` | Sửa lead, đổi giai đoạn (ghi thêm `stage_changes`) |
-| `DELETE` | `/api/leads/:id` | Xóa lead |
-| `POST` | `/api/leads/:id/activities` | Thêm ghi chú |
-| `GET` | `/api/reports/pipeline` | Số lượng và tổng giá trị theo giai đoạn |
+| `POST` | `/api/auth/login` | Sign in, return a JWT |
+| `GET` | `/api/leads?stage=&q=` | The user's leads, with filter and search |
+| `POST` | `/api/leads` | Create a lead |
+| `PATCH` | `/api/leads/:id` | Update a lead, change its stage (also write `stage_changes`) |
+| `DELETE` | `/api/leads/:id` | Delete a lead |
+| `POST` | `/api/leads/:id/activities` | Add a note |
+| `GET` | `/api/reports/pipeline` | Count and total value by stage |
 
-:::warning Kiểm tra quyền sở hữu
+:::warning Check ownership
 
-Mọi truy vấn theo `:id` phải lọc cả `ownerId` (`Lead.findOne({ _id: id, ownerId: req.user.id })`). Chỉ lọc theo `_id` thì người dùng đổi id trong URL là xem được lead của người khác (lỗi IDOR).
+Every query by `:id` must also filter on `ownerId` (`Lead.findOne({ _id: id, ownerId: req.user.id })`). Filtering only on `_id` lets a user change the id in the URL and read someone else's lead (an IDOR bug).
 
 :::
 
-## Luồng hoạt động
+## Flows
 
-### Xác thực
+### Authentication
 
 ```mermaid
 sequenceDiagram
@@ -81,42 +81,42 @@ sequenceDiagram
   participant API as Express
   participant DB as MongoDB
   U->>API: POST /api/auth/login (email, password)
-  API->>DB: Tìm user theo email
-  API->>API: So sánh mật khẩu với bản băm
-  API-->>U: JWT (cookie HttpOnly)
-  U->>API: Các request sau kèm cookie
-  API->>API: Middleware verify JWT → req.user
+  API->>DB: Find the user by email
+  API->>API: Compare the password with the hash
+  API-->>U: JWT (HttpOnly cookie)
+  U->>API: Later requests include the cookie
+  API->>API: Middleware verifies the JWT → req.user
 ```
 
-Lưu JWT trong cookie `HttpOnly`, `Secure`, `SameSite` thay vì `localStorage` để script độc hại không đọc được.
+Store the JWT in an `HttpOnly`, `Secure`, `SameSite` cookie instead of `localStorage`, so a malicious script cannot read it.
 
-### Tạo lead
+### Create a lead
 
-1. Người dùng nhập thông tin lead trên form.
-2. Frontend gửi `POST /api/leads` (cookie đi kèm tự động).
-3. Backend xác thực token, validate dữ liệu, gán `ownerId = req.user.id`, lưu vào MongoDB.
-4. Frontend thêm lead mới vào cột "Mới" trên Kanban.
+1. The user enters the lead on a form.
+2. The frontend sends `POST /api/leads` (the cookie is attached automatically).
+3. The backend verifies the token, validates the data, sets `ownerId = req.user.id`, and saves it to MongoDB.
+4. The frontend adds the new lead to the "New" column on the Kanban board.
 
-## Dashboard báo cáo
+## Reporting dashboard
 
-Số liệu cho biểu đồ pipeline lấy bằng một aggregation:
+The numbers for the pipeline chart come from one aggregation:
 
 ```js title="reports.controller.js"
 const pipeline = await Lead.aggregate([
-  { $match: { ownerId: req.user._id } }, // hoặc cả đội, nếu là manager
+  { $match: { ownerId: req.user._id } }, // or the whole team, if this user is a manager
   { $group: { _id: "$stage", count: { $sum: 1 }, totalValue: { $sum: "$value" } } },
 ]);
 ```
 
-Từ `stage_changes` có thể tính thêm: tỉ lệ thắng, tỉ lệ chuyển đổi giữa các giai đoạn, thời gian trung bình để chốt deal.
+From `stage_changes` you can also compute: win rate, conversion rate between stages, and average time to close a deal.
 
-## Hướng phát triển
+## Further development
 
-| Tính năng | Mô tả |
+| Feature | Description |
 | --- | --- |
-| Email & lịch | Gửi email, đặt lịch hẹn ngay trong CRM |
-| Quản lý công việc | Tạo và giao task gắn với từng lead |
-| Phân quyền chi tiết | Vai trò Admin, Manager, Sales; manager xem lead của cả đội |
-| Báo cáo nâng cao | Thêm bộ lọc theo thời gian, nhân viên và loại biểu đồ |
-| Tự động hóa | Tự gửi email hoặc tạo task khi lead đổi giai đoạn |
-| Docker & CI/CD | Đóng gói và tự động triển khai — xem [Thiết lập máy chủ Ubuntu](/docs/cloud-computing/ubuntu-server-setup/) |
+| Email and calendar | Send email and schedule meetings inside the CRM |
+| Task management | Create and assign tasks tied to each lead |
+| Finer-grained permissions | Admin, Manager, and Sales roles; a manager sees the whole team's leads |
+| Richer reports | Add filters for time range, salesperson, and chart type |
+| Automation | Automatically send an email or create a task when a lead changes stage |
+| Docker and CI/CD | Package the app and deploy it automatically — see [Ubuntu server setup](/docs/devops/vps/ubuntu-server-setup/) |

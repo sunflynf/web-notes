@@ -373,7 +373,7 @@ nest g resolver <resolver-name>
 
 ## Further Reading
 
-- [NestJS chuyên sâu](./in-depth.mdx) (Vietnamese): request lifecycle, DI scopes, microservices, WebSocket scaling, security.
+- [NestJS in depth](./in-depth.mdx): request lifecycle, DI scopes, microservices, WebSocket scaling, security.
 
 ## References
 

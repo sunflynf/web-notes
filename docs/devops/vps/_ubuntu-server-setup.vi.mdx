@@ -128,7 +128,7 @@ CREATE USER 'my_app_user'@'localhost' IDENTIFIED BY 'mat_khau_manh';
 GRANT ALL PRIVILEGES ON my_app_db.* TO 'my_app_user'@'localhost';
 ```
 
-`FLUSH PRIVILEGES` không cần thiết khi dùng `CREATE USER` / `GRANT`. Xem thêm: [MySQL](../technologies/database/relational/mysql.md).
+`FLUSH PRIVILEGES` không cần thiết khi dùng `CREATE USER` / `GRANT`. Xem thêm: [MySQL](../../technologies/database/relational/mysql.md).
 
 </TabItem>
 <TabItem value="postgres" label="PostgreSQL">
@@ -148,7 +148,7 @@ Chỉ khi cần truy cập từ máy khác: đặt `listen_addresses` trong `pos
 host    my_app_db  my_app_user  10.0.0.5/32    scram-sha-256
 ```
 
-Xem thêm: [PostgreSQL](../technologies/database/relational/postgre.md).
+Xem thêm: [PostgreSQL](../../technologies/database/relational/postgre.md).
 
 </TabItem>
 <TabItem value="mongodb" label="MongoDB">
@@ -179,14 +179,14 @@ net:
   bindIp: 127.0.0.1 # giữ mặc định, chỉ lắng nghe localhost
 ```
 
-Xem thêm: [MongoDB](../technologies/database/no-sql/mongodb.md).
+Xem thêm: [MongoDB](../../technologies/database/no-sql/mongodb.md).
 
 </TabItem>
 </Tabs>
 
 ## 5. Nginx và SSL
 
-[Nginx](../technologies/nginx.mdx) nhận traffic ở port 80/443, xử lý SSL rồi chuyển tiếp đến ứng dụng chạy trên port nội bộ. Nhờ đó một server chạy được nhiều ứng dụng, và ứng dụng không cần quyền mở port thấp.
+[Nginx](../web-servers/nginx.mdx) nhận traffic ở port 80/443, xử lý SSL rồi chuyển tiếp đến ứng dụng chạy trên port nội bộ. Nhờ đó một server chạy được nhiều ứng dụng, và ứng dụng không cần quyền mở port thấp.
 
 ```mermaid
 flowchart LR
@@ -354,7 +354,7 @@ docker compose logs -f
 docker compose down
 ```
 
-Xem thêm: [Docker](../technologies/docker-knowledge.md). Nhớ cảnh báo [Docker bỏ qua UFW](#ufw) ở trên.
+Xem thêm: [Docker](../containers/docker-knowledge.md). Nhớ cảnh báo [Docker bỏ qua UFW](#ufw) ở trên.
 
 </TabItem>
 </Tabs>

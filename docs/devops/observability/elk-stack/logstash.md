@@ -83,3 +83,10 @@ Use `stdout { codec => rubydebug }` while developing filters. Confirm the event 
 - Letting unmapped fields create inconsistent Elasticsearch types.
 - Indexing secrets, tokens, headers, or raw request bodies.
 - Using one large index for unrelated event types.
+
+## Related notes
+
+- [ELK stack](./index.md): how the three tools fit together.
+- [Elasticsearch](./elasticsearch.md): where the filtered events land.
+- [Kibana](./kibana.md): how to check that a known request id arrived.
+- [Microservices](../../../key-notes/microservices.mdx): correlation ids to keep on every event.

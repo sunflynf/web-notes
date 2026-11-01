@@ -1,0 +1,117 @@
+---
+title: Fly.io
+sidebar_label: Fly.io
+sidebar_position: 3
+description: Fly.io Machines, pricing with no free tier for new orgs, and deploy steps. Checked 2026-11-01.
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Fly.io
+
+Fly.io runs your container as a Machine (a VM) in a region you choose. You scale by starting more Machines, and you pay for the ones that are running.
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | A public-cloud VM host aimed at running containers close to users. The unit is a Machine. |
+| Use it for | An API that must stay in a specific region, with a volume for data, when a few dollars a month is an acceptable floor. |
+| Don't use it for | A free always-on service. New organizations have no free allowance. |
+| Free tier (checked 2026-11-01) | No free tier for new organizations, and no monthly free usage allowance. Organizations still on plans discontinued in October 2024 keep their old allowances. [Pricing update](https://fly.io/pricing-update/), effective 2026-10-01. [Pricing](https://fly.io/pricing). |
+| Pricing model (checked 2026-11-01) | Cheapest always-on example: shared-cpu-1x, 256 MB, in Ashburn (`iad`) or Secaucus (`ewr`), $2.19 per 30 days ($0.0030/hour), plus egress. Egress is $0.02/GB in North America and Europe, $0.04/GB in Asia Pacific, Oceania, and South America, and $0.12/GB in Africa and India. Extra RAM is $6/GB/month, up to 128 GB. Volumes are $0.15/GB/month provisioned. Snapshots are $0.08/GB/month, with the first 10 GB free. A stopped Machine's rootfs is $0.15/GB/month. A dedicated IPv4 is $2/month. Shared IPv4 and IPv6 are free. The first 10 single-hostname certificates are free, then $0.10/month each. A wildcard certificate is $1/month. Support plans (Standard $29/month, Premium $199/month) are support, not the compute floor. [About pricing](https://fly.io/docs/about/pricing). |
+| CLI and latest version (checked 2026-11-01) | flyctl v0.5.1, published 2026-10-29 (a `fly skills` command and deploy operation spans). [GitHub release](https://github.com/superfly/flyctl/releases/tag/v0.5.1). |
+| Official docs | [fly.io/docs](https://fly.io/docs/) |
+
+## Core concepts
+
+- **App**: a name, a config file, and a set of Machines.
+- **Machine**: one VM running one image. It has a size, a region, and a state (started or stopped).
+- **Volume**: persistent disk in one region. It does not follow a Machine to another region by itself.
+- **fly.toml**: the app config. Image, services, checks, and VM size live here.
+- **Region**: a three-letter code. The cheapest always-on example above is `iad` or `ewr`. List them with `fly platform regions` (`verify` the live list).
+- **Postgres**: not a separate serverless product. It is a Machine plus a volume (the `fly postgres` tooling, or a container you run yourself).
+- **Secrets**: `fly secrets set` injects environment variables. Setting one restarts the Machines.
+- **Anycast IP**: shared IPv4 and IPv6 are included. A dedicated IPv4 costs $2/month.
+
+## Deploy
+
+<Tabs>
+  <TabItem value="dashboard" label="Dashboard" default>
+
+1. Create an app and pick the organization. New organizations do not get a free allowance (checked 2026-11-01).
+2. You can launch from a GitHub repo in the dashboard. If that screen stalls, deploy with flyctl instead. A dashboard Git connection is optional.
+3. Set secrets in the app's secret list. They are not in `fly.toml`.
+4. Add a certificate for the custom domain. The first 10 single-hostname certificates are free. Point DNS at the app's addresses.
+5. Roll back by deploying the previous image tag (Machines, **Release** history, or the CLI below).
+
+  </TabItem>
+  <TabItem value="cli" label="CLI">
+
+1. `fly auth login`, then `fly launch` in the project. Answer the region and the size. Decline a Postgres cluster unless you want one.
+2. `fly secrets set DATABASE_URL=...` (the value comes from your password manager, not from the shell history if you can avoid it).
+3. `fly deploy` builds and rolls the Machines.
+4. `fly certs add app.example.com` requests a certificate. `example.com` here is a placeholder.
+5. Roll back: `fly releases` and `fly deploy --image <registry>/<app>:<previous-tag>` (`verify` the flag with `fly deploy --help`).
+
+  </TabItem>
+  <TabItem value="config" label="Config file">
+
+`fly.toml`. Reference: [app configuration](https://fly.io/docs/reference/configuration/).
+
+```toml
+app = "my-api"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+```
+
+The `auto_stop_machines` value is the current style of "stop when idle". `verify` the allowed values in the configuration reference before you copy this, because the key has changed names before. Secrets are not in the file. A volume is created with `fly volumes create` and mounted from this file (`verify` the `[mounts]` block against the reference).
+
+  </TabItem>
+</Tabs>
+
+## Common patterns
+
+- **Monorepo**: set the build context and Dockerfile path in `fly.toml` so the image builds from the service directory.
+- **Preview per pull request**: Fly does not create one automatically the way Vercel does. A review app is a separate Fly app, usually created from CI (`verify` if a first-party preview product exists now).
+- **Scheduled work**: a second Machine, or a process that uses the Machines API on a schedule. There is no single "cron" product name confirmed here (`verify`).
+- **Postgres**: run it as a Machine with a volume in the same region as the API. You pay for the volume even when you plan the size carefully. For a managed Postgres with auth, use [Supabase](../backend-services/supabase.mdx) and point the Machine at the pooler.
+- **Idle**: you can stop a Machine when it has no traffic and start it on the next request. Stopped rootfs is still billed ($0.15/GB/month, checked 2026-11-01). Cold start is the trade.
+
+## Gotchas
+
+- **No free tier for new orgs** (effective 2026-10-01). A "free hobby" note from 2024 does not apply to a new organization.
+- **Egress** (checked 2026-11-01): the $2.19 machine is not the whole bill. Traffic out is priced by continent.
+- **Volumes are regional and billed provisioned**, not on bytes used ($0.15/GB/month).
+- **Region pinning**: the Machine runs where you started it. A volume cannot be mounted from another region. Moving region means creating a new volume and copying data.
+- **Stopped is not free**: rootfs of a stopped Machine is $0.15/GB/month (checked 2026-11-01).
+- **IPv4**: shared IPv4 is free. Dedicated is $2/month. Some DNS setups want a dedicated address (`verify` your registrar's requirements).
+- **Config keys**: do not copy `auto_stop_machines` from an old blog post without checking the reference.
+
+## What's new in recent releases
+
+- **2026-10-01**: pricing update. No free allowance for new organizations. The machine, egress, volume, snapshot, and certificate prices above are from that schedule. [Pricing update](https://fly.io/pricing-update/).
+- **2026-10-29**: flyctl v0.5.1. [Release](https://github.com/superfly/flyctl/releases/tag/v0.5.1).
+- **Checked 2026-11-01** on [fly.io/docs/about/pricing](https://fly.io/docs/about/pricing): stopped Machine rootfs $0.15/GB/month, volumes $0.15/GB/month, first 10 GB of snapshots free. A longer product changelog was not confirmed (`verify` [community.fly.io](https://community.fly.io/) or the docs changelog if you need a third feature note).
+
+## Connects to
+
+- [Render](./render.mdx) and [Railway](./railway.mdx): container hosts that trade region control for a simpler free or trial plan.
+- [Docker](../../containers/docker-knowledge.md): the image a Machine runs.
+- [CI/CD](../../ci-cd.mdx): `fly deploy` from GitHub Actions when you want the same pipeline shape as the VPS.
+- [Self-host a Docker stack](../../vps/self-host-a-docker-stack.mdx): one server instead of per-Machine billing.
+- [Compute](../../../cloud-computing/compute.mdx): EC2 and Fargate, the AWS versions of this choice.

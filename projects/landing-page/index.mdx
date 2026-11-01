@@ -1,41 +1,41 @@
 ---
-title: "Lộ trình xây dựng Landing Page Tool với Next.js"
-description: "Dự án full-stack 4 tuần cho Junior: trình kéo-thả tạo landing page với Next.js, dnd-kit và MongoDB — live preview, lưu trang, thu thập form và xuất HTML."
-sidebar_label: "Kế hoạch"
+title: "Roadmap for building a Landing Page Tool with Next.js"
+description: "A 4-week full-stack project for a junior: a drag-and-drop landing page builder with Next.js, dnd-kit, and MongoDB — live preview, saving pages, form collection, and HTML export."
+sidebar_label: "Plan"
 sidebar_position: 3
 ---
 
 import ProjectStructureExplorer from "@site/src/components/ProjectStructureExplorer";
 
-Một dự án full-stack vừa sức cho **Junior developer** trong 2–4 tuần: công cụ kéo-thả để tạo landing page (lấy cảm hứng từ Carrd), có live preview, lưu trang vào database, thu thập dữ liệu form và xuất ra file HTML tĩnh. Sơ đồ luồng chi tiết của dự án nằm ở trang [Landing Pages Workflows](./workflows.mdx).
+A full-stack project a **junior developer** can finish in 2–4 weeks: a drag-and-drop tool for building landing pages (inspired by Carrd), with live preview, pages saved in a database, form-data collection, and export to a static HTML file. Detailed flow diagrams are on [Landing Pages Workflows](./workflows.mdx).
 
 
-## Công nghệ
+## Stack
 
-| Phần | Lựa chọn |
+| Part | Choice |
 | --- | --- |
-| Frontend & backend | Next.js (App Router: Route Handlers, Server Actions) |
+| Frontend and backend | Next.js (App Router: Route Handlers, Server Actions) |
 | Styling | Tailwind CSS |
 | State | React Context + `useReducer` |
-| Kéo-thả | dnd-kit |
+| Drag and drop | dnd-kit |
 | Database | MongoDB (Mongoose) |
-| Xác thực | Auth.js (NextAuth) |
+| Authentication | Auth.js (NextAuth) |
 | Deploy | Vercel, MongoDB Atlas |
 
-Một repo Next.js duy nhất chứa cả giao diện lẫn API — full-stack monolith, dễ quản lý cho một người.
+One Next.js repo holds both the UI and the API — a full-stack monolith, manageable for one person.
 
-## Lộ trình 4 tuần
+## Four-week roadmap
 
-| Tuần | Trọng tâm | Mục tiêu |
+| Week | Focus | Goal |
 | --- | --- | --- |
-| **1** | Thiết lập & giao diện | Khởi tạo Next.js + Tailwind; layout chính (header, sidebar, canvas); các block tĩnh (`TextBlock`, `ImageBlock`…); nắm cấu trúc thư mục |
-| **2** | Trình chỉnh sửa & live preview | State bằng Context; kéo block từ sidebar vào canvas; panel thuộc tính để sửa block; preview cập nhật tức thì |
-| **3** | Backend, lưu trữ & form | Schema MongoDB; API CRUD cho trang; lưu/tải trang; API nhận dữ liệu form |
-| **4** | Hoàn thiện | Xuất HTML/CSS; responsive cho cả tool và trang được tạo; thông báo, README; deploy lên Vercel |
+| **1** | Setup and UI | Scaffold Next.js + Tailwind; the main layout (header, sidebar, canvas); static blocks (`TextBlock`, `ImageBlock`…); get used to the folder structure |
+| **2** | Editor and live preview | State with Context; drag a block from the sidebar onto the canvas; a properties panel to edit the block; the preview updates immediately |
+| **3** | Backend, storage, and forms | MongoDB schema; a CRUD API for pages; save and load a page; an API that receives form data |
+| **4** | Finish | Export HTML/CSS; responsive layout for both the tool and the pages it creates; notifications, a README; deploy to Vercel |
 
-## Cấu trúc thư mục
+## Folder structure
 
-Nhấn vào từng mục để xem vai trò của nó.
+Click an item to see what it is for.
 
 <ProjectStructureExplorer
   initialSelectedId="contexts/PageContext.tsx"
@@ -44,32 +44,32 @@ Nhấn vào từng mục để xem vai trò của nó.
       id: "app",
       label: "app/",
       isFolder: true,
-      description: "Routing của App Router: trang giao diện và API cùng một chỗ.",
+      description: "App Router routing: UI pages and the API in one place.",
       children: [
-        { id: "app/page.tsx", label: "page.tsx", description: "Trang chủ: danh sách landing page của người dùng." },
+        { id: "app/page.tsx", label: "page.tsx", description: "Home page: the user's list of landing pages." },
         {
           id: "app/editor",
           label: "editor/[pageId]/",
           isFolder: true,
-          description: "Trình chỉnh sửa một trang.",
-          children: [{ id: "app/editor/page", label: "page.tsx", description: "Ghép sidebar, canvas và panel thuộc tính." }],
+          description: "The editor for one page.",
+          children: [{ id: "app/editor/page", label: "page.tsx", description: "Composes the sidebar, canvas, and properties panel." }],
         },
         {
           id: "app/p",
           label: "p/[slug]/",
           isFolder: true,
-          description: "Trang đã xuất bản, render từ dữ liệu block trong database.",
-          children: [{ id: "app/p/page", label: "page.tsx", description: "Render trang công khai." }],
+          description: "The published page, rendered from block data in the database.",
+          children: [{ id: "app/p/page", label: "page.tsx", description: "Renders the public page." }],
         },
         {
           id: "app/api",
           label: "api/",
           isFolder: true,
-          description: "Route Handlers — toàn bộ backend.",
+          description: "Route Handlers — the whole backend.",
           children: [
-            { id: "app/api/pages", label: "pages/[id]/route.ts", description: "CRUD trang (GET, PUT, DELETE), kiểm tra quyền sở hữu." },
-            { id: "app/api/export", label: "pages/[id]/export/route.ts", description: "Trả về file HTML tĩnh để tải xuống." },
-            { id: "app/api/leads", label: "leads/route.ts", description: "Endpoint công khai nhận dữ liệu form từ trang đã xuất bản." },
+            { id: "app/api/pages", label: "pages/[id]/route.ts", description: "Page CRUD (GET, PUT, DELETE), with an ownership check." },
+            { id: "app/api/export", label: "pages/[id]/export/route.ts", description: "Returns a static HTML file to download." },
+            { id: "app/api/leads", label: "leads/route.ts", description: "Public endpoint that receives form data from a published page." },
           ],
         },
       ],
@@ -78,47 +78,47 @@ Nhấn vào từng mục để xem vai trò của nó.
       id: "components",
       label: "components/",
       isFolder: true,
-      description: "Các thành phần giao diện.",
+      description: "UI components.",
       children: [
-        { id: "components/blocks", label: "blocks/", isFolder: true, description: "Khối xây trang: TextBlock, ImageBlock, FormBlock… Mỗi block có phần render và phần chỉnh thuộc tính." },
-        { id: "components/layout", label: "layout/", isFolder: true, description: "Khung trình chỉnh sửa: Header, Sidebar, Canvas, PropertiesPanel." },
-        { id: "components/ui", label: "ui/", isFolder: true, description: "Thành phần nhỏ tái sử dụng: Button, Input." },
+        { id: "components/blocks", label: "blocks/", isFolder: true, description: "Blocks that build the page: TextBlock, ImageBlock, FormBlock… Each block has a render view and a properties editor." },
+        { id: "components/layout", label: "layout/", isFolder: true, description: "Editor shell: Header, Sidebar, Canvas, PropertiesPanel." },
+        { id: "components/ui", label: "ui/", isFolder: true, description: "Small reusable pieces: Button, Input." },
       ],
     },
     {
       id: "contexts",
       label: "contexts/",
       isFolder: true,
-      description: "State toàn cục.",
-      children: [{ id: "contexts/PageContext.tsx", label: "PageContext.tsx", description: "Nguồn sự thật duy nhất cho danh sách block của trang đang sửa (Context + useReducer)." }],
+      description: "Global state.",
+      children: [{ id: "contexts/PageContext.tsx", label: "PageContext.tsx", description: "The single source of truth for the block list of the page being edited (Context + useReducer)." }],
     },
     {
       id: "lib",
       label: "lib/",
       isFolder: true,
-      description: "Kết nối DB và hàm tiện ích.",
+      description: "Database connection and helpers.",
       children: [
-        { id: "lib/db.ts", label: "db.ts", description: "Kết nối Mongoose, cache connection giữa các lần gọi serverless." },
-        { id: "lib/export.ts", label: "export.ts", description: "Chuyển danh sách block thành chuỗi HTML, có escape nội dung." },
+        { id: "lib/db.ts", label: "db.ts", description: "Mongoose connection, cached across serverless invocations." },
+        { id: "lib/export.ts", label: "export.ts", description: "Turns the block list into an HTML string, with the content escaped." },
       ],
     },
     {
       id: "models",
       label: "models/",
       isFolder: true,
-      description: "Schema MongoDB.",
+      description: "MongoDB schemas.",
       children: [
-        { id: "models/LandingPage.ts", label: "LandingPage.ts", description: "Trang: chủ sở hữu, tiêu đề, slug, mảng block, trạng thái xuất bản." },
-        { id: "models/Lead.ts", label: "Lead.ts", description: "Dữ liệu một lần gửi form, gắn với trang." },
+        { id: "models/LandingPage.ts", label: "LandingPage.ts", description: "A page: owner, title, slug, block array, published state." },
+        { id: "models/Lead.ts", label: "Lead.ts", description: "One form submission, tied to a page." },
       ],
     },
-    { id: ".env.local", label: ".env.local", description: "MONGODB_URI, AUTH_SECRET… Không commit file này." },
+    { id: ".env.local", label: ".env.local", description: "MONGODB_URI, AUTH_SECRET… Do not commit this file." },
   ]}
 />
 
-## Khái niệm kỹ thuật cốt lõi
+## Core technical ideas
 
-### Mô hình dữ liệu: trang là một mảng block
+### Data model: a page is an array of blocks
 
 ```ts title="types.ts"
 type Block =
@@ -129,29 +129,29 @@ type Block =
 type LandingPage = { pageId: string; ownerId: string; title: string; slug: string; blocks: Block[]; published: boolean };
 ```
 
-Editor, trang công khai và file xuất đều render từ **cùng một mảng `blocks`** — chỉ cần lưu JSON này vào MongoDB.
+The editor, the public page, and the exported file all render from **the same `blocks` array** — store this JSON in MongoDB.
 
 ### Live preview
 
 ```mermaid
 flowchart LR
-  A[Người dùng sửa<br/>ở Properties panel] --> B["dispatch({ type: 'update', id, props })"]
-  B --> C[Reducer trả về<br/>mảng blocks mới]
-  C --> D[Canvas re-render]
+  A[User edits<br/>in the Properties panel] --> B["dispatch({ type: 'update', id, props })"]
+  B --> C[Reducer returns<br/>a new blocks array]
+  C --> D[Canvas re-renders]
 ```
 
-Reducer luôn trả về **object mới** (không sửa trực tiếp state) để React nhận ra thay đổi. Bọc từng block bằng `React.memo` để chỉ block vừa sửa render lại — quan trọng khi trang có nhiều block.
+The reducer always returns a **new object** (it does not mutate state) so React notices the change. Wrap each block in `React.memo` so only the block that just changed re-renders — this matters when a page has many blocks.
 
-### Xuất HTML
+### HTML export
 
 ```mermaid
 flowchart LR
-  A[GET /api/pages/id/export] --> B[Tải blocks<br/>từ MongoDB]
-  B --> C[Ghép HTML<br/>từ từng block]
-  C --> D["Response với<br/>Content-Disposition: attachment"]
+  A[GET /api/pages/id/export] --> B[Load blocks<br/>from MongoDB]
+  B --> C[Assemble HTML<br/>from each block]
+  C --> D["Response with<br/>Content-Disposition: attachment"]
 ```
 
-Cách đơn giản và chạy được trong Route Handler: mỗi loại block có một hàm trả về chuỗi HTML.
+A simple approach that works inside a Route Handler: each block type has a function that returns an HTML string.
 
 ```ts title="lib/export.ts"
 const escapeHtml = (s: string) =>
@@ -171,20 +171,20 @@ const renderBlock = (block: Block): string => {
 
 :::warning
 
-Nội dung trong block do người dùng nhập — **luôn escape** khi ghép HTML, nếu không trang xuất ra sẽ chứa XSS. Với ảnh, chỉ chấp nhận URL `https:`. File xuất cần kèm một stylesheet nhỏ viết sẵn, vì class Tailwind chỉ có tác dụng khi có file CSS đã build.
+Block content is entered by the user — **always escape** it when assembling HTML, or the exported page contains XSS. For images, accept only `https:` URLs. The exported file needs a small stylesheet written ahead of time, because Tailwind classes only work when a built CSS file is present.
 
 :::
 
-## Triển khai và thực hành tốt
+## Deployment and good practice
 
-| Thực hành | Chi tiết |
+| Practice | Detail |
 | --- | --- |
-| Chia nhỏ component | Mỗi block một file; giữ component nhỏ, dễ tái sử dụng |
-| Hiệu năng | `React.memo`, `useCallback` để tránh render thừa; đo bằng React Profiler |
-| Code sạch | TypeScript, ESLint, Prettier |
-| Bảo mật API | Kiểm tra người dùng có sở hữu trang trước khi sửa/xóa; validate input ở server (ví dụ zod); session trong cookie `HttpOnly` |
-| Endpoint form công khai | Validate, giới hạn kích thước và tần suất gửi, thêm honeypot chống spam |
-| README | Mô tả, ảnh chụp, cách cài đặt, chạy local và deploy |
-| Deploy | Vercel cho Next.js, MongoDB Atlas cho database; biến môi trường đặt trên Vercel |
+| Split components up | One file per block; keep components small and easy to reuse |
+| Performance | `React.memo` and `useCallback` to avoid extra renders; measure with the React Profiler |
+| Clean code | TypeScript, ESLint, Prettier |
+| API security | Check that the user owns the page before editing or deleting it; validate input on the server (zod, for example); session in an `HttpOnly` cookie |
+| Public form endpoint | Validate, limit payload size and how often someone can submit, and add a honeypot against spam |
+| README | Description, screenshots, how to install, run locally, and deploy |
+| Deploy | Vercel for Next.js, MongoDB Atlas for the database; set environment variables on Vercel |
 
-Khi đưa dự án vào CV: xem [Dự án cá nhân cho Junior](/docs/key-notes/interviews/personal-project/) — ví dụ trong đó chính là dự án này.
+When you put the project on a CV: see [Personal project for a junior](/docs/key-notes/interviews/personal-project/) — the example there is this project.

@@ -1,0 +1,109 @@
+---
+title: Vercel
+sidebar_label: Vercel
+sidebar_position: 1
+description: Vercel at a glance, deploy steps, and the limits that bite. Checked 2026-11-01.
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Vercel
+
+Vercel builds and hosts frontend and full-stack web apps, with a preview deployment on every push and serverless functions next to the static assets.
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | A Git-connected host for web frameworks. Next.js is the one it fits most closely. |
+| Use it for | Static sites, SSR, and short request handlers. Preview URLs per branch or pull request. |
+| Don't use it for | A long-running worker, a database server, or anything that must stay up with no request cap. |
+| Free tier (checked 2026-11-01) | Hobby is free. The [Hobby plan](https://vercel.com/docs/plans/hobby) (page updated 2026-09-14) includes 100 GB Fast Data Transfer, 10 GB Fast Origin Transfer, 1,000,000 CDN requests, 4 CPU-hours Active CPU, 360 GB-hours provisioned memory, 1,000,000 function invocations, 100 deployments/day, 200 projects, 50 domains per project, a 300 second hard cap on function duration, 1 hour of runtime logs, and 50,000 Web Analytics events/month. |
+| Pricing model (checked 2026-11-01) | [Pro](https://vercel.com/docs/plans/pro-plan) (page updated 2026-09-15) is $20/month. That fee includes one deploying seat and a $20 monthly usage credit. Extra developer seats are $20/user/month. Viewer seats are free. Function duration defaults to 300 seconds, can be raised to 800 seconds, and an extended maximum of 1800 seconds is in beta. Build machines start at 4 vCPUs and can go up to 30. Fluid compute CPU rates differ by region; the [usage page](https://vercel.com/docs/functions/usage-and-pricing) (updated 2026-06-16) shows Active CPU at $0.128/hour for the iad and pdx examples. |
+| CLI and latest version (checked 2026-11-01) | `vercel` 65.9.0 on the npm registry (`vercel` package). |
+| Official docs | [vercel.com/docs](https://vercel.com/docs) and [vercel.com/docs/pricing](https://vercel.com/docs/pricing) |
+
+## Core concepts
+
+- **Project**: one site or app, tied to a repository and a root directory.
+- **Deployment**: an immutable build. Every push creates one.
+- **Preview vs production**: preview deployments get their own URL. Production is the deployment currently assigned to the production domains.
+- **Environments**: Production, Preview, and Development. Environment variables can differ across them.
+- **Functions**: request handlers that run on Fluid compute. Duration and CPU are metered.
+- **Edge middleware**: code that runs before the cache, for rewrites, redirects, and gating. Python routing middleware is a recent addition (see releases below).
+- **Rollback**: promoting an older deployment back to production. It does not rebuild.
+
+## Deploy
+
+<Tabs>
+  <TabItem value="dashboard" label="Dashboard" default>
+
+1. Import the Git repository and set the framework preset and the root directory (the app folder in a monorepo).
+2. Add environment variables under **Settings**, **Environment Variables**, and choose which environments receive each one. Mark secrets as sensitive.
+3. Push to the production branch. The dashboard builds and assigns the deployment to the production domains.
+4. Add a domain under **Settings**, **Domains**. Vercel asks you for the DNS records and serves the certificate.
+5. Roll back from **Deployments**: open an older successful deployment and promote it to production.
+
+  </TabItem>
+  <TabItem value="cli" label="CLI">
+
+1. Install the CLI and link the folder: `vercel link`.
+2. Pull the development env file: `vercel env pull`.
+3. Deploy a preview with `vercel`. Deploy production with `vercel --prod`.
+4. Add a variable with `vercel env add`, and pick the environment when asked.
+5. Attach a domain with `vercel domains add` (`verify` the current flags with `vercel domains --help`).
+6. Promote an older deployment with `vercel rollback` (`verify` the current flags with `vercel rollback --help`).
+
+  </TabItem>
+  <TabItem value="config" label="Config file">
+
+`vercel.json` in the project root (or the monorepo app root). Schema and keys: [project configuration](https://vercel.com/docs/project-configuration).
+
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "regions": ["iad1"]
+}
+```
+
+Environment variables are not committed in this file. Set them in the dashboard or with the CLI. A domain is also a project setting, not a key you have to invent here. To pin a region, set `regions` and confirm the id on the regions list (`verify` the id before you copy it).
+
+  </TabItem>
+</Tabs>
+
+## Common patterns
+
+- **Monorepo**: set the root directory to the app package. Install and build commands run in that directory.
+- **Preview per pull request**: the Git integration builds every PR. Point the API at a staging backend with a Preview environment variable, not the production one.
+- **Cron**: Vercel Cron hits a function on a schedule. The schedule lives in `vercel.json` under `crons` ([cron jobs](https://vercel.com/docs/cron-jobs)). Confirm the Hobby allowance on that page (`verify` the current free-tier cron count).
+- **External Postgres**: put the connection string in an environment variable. Prefer a pooler. Serverless functions open many short connections; see [Supabase](../backend-services/supabase.mdx) for the pooler versus direct choice.
+
+## Gotchas
+
+- **Duration** (checked 2026-11-01): Hobby functions stop at 300 seconds. That cap is hard. Pro can go higher, up to the numbers in the pricing row above.
+- **Usage credit** (checked 2026-11-01): Pro includes $20 of usage. Past that, the resources in the Hobby list are metered. Read the invoice, not the seat fee alone.
+- **Cold starts**: a function that has not run recently pays a startup delay. There is no always-on process on Hobby.
+- **No first-party Postgres** on the Hobby plan page (checked 2026-11-01). Blob storage is listed. A database is an integration or an external service (`verify` the current storage catalog).
+- **Region list**: the pricing table is per region. The full set of region names was not copied here (`verify`).
+- **Node.js 20** is disabled for new deployments as of the 2026-10-01 changelog entry. New projects default to Node.js 26 (2026-10-29).
+
+## What's new in recent releases
+
+From the [changelog](https://vercel.com/changelog):
+
+- **2026-10-30**: Data Cache is moving into Runtime Cache. Hobby includes 1,000,000 reads and 200,000 writes, then rates from $0.40 per million reads and $4 per million writes. Hobby teams migrate on 2026-11-29.
+- **2026-10-29**: Node.js 26 LTS is generally available and the default for new projects.
+- **2026-10-28**: Vercel CI is in beta.
+- **2026-10-21**: routing middleware is available for Python, via `vercel-proxy` and a `proxy` key in `vercel.json`.
+- **2026-10-20**: WebSockets in Functions are generally available.
+- **2026-10-01**: Node.js 20 is disabled for new deployments.
+
+## Connects to
+
+- [Next.js](../../../technologies/js/fe-frameworks/react/nextjs.mdx): the framework this host is built around.
+- [Netlify](./netlify.mdx) and [Cloudflare](./cloudflare.mdx): the other frontend hosts.
+- [Supabase](../backend-services/supabase.mdx): a Postgres and auth backend the functions can call.
+- [CI/CD](../../ci-cd.mdx): when you outgrow the built-in Git deploy and need your own pipeline.
+- [Compute](../../../cloud-computing/compute.mdx): Lambda, when the function should live on AWS instead.

@@ -1,0 +1,120 @@
+---
+title: Render
+sidebar_label: Render
+sidebar_position: 1
+description: Render at a glance, deploy steps, and free-tier sleep. Checked 2026-11-01.
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Render
+
+Render runs web services, workers, cron jobs, and databases from a Git repo or a Docker image. A Blueprint file describes the whole stack.
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | A container platform. You give it a repo or an image. It builds, runs, and terminates TLS. |
+| Use it for | An API or worker when you do not want to patch a server, and a managed Postgres next to it. |
+| Don't use it for | A free service that must answer instantly at all hours. Free instances sleep. |
+| Free tier (checked 2026-11-01) | Hobby workspace is $0 plus compute. A Free web service (plan id `free`, 512 MB) costs $0, spins down after 15 minutes without inbound traffic, takes about a minute to spin back up (Render shows a loading page), and shares 750 free instance hours per workspace per calendar month. Custom domains, managed TLS, service previews, and log streams are included. Rollbacks on Free go back only to the two most recent previous deploys. The filesystem is ephemeral: a redeploy, restart, or spin-down wipes it. [Free web services](https://render.com/docs/free). Free Key Value and Free Postgres exist. Free Postgres storage and expiry: `verify`. |
+| Pricing model (checked 2026-11-01) | Paid instances start at $7/month (less than 1 CPU, 512 MB) or $25/month (1 CPU, 2 GB). Disks are $0.25/GB/month. A Pro workspace is $25/month plus compute. From the April 23, 2026 plan change: Pro at $25 flat replaced Professional at $19 per member, Scale is $499, there are no seat fees, and remaining workspaces were set to move on August 1, 2026. [Pricing](https://render.com/pricing). |
+| CLI and latest version (checked 2026-11-01) | Render CLI v2.34.0, published 2026-10-30. [GitHub release](https://github.com/render-oss/cli/releases/tag/v2.34.0). |
+| Official docs | [render.com/docs](https://render.com/docs) |
+
+## Core concepts
+
+- **Service**: a web service, private service, background worker, or cron job.
+- **Blueprint**: `render.yaml` in the repo. Render syncs services from it.
+- **Environment group**: a shared set of variables you attach to more than one service.
+- **Preview environment**: a copy of the stack for a pull request (`verify` which service types are copied; workflows were not, as of the 2026-09-16 note below).
+- **Instance type**: the CPU and RAM plan. Free is a type, not a discount on a paid type.
+- **Disk**: persistent storage you attach. The service filesystem without a disk does not keep writes.
+- **Private network**: services in one region talk to each other on an internal hostname. The public internet is not required for service-to-database traffic.
+- **Rollback**: redeploying an older build. Free keeps a shorter history than paid.
+
+## Deploy
+
+<Tabs>
+  <TabItem value="dashboard" label="Dashboard" default>
+
+1. New, Web Service, connect the repo. Pick the runtime (Node, Python, Docker, and so on), the root directory, and the instance type.
+2. Add environment variables on the service. For a secret, use the secret field so the value is masked. Prefer an environment group when several services share a value.
+3. Add a custom domain. Render issues the certificate after DNS points at the service.
+4. Turn on a PR preview if you want a copy per pull request.
+5. Roll back from the deploy list. On a Free service, only the two most recent previous deploys are offered (checked 2026-11-01).
+
+  </TabItem>
+  <TabItem value="cli" label="CLI">
+
+1. Install the CLI from the [v2.34.0 release](https://github.com/render-oss/cli/releases/tag/v2.34.0) and log in.
+2. Trigger a deploy with `render deploys create` (`verify` the current flags with `render --help`). The usual path is still a Git push, which deploys on its own.
+3. Set a variable in the dashboard or in `render.yaml`. The exact `render` env subcommand was not re-checked (`verify`).
+4. Roll back in the dashboard. Do not assume a CLI flag until you have seen it in `--help`.
+
+  </TabItem>
+  <TabItem value="config" label="Config file">
+
+`render.yaml` at the repo root. Reference: [Blueprint spec](https://render.com/docs/blueprint-spec).
+
+```yaml
+services:
+  - type: web
+    name: api
+    runtime: node
+    plan: free
+    buildCommand: yarn install && yarn build
+    startCommand: node dist/main.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: app-db
+          property: connectionString
+databases:
+  - name: app-db
+    plan: free
+```
+
+A `fromDatabase` reference keeps the URL out of the file. Other secrets use `sync: false` so Render asks for the value instead of reading it from Git (`verify` that key against the current spec). The domain is added in the dashboard after the first deploy.
+
+  </TabItem>
+</Tabs>
+
+## Common patterns
+
+- **Monorepo**: set `rootDir` on the service (dashboard) or in the Blueprint (`verify` the field name in the spec). Build commands then run in that directory.
+- **Preview per pull request**: a preview environment. Point it at a separate database, not production.
+- **Cron**: a cron job service with a schedule. It is not a web service that sleeps.
+- **Managed Postgres vs your own**: Render Postgres is a separate service, with backups on paid plans (`verify` the free plan's backup story). On a VPS you run Postgres yourself and you own the dumps. See [Self-host a Docker stack](../../vps/self-host-a-docker-stack.mdx). Private networking lets the web service use the internal database URL.
+- **External Postgres**: set `DATABASE_URL` yourself. Still use a pooler if the platform opens many processes.
+
+## Gotchas
+
+- **Sleep** (checked 2026-11-01): a Free web service spins down after 15 minutes without inbound traffic. The next request waits about a minute. A health check from outside counts as traffic and can keep it awake, and can also burn the 750 hour pool.
+- **Hours** (checked 2026-11-01): 750 free instance hours per workspace per calendar month. Two free services awake all month do not fit.
+- **Ephemeral disk** (checked 2026-11-01): local files disappear on spin-down. Uploads belong in object storage.
+- **Rollback window** (checked 2026-11-01): Free can roll back only to the two most recent previous deploys.
+- **Free Postgres**: storage size and whether the database expires were not on the page used for this note (`verify`).
+- **Regions**: not confirmed (`verify`). Do not assume a city from an old screenshot.
+- **Workspace fee** (checked 2026-11-01): Pro is $25/month on top of the instance price.
+
+## What's new in recent releases
+
+From the [changelog](https://render.com/changelog):
+
+- **2026-10-30**: CLI v2.34.0 (sandbox image import).
+- **2026-10-22**: default Node.js and Bun versions changed for newly created services. Existing services keep their old defaults.
+- **2026-10-16**: Bun canary builds. Not for production.
+- **2026-10-01**: two new Key Value plans (3 GB / 3,000 connections, and 50 GB / 50,000) and lower prices for Key Value plans of 1 GB RAM and up.
+- **2026-09-16**: Blueprints can describe Workflows. Preview environments do not copy workflows yet.
+- **2026-08-26**: new compute plans and spec-based instance ids (for example `4c-32g`). Old ids still work.
+
+## Connects to
+
+- [Railway](./railway.mdx) and [Fly.io](./fly-io.mdx): the other container hosts.
+- [Docker](../../containers/docker-knowledge.md): the image Render runs when the runtime is Docker.
+- [CI/CD](../../ci-cd.mdx): build the image yourself and hand Render a tag, instead of building on Render.
+- [Self-host a Docker stack](../../vps/self-host-a-docker-stack.mdx): the path off this platform when you want one predictable bill.
+- [Databases](../../../cloud-computing/databases.mdx): RDS, when the database should be on AWS.

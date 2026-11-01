@@ -1,40 +1,40 @@
 ---
-title: Kiến trúc phân tầng
-description: Controller → Service → Repository → Model trong Laravel, so sánh với Spring Boot và áp dụng cho thương mại điện tử
+title: Layered architecture
+description: Controller → Service → Repository → Model in Laravel, compared with Spring Boot and applied to e-commerce
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-# Kiến trúc phân tầng trong Laravel
+# Layered architecture in Laravel
 
-Laravel không bắt buộc cấu trúc nào ngoài MVC, nhưng các dự án lớn thường thêm tầng **Service** và **Repository** để tách logic nghiệp vụ khỏi HTTP và khỏi database. Trang này mô tả từng tầng, so sánh với Spring Boot và áp dụng vào một hệ thống thương mại điện tử.
+Laravel does not require any structure beyond MVC, but large projects usually add a **Service** layer and a **Repository** layer to separate business logic from HTTP and from the database. This page describes each layer, compares it with Spring Boot, and applies it to an e-commerce system.
 
 :::info
 
-Cài đặt, service container, migration, auth… đã có trong [Laravel Handbook](./index.mdx). Trang này tập trung vào cách tổ chức code.
+Setup, the service container, migrations, auth, and the rest are already in the [Laravel Handbook](./index.mdx). This page focuses on how the code is organized.
 
 :::
 
-## Các tầng
+## The layers
 
 ```mermaid
 flowchart TD
-  R([Router]) --> C[Controller<br/>tầng giao tiếp HTTP]
-  C --> S[Service<br/>logic nghiệp vụ]
-  S --> Rp[Repository<br/>trừu tượng dữ liệu]
-  Rp --> M[Model Eloquent<br/>tương tác CSDL]
-  S -.-> E[Events / Jobs<br/>tác vụ phụ, queue]
+  R([Router]) --> C[Controller<br/>HTTP interface]
+  C --> S[Service<br/>business logic]
+  S --> Rp[Repository<br/>data abstraction]
+  Rp --> M[Eloquent Model<br/>DB interaction]
+  S -.-> E[Events / Jobs<br/>side tasks, queue]
 ```
 
-| Tầng | Vai trò | Trách nhiệm | Nguyên tắc |
+| Layer | Role | Responsibility | Principle |
 | --- | --- | --- | --- |
-| **Controller** | Nhận HTTP request, trả HTTP response | Điều phối luồng, nhận dữ liệu đã validate (Form Request), gọi Service, trả View hoặc JSON | Giữ controller "mỏng", không chứa logic nghiệp vụ |
-| **Service** | Đóng gói logic nghiệp vụ | Quy trình phức tạp (đặt hàng, khuyến mãi), điều phối nhiều Repository, gọi dịch vụ ngoài (thanh toán, vận chuyển) | Nơi logic nghiệp vụ "sống", tái sử dụng được từ controller, command, job |
-| **Repository** | Lớp trừu tượng giữa nghiệp vụ và nguồn dữ liệu | Interface nhất quán (`find`, `create`, `update`), đóng gói truy vấn Eloquent phức tạp, dễ mock khi test | Tùy chọn — hữu ích cho dự án lớn, thừa với CRUD đơn giản |
-| **Model** | Đại diện một bảng (Active Record) | Relationships (`hasMany`, `belongsTo`), `$fillable`/`$guarded`, accessors & mutators, local scopes, CRUD cơ bản | Chỉ chứa logic gắn với dữ liệu của chính nó |
+| **Controller** | Receive the HTTP request, return the HTTP response | Orchestrate the flow, take data that is already validated (Form Request), call the Service, return a View or JSON | Keep the controller "thin", with no business logic |
+| **Service** | Wrap the business logic | Complex processes (placing an order, promotions), coordinate several Repositories, call outside services (payment, shipping) | Where business logic "lives", reusable from a controller, a command, or a job |
+| **Repository** | The abstraction between the business logic and the data source | A consistent interface (`find`, `create`, `update`), wrap complex Eloquent queries, easy to mock in tests | Optional — useful on a large project, overkill for simple CRUD |
+| **Model** | Represents one table (Active Record) | Relationships (`hasMany`, `belongsTo`), `$fillable`/`$guarded`, accessors and mutators, local scopes, basic CRUD | Holds only logic tied to its own data |
 
-### Ví dụ: đặt hàng
+### Example: placing an order
 
 ```php
 // app/Http/Controllers/OrderController.php
@@ -67,14 +67,14 @@ class OrderService
             return $order;
         });
 
-        OrderPlaced::dispatch($order); // gửi email, thông báo… qua listener
+        OrderPlaced::dispatch($order); // send the email, notifications… through a listener
 
         return $order;
     }
 }
 ```
 
-Service Container tự inject các dependency qua constructor. Nếu Repository là interface, bind nó trong một Service Provider:
+The Service Container injects the dependencies through the constructor on its own. If the Repository is an interface, bind it in a Service Provider:
 
 ```php
 // app/Providers/AppServiceProvider.php
@@ -84,7 +84,7 @@ public function register(): void
 }
 ```
 
-## Luồng xử lý request
+## Request-handling flow
 
 ```mermaid
 flowchart LR
@@ -93,33 +93,33 @@ flowchart LR
   C --> D[Router<br/>route middleware]
   D --> E[Controller / Closure]
   E --> F[Response]
-  F -->|đi ngược qua middleware| G[Gửi về trình duyệt]
+  F -->|back through the middleware| G[Send to the browser]
 ```
 
-1. **`public/index.php`** — điểm vào duy nhất, nạp autoloader của Composer và tạo application.
-2. **Bootstrap** — nạp `.env`, config, đăng ký rồi boot các Service Provider (Router, Database và provider của ứng dụng).
-3. **HTTP Kernel** — bọc request thành đối tượng `Request`, cho đi qua global middleware.
-4. **Router** — tìm route khớp URI và method, chạy middleware gắn với route.
-5. **Controller / Closure** — xử lý, gọi Service/Model.
-6. **Response** — View hoặc JSON, đi ngược qua chuỗi middleware rồi gửi về client.
+1. **`public/index.php`** — the only entry point; it loads Composer's autoloader and creates the application.
+2. **Bootstrap** — loads `.env` and config, then registers and boots the Service Providers (Router, Database, and the application's providers).
+3. **HTTP Kernel** — wraps the request as a `Request` object and passes it through the global middleware.
+4. **Router** — finds the route that matches the URI and method, and runs the middleware attached to that route.
+5. **Controller / Closure** — handles the request, and calls a Service or Model.
+6. **Response** — a View or JSON; it goes back through the middleware chain, then is sent to the client.
 
-Chi tiết từng bước: [Application Lifecycle](./index.mdx#25-application-lifecycle-deep-dive).
+Step by step: [Application Lifecycle](./index.mdx#25-application-lifecycle-deep-dive).
 
-## So sánh với Spring Boot
+## Comparison with Spring Boot
 
-| Thành phần | Laravel | Spring Boot |
+| Piece | Laravel | Spring Boot |
 | --- | --- | --- |
-| Routing | File route tập trung (`routes/web.php`, `routes/api.php`), cú pháp fluent, Route Model Binding, Resource Controller | Annotation trên controller (`@GetMapping`, `@PostMapping`), phân tán theo từng controller |
-| Middleware | Class PHP đơn giản, đăng ký trong `bootstrap/app.php` (`->withMiddleware()`, Laravel 11+) hoặc `app/Http/Kernel.php` (Laravel 10 trở xuống) | Servlet `Filter` và `HandlerInterceptor`, nhiều tầng hơn nhưng phức tạp hơn |
-| Dependency Injection | Service Container, tự resolve theo type-hint (zero config), binding trong Service Provider | `ApplicationContext`, dựa trên annotation (`@Service`, constructor injection) |
-| ORM | Eloquent — Active Record, model gắn với bảng (`$user->save()`) | Spring Data JPA — Repository pattern, entity là POJO, truy vấn qua repository interface |
-| Validation | Form Request gói cả validation và authorization | Bean Validation (Jakarta Validation) với annotation trên DTO (`@NotNull`, `@Size`) |
-| Template | Blade — cú pháp gần PHP, biên dịch và cache | Thymeleaf — "natural templating" (HTML hợp lệ), thuộc tính `th:*` |
+| Routing | Central route files (`routes/web.php`, `routes/api.php`), fluent syntax, Route Model Binding, Resource Controller | Annotations on the controller (`@GetMapping`, `@PostMapping`), spread across each controller |
+| Middleware | A simple PHP class, registered in `bootstrap/app.php` (`->withMiddleware()`, Laravel 11+) or `app/Http/Kernel.php` (Laravel 10 and earlier) | Servlet `Filter` and `HandlerInterceptor`; more layers, but more complex |
+| Dependency Injection | Service Container, auto-resolves from the type-hint (zero config), bindings in a Service Provider | `ApplicationContext`, based on annotations (`@Service`, constructor injection) |
+| ORM | Eloquent — Active Record; the model is tied to the table (`$user->save()`) | Spring Data JPA — Repository pattern; the entity is a POJO, queries go through a repository interface |
+| Validation | A Form Request packages both validation and authorization | Bean Validation (Jakarta Validation) with annotations on the DTO (`@NotNull`, `@Size`) |
+| Template | Blade — syntax close to PHP, compiled and cached | Thymeleaf — "natural templating" (valid HTML), `th:*` attributes |
 
-## Áp dụng: thương mại điện tử
+## Applied: e-commerce
 
 <Tabs groupId="ecommerce-feature">
-<TabItem value="orders" label="Đơn hàng">
+<TabItem value="orders" label="Orders">
 
 ```mermaid
 sequenceDiagram
@@ -129,30 +129,30 @@ sequenceDiagram
   participant PR as ProductRepository
   participant Q as Queue
   C->>S: place(user, validated)
-  S->>OR: tạo Order + OrderItem
-  S->>PR: trừ tồn kho
+  S->>OR: create Order + OrderItem
+  S->>PR: decrement stock
   S-)Q: OrderPlaced → SendOrderConfirmationEmail
   S-->>C: Order
-  C-->>C: trả view xác nhận
+  C-->>C: return the confirmation view
 ```
 
-1. **Controller** nhận request từ trang checkout, dữ liệu đã validate bằng Form Request.
-2. **OrderService** lấy giỏ hàng, tạo `Order` và `OrderItem` qua **OrderRepository**, trừ tồn kho qua **ProductRepository** — tất cả trong một transaction.
-3. Service phát event **OrderPlaced**; listener `SendOrderConfirmationEmail` (implements `ShouldQueue`) gửi email qua queue.
-4. Controller trả về view xác nhận đơn hàng.
+1. The **Controller** receives the request from the checkout page; the data is already validated by a Form Request.
+2. **OrderService** gets the cart, creates `Order` and `OrderItem` through **OrderRepository**, and decrements stock through **ProductRepository** — all inside one transaction.
+3. The service fires the **OrderPlaced** event; the `SendOrderConfirmationEmail` listener (implements `ShouldQueue`) sends the email through the queue.
+4. The controller returns the order-confirmation view.
 
-**Gói đề xuất**
+**Suggested packages**
 
-- Trạng thái đơn hàng: `spatie/laravel-model-states` (pending → processing → shipped…)
-- Thanh toán: `laravel/cashier` (Stripe, chính chủ), `stripe/stripe-php`, `srmklive/laravel-paypal`
-- Giỏ hàng: `gloudemans/shoppingcart`, hoặc tự xây bằng bảng `carts` / session
+- Order status: `spatie/laravel-model-states` (pending → processing → shipped…)
+- Payments: `laravel/cashier` (Stripe, official), `stripe/stripe-php`, `srmklive/laravel-paypal`
+- Cart: `gloudemans/shoppingcart`, or build your own with a `carts` table / session
 
 </TabItem>
-<TabItem value="products" label="Sản phẩm">
+<TabItem value="products" label="Products">
 
-- **CRUD sản phẩm & danh mục** — Resource Controller + Form Request.
-- **Hình ảnh** — upload, resize, tạo thumbnail với `spatie/laravel-medialibrary`.
-- **Biến thể** — thuộc tính (màu, size) và biến thể cụ thể (áo đỏ size M) có SKU và tồn kho riêng, cần thiết kế bảng cẩn thận:
+- **Product and category CRUD** — Resource Controller + Form Request.
+- **Images** — upload, resize, and create thumbnails with `spatie/laravel-medialibrary`.
+- **Variants** — attributes (color, size) and a concrete variant (a red shirt, size M) with its own SKU and stock; the tables need a careful design:
 
 ```mermaid
 erDiagram
@@ -163,25 +163,25 @@ erDiagram
   product_variants }o--o{ attribute_values : attribute_value_product_variant
 ```
 
-- **Admin panel** — dùng [Filament](https://filamentphp.com/) hoặc [Laravel Nova](https://nova.laravel.com/) để dựng nhanh giao diện CRUD cho sản phẩm, danh mục, đơn hàng.
+- **Admin panel** — use [Filament](https://filamentphp.com/) or [Laravel Nova](https://nova.laravel.com/) to put up a CRUD UI quickly for products, categories, and orders.
 
 </TabItem>
-<TabItem value="users" label="Người dùng">
+<TabItem value="users" label="Users">
 
-**Xác thực**
+**Authentication**
 
-- Từ Laravel 12: starter kit mới cho React, Vue hoặc Livewire (Breeze và Jetstream không còn được phát triển thêm).
-- Laravel 11 trở xuống: **Breeze** (tối giản, Blade) hoặc **Jetstream** (Livewire/Inertia, 2FA, team).
-- **Sanctum** — token/cookie auth cho SPA và ứng dụng di động.
+- From Laravel 12: new starter kits for React, Vue, or Livewire (Breeze and Jetstream are no longer developed further).
+- Laravel 11 and earlier: **Breeze** (minimal, Blade) or **Jetstream** (Livewire/Inertia, 2FA, teams).
+- **Sanctum** — token/cookie auth for an SPA and a mobile app.
 
-**Phân quyền**
+**Authorization**
 
-- **Gates & Policies** — có sẵn, hợp với quy tắc đơn giản hoặc theo từng model.
-- **`spatie/laravel-permission`** — RBAC có cấu trúc (role `admin`, `customer`; permission `manage products`).
+- **Gates & Policies** — built in; a fit for simple rules, or for rules per model.
+- **`spatie/laravel-permission`** — structured RBAC (roles `admin`, `customer`; permission `manage products`).
 
 ```php
-// Chỉ admin hoặc người có quyền "manage products" vào được trang quản lý sản phẩm
-// (alias `permission` của spatie phải được đăng ký trong bootstrap/app.php)
+// Only an admin, or someone with the "manage products" permission, can open the product admin pages
+// (spatie's `permission` alias must be registered in bootstrap/app.php)
 Route::middleware(['auth', 'permission:manage products'])
     ->resource('admin/products', Admin\ProductController::class);
 ```
@@ -189,19 +189,19 @@ Route::middleware(['auth', 'permission:manage products'])
 </TabItem>
 </Tabs>
 
-## Thực tiễn tốt
+## Good practices
 
-| Thực tiễn | Vì sao | Ví dụ |
+| Practice | Why | Example |
 | --- | --- | --- |
-| Eager loading | Tránh N+1 query khi duyệt quan hệ | `Order::with('items.product')->get()` |
-| Queue cho tác vụ dài | Gửi email, xử lý ảnh không làm chậm response | `class SendOrderConfirmationEmail implements ShouldQueue` |
-| Validation qua Form Request | Gói validation + authorization, controller gọn | `php artisan make:request StoreOrderRequest` |
-| Events & Listeners | Tách tác vụ phụ (thông báo, tồn kho) khỏi luồng chính | `OrderPlaced::dispatch($order)` |
-| Cache có chủ đích | Giảm truy vấn tốn kém hoặc dữ liệu ít đổi | `Cache::remember('categories', 3600, fn () => Category::all())` |
-| Viết test | Giữ chất lượng và ổn định khi refactor | Feature test cho luồng đặt hàng, unit test cho Service |
+| Eager loading | Avoid an N+1 query when walking a relationship | `Order::with('items.product')->get()` |
+| Queue long-running tasks | Sending email or processing images should not slow the response | `class SendOrderConfirmationEmail implements ShouldQueue` |
+| Validation through a Form Request | Packages validation and authorization, and keeps the controller small | `php artisan make:request StoreOrderRequest` |
+| Events and Listeners | Pull side tasks (notifications, stock) out of the main flow | `OrderPlaced::dispatch($order)` |
+| Cache on purpose | Cut an expensive query, or data that rarely changes | `Cache::remember('categories', 3600, fn () => Category::all())` |
+| Write tests | Keep quality and stability when you refactor | A feature test for the order flow, a unit test for the Service |
 
 :::tip
 
-Bật `Model::preventLazyLoading(! app()->isProduction());` trong `AppServiceProvider::boot()` để Laravel báo lỗi ngay khi có lazy loading (dấu hiệu N+1) trong môi trường dev.
+Turn on `Model::preventLazyLoading(! app()->isProduction());` in `AppServiceProvider::boot()` so Laravel errors immediately when there is lazy loading (a sign of N+1) in dev.
 
 :::

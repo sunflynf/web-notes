@@ -13,27 +13,27 @@ const CLIENTS: Client[] = [
 const SCOPES: { code: string; summary: string; receives: (c: Client) => boolean }[] = [
   {
     code: "socket.emit()",
-    summary: "Chỉ gửi lại cho chính client đang kết nối (người gửi).",
+    summary: "Sends only back to the connected client (the sender).",
     receives: (c) => !!c.sender,
   },
   {
     code: "io.emit()",
-    summary: "Gửi đến tất cả client.",
+    summary: "Sends to every client.",
     receives: () => true,
   },
   {
     code: "socket.broadcast.emit()",
-    summary: "Gửi đến tất cả client, trừ người gửi.",
+    summary: "Sends to every client except the sender.",
     receives: (c) => !c.sender,
   },
   {
     code: 'io.to("room1").emit()',
-    summary: "Gửi đến mọi client trong room1, kể cả người gửi.",
+    summary: "Sends to every client in room1, including the sender.",
     receives: (c) => c.room === "room1",
   },
   {
     code: 'socket.to("room1").emit()',
-    summary: "Gửi đến mọi client trong room1, trừ người gửi.",
+    summary: "Sends to every client in room1 except the sender.",
     receives: (c) => c.room === "room1" && !c.sender,
   },
 ];
@@ -44,7 +44,7 @@ export default function EmitScopeDemo() {
 
   return (
     <figure className={styles.demo}>
-      <div className={styles.scopes} role="group" aria-label="Phạm vi emit">
+      <div className={styles.scopes} role="group" aria-label="Emit scope">
         {SCOPES.map((s, i) => (
           <button
             key={s.code}
@@ -70,9 +70,9 @@ export default function EmitScopeDemo() {
               <strong>{client.name}</strong>
               <span className={styles.meta}>
                 {client.room}
-                {client.sender && " · người gửi"}
+                {client.sender && " · sender"}
               </span>
-              <span className={styles.status}>{receives ? "✓ nhận" : "— không nhận"}</span>
+              <span className={styles.status}>{receives ? "✓ receives" : "— does not receive"}</span>
             </li>
           );
         })}

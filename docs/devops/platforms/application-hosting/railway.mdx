@@ -1,0 +1,112 @@
+---
+title: Railway
+sidebar_label: Railway
+sidebar_position: 2
+description: Railway at a glance, deploy steps, and the pricing-page conflict. Checked 2026-11-01.
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Railway
+
+Railway runs services from a repo or an image and can attach a database, a volume, and a private network in the same project.
+
+## At a glance
+
+| | |
+|---|---|
+| What it is | A usage-priced container platform. A project holds services, environments, and variables. |
+| Use it for | An API plus a managed Postgres when you want one bill and a private network, and you will read the invoice. |
+| Don't use it for | A workload whose cost you cannot explain from the pricing page. Two official pages disagree on the unit rates (below). |
+| Free tier (checked 2026-11-01) | From [railway.com/pricing](https://railway.com/pricing) (page dated 2026-10-23): a Free Trial is $0 with a $5 one-time credit for 30 days, up to 2 vCPU / 1 GB, 2 replicas, and 7-day logs. A Free plan is $0 with $1/month of usage, 1 vCPU / 0.5 GB, 1 replica, and 3-day logs. Volume cap on Free and Trial is 0.5 GB. The [plans reference](https://docs.railway.com/reference/pricing/plans) (last updated Feb 5, 2026) also lists trial replicas as 2. |
+| Pricing model (checked 2026-11-01) | Hobby is $5/month and includes $5 of usage. Pro is $20/month and includes $20 of usage. Both the marketing page and the docs agree on those minimums. They do not agree on the rates. Marketing page (2026-10-23): memory about $0.00001929 per GB per second (about $50/GB-month while running), CPU about $0.00001929 per vCPU per second (about $50/vCPU-month, active only), egress $0.05/GB "for sandboxes". Docs ([pricing](https://docs.railway.com/pricing), plans page updated Feb 5, 2026): RAM $10/GB-month, CPU $20/vCPU/month, egress $0.05/GB, volume $0.15/GB-month, and builds are free. `verify` which table your invoice uses. |
+| CLI and latest version (checked 2026-11-01) | Railway CLI v5.71.0, published 2026-10-19 (`redeploy --commit`). [GitHub release](https://github.com/railwayapp/cli/releases/tag/v5.71.0). |
+| Official docs | [docs.railway.com](https://docs.railway.com/) |
+
+## Core concepts
+
+- **Project**: a group of services and environments.
+- **Service**: one deployable. An app, a database, or a cron.
+- **Environment**: production and any others you add. Variables can differ per environment.
+- **Volume**: a disk attached to a service. Managed Postgres uses one. Free and Trial cap it at 0.5 GB.
+- **Private networking**: services reach each other on an internal DNS name. Database traffic does not have to cross the public internet.
+- **Serverless** (docs still describe the old "app sleeping" behaviour): optional. It is not on by default. [App sleeping](https://docs.railway.com/reference/app-sleeping) (updated 2026-02-03).
+- **Replica**: a copy of the service. Trial allows 2. Free allows 1.
+- **Variable**: configuration or a secret. Railway marks secret values. Treat them as sensitive anyway (see the October 2026 incident below).
+
+## Deploy
+
+<Tabs>
+  <TabItem value="dashboard" label="Dashboard" default>
+
+1. New project, Deploy from GitHub, and pick the repo and the root directory.
+2. Add variables on the service. Use a shared variable when more than one service needs it. Do not commit them.
+3. Add a custom domain in the service settings. Railway provisions TLS. The current domains doc was not re-read line by line (`verify` the click-path if the UI has moved).
+4. Deploy by pushing to the connected branch. Railway builds and rolls the new deployment in.
+5. Roll back by redeploying an older deployment from the deployment history.
+
+  </TabItem>
+  <TabItem value="cli" label="CLI">
+
+1. `railway login` and `railway link`.
+2. `railway up` deploys the current directory.
+3. `railway variable set NAME=value` (`verify` the current syntax with `railway variable --help`).
+4. Redeploy a known commit with `railway redeploy --commit` (added in CLI 5.71.0, 2026-10-19).
+5. After the October 2026 incident, old CLI tokens were revoked. If login fails, create a new token. Do not reuse one from before 2026-10-21.
+
+  </TabItem>
+  <TabItem value="config" label="Config file">
+
+`railway.toml` or `railway.json` in the service root. Reference: [config as code](https://docs.railway.com/reference/config-as-code) (`verify` the path if the docs have moved).
+
+```toml
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+```
+
+On Free and Trial, the restart policy Always is unavailable, and On Failure is capped at 10 restarts (marketing page, checked 2026-11-01). Secrets stay in the dashboard, not in this file. A custom domain is a service setting.
+
+  </TabItem>
+</Tabs>
+
+## Common patterns
+
+- **Monorepo**: set the root directory (watch path) so a push outside that directory does not redeploy the service.
+- **Preview per pull request**: Railway can create an environment for a PR (`verify` the current toggle name). Give it a separate database.
+- **Cron**: a cron service with a schedule, rather than a web process that loops.
+- **Managed Postgres**: add the Postgres service. It is a service plus a volume, not a separate serverless database. The connection URL is a variable reference. Compare with running Postgres yourself in [Self-host a Docker stack](../../vps/self-host-a-docker-stack.mdx): there you set `shared_buffers` and you take the dumps. Here Railway operates the process, and the Free volume is 0.5 GB.
+- **Private networking**: point the app at the private database host so the public proxy is not on the hot path.
+- **External Postgres**: set the URL as a variable. The app still needs a pool that fits the database's connection limit.
+
+## Gotchas
+
+- **Unit rates** (checked 2026-11-01): about $50/GB-month on the marketing page versus $10/GB-month RAM and $20/vCPU-month on the docs. Do not budget from one page. `verify` against a real invoice.
+- **Sleep** (docs updated 2026-02-03): Serverless sleeps after 10 minutes with no outbound packets. A database pool or a telemetry agent that sends packets will keep it awake. It wakes on public or private-network traffic. This is off unless you enable it.
+- **Volume** (checked 2026-11-01): 0.5 GB on Free and Trial. A Postgres data directory fills that quickly.
+- **Regions**: the Hobby marketing page says "global regions". The list was not copied (`verify`).
+- **October 2026 incident**: on 2026-10-21 Railway disclosed that an unauthorized party may have read a subset of environment variables, including decrypted values, and told every user to rotate secrets and registry credentials. [Disclosure](https://blog.railway.com/p/security-disclosure-wednesday-october-21st). The [preliminary report](https://blog.railway.com/p/preliminary-report-october-security-incident) (2026-10-22) said at most 1.85% of workspaces were potentially affected, that deployments were restored, and that new signups were paused. Whether signups are open on a later date: `verify`. If a secret ever lived in Railway, rotate it.
+- **Custom domains**: `verify` the current doc before you promise a teammate that TLS is automatic on the Free plan.
+
+## What's new in recent releases
+
+- **2026-10-23**: pricing page dated. Hobby $5 and Pro $20 include that much usage. The unit-rate table on that page is the one that conflicts with the docs.
+- **2026-10-23**: recovery guide for deploys that never queued while deployments were paused on October 21. Reconnect GitHub and recreate CLI tokens. [Guide](https://blog.railway.com/p/security-disclosure-recommendation-recover-failing-deploys).
+- **2026-10-22**: preliminary report on the October 21 incident. Existing users were told the incident was resolved for them on October 26, with new signups still paused at the time of that update.
+- **2026-10-19**: CLI v5.71.0, `railway redeploy --commit`.
+- **2026-02-03**: serverless / app-sleeping doc updated. Sleep is opt-in.
+- **2026-02-05**: docs plans page "last updated" date. This is the page with the $10 / $20 resource rates.
+
+## Connects to
+
+- [Render](./render.mdx) and [Fly.io](./fly-io.mdx): the other container hosts.
+- [Supabase](../backend-services/supabase.mdx): managed Postgres and auth when you do not want the database on this platform.
+- [CI/CD](../../ci-cd.mdx): your own pipeline, which mattered when Railway revoked tokens in October 2026.
+- [Self-host a Docker stack](../../vps/self-host-a-docker-stack.mdx): moving the APIs off a PaaS onto one server.
+- [Secrets](../../vps/self-host-a-docker-stack.mdx#secrets): how to keep encrypted env files in git instead of only in a vendor.

@@ -20,28 +20,28 @@ const METHODS: { id: Method; label: string; directive: string; summary: string }
     label: "Round Robin",
     directive: "",
     summary:
-      "Mặc định. Gửi lần lượt đến từng server, không quan tâm server nào đang bận — server chậm sẽ bị dồn kết nối.",
+      "The default. Sends to each server in turn, ignoring how busy a server is, so a slow server piles up connections.",
   },
   {
     id: "least-conn",
     label: "Least Connections",
     directive: "    least_conn;\n",
     summary:
-      "Gửi đến server đang có ít kết nối active nhất. Phù hợp khi thời gian xử lý mỗi request chênh lệch nhau.",
+      "Sends to the server with the fewest active connections. Fits when requests take very different amounts of time.",
   },
   {
     id: "ip-hash",
     label: "IP Hash",
     directive: "    ip_hash;\n",
     summary:
-      "Cùng một client luôn vào cùng một server (session persistence). Nginx băm 3 octet đầu của IPv4, nên cả dải /24 dùng chung một server.",
+      "The same client always reaches the same server (session persistence). Nginx hashes the first 3 octets of an IPv4 address, so a whole /24 shares one server.",
   },
 ];
 
 const SERVERS = [
-  { name: "Server 1", note: "nhanh", durationMs: 2000 },
-  { name: "Server 2", note: "nhanh", durationMs: 2000 },
-  { name: "Server 3", note: "chậm", durationMs: 6000 },
+  { name: "Server 1", note: "fast", durationMs: 2000 },
+  { name: "Server 2", note: "fast", durationMs: 2000 },
+  { name: "Server 3", note: "slow", durationMs: 6000 },
 ];
 
 const CLIENTS = ["203.0.113.7", "198.51.100.23", "192.0.2.41", "100.64.12.5"];
@@ -124,7 +124,7 @@ export default function LoadBalancerSimulator() {
 
   return (
     <figure className={styles.simulator}>
-      <div className={styles.methods} role="group" aria-label="Thuật toán cân bằng tải">
+      <div className={styles.methods} role="group" aria-label="Load balancing algorithm">
         {METHODS.map((m) => (
           <button
             key={m.id}
@@ -157,7 +157,7 @@ export default function LoadBalancerSimulator() {
               />
             </div>
             <div className={styles.muted}>
-              {active[i]} đang xử lý · {total[i]} tổng
+              {active[i]} active · {total[i]} total
             </div>
           </div>
         ))}
@@ -165,7 +165,7 @@ export default function LoadBalancerSimulator() {
 
       <div className={styles.controls}>
         <button type="button" className={styles.action} onClick={sendRequest}>
-          Gửi 1 request
+          Send 1 request
         </button>
         <button
           type="button"
@@ -173,7 +173,7 @@ export default function LoadBalancerSimulator() {
           aria-pressed={auto}
           onClick={() => setAuto((on) => !on)}
         >
-          {auto ? "Dừng tự động" : "Chạy tự động"}
+          {auto ? "Stop auto" : "Run auto"}
         </button>
         <button type="button" className={styles.action} onClick={reset}>
           Reset
@@ -181,7 +181,7 @@ export default function LoadBalancerSimulator() {
       </div>
 
       <ol className={styles.log}>
-        {log.length === 0 && <li className={styles.muted}>Chưa có request nào.</li>}
+        {log.length === 0 && <li className={styles.muted}>No requests yet.</li>}
         {log.map((entry) => (
           <li key={entry.id}>
             #{entry.id} <code>{entry.client}</code> → {SERVERS[entry.server].name}

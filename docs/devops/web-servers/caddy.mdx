@@ -1,0 +1,96 @@
+---
+title: Caddy
+sidebar_label: Caddy
+sidebar_position: 3
+description: Caddyfile basics, automatic HTTPS, reverse proxy to containers, and a DNS challenge through Cloudflare.
+---
+
+# Caddy
+
+Caddy is a web server that gets and renews TLS certificates on its own and redirects HTTP to HTTPS. On this site's VPS shape it is the only container that publishes ports 80 and 443. The apps stay on an internal Docker network.
+
+Docs: [Automatic HTTPS](https://caddyserver.com/docs/automatic-https), [reverse_proxy](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy), [header](https://caddyserver.com/docs/caddyfile/directives/header).
+
+## Caddyfile
+
+A site block is an address and a list of directives. Names in the examples are placeholders (`app.example.com`).
+
+```caddyfile
+app.example.com {
+	reverse_proxy api:8080
+}
+```
+
+`api` is the Compose service name. Caddy resolves it on the Docker network the proxy shares with the app. Reload after an edit with `caddy reload`, or recreate the container if the file is baked into the image. A bind-mounted Caddyfile can be reloaded without a rebuild (`verify` the admin endpoint is not published on a public port; leave it on localhost or off).
+
+## Automatic HTTPS
+
+If the site address is a public name, ports 80 and 443 reach Caddy, and the A or AAAA record already points at this machine, Caddy obtains a certificate from a public CA and renews it. You do not run a separate client. HTTP is redirected to HTTPS. Details: [Automatic HTTPS](https://caddyserver.com/docs/automatic-https).
+
+This stays off if you prefix the site address with `http://`, or if you listen only on port 80. The data directory (certificates and keys) must be a persistent volume. If that volume is empty on every boot, Caddy asks the CA again and you will hit rate limits.
+
+For a name that does not point at this server yet, or for a wildcard, use a DNS challenge. The stock binary does not include DNS-provider modules. Build or pull an image that includes the Cloudflare module ([caddy-dns/cloudflare](https://github.com/caddy-dns/cloudflare)). Put an API token in the environment, not in the Caddyfile. The token needs DNS edit on that zone only.
+
+```caddyfile
+app.example.com {
+	reverse_proxy api:8080
+	tls {
+		dns cloudflare {env.CF_API_TOKEN}
+	}
+}
+```
+
+`verify` the directive against the module's current README before you ship it. The environment variable is the token. Nothing else on the host should log it.
+
+## Reverse proxy to containers
+
+One site block per public name. The upstream is the app container and the port the app listens on inside the network, not a published host port.
+
+```caddyfile
+app.example.com {
+	reverse_proxy api:8080
+}
+
+staging.example.com {
+	reverse_proxy api-staging:8080
+}
+```
+
+For server-sent events, disable the proxy's buffering so events are not held back. The directive is `flush_interval -1` on `reverse_proxy` (`verify` the current spelling in the reverse_proxy docs). Set the proxy's upstream keepalive shorter than the app's idle timeout, or the app will close sockets the proxy still considers reusable (`verify` the `keepalive` and `transport` subdirectives).
+
+Trust the incoming `X-Forwarded-For` only when you have set `trusted_proxies` on purpose. Leave it unset when Caddy is the first hop, so the client address Caddy sees is the real one and a caller cannot spoof the header. Docs: [trusted_proxies](https://caddyserver.com/docs/caddyfile/options#trusted-proxies) (`verify` the option name).
+
+## Security headers
+
+```caddyfile
+app.example.com {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+	reverse_proxy api:8080
+}
+```
+
+`Strict-Transport-Security` tells browsers to stay on HTTPS. Do not add `includeSubDomains` until every subdomain on that parent actually serves HTTPS. `X-Content-Type-Options: nosniff` stops browsers from guessing a content type. `-Server` removes the server banner. Header reference: [header](https://caddyserver.com/docs/caddyfile/directives/header).
+
+## Caddy vs Nginx
+
+| | Caddy | Nginx |
+|---|---|---|
+| TLS | Automatic for public names when ports 80 and 443 are open. [Automatic HTTPS](https://caddyserver.com/docs/automatic-https) | You run a client such as Certbot, or you load a certificate yourself. See [Nginx](./nginx.mdx). |
+| Config | A Caddyfile, one site block per name | `server` blocks. |
+| Reload | `caddy reload` | `nginx -s reload` after `nginx -t` |
+| Fit | One VPS, a handful of sites, certificates you do not want to operate | The same job, when you already know Nginx or you need a feature this Caddyfile does not show |
+
+Both are fine as the only published container. Do not run both on ports 80 and 443.
+
+## Connects to
+
+- [Nginx](./nginx.mdx): the other reverse proxy, with the load-balancing notes.
+- [Nginx cheatsheet](./nginx-cheatsheet.mdx): the config snippets.
+- [Compose in production](../containers/compose-in-production.mdx): the network the upstream names live on.
+- [Self-host a Docker stack](../vps/self-host-a-docker-stack.mdx): where this Caddyfile sits.
+- [Cloudflare](../platforms/frontend-hosting/cloudflare.mdx): DNS and the API token the DNS challenge uses. Tunnel, when you do not want inbound 80 and 443 at all.

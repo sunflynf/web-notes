@@ -1,0 +1,118 @@
+---
+title: CI/CD
+sidebar_label: CI/CD
+sidebar_position: 6
+description: Build a container image in GitHub Actions, push it to GHCR, deploy over SSH, and roll back if the health check fails.
+---
+
+# CI/CD
+
+A platform such as Vercel, Render, or Railway can build and deploy on every push. Use that when the [platform page](./platforms/index.mdx) says the app fits. Use the pipeline on this page when the process runs on a VPS you control: nothing is built on the server, and a failed health check returns the previous image tag.
+
+The commands follow [GitHub Actions](https://docs.github.com/en/actions) and the [Container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry). `verify` marks a flag or a permission name that was not re-read on 2026-11-01.
+
+## When the platform deploys for you
+
+Vercel, Netlify, Render, and Railway connect a Git repo and deploy on push. You do not need this pipeline for a frontend on those hosts. You do need it when:
+
+- the image must be built once and run on a server you SSH to;
+- a migration has to finish, and pass a health check, before traffic moves;
+- you want a rollback that is "run the previous tag", not "click around a vendor UI".
+
+The VPS playbook's deploy step is this pipeline's last mile: [Deploy](./vps/self-host-a-docker-stack.mdx#deploy).
+
+## Build and tag the image
+
+Tag every image with the full git commit SHA. That tag is immutable for practical purposes: the same SHA is the same code. Also tag a release (for example `v1.4.0`) when you cut one, so a human can see what is running. Do not deploy `latest`.
+
+```yaml
+name: image
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/NAMESPACE/api:${{ github.sha }}
+            ghcr.io/NAMESPACE/api:latest
+```
+
+`NAMESPACE` is the GitHub user or organization that owns the repository, in lowercase. It is not written out here. `latest` in this snippet is optional and is not what the server deploys. Pin the Action versions you have actually reviewed. `verify` the major versions against each Action's release page before you copy them. The checkout Action needs `contents: read`. Pushing the image needs `packages: write`.
+
+## Push to GHCR {#push-to-ghcr}
+
+`GITHUB_TOKEN` is created for the job and dies with the job. The `permissions` block above is what lets it push. If the repository's default token is read-only, a missing `packages: write` fails the push even though the token exists. Docs: [automatic token authentication](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication) (`verify` the path if the docs have moved).
+
+The server cannot use `GITHUB_TOKEN`. Pulling the image on the VPS needs a separate credential with permission to read packages. GitHub's package permission for that is the `read:packages` scope (`verify` the scope name on [About permissions for GitHub Packages](https://docs.github.com/en/packages/learn-github-packages/about-permissions-for-github-packages)). Store it on the server outside git, the same way as the other secrets. The deploy SSH key is not this credential.
+
+Make the package's visibility match who should pull it. A private package is only pullable by a credential that can see it.
+
+## Deploy over SSH
+
+Use a deploy key that is not your personal key, on a deploy user that cannot do anything except the deploy script. A forced command on the key, or a sudoers rule that allows only that script, is the restriction. The playbook describes the user: [Server bootstrap](./vps/self-host-a-docker-stack.mdx#server-bootstrap-order).
+
+The workflow stores the private key as an Actions secret and passes it to `ssh`. It does not print it.
+
+```yaml
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          install -m 600 /dev/null "$RUNNER_TEMP/key"
+          printf '%s\n' "$SSH_KEY" > "$RUNNER_TEMP/key"
+          ssh -i "$RUNNER_TEMP/key" -o StrictHostKeyChecking=yes deploy@"$HOST" \
+            "sudo /usr/local/sbin/deploy api ${{ github.sha }}"
+```
+
+`HOST` is a secret so this repository's notes do not contain a server name. `StrictHostKeyChecking=yes` refuses a host you have not recorded. Seed `known_hosts` in the job (`verify` the current `ssh-keyscan` advice; pinning the host key is the point). The script name is an example.
+
+## Release step and health check
+
+The script on the server, in order:
+
+1. `docker compose pull` the images for the new SHA.
+2. Run the migration or release command in a one-shot container on that image, against the database. If it fails, stop. Do not `up` the new app.
+3. `docker compose up -d` so the app containers move to the new tag.
+4. Hit the health URL from the server (localhost through the proxy, or the container's own healthcheck). Wait until it returns success or the deadline passes.
+
+Migrations are not reversed by the rollback below. Write them so the previous application version still runs against the new schema (add a column first, stop reading the old one only after every instance has moved).
+
+## Roll back
+
+If the health check fails, the script sets the tag back to the previous SHA and runs `docker compose up -d` again. Keep the previous SHA on disk (a file written at the end of the last successful deploy). Then:
+
+- the old containers are back;
+- the new migration is still applied, which is safe only if step 2 was compatible;
+- you fix the image forward. You do not "unmigrate" in the hot path.
+
+Say so in the script's output so the next person does not assume the database moved backwards.
+
+## Connects to
+
+- [Self-host a Docker stack](./vps/self-host-a-docker-stack.mdx): the server side of this pipeline.
+- [Compose in production](./containers/compose-in-production.mdx): pull, `up -d`, and pinned tags.
+- [Docker knowledge](./containers/docker-knowledge.md): what the image contains.
+- [Vercel](./platforms/frontend-hosting/vercel.mdx), [Render](./platforms/application-hosting/render.mdx), [Railway](./platforms/application-hosting/railway.mdx): the hosts that deploy from Git without this file.
+- [Compute](../cloud-computing/compute.mdx): building an image for ECS on Fargate instead of a VPS.

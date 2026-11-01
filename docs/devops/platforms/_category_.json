@@ -1,0 +1,8 @@
+{
+  "label": "Deployment platforms",
+  "position": 2,
+  "link": {
+    "type": "doc",
+    "id": "devops/platforms/index"
+  }
+}

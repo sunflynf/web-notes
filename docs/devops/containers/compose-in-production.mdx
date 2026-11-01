@@ -1,0 +1,143 @@
+---
+title: Compose in production
+sidebar_label: Compose in production
+sidebar_position: 3
+description: Docker Compose for a long-running stack. Healthchecks, memory limits, internal networks, pinned tags, and log rotation.
+---
+
+# Compose in production
+
+Docker Compose can run a production stack when the file says what "healthy" means, how much memory each container may use, and which networks are private. The commands below are the ones used on a single VPS. Development files that bind-mount your source tree are a different file.
+
+Official reference: [Compose file](https://docs.docker.com/reference/compose-file/) and [startup order](https://docs.docker.com/compose/how-tos/startup-order/). Where a key below is easy to misremember, the line says `verify`.
+
+## Healthchecks
+
+A healthcheck is a command that runs inside the container. Compose marks the container healthy only after it succeeds.
+
+```yaml
+services:
+  api:
+    image: ghcr.io/NAMESPACE/api:TAG
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+```
+
+`NAMESPACE` and `TAG` are placeholders. The command must exist in the image. `start_period` is how long failures are ignored while the process boots. Docs: [healthcheck](https://docs.docker.com/reference/compose-file/services/#healthcheck).
+
+## depends_on is not a wait
+
+`depends_on` without a condition only waits until the dependency has started, not until it accepts connections. Wait on the healthcheck:
+
+```yaml
+services:
+  api:
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:18
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d app"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+```
+
+`postgres:18` is a major-version pin, which is still a moving tag. For a real deploy, pin the patch tag you have tested (`verify` the current 18.x tag on [Docker Hub](https://hub.docker.com/_/postgres)). Docs: [startup order](https://docs.docker.com/compose/how-tos/startup-order/).
+
+## Memory
+
+Set a memory limit on every service. If you set a memory limit and you do not set a memory-plus-swap limit, Docker's default is to allow swap up to the same amount again (the container can use twice the limit, half of it as swap). Set the two limits equal so the container cannot swap. Docs: [memory limits](https://docs.docker.com/engine/containers/resource_constraints/#limit-a-containers-access-to-memory).
+
+```yaml
+services:
+  api:
+    mem_limit: 512m
+    memswap_limit: 512m
+```
+
+`mem_limit` and `memswap_limit` are the Compose fields that map to those Docker flags (`verify` the names against the Compose spec if a future Compose rejects them; the engine flags are the part the docs promise). Add the limits up and leave headroom for the OS. A worked example is in the [VPS playbook](../vps/self-host-a-docker-stack.mdx#memory-and-connection-budgets).
+
+## Networks and volumes
+
+Publish only the reverse proxy. Application containers and the database have no `ports` key. Put the database on a network marked `internal: true` so it has no route to the internet.
+
+```yaml
+services:
+  proxy:
+    ports:
+      - "80:80"
+      - "443:443"
+    networks: [edge]
+  api:
+    networks: [edge, db]
+    # no ports
+  db:
+    networks: [db]
+    volumes:
+      - pgdata:/var/lib/postgresql
+networks:
+  edge:
+  db:
+    internal: true
+volumes:
+  pgdata:
+```
+
+A named volume survives `docker compose down`. A bind mount of a host path is for config you edit on the host (the proxy file), not for database files. Postgres 18 images keep data under a versioned directory inside `/var/lib/postgresql`. Mount the parent, not a hand-built `PGDATA`, unless you have read the image's layout (`verify` against the Postgres image README for the major version you pin).
+
+Docker's iptables rules are processed before ufw. A published port is reachable from the internet even when ufw looks closed. Details: [Docker networking gotcha](../vps/self-host-a-docker-stack.mdx#docker-networking-gotcha).
+
+## Images, env files, and updates
+
+Pin the image to a tag you can roll back to, not `latest`. Build in CI and push to a registry. The server only pulls.
+
+```yaml
+services:
+  api:
+    image: ghcr.io/NAMESPACE/api:TAG
+    env_file:
+      - ./env/api.env
+```
+
+`api.env` is on the server, not in git. Commit `api.env.example` with the names and no values. See [Secrets](../vps/self-host-a-docker-stack.mdx#secrets).
+
+Update a running stack:
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+`up -d` recreates only the services whose image or config changed. Run the migration as its own step before `up -d` if the new code requires the new schema. See [CI/CD](../ci-cd.mdx).
+
+## Logs and pruning
+
+The default json-file log driver will fill the disk. Cap it, either on the daemon or per service. Docs: [json-file logging](https://docs.docker.com/config/containers/logging/json-file/).
+
+```yaml
+services:
+  api:
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+```
+
+A daemon-wide default is the same idea and is shown in the [playbook](../vps/self-host-a-docker-stack.mdx#server-bootstrap-order).
+
+After a deploy has stayed healthy, remove unused images so the disk does not fill up with old layers. `docker image prune` removes dangling images. `docker system prune` is broader and can remove stopped containers. Read [docker system prune](https://docs.docker.com/reference/cli/docker/system/prune/) before you add `-a`, which also removes images not used by a container.
+
+## Connects to
+
+- [Docker knowledge](./docker-knowledge.md): images, networks, and volumes.
+- [Docker cheatsheet](./docker-cheatsheet.mdx): the commands.
+- [Caddy](../web-servers/caddy.mdx): the proxy that owns ports 80 and 443.
+- [Self-host a Docker stack](../vps/self-host-a-docker-stack.mdx): the full server around this file.
+- [CI/CD](../ci-cd.mdx): where the pinned tag comes from.

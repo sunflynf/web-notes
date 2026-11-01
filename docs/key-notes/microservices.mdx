@@ -1,68 +1,68 @@
 ---
-title: Kiến trúc Microservices
-description: Khi nào nên dùng microservices, các thành phần hạ tầng, mẫu thiết kế, vận hành và anti-pattern
+title: Microservices architecture
+description: When to use microservices, the infrastructure pieces, design patterns, operations, and anti-patterns
 ---
 
 import WeightedChecklist from "@site/src/components/WeightedChecklist";
 
-# Kiến trúc Microservices
+# Microservices architecture
 
 > **Quick reference:** [Microservices Cheatsheet](./microservices-cheatsheet.mdx)
 
-Microservices chia ứng dụng thành nhiều service nhỏ, mỗi service phụ trách một năng lực nghiệp vụ, có codebase và dữ liệu riêng, được triển khai và mở rộng độc lập. Đổi lại là độ phức tạp của một **hệ thống phân tán**: mạng có thể lỗi, dữ liệu nằm rải rác, và vận hành cần tự động hóa cao.
+Microservices split an application into many small services. Each service owns one business capability, with its own codebase and data, and is deployed and scaled on its own. In return you take on the complexity of a **distributed system**: the network can fail, data is scattered, and operations need a high level of automation.
 
-## So sánh các phong cách kiến trúc
+## Comparing architecture styles
 
 | | Monolith | Modular monolith | Microservices |
 | --- | --- | --- | --- |
-| Đơn vị triển khai | Một | Một | Nhiều, độc lập |
-| Mở rộng | Cả ứng dụng | Cả ứng dụng | Từng service |
-| Dữ liệu | Một CSDL chung | Một CSDL, chia schema theo module | Mỗi service một CSDL |
-| Độ phức tạp vận hành | Thấp | Thấp | Rất cao |
-| Chịu lỗi | Thấp — một lỗi kéo sập cả app | Thấp | Cao — lỗi bị cô lập trong service |
-| Linh hoạt công nghệ | Một stack | Một stack, ranh giới module rõ | Mỗi service tự chọn (polyglot) |
+| Deployment unit | One | One | Many, independent |
+| Scaling | The whole application | The whole application | Per service |
+| Data | One shared database | One database, schema split by module | One database per service |
+| Operational complexity | Low | Low | Very high |
+| Fault tolerance | Low — one failure takes down the whole app | Low | High — the failure stays inside the service |
+| Technology flexibility | One stack | One stack, clear module boundaries | Each service chooses its own (polyglot) |
 
-| Ưu điểm | Nhược điểm |
+| Pros | Cons |
 | --- | --- |
-| Các đội phát triển và release độc lập, nhanh hơn | Độ phức tạp tăng vọt (mạng, phiên bản, debug) |
-| Mở rộng đúng phần chịu tải | Chi phí hạ tầng và vận hành cao |
-| Lỗi được cô lập | Khó giữ dữ liệu nhất quán giữa các service |
-| Tự do chọn công nghệ cho từng service | Đòi hỏi văn hóa DevOps và kỹ năng cao |
-| Codebase nhỏ, dễ hiểu cho từng đội | Bề mặt tấn công lớn hơn (nhiều endpoint, nhiều kết nối) |
+| Teams develop and release independently, and faster | Complexity jumps (network, versions, debugging) |
+| Scale the part that is under load | High infrastructure and operations cost |
+| Failures stay isolated | Hard to keep data consistent across services |
+| Freedom to choose technology per service | Requires a DevOps culture and strong skills |
+| A small codebase, easy for each team to understand | A larger attack surface (more endpoints, more connections) |
 
 :::tip
 
-Modular monolith thường là bước đầu tốt: ranh giới module rõ ràng giúp tách thành service sau này dễ hơn, mà chưa phải trả chi phí của hệ phân tán.
+A modular monolith is usually a good first step: clear module boundaries make a later split into services easier, without paying for a distributed system yet.
 
 :::
 
-## Khi nào nên chọn microservices?
+## When should you choose microservices?
 
-Chọn các tiêu chí đúng với dự án. CI/CD và DevOps trưởng thành là điều kiện tiên quyết — thiếu nó, microservices thường thành gánh nặng dù các tiêu chí khác đều đạt.
+Check the criteria that match the project. Mature CI/CD and DevOps are a prerequisite — without that, microservices usually become a burden even when every other criterion is met.
 
 <WeightedChecklist
   items={[
-    { text: "Miền nghiệp vụ phức tạp, chia được thành nhiều lĩnh vực con (bounded context) độc lập.", weight: 3 },
-    { text: "Có nhiều đội nhỏ, tự chủ, cần triển khai độc lập với nhau.", weight: 3 },
-    { text: "Các phần của ứng dụng có yêu cầu tải và mở rộng rất khác nhau.", weight: 2 },
-    { text: "Cần nhiều công nghệ (ngôn ngữ, CSDL) khác nhau cho các chức năng khác nhau.", weight: 1 },
-    { text: "Đã có văn hóa DevOps, CI/CD, monitoring trưởng thành.", weight: 4, required: true },
+    { text: "The business domain is complex and can be split into several independent subdomains (bounded contexts).", weight: 3 },
+    { text: "There are several small, autonomous teams that need to deploy independently of each other.", weight: 3 },
+    { text: "Parts of the application have very different load and scaling requirements.", weight: 2 },
+    { text: "Different features need different technologies (languages, databases).", weight: 1 },
+    { text: "A mature DevOps culture, CI/CD, and monitoring are already in place.", weight: 4, required: true },
   ]}
   verdicts={[
-    { min: 0, text: "Monolith hoặc modular monolith là lựa chọn tốt hơn ở giai đoạn này.", tone: "warn" },
-    { min: 40, text: "Microservices đáng cân nhắc — đảm bảo đội ngũ sẵn sàng cho độ phức tạp của nó.", tone: "neutral" },
-    { min: 75, text: "Dự án là ứng viên tốt cho microservices: lợi ích về mở rộng và tốc độ có thể rất lớn.", tone: "good" },
+    { min: 0, text: "A monolith or a modular monolith is the better choice at this stage.", tone: "warn" },
+    { min: 40, text: "Microservices are worth considering — make sure the team is ready for its complexity.", tone: "neutral" },
+    { min: 75, text: "The project is a good candidate for microservices: the benefits in scaling and speed can be very large.", tone: "good" },
   ]}
-  blockedVerdict="Các tiêu chí nghiệp vụ đã đạt, nhưng hãy xây dựng CI/CD và monitoring trước — bắt đầu bằng modular monolith."
+  blockedVerdict="The business criteria are met, but build CI/CD and monitoring first — start with a modular monolith."
 />
 
-## Hệ sinh thái
+## Ecosystem
 
-Một hệ thống microservices không chỉ gồm các service nghiệp vụ mà còn cần nhiều thành phần hạ tầng hỗ trợ:
+A microservices system is not only the business services. It also needs many supporting infrastructure pieces:
 
 ```mermaid
 flowchart TD
-  Client([Client: web, mobile, hệ thống khác]) --> GW[API Gateway]
+  Client([Client: web, mobile, other systems]) --> GW[API Gateway]
   GW --> A[Order service]
   GW --> B[Payment service]
   GW --> C[Inventory service]
@@ -71,7 +71,7 @@ flowchart TD
   C --- DC[(DB)]
   A -. event .-> MQ{{Message broker}}
   MQ -.-> C
-  subgraph Infra[Hạ tầng lõi]
+  subgraph Infra[Core infrastructure]
     SD[Service discovery]
     CS[Config server]
     OBS[Logging / metrics / tracing]
@@ -79,62 +79,62 @@ flowchart TD
   A & B & C -.- Infra
 ```
 
-| Thành phần | Vai trò | Công cụ phổ biến |
+| Component | Role | Common tools |
 | --- | --- | --- |
-| **Client** | Điểm bắt đầu của request. Không nên biết cấu trúc service phía sau | Web, mobile, hệ thống khác |
-| **API Gateway** | Điểm vào duy nhất: định tuyến, xác thực, rate limiting, tổng hợp response | Kong, [NGINX](../technologies/nginx.mdx), Spring Cloud Gateway |
-| **Application service** | Một năng lực nghiệp vụ (đơn hàng, thanh toán, kho), codebase và CSDL riêng | Bất kỳ stack nào |
-| **Message broker** | Giao tiếp bất đồng bộ, event-driven giữa các service | Kafka, RabbitMQ, NATS |
-| **Service discovery** | Giúp service tìm địa chỉ của nhau trong môi trường động | Kubernetes Service (DNS có sẵn), Consul, Eureka |
-| **Config server** | Cấu hình tập trung cho mọi service và môi trường, đổi không cần deploy lại | Spring Cloud Config, Consul KV; secret dùng HashiCorp Vault |
-| **Observability** | Log tập trung, metrics, distributed tracing với correlation ID | [ELK stack](../cloud-computing/elk-stack/index.md), Prometheus + Grafana, OpenTelemetry |
+| **Client** | Where a request starts. It should not know the service structure behind it | Web, mobile, other systems |
+| **API Gateway** | The single entry point: routing, authentication, rate limiting, response aggregation | Kong, [NGINX](../devops/web-servers/nginx.mdx), Spring Cloud Gateway |
+| **Application service** | One business capability (orders, payments, inventory), with its own codebase and database | Any stack |
+| **Message broker** | Asynchronous, event-driven communication between services | Kafka, RabbitMQ, NATS |
+| **Service discovery** | Helps services find each other's addresses in a dynamic environment | Kubernetes Service (built-in DNS), Consul, Eureka |
+| **Config server** | Central configuration for every service and environment, changed without a redeploy | Spring Cloud Config, Consul KV; secrets use HashiCorp Vault |
+| **Observability** | Centralized logs, metrics, distributed tracing with a correlation ID | [ELK stack](../devops/observability/elk-stack/index.md), Prometheus + Grafana, OpenTelemetry |
 
-Ví dụ triển khai cụ thể: [Spring Cloud](../technologies/java/spring-framework/spring-microservices.md), [NestJS microservices](../technologies/js/be-frameworks/nest/in-depth.mdx#microservices).
+Concrete implementation examples: [Spring Cloud](../technologies/java/spring-framework/spring-microservices.md), [NestJS microservices](../technologies/js/be-frameworks/nest/in-depth.mdx#microservices).
 
-## Mẫu thiết kế cốt lõi
+## Core design patterns
 
-| Mẫu | Giải quyết | Cách hoạt động |
+| Pattern | Problem it solves | How it works |
 | --- | --- | --- |
-| **Database per service** | Ghép nối ở tầng dữ liệu | Mỗi service sở hữu CSDL riêng; service khác chỉ truy cập qua API hoặc event. Mỗi service tự chọn loại lưu trữ phù hợp |
-| **API Gateway** | Client phải biết và gọi nhiều service | Một điểm vào xử lý định tuyến, xác thực, rate limiting và có thể gộp dữ liệu từ nhiều service |
-| **Circuit breaker** | Lỗi dây chuyền khi một service chậm hoặc sập | 3 trạng thái: _Closed_ (gọi bình thường) → _Open_ (từ chối ngay khi lỗi liên tục) → _Half-open_ (thử lại vài lời gọi) |
-| **Saga** | Giao dịch trải trên nhiều service, không có ACID chung | Chuỗi transaction cục bộ; bước nào lỗi thì chạy **transaction bù** để hoàn tác các bước trước |
-| **CQRS** | Đọc và ghi có nhu cầu khác nhau, không `JOIN` được giữa các CSDL | Tách model ghi (command) và model đọc (query); model đọc là view phi chuẩn hóa, cập nhật từ event |
-| **Event sourcing** | Cần lịch sử thay đổi đầy đủ, audit, truy vấn theo thời gian | Lưu mọi thay đổi trạng thái thành chuỗi event; trạng thái hiện tại có được bằng cách phát lại event |
+| **Database per service** | Coupling at the data layer | Each service owns its own database; other services only reach it through an API or events. Each service picks the storage that fits |
+| **API Gateway** | The client has to know and call many services | One entry point handles routing, authentication, rate limiting, and can combine data from several services |
+| **Circuit breaker** | A cascade of failures when one service is slow or down | 3 states: _Closed_ (calls go through as normal) → _Open_ (reject immediately after repeated failures) → _Half-open_ (try a few calls again) |
+| **Saga** | A transaction spread across services, with no shared ACID | A chain of local transactions; if a step fails, run a **compensating transaction** to undo the earlier steps |
+| **CQRS** | Reads and writes have different needs, and you cannot `JOIN` across databases | Split the write model (command) and the read model (query); the read model is a denormalized view, updated from events |
+| **Event sourcing** | You need the full change history, audit, and queries over time | Store every state change as a sequence of events; the current state comes from replaying the events |
 
-## Vận hành và triển khai
+## Operations and deployment
 
-Microservices chỉ khả thi khi mọi bước từ commit đến production được tự động hóa:
+Microservices are only practical when every step from commit to production is automated:
 
 ```mermaid
 flowchart LR
   A["Commit code"] --> B["CI: build,<br/>unit test"]
-  B --> C["Build và push<br/>Docker image"]
+  B --> C["Build and push<br/>Docker image"]
   C --> D["Deploy staging:<br/>integration, E2E test"]
-  D --> E["Production:<br/>blue/green hoặc canary"]
+  D --> E["Production:<br/>blue/green or canary"]
 ```
 
-1. **Commit** — lập trình viên đẩy code lên một nhánh trong Git.
-2. **CI** (GitHub Actions, GitLab CI, Jenkins) — tự chạy build và unit test.
-3. **Build & push image** — đóng gói thành Docker image, gắn tag phiên bản, đẩy lên registry (Docker Hub, ECR, GHCR).
-4. **Staging** — tự triển khai image mới, chạy integration và end-to-end test.
-5. **Production** — sau khi duyệt, triển khai bằng chiến lược an toàn:
+1. **Commit** — the developer pushes code to a branch in Git.
+2. **CI** (GitHub Actions, GitLab CI, Jenkins) — the build and unit tests run on their own.
+3. **Build & push image** — package a Docker image, tag the version, push it to a registry (Docker Hub, ECR, GHCR).
+4. **Staging** — deploy the new image automatically, and run integration and end-to-end tests.
+5. **Production** — after approval, deploy with a safe strategy:
 
-| Chiến lược | Cách làm | Đánh đổi |
+| Strategy | How | Tradeoff |
 | --- | --- | --- |
-| Rolling | Thay dần từng instance cũ bằng bản mới | Đơn giản; hai phiên bản chạy song song trong lúc triển khai |
-| Blue/Green | Dựng môi trường mới đầy đủ, chuyển traffic một lần | Rollback tức thì; tốn gấp đôi hạ tầng trong lúc chuyển |
-| Canary | Chuyển một phần nhỏ traffic (ví dụ 5%) sang bản mới, tăng dần nếu metrics ổn | An toàn nhất; cần monitoring và định tuyến traffic tốt |
+| Rolling | Replace old instances with the new version, one by one | Simple; two versions run side by side during the deploy |
+| Blue/Green | Stand up a full new environment, then switch traffic once | Instant rollback; costs twice the infrastructure during the switch |
+| Canary | Send a small share of traffic (for example 5%) to the new version, and raise it if metrics stay healthy | Safest; needs good monitoring and traffic routing |
 
-Vì các service release độc lập, API giữa chúng phải tương thích ngược — xem [API versioning](./api-versioning.md).
+Because the services release independently, APIs between them must stay backward compatible — see [API versioning](./api-versioning.md).
 
-## Anti-pattern cần tránh
+## Anti-patterns to avoid
 
-| Anti-pattern | Dấu hiệu | Cách tránh |
+| Anti-pattern | Sign | How to avoid |
 | --- | --- | --- |
-| **Distributed monolith** | Sửa một tính năng phải deploy nhiều service cùng lúc | Chia theo bounded context, giao tiếp qua contract ổn định và event |
-| **Shared database** | Nhiều service đọc/ghi chung bảng | Database per service; chia sẻ dữ liệu qua API hoặc event |
-| **Chatty services** | Một request kéo theo hàng chục lời gọi đồng bộ nhỏ | Gộp API theo use case, cache, chuyển sang event bất đồng bộ |
-| **Nanoservices** | Số service nhiều hơn số người trong đội | Gộp các service luôn thay đổi cùng nhau |
-| **Hardcoded configuration** | Endpoint, credential nằm trong code | Config server, biến môi trường, secret manager |
-| **Bỏ qua observability** | Không trả lời được "request này chậm ở service nào?" | Log tập trung, metrics, distributed tracing ngay từ đầu |
+| **Distributed monolith** | Changing one feature means deploying several services at the same time | Split by bounded context; communicate through stable contracts and events |
+| **Shared database** | Several services read and write the same tables | Database per service; share data through an API or events |
+| **Chatty services** | One request triggers dozens of small synchronous calls | Combine APIs by use case, cache, and move to asynchronous events |
+| **Nanoservices** | There are more services than people on the team | Merge services that always change together |
+| **Hardcoded configuration** | Endpoints and credentials live in the code | Config server, environment variables, a secret manager |
+| **Skipping observability** | You cannot answer "which service made this request slow?" | Centralized logs, metrics, and distributed tracing from the start |
