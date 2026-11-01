@@ -22,6 +22,18 @@ function pagesUnder(dir) {
   return found;
 }
 
+function isRedirectStub(html) {
+  return /http-equiv="refresh"/i.test(html);
+}
+
+// a link to a redirect stub (moved page) is not a link to a note
+function targetIsStub(href) {
+  const rel = normalise(href).slice(`${BASE_URL}/docs/`.length);
+  const file = join(buildDocs, ...rel.split("/"), "index.html");
+  if (!normalise(href).startsWith(`${BASE_URL}/docs/`)) return false; // projects/ pages are not checked
+  return existsSync(file) && isRedirectStub(readFileSync(file, "utf8"));
+}
+
 function normalise(href) {
   return href.split("#")[0].split("?")[0].replace(/\/+$/, "");
 }
@@ -62,17 +74,21 @@ if (!existsSync(buildDocs)) {
 
 const orphans = [];
 const missing = [];
+const absent = [];
 let total = 0;
 
 for (const section of SECTIONS) {
   const sectionDir = join(buildDocs, section);
-  if (!existsSync(sectionDir)) continue;
+  if (!existsSync(sectionDir)) {
+    absent.push(section);
+    continue;
+  }
   for (const file of pagesUnder(sectionDir)) {
     const rel = relative(buildDocs, file).split(sep).join("/");
     const urlPath = `${BASE_URL}/docs/${rel.replace(/index\.html$/, "").replace(/\/$/, "")}`;
     if (/(^|\/)(ubuntu-server-[^/]*|elk-stack)(\/|$)/.test(rel)) continue;
     const html = readFileSync(file, "utf8");
-    if (/http-equiv="refresh"/i.test(html)) continue; // redirect stub
+    if (isRedirectStub(html)) continue;
     const container = html.match(/class="[^"]*\btheme-doc-markdown\b/);
     if (!container) {
       missing.push(`${urlPath}/  ->  ${sourceGuess(urlPath)}  (no theme-doc-markdown container)`);
@@ -87,13 +103,21 @@ for (const section of SECTIONS) {
     const linked = [...content.matchAll(/<a\s[^>]*?href="([^"]*)"/g)].some(([, href]) => {
       if (!TARGETS.some((t) => href.startsWith(t))) return false;
       if (NOT_NOTES.some((t) => href.startsWith(t))) return false;
+      if (targetIsStub(href)) return false;
       return normalise(href) !== self;
     });
     if (!linked) orphans.push(`${urlPath}/  ->  ${sourceGuess(urlPath)}`);
   }
 }
 
-if (orphans.length || missing.length) {
+if (absent.length || total === 0) {
+  console.error(
+    absent.length
+      ? `section folder missing from build/docs: ${absent.join(", ")}`
+      : "no pages found, nothing was checked",
+  );
+  process.exitCode = 1;
+} else if (orphans.length || missing.length) {
   console.error([...orphans.sort(), ...missing].join("\n"));
   console.error(`${total} pages, ${orphans.length} orphans, ${missing.length} without content container`);
   process.exitCode = 1;
