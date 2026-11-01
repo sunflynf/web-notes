@@ -19,9 +19,9 @@ Pick a VPS when several services should share one predictable monthly price, and
 
 A platform is the better default when:
 
-- the thing you are shipping is a frontend ([Vercel](../platforms/vercel.mdx), [Netlify](../platforms/netlify.mdx), [Cloudflare Pages](../platforms/cloudflare.mdx));
-- you will not log in to patch OpenSSH this quarter ([Render](../platforms/render.mdx), [Railway](../platforms/railway.mdx), [Fly.io](../platforms/fly-io.mdx));
-- you want a managed Postgres and auth without running the database ([Supabase](../platforms/supabase.mdx)).
+- the thing you are shipping is a frontend ([Vercel](../platforms/frontend-hosting/vercel.mdx), [Netlify](../platforms/frontend-hosting/netlify.mdx), [Cloudflare Pages](../platforms/frontend-hosting/cloudflare.mdx));
+- you will not log in to patch OpenSSH this quarter ([Render](../platforms/application-hosting/render.mdx), [Railway](../platforms/application-hosting/railway.mdx), [Fly.io](../platforms/application-hosting/fly-io.mdx));
+- you want a managed Postgres and auth without running the database ([Supabase](../platforms/backend-services/supabase.mdx)).
 
 A VPS is one machine. It is a single point of failure. The disk, the provider, and you are the availability plan. Backups are yours: the provider's snapshot, if you buy one, is not a restore drill. A platform's free tier that sleeps is a different failure. You are choosing which failure you want to own.
 
@@ -158,7 +158,7 @@ Cron on the host, once a night:
 1. `pg_dump` in custom format (`-Fc`) for each database, as that database's role or as a role that can read it.
 2. Checksum the file (SHA-256) and write the checksum next to it.
 3. Keep a few days of dumps on the local disk, on a volume that is not the database volume. Three to seven days is enough to notice a bad dump. It is not the archive.
-4. Upload the dump and the checksum to object storage (R2). Egress from R2 is free on the Standard price; see [Cloudflare](../platforms/cloudflare.mdx). The bucket holds the archive. The local disk holds the recent copies.
+4. Upload the dump and the checksum to object storage (R2). Egress from R2 is free on the Standard price; see [Cloudflare](../platforms/frontend-hosting/cloudflare.mdx). The bucket holds the archive. The local disk holds the recent copies.
 
 A backup you have not restored is a rumour. The drill:
 
@@ -205,7 +205,7 @@ One app at a time. The frontends can stay where they are. Lower DNS TTL a day or
 4. **Staging rehearsal on copies of the data.** Restore a dump into the staging database. Run the migration. Compare row counts with the source. Fix the app until staging matches.
 5. **Production with no traffic.** Deploy the production containers against a restored copy, while DNS still points at the PaaS. Health checks pass. Nobody is using it yet.
 6. **Cut over one app at a time.** Move the first API. Watch it. Then the second. Do not move both in the same minute.
-7. **DNS.** TTL is already low. Point the name at the VPS. Keep the old target written down so you can point it back. If the name is on Cloudflare, DNS-only vs proxied is a separate switch: see [Cloudflare](../platforms/cloudflare.mdx).
+7. **DNS.** TTL is already low. Point the name at the VPS. Keep the old target written down so you can point it back. If the name is on Cloudflare, DNS-only vs proxied is a separate switch: see [Cloudflare](../platforms/frontend-hosting/cloudflare.mdx).
 8. **Observe 48 to 72 hours.** Error rate, latency, disk, and the next successful backup. The old platform stays up during this window.
 9. **Decommission one resource at a time.** Delete a database, then a service, then a domain. After each deletion, check that production still answers. Do not delete the account on the same day.
 
@@ -231,5 +231,5 @@ Decommission the old host only after a backup has succeeded on the new one.
 - [Nginx](../web-servers/nginx.mdx): the alternative proxy, if you already run it.
 - [CI/CD](../ci-cd.mdx): build, push, SSH, health check, rollback.
 - [Cloud foundations](../../cloud-computing/foundations.mdx): accounts, regions, and pricing, when a single VPS is no longer the whole story.
-- [Cloudflare](../platforms/cloudflare.mdx): DNS during the cutover, and R2 for the dumps.
+- [Cloudflare](../platforms/frontend-hosting/cloudflare.mdx): DNS during the cutover, and R2 for the dumps.
 - [Ubuntu server setup](./ubuntu-server-setup.mdx): the commands behind the bootstrap list.

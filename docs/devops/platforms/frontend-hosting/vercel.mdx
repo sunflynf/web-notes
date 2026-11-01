@@ -1,7 +1,7 @@
 ---
 title: Vercel
 sidebar_label: Vercel
-sidebar_position: 2
+sidebar_position: 1
 description: Vercel at a glance, deploy steps, and the limits that bite. Checked 2026-11-01.
 ---
 
@@ -78,7 +78,7 @@ Environment variables are not committed in this file. Set them in the dashboard 
 - **Monorepo**: set the root directory to the app package. Install and build commands run in that directory.
 - **Preview per pull request**: the Git integration builds every PR. Point the API at a staging backend with a Preview environment variable, not the production one.
 - **Cron**: Vercel Cron hits a function on a schedule. The schedule lives in `vercel.json` under `crons` ([cron jobs](https://vercel.com/docs/cron-jobs)). Confirm the Hobby allowance on that page (`verify` the current free-tier cron count).
-- **External Postgres**: put the connection string in an environment variable. Prefer a pooler. Serverless functions open many short connections; see [Supabase](./supabase.mdx) for the pooler versus direct choice.
+- **External Postgres**: put the connection string in an environment variable. Prefer a pooler. Serverless functions open many short connections; see [Supabase](../backend-services/supabase.mdx) for the pooler versus direct choice.
 
 ## Gotchas
 
@@ -102,8 +102,8 @@ From the [changelog](https://vercel.com/changelog):
 
 ## Connects to
 
-- [Next.js](../../technologies/js/fe-frameworks/react/nextjs.mdx): the framework this host is built around.
+- [Next.js](../../../technologies/js/fe-frameworks/react/nextjs.mdx): the framework this host is built around.
 - [Netlify](./netlify.mdx) and [Cloudflare](./cloudflare.mdx): the other frontend hosts.
-- [Supabase](./supabase.mdx): a Postgres and auth backend the functions can call.
-- [CI/CD](../ci-cd.mdx): when you outgrow the built-in Git deploy and need your own pipeline.
-- [Compute](../../cloud-computing/compute.mdx): Lambda, when the function should live on AWS instead.
+- [Supabase](../backend-services/supabase.mdx): a Postgres and auth backend the functions can call.
+- [CI/CD](../../ci-cd.mdx): when you outgrow the built-in Git deploy and need your own pipeline.
+- [Compute](../../../cloud-computing/compute.mdx): Lambda, when the function should live on AWS instead.

@@ -1,7 +1,7 @@
 ---
 title: Railway
 sidebar_label: Railway
-sidebar_position: 6
+sidebar_position: 2
 description: Railway at a glance, deploy steps, and the pricing-page conflict. Checked 2026-11-01.
 ---
 
@@ -81,7 +81,7 @@ On Free and Trial, the restart policy Always is unavailable, and On Failure is c
 - **Monorepo**: set the root directory (watch path) so a push outside that directory does not redeploy the service.
 - **Preview per pull request**: Railway can create an environment for a PR (`verify` the current toggle name). Give it a separate database.
 - **Cron**: a cron service with a schedule, rather than a web process that loops.
-- **Managed Postgres**: add the Postgres service. It is a service plus a volume, not a separate serverless database. The connection URL is a variable reference. Compare with running Postgres yourself in [Self-host a Docker stack](../vps/self-host-a-docker-stack.mdx): there you set `shared_buffers` and you take the dumps. Here Railway operates the process, and the Free volume is 0.5 GB.
+- **Managed Postgres**: add the Postgres service. It is a service plus a volume, not a separate serverless database. The connection URL is a variable reference. Compare with running Postgres yourself in [Self-host a Docker stack](../../vps/self-host-a-docker-stack.mdx): there you set `shared_buffers` and you take the dumps. Here Railway operates the process, and the Free volume is 0.5 GB.
 - **Private networking**: point the app at the private database host so the public proxy is not on the hot path.
 - **External Postgres**: set the URL as a variable. The app still needs a pool that fits the database's connection limit.
 
@@ -106,7 +106,7 @@ On Free and Trial, the restart policy Always is unavailable, and On Failure is c
 ## Connects to
 
 - [Render](./render.mdx) and [Fly.io](./fly-io.mdx): the other container hosts.
-- [Supabase](./supabase.mdx): managed Postgres and auth when you do not want the database on this platform.
-- [CI/CD](../ci-cd.mdx): your own pipeline, which mattered when Railway revoked tokens in October 2026.
-- [Self-host a Docker stack](../vps/self-host-a-docker-stack.mdx): moving the APIs off a PaaS onto one server.
-- [Secrets](../vps/self-host-a-docker-stack.mdx#secrets): how to keep encrypted env files in git instead of only in a vendor.
+- [Supabase](../backend-services/supabase.mdx): managed Postgres and auth when you do not want the database on this platform.
+- [CI/CD](../../ci-cd.mdx): your own pipeline, which mattered when Railway revoked tokens in October 2026.
+- [Self-host a Docker stack](../../vps/self-host-a-docker-stack.mdx): moving the APIs off a PaaS onto one server.
+- [Secrets](../../vps/self-host-a-docker-stack.mdx#secrets): how to keep encrypted env files in git instead of only in a vendor.

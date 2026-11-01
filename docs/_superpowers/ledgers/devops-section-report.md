@@ -6,8 +6,10 @@ Checked 2026-11-01. Branch `grok/devops-section`, not pushed. Commits, newest la
 - `b07d5e3a` Add DevOps entry, deployment platforms, VPS playbook, and CI/CD
 - `d0323346` Update orphan check and DevOps structure notes
 - `74ad5c42` Fix DevOps charts and the platform comparison table on narrow screens
+- `b4aa8075` Add DevOps section report
+- `93f4122f` Update platform comparison to group by service
 
-This report is the commit after those four.
+Platform pages then moved into sidebar groups matching those four services.
 
 `docusaurus.config.ts` was not changed. `yarn.lock` was not changed. Nothing was pushed, merged, or tagged. `C:\Vault\Project\vps-migration` was read only.
 
@@ -17,21 +19,21 @@ This report is the commit after those four.
 |---|---|
 | `docs/devops/index.mdx` | Entry: deploy-path map, "Where should this run?", moving between options |
 | `docs/devops/platforms/index.mdx` | Decision chart and a comparison grouped by service: frontend hosting, application hosting, backend services, tunnels |
-| `docs/devops/platforms/vercel.mdx` | Platform page |
-| `docs/devops/platforms/netlify.mdx` | Platform page |
-| `docs/devops/platforms/cloudflare.mdx` | Pages, Workers, R2, DNS, Tunnel |
-| `docs/devops/platforms/render.mdx` | Platform page |
-| `docs/devops/platforms/railway.mdx` | Platform page |
-| `docs/devops/platforms/fly-io.mdx` | Platform page |
-| `docs/devops/platforms/supabase.mdx` | Backend services, not an API host |
-| `docs/devops/platforms/ngrok.mdx` | Local tunnel, compared with Cloudflare Tunnel |
+| `docs/devops/platforms/frontend-hosting/vercel.mdx` | Platform page |
+| `docs/devops/platforms/frontend-hosting/netlify.mdx` | Platform page |
+| `docs/devops/platforms/frontend-hosting/cloudflare.mdx` | Pages, Workers, R2, DNS, Tunnel |
+| `docs/devops/platforms/application-hosting/render.mdx` | Platform page |
+| `docs/devops/platforms/application-hosting/railway.mdx` | Platform page |
+| `docs/devops/platforms/application-hosting/fly-io.mdx` | Platform page |
+| `docs/devops/platforms/backend-services/supabase.mdx` | Backend services, not an API host |
+| `docs/devops/platforms/tunnels/ngrok.mdx` | Local tunnel, compared with Cloudflare Tunnel |
 | `docs/devops/containers/compose-in-production.mdx` | Compose in production |
 | `docs/devops/web-servers/caddy.mdx` | Caddyfile, automatic HTTPS, reverse proxy |
 | `docs/devops/vps/self-host-a-docker-stack.mdx` | VPS playbook, 12 sections |
 | `docs/devops/ci-cd.mdx` | GitHub Actions image build, GHCR, SSH deploy, rollback |
 | `src/components/MermaidFrame/` | Keeps a Mermaid chart at its laid-out size inside a sideways scroller |
 
-Category files: `docs/devops/_category_.json`, `platforms/`, `containers/`, `web-servers/`, `vps/`, `observability/`. Sidebar order inside DevOps is index, platforms, vps, containers, web-servers, ci-cd, observability. The top-level `devops` folder has no position, so the docs sidebar stays alphabetical.
+Category files: `docs/devops/_category_.json`, `platforms/`, `containers/`, `web-servers/`, `vps/`, `observability/`. Sidebar order inside DevOps is index, platforms, vps, containers, web-servers, ci-cd, observability. The top-level `devops` folder has no position, so the docs sidebar stays alphabetical. Inside Deployment platforms the order is the comparison page, then Frontend hosting, Application hosting, Backend services, and Tunnels. Each group is a folder with `_category_.json` and no generated index. Cloudflare stays one page under Frontend hosting. Tunnels lists ngrok only. Old flat platform URLs redirect to the grouped paths.
 
 The eight platform pages use the same heading order: At a glance, Core concepts, Deploy (Dashboard / CLI / Config file), Common patterns, Gotchas, What's new in recent releases, Connects to. On `ngrok.mdx` the comparison with Cloudflare Tunnel is a heading level 3 under Common patterns.
 
@@ -343,7 +345,7 @@ Page overflow means `documentElement.scrollWidth` greater than `clientWidth`. Al
 
 Mermaid labels measured 24px tall (readable). The chart's natural width sits in a sideways scroller: about 2060px on the DevOps entry and about 1777px on the platforms page. The page itself does not scroll sideways. The comparison table also scrolls inside its wrapper. The playbook map is HTML (LayerFlow), not Mermaid.
 
-On `/docs/devops/platforms/vercel/` in dark mode, a real mouse click (not only `element.click()`) switched Dashboard, CLI, and Config file at both 1280 and 390. The visible panel text changed with the tab.
+On `/docs/devops/platforms/frontend-hosting/vercel/` in dark mode, a real mouse click (not only `element.click()`) switched Dashboard, CLI, and Config file at both 1280 and 390. The visible panel text changed with the tab. That check ran before the pages moved into service folders; the same tab markup is on the new URL.
 
 What this did not cover: a person looking at a window, and a saved screenshot.
 

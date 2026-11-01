@@ -55,4 +55,14 @@ export const redirects: Redirect[] = [
   { from: "/docs/cloud-computing/elk-stack/elasticsearch", to: "/docs/devops/observability/elk-stack/elasticsearch/" },
   { from: "/docs/cloud-computing/elk-stack/kibana", to: "/docs/devops/observability/elk-stack/kibana/" },
   { from: "/docs/cloud-computing/elk-stack/logstash", to: "/docs/devops/observability/elk-stack/logstash/" },
+
+  // Deployment platforms grouped in the sidebar by service.
+  { from: "/docs/devops/platforms/vercel", to: "/docs/devops/platforms/frontend-hosting/vercel/" },
+  { from: "/docs/devops/platforms/netlify", to: "/docs/devops/platforms/frontend-hosting/netlify/" },
+  { from: "/docs/devops/platforms/cloudflare", to: "/docs/devops/platforms/frontend-hosting/cloudflare/" },
+  { from: "/docs/devops/platforms/render", to: "/docs/devops/platforms/application-hosting/render/" },
+  { from: "/docs/devops/platforms/railway", to: "/docs/devops/platforms/application-hosting/railway/" },
+  { from: "/docs/devops/platforms/fly-io", to: "/docs/devops/platforms/application-hosting/fly-io/" },
+  { from: "/docs/devops/platforms/supabase", to: "/docs/devops/platforms/backend-services/supabase/" },
+  { from: "/docs/devops/platforms/ngrok", to: "/docs/devops/platforms/tunnels/ngrok/" },
 ];

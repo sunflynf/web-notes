@@ -1,7 +1,7 @@
 ---
 title: Cloudflare
 sidebar_label: Cloudflare
-sidebar_position: 4
+sidebar_position: 3
 description: Cloudflare Pages, Workers, R2, DNS, and Tunnel. Limits checked 2026-11-01.
 ---
 
@@ -78,9 +78,9 @@ Wrangler accepts `wrangler.toml` or `wrangler.jsonc`. Docs: [configuration](http
 - **Pages vs Workers**: use Pages when the thing you ship is a site with a build step. Use Workers when the thing you ship is a request handler, a cron trigger, or a small API. A Pages Function is a Worker under the Pages request quota.
 - **Preview per pull request**: Pages builds a preview deployment for each PR when the Git connection is on.
 - **Cron**: a Worker can use a `triggers.crons` entry. Confirm the syntax on the [cron triggers](https://developers.cloudflare.com/workers/configuration/cron-triggers/) page.
-- **R2 backups**: a nightly `pg_dump` from the VPS uploads with the S3 API. Egress from R2 is free on the Standard price above, which is why this bucket is a good off-site copy. See [Backups](../vps/self-host-a-docker-stack.mdx#backups-and-restore).
+- **R2 backups**: a nightly `pg_dump` from the VPS uploads with the S3 API. Egress from R2 is free on the Standard price above, which is why this bucket is a good off-site copy. See [Backups](../../vps/self-host-a-docker-stack.mdx#backups-and-restore).
 - **DNS cutover**: lower the TTL first (on the current DNS host). At cutover, point the record at the new origin. Prefer DNS-only until TLS on the new origin is good, then proxy it. Keep the old origin running so you can point the record back.
-- **Tunnel**: a named tunnel plus a DNS CNAME to `<tunnel-uuid>.cfargotunnel.com` is the stable alternative to ngrok. See the comparison on the [ngrok](./ngrok.mdx) page.
+- **Tunnel**: a named tunnel plus a DNS CNAME to `<tunnel-uuid>.cfargotunnel.com` is the stable alternative to ngrok. See the comparison on the [ngrok](../tunnels/ngrok.mdx) page.
 
 ### Tunnel {#tunnel}
 
@@ -107,7 +107,7 @@ Quick Tunnels (`cloudflared tunnel --url`) get a random `trycloudflare.com` name
 
 ## Connects to
 
-- [ngrok](./ngrok.mdx): the other way to expose a local port.
-- [Self-host a Docker stack](../vps/self-host-a-docker-stack.mdx): R2 backups and the DNS cutover from a PaaS.
-- [Caddy](../web-servers/caddy.mdx): a DNS-01 certificate through Cloudflare when the proxy is on your VPS.
-- [CI/CD](../ci-cd.mdx): build a container yourself when Workers is the wrong runtime.
+- [ngrok](../tunnels/ngrok.mdx): the other way to expose a local port.
+- [Self-host a Docker stack](../../vps/self-host-a-docker-stack.mdx): R2 backups and the DNS cutover from a PaaS.
+- [Caddy](../../web-servers/caddy.mdx): a DNS-01 certificate through Cloudflare when the proxy is on your VPS.
+- [CI/CD](../../ci-cd.mdx): build a container yourself when Workers is the wrong runtime.

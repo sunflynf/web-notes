@@ -1,7 +1,7 @@
 ---
 title: Netlify
 sidebar_label: Netlify
-sidebar_position: 3
+sidebar_position: 2
 description: Netlify at a glance, deploy steps, and the credit limits that bite. Checked 2026-11-01.
 ---
 
@@ -82,7 +82,7 @@ Do not put secrets in the file. Set those in the UI or with `netlify env:set`. T
 - **Monorepo**: set `base` in `netlify.toml` to the package directory so the build does not run at the repository root.
 - **Preview per pull request**: enabled when the Git provider is connected. Give previews their own API URL via a deploy-preview context variable.
 - **Scheduled functions**: Netlify can invoke a function on a cron expression (`verify` the current config key in the scheduled functions docs).
-- **External Postgres**: store the URL as an environment variable. A function is short-lived, so use a pooler and a small client pool. See [Supabase](./supabase.mdx).
+- **External Postgres**: store the URL as an environment variable. A function is short-lived, so use a pooler and a small client pool. See [Supabase](../backend-services/supabase.mdx).
 
 ## Gotchas
 
@@ -106,6 +106,6 @@ From the [changelog](https://www.netlify.com/changelog/):
 ## Connects to
 
 - [Vercel](./vercel.mdx) and [Cloudflare](./cloudflare.mdx): the other frontend hosts.
-- [Next.js](../../technologies/js/fe-frameworks/react/nextjs.mdx): a common framework on this host.
-- [CI/CD](../ci-cd.mdx): when the credit meter or the build image is no longer enough.
-- [Supabase](./supabase.mdx): Postgres and auth next to a Netlify frontend.
+- [Next.js](../../../technologies/js/fe-frameworks/react/nextjs.mdx): a common framework on this host.
+- [CI/CD](../../ci-cd.mdx): when the credit meter or the build image is no longer enough.
+- [Supabase](../backend-services/supabase.mdx): Postgres and auth next to a Netlify frontend.

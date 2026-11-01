@@ -1,7 +1,7 @@
 ---
 title: ngrok
 sidebar_label: ngrok
-sidebar_position: 9
+sidebar_position: 1
 description: ngrok for exposing a local port, and how it compares with Cloudflare Tunnel. Checked 2026-11-01.
 ---
 
@@ -94,7 +94,7 @@ endpoints:
 | In-flight cap | Rate limits above | 200 in-flight requests, then HTTP 429 | Account limits: 1,000 tunnels, 25 replicas (updated 2026-10-16) |
 | When to use it | A webhook today, on a laptop | A one-off test | A stable origin that should not open inbound ports |
 
-Named tunnels are documented on the [Cloudflare](./cloudflare.mdx#tunnel) page.
+Named tunnels are documented on the [Cloudflare](../frontend-hosting/cloudflare.mdx#tunnel) page.
 
 ## Gotchas
 
@@ -116,7 +116,7 @@ From the [agent changelog](https://ngrok.com/docs/agent/changelog.md):
 
 ## Connects to
 
-- [Cloudflare](./cloudflare.mdx#tunnel): the tunnel to use when the hostname should be yours.
-- [Caddy](../web-servers/caddy.mdx): what terminates TLS once the service has a real machine.
-- [Self-host a Docker stack](../vps/self-host-a-docker-stack.mdx): the permanent home for an API that outgrew a laptop.
-- [Networking](../../cloud-computing/networking.mdx): DNS and load balancers, the production version of "make this reachable".
+- [Cloudflare](../frontend-hosting/cloudflare.mdx#tunnel): the tunnel to use when the hostname should be yours.
+- [Caddy](../../web-servers/caddy.mdx): what terminates TLS once the service has a real machine.
+- [Self-host a Docker stack](../../vps/self-host-a-docker-stack.mdx): the permanent home for an API that outgrew a laptop.
+- [Networking](../../../cloud-computing/networking.mdx): DNS and load balancers, the production version of "make this reachable".

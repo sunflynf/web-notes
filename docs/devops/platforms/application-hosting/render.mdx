@@ -1,7 +1,7 @@
 ---
 title: Render
 sidebar_label: Render
-sidebar_position: 5
+sidebar_position: 1
 description: Render at a glance, deploy steps, and free-tier sleep. Checked 2026-11-01.
 ---
 
@@ -87,7 +87,7 @@ A `fromDatabase` reference keeps the URL out of the file. Other secrets use `syn
 - **Monorepo**: set `rootDir` on the service (dashboard) or in the Blueprint (`verify` the field name in the spec). Build commands then run in that directory.
 - **Preview per pull request**: a preview environment. Point it at a separate database, not production.
 - **Cron**: a cron job service with a schedule. It is not a web service that sleeps.
-- **Managed Postgres vs your own**: Render Postgres is a separate service, with backups on paid plans (`verify` the free plan's backup story). On a VPS you run Postgres yourself and you own the dumps. See [Self-host a Docker stack](../vps/self-host-a-docker-stack.mdx). Private networking lets the web service use the internal database URL.
+- **Managed Postgres vs your own**: Render Postgres is a separate service, with backups on paid plans (`verify` the free plan's backup story). On a VPS you run Postgres yourself and you own the dumps. See [Self-host a Docker stack](../../vps/self-host-a-docker-stack.mdx). Private networking lets the web service use the internal database URL.
 - **External Postgres**: set `DATABASE_URL` yourself. Still use a pooler if the platform opens many processes.
 
 ## Gotchas
@@ -114,7 +114,7 @@ From the [changelog](https://render.com/changelog):
 ## Connects to
 
 - [Railway](./railway.mdx) and [Fly.io](./fly-io.mdx): the other container hosts.
-- [Docker](../containers/docker-knowledge.md): the image Render runs when the runtime is Docker.
-- [CI/CD](../ci-cd.mdx): build the image yourself and hand Render a tag, instead of building on Render.
-- [Self-host a Docker stack](../vps/self-host-a-docker-stack.mdx): the path off this platform when you want one predictable bill.
-- [Databases](../../cloud-computing/databases.mdx): RDS, when the database should be on AWS.
+- [Docker](../../containers/docker-knowledge.md): the image Render runs when the runtime is Docker.
+- [CI/CD](../../ci-cd.mdx): build the image yourself and hand Render a tag, instead of building on Render.
+- [Self-host a Docker stack](../../vps/self-host-a-docker-stack.mdx): the path off this platform when you want one predictable bill.
+- [Databases](../../../cloud-computing/databases.mdx): RDS, when the database should be on AWS.

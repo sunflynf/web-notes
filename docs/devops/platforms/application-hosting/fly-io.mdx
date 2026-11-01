@@ -1,7 +1,7 @@
 ---
 title: Fly.io
 sidebar_label: Fly.io
-sidebar_position: 7
+sidebar_position: 3
 description: Fly.io Machines, pricing with no free tier for new orgs, and deploy steps. Checked 2026-11-01.
 ---
 
@@ -89,7 +89,7 @@ The `auto_stop_machines` value is the current style of "stop when idle". `verify
 - **Monorepo**: set the build context and Dockerfile path in `fly.toml` so the image builds from the service directory.
 - **Preview per pull request**: Fly does not create one automatically the way Vercel does. A review app is a separate Fly app, usually created from CI (`verify` if a first-party preview product exists now).
 - **Scheduled work**: a second Machine, or a process that uses the Machines API on a schedule. There is no single "cron" product name confirmed here (`verify`).
-- **Postgres**: run it as a Machine with a volume in the same region as the API. You pay for the volume even when you plan the size carefully. For a managed Postgres with auth, use [Supabase](./supabase.mdx) and point the Machine at the pooler.
+- **Postgres**: run it as a Machine with a volume in the same region as the API. You pay for the volume even when you plan the size carefully. For a managed Postgres with auth, use [Supabase](../backend-services/supabase.mdx) and point the Machine at the pooler.
 - **Idle**: you can stop a Machine when it has no traffic and start it on the next request. Stopped rootfs is still billed ($0.15/GB/month, checked 2026-11-01). Cold start is the trade.
 
 ## Gotchas
@@ -111,7 +111,7 @@ The `auto_stop_machines` value is the current style of "stop when idle". `verify
 ## Connects to
 
 - [Render](./render.mdx) and [Railway](./railway.mdx): container hosts that trade region control for a simpler free or trial plan.
-- [Docker](../containers/docker-knowledge.md): the image a Machine runs.
-- [CI/CD](../ci-cd.mdx): `fly deploy` from GitHub Actions when you want the same pipeline shape as the VPS.
-- [Self-host a Docker stack](../vps/self-host-a-docker-stack.mdx): one server instead of per-Machine billing.
-- [Compute](../../cloud-computing/compute.mdx): EC2 and Fargate, the AWS versions of this choice.
+- [Docker](../../containers/docker-knowledge.md): the image a Machine runs.
+- [CI/CD](../../ci-cd.mdx): `fly deploy` from GitHub Actions when you want the same pipeline shape as the VPS.
+- [Self-host a Docker stack](../../vps/self-host-a-docker-stack.mdx): one server instead of per-Machine billing.
+- [Compute](../../../cloud-computing/compute.mdx): EC2 and Fargate, the AWS versions of this choice.

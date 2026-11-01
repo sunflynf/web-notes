@@ -36,7 +36,7 @@ Code is built in CI, shipped as an image or a platform build, run on a platform 
       nodes: [
         { label: "Platforms", to: "/docs/devops/platforms/", detail: "PaaS, edge" },
         { label: "VPS", to: "/docs/devops/vps/self-host-a-docker-stack/", detail: "Docker" },
-        { label: "Edge", to: "/docs/devops/platforms/cloudflare/", detail: "Workers" },
+        { label: "Edge", to: "/docs/devops/platforms/frontend-hosting/cloudflare/", detail: "Workers" },
       ],
     },
     {
@@ -69,16 +69,16 @@ flowchart TD
   Kind -- "Several services, predictable cost, you can operate a server" --> VPS["VPS"]
   Kind -- "Share a local server for a demo or webhook" --> Ngrok["ngrok"]
   Kind -- "Share a local server for a demo or webhook" --> Tunnel["Cloudflare Tunnel"]
-  click Vercel "/web-notes/docs/devops/platforms/vercel/"
-  click Netlify "/web-notes/docs/devops/platforms/netlify/"
-  click Pages "/web-notes/docs/devops/platforms/cloudflare/"
-  click Render "/web-notes/docs/devops/platforms/render/"
-  click Railway "/web-notes/docs/devops/platforms/railway/"
-  click Fly "/web-notes/docs/devops/platforms/fly-io/"
-  click Supa "/web-notes/docs/devops/platforms/supabase/"
+  click Vercel "/web-notes/docs/devops/platforms/frontend-hosting/vercel/"
+  click Netlify "/web-notes/docs/devops/platforms/frontend-hosting/netlify/"
+  click Pages "/web-notes/docs/devops/platforms/frontend-hosting/cloudflare/"
+  click Render "/web-notes/docs/devops/platforms/application-hosting/render/"
+  click Railway "/web-notes/docs/devops/platforms/application-hosting/railway/"
+  click Fly "/web-notes/docs/devops/platforms/application-hosting/fly-io/"
+  click Supa "/web-notes/docs/devops/platforms/backend-services/supabase/"
   click VPS "/web-notes/docs/devops/vps/self-host-a-docker-stack/"
-  click Ngrok "/web-notes/docs/devops/platforms/ngrok/"
-  click Tunnel "/web-notes/docs/devops/platforms/cloudflare/#tunnel"
+  click Ngrok "/web-notes/docs/devops/platforms/tunnels/ngrok/"
+  click Tunnel "/web-notes/docs/devops/platforms/frontend-hosting/cloudflare/#tunnel"
 ```
 
 </MermaidFrame>
