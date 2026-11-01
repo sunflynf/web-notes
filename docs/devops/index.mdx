@@ -6,6 +6,7 @@ description: Which deployment option to use mid-project, then how to set it up. 
 ---
 
 import LayerFlow from "@site/src/components/LayerFlow";
+import MermaidFrame from "@site/src/components/MermaidFrame";
 
 # DevOps
 
@@ -53,6 +54,8 @@ Code is built in CI, shipped as an image or a platform build, run on a platform 
 
 ## Where should this run? {#where-should-this-run}
 
+<MermaidFrame>
+
 ```mermaid
 flowchart TD
   Start(["Where should this run?"]) --> Kind{"What are you shipping?"}
@@ -77,6 +80,8 @@ flowchart TD
   click Ngrok "/web-notes/docs/devops/platforms/ngrok/"
   click Tunnel "/web-notes/docs/devops/platforms/cloudflare/#tunnel"
 ```
+
+</MermaidFrame>
 
 The same choice, with the trade-offs written out, is the [platform decision chart](./platforms/index.mdx#decision-chart). Prices and free-tier limits on those pages were checked on 2026-11-01.
 
