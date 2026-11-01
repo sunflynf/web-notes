@@ -267,7 +267,7 @@ Mỗi service sở hữu database riêng; service khác chỉ đọc qua API ho�
 | Chi phí ở quy mô lớn | Tăng nhanh | Tuyến tính hơn |
 | Yêu cầu | Không | Service phải stateless |
 
-Với nhiều service, **logging tập trung** là bắt buộc ([ELK stack](../../../../cloud-computing/elk-stack/index.md), Grafana Loki). Sinh một **correlation ID** (trace ID) ở điểm vào, truyền qua mọi lời gọi service và ghi vào mọi log để lần theo một request xuyên hệ thống. OpenTelemetry làm việc này tự động.
+Với nhiều service, **logging tập trung** là bắt buộc ([ELK stack](../../../../devops/observability/elk-stack/index.md), Grafana Loki). Sinh một **correlation ID** (trace ID) ở điểm vào, truyền qua mọi lời gọi service và ghi vào mọi log để lần theo một request xuyên hệ thống. OpenTelemetry làm việc này tự động.
 
 ### Thách thức thường gặp
 

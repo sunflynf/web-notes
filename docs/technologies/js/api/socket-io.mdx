@@ -128,7 +128,7 @@ await Promise.all([pubClient.connect(), subClient.connect()]);
 io.adapter(createAdapter(pubClient, subClient));
 ```
 
-Đứng sau [Nginx](../../nginx.mdx#load-balancing), cần chuyển tiếp header `Upgrade` và bật sticky session:
+Đứng sau [Nginx](../../../devops/web-servers/nginx.mdx#load-balancing), cần chuyển tiếp header `Upgrade` và bật sticky session:
 
 ```nginx title="nginx.conf"
 upstream socket_nodes {

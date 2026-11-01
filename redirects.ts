@@ -41,4 +41,18 @@ export const redirects: Redirect[] = [
   { from: "/docs/technologies/llm/tokens-context-sampling", to: "/docs/llm/tokens-context-sampling/" },
   { from: "/docs/category/net--c", to: "/docs/technologies/dotnet/" },
   { from: "/docs/category/software-technologies", to: "/docs/technologies/" },
+
+  // DevOps section: Docker, Nginx, Ubuntu and ELK moved out of Technologies and Cloud Computing.
+  // The elk-stack category slug is unchanged (the folder name did not change), so no category redirect.
+  { from: "/docs/technologies/docker-knowledge", to: "/docs/devops/containers/docker-knowledge/" },
+  { from: "/docs/technologies/docker-cheatsheet", to: "/docs/devops/containers/docker-cheatsheet/" },
+  { from: "/docs/technologies/nginx", to: "/docs/devops/web-servers/nginx/" },
+  { from: "/docs/technologies/nginx-cheatsheet", to: "/docs/devops/web-servers/nginx-cheatsheet/" },
+  { from: "/docs/cloud-computing/ubuntu-server-setup", to: "/docs/devops/vps/ubuntu-server-setup/" },
+  { from: "/docs/cloud-computing/ubuntu-server-cheatsheet", to: "/docs/devops/vps/ubuntu-server-cheatsheet/" },
+  { from: "/docs/cloud-computing/elk-stack", to: "/docs/devops/observability/elk-stack/" },
+  { from: "/docs/cloud-computing/elk-stack/cheatsheet", to: "/docs/devops/observability/elk-stack/cheatsheet/" },
+  { from: "/docs/cloud-computing/elk-stack/elasticsearch", to: "/docs/devops/observability/elk-stack/elasticsearch/" },
+  { from: "/docs/cloud-computing/elk-stack/kibana", to: "/docs/devops/observability/elk-stack/kibana/" },
+  { from: "/docs/cloud-computing/elk-stack/logstash", to: "/docs/devops/observability/elk-stack/logstash/" },
 ];

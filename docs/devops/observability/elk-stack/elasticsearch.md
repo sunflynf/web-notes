@@ -122,3 +122,11 @@ GET /logs-api-dev/_search
 - Add correlation fields such as `trace.id`, `request.id`, and `user.id` when allowed.
 - Test queries with expected production filters: service, environment, timestamp, level, and tenant.
 - Monitor index size, shard count, rejected writes, and slow queries.
+
+## Related notes
+
+- [ELK stack](./index.md): how the three tools fit together.
+- [Logstash](./logstash.md): the pipeline that writes these documents.
+- [Kibana](./kibana.md): the dashboards on top of the indexes.
+- [Monitoring](../../../cloud-computing/monitoring.mdx): CloudWatch, when the logs stay on AWS.
+- [Microservices](../../../key-notes/microservices.mdx): correlation ids across services.

@@ -82,12 +82,12 @@ flowchart TD
 | Thành phần | Vai trò | Công cụ phổ biến |
 | --- | --- | --- |
 | **Client** | Điểm bắt đầu của request. Không nên biết cấu trúc service phía sau | Web, mobile, hệ thống khác |
-| **API Gateway** | Điểm vào duy nhất: định tuyến, xác thực, rate limiting, tổng hợp response | Kong, [NGINX](../technologies/nginx.mdx), Spring Cloud Gateway |
+| **API Gateway** | Điểm vào duy nhất: định tuyến, xác thực, rate limiting, tổng hợp response | Kong, [NGINX](../devops/web-servers/nginx.mdx), Spring Cloud Gateway |
 | **Application service** | Một năng lực nghiệp vụ (đơn hàng, thanh toán, kho), codebase và CSDL riêng | Bất kỳ stack nào |
 | **Message broker** | Giao tiếp bất đồng bộ, event-driven giữa các service | Kafka, RabbitMQ, NATS |
 | **Service discovery** | Giúp service tìm địa chỉ của nhau trong môi trường động | Kubernetes Service (DNS có sẵn), Consul, Eureka |
 | **Config server** | Cấu hình tập trung cho mọi service và môi trường, đổi không cần deploy lại | Spring Cloud Config, Consul KV; secret dùng HashiCorp Vault |
-| **Observability** | Log tập trung, metrics, distributed tracing với correlation ID | [ELK stack](../cloud-computing/elk-stack/index.md), Prometheus + Grafana, OpenTelemetry |
+| **Observability** | Log tập trung, metrics, distributed tracing với correlation ID | [ELK stack](../devops/observability/elk-stack/index.md), Prometheus + Grafana, OpenTelemetry |
 
 Ví dụ triển khai cụ thể: [Spring Cloud](../technologies/java/spring-framework/spring-microservices.md), [NestJS microservices](../technologies/js/be-frameworks/nest/in-depth.mdx#microservices).
 

@@ -63,3 +63,10 @@ duration_ms >= 1000 and service.name: "checkout-api"
 ## Troubleshooting
 
 If documents are missing, check the data view pattern, selected time range, and whether `@timestamp` was parsed correctly. If fields are not filterable, review the Elasticsearch mapping and ensure exact-match fields use `keyword`. If dashboards show partial data, confirm all services emit the same field names and environment values.
+
+## Related notes
+
+- [ELK stack](./index.md): how the three tools fit together.
+- [Elasticsearch](./elasticsearch.md): the indexes these dashboards query.
+- [Logstash](./logstash.md): the pipeline that fills those indexes.
+- [Monitoring](../../../cloud-computing/monitoring.mdx): CloudWatch, when the logs stay on AWS.
