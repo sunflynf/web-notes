@@ -346,3 +346,9 @@ each(@selectors, {
 - `!important` apply for all configs in mixins
 - `@arguments` in mixins
 - `@rest...` get others arguments in `.mixins(@first, @rest...)`
+
+## Related notes
+
+- [Sass](./sass.md)
+- [CSS](./index.mdx)
+- [CSS cheatsheet](./cheatsheet.mdx)

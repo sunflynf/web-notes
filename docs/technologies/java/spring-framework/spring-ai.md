@@ -359,3 +359,10 @@ Spring AI supports multiple LLM providers:
 - [Spring AI Documentation](https://docs.spring.io/spring-ai/reference/)
 - [OpenAI API Reference](https://platform.openai.com/docs)
 - [Anthropic Claude Documentation](https://docs.anthropic.com/)
+
+## Related notes
+
+- [Spring cheatsheet](./cheatsheet.mdx)
+- [Structured output & tool calling](../../../llm/structured-output-tool-calling.mdx) - what Spring AI wraps
+- [RAG](../../../llm/rag.mdx) - vector stores and retrieval
+- [Agents & MCP](../../../llm/agents-mcp.mdx)

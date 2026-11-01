@@ -86,3 +86,10 @@ v4 is configured in CSS, not JavaScript: `@import "tailwindcss";` replaces the t
   - [Headless UI](https://headlessui.com/) (Unstyled, accessible UI components by Tailwind Labs)
   - [Flowbite](https://flowbite.com/) (Open-source components)
   - [DaisyUI](https://daisyui.com/) (Tailwind CSS Components plugin)
+
+## Related notes
+
+- [Bootstrap 5](./bootstrap5.md)
+- [CSS](../css/index.mdx)
+- [CSS-in-JS](../css-in-js.md)
+- [CSS cheatsheet](../css/cheatsheet.mdx)

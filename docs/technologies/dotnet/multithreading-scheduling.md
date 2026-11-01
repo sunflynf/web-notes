@@ -466,3 +466,10 @@ flowchart TD
     --> H[Lock-Free Programming]
     --> I[Distributed Systems]
 ```
+
+## Related notes
+
+- [C# study guide](./csharp-core-study-guide.md) - async/await and language basics
+- [ASP.NET Core](./asp-net-core.md) - hosted background services
+- [Cloud messaging](../../cloud-computing/messaging.mdx) - queues for background work
+- [.NET cheatsheet](./cheatsheet.mdx)

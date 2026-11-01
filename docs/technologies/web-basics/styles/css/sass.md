@@ -301,3 +301,9 @@ url("#{$background}.jpg")
 1. [sass-lang](https://sass-lang.com/)
 2. [w3schools - SASS](https://www.w3schools.com/sass)
 3. [SASS cheatsheet](https://devhints.io/sass)
+
+## Related notes
+
+- [Less](./lessjs.md)
+- [CSS](./index.mdx)
+- [CSS cheatsheet](./cheatsheet.mdx)

@@ -254,3 +254,9 @@ public class RabbitConsumerService {
 - [Spring Cloud Stream Reference](https://spring.io/projects/spring-cloud-stream)
 - [Spring Kafka Reference](https://spring.io/projects/spring-kafka)
 - [Spring Initializr](https://start.spring.io)
+
+## Related notes
+
+- [Spring microservices](./spring-microservices.md)
+- [Spring cheatsheet](./cheatsheet.mdx)
+- [Cloud messaging](../../../cloud-computing/messaging.mdx) - queues, topics and streams

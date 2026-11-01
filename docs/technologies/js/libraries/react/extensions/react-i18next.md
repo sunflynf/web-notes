@@ -152,3 +152,9 @@ my-app/
 3. **Initialize `i18next`** in `src/i18n.ts` with `HttpBackend` and `LanguageDetector`.
 4. **Wrap your app** with `I18nextProvider`.
 5. **Use the `useTranslation` hook** in your components for translating text and changing languages.
+
+## Related notes
+
+- [React Router](./react-router.md) - locale-prefixed routes
+- [React](../index.mdx)
+- [React cheatsheet](../cheatsheet.mdx)

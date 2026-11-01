@@ -416,3 +416,10 @@ flowchart TD
     F --> G
     G --> H
 ```
+
+## Related notes
+
+- [ASP.NET Core](./asp-net-core.md) - where response and in-memory caching plug in
+- [Entity Framework Core](./entity-framework-core.md) - cache query results
+- [.NET cheatsheet](./cheatsheet.mdx)
+- [Cloud databases](../../cloud-computing/databases.mdx) - managed Redis and cache services

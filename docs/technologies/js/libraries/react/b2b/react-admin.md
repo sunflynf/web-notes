@@ -189,3 +189,10 @@ export default App;
 - **Set up a basic admin interface** using `Admin` and `Resource` components.
 - **Customize resources** by creating custom list, edit, create, and show components.
 - **Handle authentication** by providing an `authProvider`.
+
+## Related notes
+
+- [React](../index.mdx)
+- [State management](../state/index.mdx)
+- [React Router](../extensions/react-router.md)
+- [React Hook Form](../extensions/react-hook-form.md)

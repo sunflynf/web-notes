@@ -45,3 +45,9 @@ function MyComponent() {
 
 export default MyComponent;
 ```
+
+## Related notes
+
+- [React Router](./react-router.md)
+- [React](../index.mdx)
+- [Next.js](../../../fe-frameworks/react/nextjs.mdx) - built-in metadata handling

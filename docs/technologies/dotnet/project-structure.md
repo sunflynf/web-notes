@@ -513,3 +513,10 @@ flowchart TD
 | Documentation | Docusaurus |
 | Diagrams | Mermaid |
 | Build Systems | Bazel, Gradle |
+
+## Related notes
+
+- [ASP.NET Core](./asp-net-core.md)
+- [ASP.NET Core cheatsheet](./asp-net-core-cheatsheet.mdx)
+- [Entity Framework Core](./entity-framework-core.md) - the data layer
+- [Testing](./testing.md) - test projects alongside the solution

@@ -184,3 +184,10 @@ export type AppDispatch = typeof store.dispatch;
 
 export default store;
 ```
+
+## Related notes
+
+- [State management](./index.mdx)
+- [Redux technologies](./redux-technologies.md)
+- [RTK Query](./rtk-query.md)
+- [Immer](./immerjs.mdx)
