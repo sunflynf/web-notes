@@ -1,6 +1,12 @@
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 ## Control Flow
 
 ### If - else
+
+<Tabs groupId="java-conditions">
+<TabItem value="if" label="if / else" default>
 
 ```java
 if (condition) {
@@ -10,12 +16,23 @@ if (condition) {
 } else {
     // default code block
 }
+```
 
+</TabItem>
+<TabItem value="ternary" label="ternary">
+
+```java
 // Ternary
 value = condition ? trueExpression : falseExpression;
 ```
 
+</TabItem>
+</Tabs>
+
 ### Switch - case - default
+
+<Tabs groupId="java-switch">
+<TabItem value="statement" label="switch statement" default>
 
 ```java
 enum Day { MON, TUE, WED, THUR, FRI, SAT, SUN }
@@ -34,7 +51,12 @@ public static Boolean isWeekDay(Day day) {
     }
     return result;
 }
+```
 
+</TabItem>
+<TabItem value="expression" label="switch expression">
+
+```java
 // switch + arrow break (JDK 13+)
 int day = 3;
 String dayType = switch (day) {
@@ -42,7 +64,12 @@ String dayType = switch (day) {
     case 6, 7 -> "Weekend";
     default -> "Invalid day";
 };
+```
 
+</TabItem>
+<TabItem value="pattern" label="pattern matching">
+
+```java
 // instanceof parsing (JDK 17+)
 Object o;
 switch (o)
@@ -54,27 +81,47 @@ switch (o)
 }
 ```
 
+</TabItem>
+</Tabs>
+
 ### Loop
 
-#### For loop
+<Tabs groupId="java-loops">
+<TabItem value="for" label="for" default>
+
+**For loop**
 
 ```java
 int[] numbers = {1, 2, 3, 4, 5};
 for (int i = 0;  i < numbers.length; i++) {
     System.out.println(number);
 }
+```
 
+</TabItem>
+<TabItem value="enhanced" label="enhanced for">
+
+```java
+int[] numbers = {1, 2, 3, 4, 5};
 // Enhanced for loop
 for (int number : numbers) {
     System.out.println(number);
 }
+```
 
+</TabItem>
+<TabItem value="foreach" label="forEach">
+
+```java
 // Collection.forEach
 List<Integer> listNumber = List.of(1, 2, 3, 4, 5);
 listNumber.forEach(num -> {}); // use with lambda
 ```
 
-#### While, Do - while Loop
+</TabItem>
+<TabItem value="while" label="while / do-while">
+
+**While, Do - while Loop**
 
 ```java
 int i = 1, sum = 0;
@@ -92,7 +139,10 @@ do {
 } while(i <= 5)
 ```
 
-#### Break | Continue
+</TabItem>
+<TabItem value="break" label="break / continue">
+
+**Break | Continue**
 
 ```java
 // Labeled Statements
@@ -106,6 +156,9 @@ for (int i = 0; i <= 5; i++) {
     }
 }
 ```
+
+</TabItem>
+</Tabs>
 
 ### Exception Handling
 

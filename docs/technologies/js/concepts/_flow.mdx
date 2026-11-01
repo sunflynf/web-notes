@@ -1,15 +1,31 @@
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 ## Conditions
 
-```js
-// Ternary
-const variable = condition ? value_if_true : value_if_false;
+<Tabs groupId="js-conditions">
+<TabItem value="if" label="if / else" default>
 
+```js
 // If else
 if (condition1) {  }
 else if (condition2) {  }
 ...
 else {  }
+```
 
+</TabItem>
+<TabItem value="ternary" label="ternary">
+
+```js
+// Ternary
+const variable = condition ? value_if_true : value_if_false;
+```
+
+</TabItem>
+<TabItem value="switch" label="switch">
+
+```js
 // Switch Case (use ===)
 switch(value) {
     case type1: // or case type1, type2:
@@ -23,7 +39,14 @@ switch(value) {
         // handle if value not same any type
         break; // or return
 }
+```
 
+</TabItem>
+</Tabs>
+
+**try / catch**
+
+```js
 // try catch
 try {
     // handle
@@ -36,18 +59,31 @@ try {
 
 ## Loops
 
+<Tabs groupId="js-loops">
+<TabItem value="for" label="for" default>
+
 ```js
 // Exp: for(let i = 0; i <= 5; i++) {}
 // Loop with count, arr length, can use break | continue inside
 for (let v = start; v_conditions; v_update) {
   // handle
 }
+```
 
+</TabItem>
+<TabItem value="for-in" label="for...in">
+
+```js
 for (key in object) {
   // { firstName: Vo, lastName: Phi, birth: 2001 }
   // -> loop: firstName >> lastName >> birth
 }
+```
 
+</TabItem>
+<TabItem value="for-of" label="for...of">
+
+```js
 for (value of []) {
   // for of suit with
   // - Array
@@ -55,7 +91,12 @@ for (value of []) {
   // - Set
   // - Map >> [[k1, v1], [k2, v2], ..., [kn, vn]]
 }
+```
 
+</TabItem>
+<TabItem value="while" label="while / do...while">
+
+```js
 while (condition) {
   // do it util fail condition
 }
@@ -65,3 +106,6 @@ do {
   // do it again util fail condition
 } while (condition);
 ```
+
+</TabItem>
+</Tabs>
