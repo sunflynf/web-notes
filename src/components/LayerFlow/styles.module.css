@@ -30,27 +30,27 @@
   margin: 0;
 }
 
-/* Minimum layer width: 9rem, or 6.75rem for compact graphs (5 layers or fewer).
+/* Minimum layer width: 8.5rem, or 6.75rem for compact graphs (5 layers or fewer).
    Container thresholds are cols * (min + gap) - gap. */
-@container (min-width: 19.75rem) {
+@container (min-width: 18.75rem) {
   .layers:not(.compact) { --cols: min(var(--n), 2); --row-gap: 1.25rem; }
 }
-@container (min-width: 30.5rem) {
+@container (min-width: 29rem) {
   .layers:not(.compact) { --cols: min(var(--n), 3); }
 }
-@container (min-width: 41.25rem) {
+@container (min-width: 39.25rem) {
   .layers:not(.compact) { --cols: min(var(--n), 4); }
 }
-@container (min-width: 52rem) {
+@container (min-width: 49.5rem) {
   .layers:not(.compact) { --cols: min(var(--n), 5); }
 }
-@container (min-width: 62.75rem) {
+@container (min-width: 59.75rem) {
   .layers:not(.compact) { --cols: min(var(--n), 6); }
 }
-@container (min-width: 73.5rem) {
+@container (min-width: 70rem) {
   .layers:not(.compact) { --cols: min(var(--n), 7); }
 }
-@container (min-width: 84.25rem) {
+@container (min-width: 80.25rem) {
   .layers:not(.compact) { --cols: min(var(--n), 8); }
 }
 @container (min-width: 15.25rem) {
@@ -95,30 +95,30 @@
 }
 
 /* The last layer of a row has no arrow: the next one starts a new row. */
-@container (min-width: 19.75rem) {
+@container (min-width: 18.75rem) {
   .layers:not(.compact) > .layer:nth-child(2n)::after { display: none; }
 }
-@container (min-width: 30.5rem) {
+@container (min-width: 29rem) {
   .layers:not(.compact) > .layer:nth-child(2n)::after { display: block; }
   .layers:not(.compact) > .layer:nth-child(3n)::after { display: none; }
 }
-@container (min-width: 41.25rem) {
+@container (min-width: 39.25rem) {
   .layers:not(.compact) > .layer:nth-child(3n)::after { display: block; }
   .layers:not(.compact) > .layer:nth-child(4n)::after { display: none; }
 }
-@container (min-width: 52rem) {
+@container (min-width: 49.5rem) {
   .layers:not(.compact) > .layer:nth-child(4n)::after { display: block; }
   .layers:not(.compact) > .layer:nth-child(5n)::after { display: none; }
 }
-@container (min-width: 62.75rem) {
+@container (min-width: 59.75rem) {
   .layers:not(.compact) > .layer:nth-child(5n)::after { display: block; }
   .layers:not(.compact) > .layer:nth-child(6n)::after { display: none; }
 }
-@container (min-width: 73.5rem) {
+@container (min-width: 70rem) {
   .layers:not(.compact) > .layer:nth-child(6n)::after { display: block; }
   .layers:not(.compact) > .layer:nth-child(7n)::after { display: none; }
 }
-@container (min-width: 84.25rem) {
+@container (min-width: 80.25rem) {
   .layers:not(.compact) > .layer:nth-child(7n)::after { display: block; }
   .layers:not(.compact) > .layer:nth-child(8n)::after { display: none; }
 }
@@ -148,6 +148,28 @@
 @container (min-width: 66.25rem) {
   .layers.compact > .layer:nth-child(7n)::after { display: block; }
   .layers.compact > .layer:nth-child(8n)::after { display: none; }
+}
+
+/* Five layers: never 4+1 (an orphan row); stay 3+2 until all five fit. */
+@container (min-width: 32.25rem) {
+  .layers.compact.pentad { --cols: 3; }
+  .layers.compact.pentad > .layer:nth-child(3n)::after { display: none; }
+  .layers.compact.pentad > .layer:nth-child(4n)::after { display: block; }
+}
+@container (min-width: 40.75rem) {
+  .layers.compact.pentad { --cols: 5; }
+  .layers.compact.pentad > .layer:nth-child(3n)::after { display: block; }
+  .layers.compact.pentad > .layer:nth-child(5n)::after { display: none; }
+}
+@container (min-width: 39.25rem) {
+  .layers:not(.compact).pentad { --cols: 3; }
+  .layers:not(.compact).pentad > .layer:nth-child(3n)::after { display: none; }
+  .layers:not(.compact).pentad > .layer:nth-child(4n)::after { display: block; }
+}
+@container (min-width: 49.5rem) {
+  .layers:not(.compact).pentad { --cols: 5; }
+  .layers:not(.compact).pentad > .layer:nth-child(3n)::after { display: block; }
+  .layers:not(.compact).pentad > .layer:nth-child(5n)::after { display: none; }
 }
 
 .title {
