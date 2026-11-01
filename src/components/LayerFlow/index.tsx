@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "@docusaurus/Link";
 import styles from "./styles.module.css";
 
@@ -58,8 +59,8 @@ function Node({ node }: { node: FlowNode }) {
 function Nodes({ nodes }: { nodes: FlowNode[] }) {
   return (
     <div className={styles.nodes}>
-      {nodes.map((node) => (
-        <Node key={node.label} node={node} />
+      {nodes.map((node, i) => (
+        <Node key={`${node.label}-${i}`} node={node} />
       ))}
     </div>
   );
@@ -73,9 +74,13 @@ export default function LayerFlow({
 }: LayerFlowProps) {
   return (
     <figure className={styles.flow} aria-label={ariaLabel}>
-      <ol className={styles.layers}>
-        {layers.map((layer) => (
-          <li key={layer.title} className={styles.layer}>
+      <ol
+        className={`${styles.layers} ${layers.length <= 5 ? styles.compact : ""}`}
+        role="list"
+        style={{ "--n": layers.length } as CSSProperties}
+      >
+        {layers.map((layer, i) => (
+          <li key={`${layer.title}-${i}`} className={styles.layer}>
             <div className={styles.title}>{layer.title}</div>
             <Nodes nodes={layer.nodes} />
           </li>

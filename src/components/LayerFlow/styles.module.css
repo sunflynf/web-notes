@@ -5,13 +5,18 @@
   border-radius: 10px;
   background: var(--wn-paper-raised);
   color: var(--wn-ink);
+  /* Layers wrap by the width of the figure, not of the window. */
+  container-type: inline-size;
 }
 
 .layers {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
-  gap: 2.25rem;
+  /* Layers per row: as many as fit at 9rem each, never more than the layer count. */
+  --cols: 1;
+  --col-gap: 1.75rem;
+  --row-gap: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--row-gap) var(--col-gap);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -19,26 +24,130 @@
 
 .layer {
   position: relative;
+  flex: 0 0
+    calc((100% - (var(--cols) - 1) * var(--col-gap)) / var(--cols));
   min-width: 0;
   margin: 0;
 }
 
+/* Minimum layer width: 9rem, or 6.75rem for compact graphs (5 layers or fewer).
+   Container thresholds are cols * (min + gap) - gap. */
+@container (min-width: 19.75rem) {
+  .layers:not(.compact) { --cols: min(var(--n), 2); --row-gap: 1.25rem; }
+}
+@container (min-width: 30.5rem) {
+  .layers:not(.compact) { --cols: min(var(--n), 3); }
+}
+@container (min-width: 41.25rem) {
+  .layers:not(.compact) { --cols: min(var(--n), 4); }
+}
+@container (min-width: 52rem) {
+  .layers:not(.compact) { --cols: min(var(--n), 5); }
+}
+@container (min-width: 62.75rem) {
+  .layers:not(.compact) { --cols: min(var(--n), 6); }
+}
+@container (min-width: 73.5rem) {
+  .layers:not(.compact) { --cols: min(var(--n), 7); }
+}
+@container (min-width: 84.25rem) {
+  .layers:not(.compact) { --cols: min(var(--n), 8); }
+}
+@container (min-width: 15.25rem) {
+  .layers.compact { --cols: min(var(--n), 2); --row-gap: 1.25rem; }
+}
+@container (min-width: 23.75rem) {
+  .layers.compact { --cols: min(var(--n), 3); }
+}
+@container (min-width: 32.25rem) {
+  .layers.compact { --cols: min(var(--n), 4); }
+}
+@container (min-width: 40.75rem) {
+  .layers.compact { --cols: min(var(--n), 5); }
+}
+@container (min-width: 49.25rem) {
+  .layers.compact { --cols: min(var(--n), 6); }
+}
+@container (min-width: 57.75rem) {
+  .layers.compact { --cols: min(var(--n), 7); }
+}
+@container (min-width: 66.25rem) {
+  .layers.compact { --cols: min(var(--n), 8); }
+}
+
 .layers > .layer + .layer {
-  /* Infima adds margin-top to `.markdown li + li`; the grid gap spaces layers. */
+  /* Infima adds margin-top to `.markdown li + li`; the flex gap spaces layers. */
   margin-top: 0;
 }
 
 .layer:not(:last-child)::after {
   content: "→";
+  content: "→" / "";
   position: absolute;
   top: 50%;
-  right: -1.65rem;
+  right: -1.4rem;
   width: 1.05rem;
   color: var(--wn-graphite);
   font-size: 1.25rem;
   line-height: 1;
   text-align: center;
   transform: translateY(-50%);
+}
+
+/* The last layer of a row has no arrow: the next one starts a new row. */
+@container (min-width: 19.75rem) {
+  .layers:not(.compact) > .layer:nth-child(2n)::after { display: none; }
+}
+@container (min-width: 30.5rem) {
+  .layers:not(.compact) > .layer:nth-child(2n)::after { display: block; }
+  .layers:not(.compact) > .layer:nth-child(3n)::after { display: none; }
+}
+@container (min-width: 41.25rem) {
+  .layers:not(.compact) > .layer:nth-child(3n)::after { display: block; }
+  .layers:not(.compact) > .layer:nth-child(4n)::after { display: none; }
+}
+@container (min-width: 52rem) {
+  .layers:not(.compact) > .layer:nth-child(4n)::after { display: block; }
+  .layers:not(.compact) > .layer:nth-child(5n)::after { display: none; }
+}
+@container (min-width: 62.75rem) {
+  .layers:not(.compact) > .layer:nth-child(5n)::after { display: block; }
+  .layers:not(.compact) > .layer:nth-child(6n)::after { display: none; }
+}
+@container (min-width: 73.5rem) {
+  .layers:not(.compact) > .layer:nth-child(6n)::after { display: block; }
+  .layers:not(.compact) > .layer:nth-child(7n)::after { display: none; }
+}
+@container (min-width: 84.25rem) {
+  .layers:not(.compact) > .layer:nth-child(7n)::after { display: block; }
+  .layers:not(.compact) > .layer:nth-child(8n)::after { display: none; }
+}
+@container (min-width: 15.25rem) {
+  .layers.compact > .layer:nth-child(2n)::after { display: none; }
+}
+@container (min-width: 23.75rem) {
+  .layers.compact > .layer:nth-child(2n)::after { display: block; }
+  .layers.compact > .layer:nth-child(3n)::after { display: none; }
+}
+@container (min-width: 32.25rem) {
+  .layers.compact > .layer:nth-child(3n)::after { display: block; }
+  .layers.compact > .layer:nth-child(4n)::after { display: none; }
+}
+@container (min-width: 40.75rem) {
+  .layers.compact > .layer:nth-child(4n)::after { display: block; }
+  .layers.compact > .layer:nth-child(5n)::after { display: none; }
+}
+@container (min-width: 49.25rem) {
+  .layers.compact > .layer:nth-child(5n)::after { display: block; }
+  .layers.compact > .layer:nth-child(6n)::after { display: none; }
+}
+@container (min-width: 57.75rem) {
+  .layers.compact > .layer:nth-child(6n)::after { display: block; }
+  .layers.compact > .layer:nth-child(7n)::after { display: none; }
+}
+@container (min-width: 66.25rem) {
+  .layers.compact > .layer:nth-child(7n)::after { display: block; }
+  .layers.compact > .layer:nth-child(8n)::after { display: none; }
 }
 
 .title {
@@ -60,12 +169,12 @@
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  padding: 0.55rem 0.75rem;
+  padding: 0.55rem 0.6rem;
   border: 1px solid var(--wn-rule);
   border-radius: 8px;
   background: var(--wn-paper-raised);
   color: var(--wn-ink);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .label {
@@ -81,7 +190,16 @@
 }
 
 .link {
+  /* Link boxes carry a marker-colored left edge and a trailing arrow at rest. */
+  border-left: 3px solid var(--wn-marker-c);
   text-decoration: none;
+}
+
+.link .label::after {
+  content: " ↗";
+  content: " ↗" / "";
+  color: var(--wn-graphite);
+  font-weight: 400;
 }
 
 .link:hover,
@@ -129,13 +247,14 @@
 
 @media (max-width: 640px) {
   .layers {
-    grid-auto-flow: row;
-    grid-auto-columns: auto;
-    gap: 2rem;
+    --cols: 1 !important;
+    --row-gap: 2rem !important;
   }
 
-  .layer:not(:last-child)::after {
+  .layers > .layer:not(:last-child)::after {
     content: "↓";
+    content: "↓" / "";
+    display: block !important;
     top: auto;
     right: auto;
     bottom: -1.6rem;
