@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const BASE_URL = "/web-notes";
 const SECTIONS = ["technologies", "cloud-computing", "llm"];
+const NOT_NOTES = [`${BASE_URL}/docs/tags/`, `${BASE_URL}/docs/category/`];
 const TARGETS = [`${BASE_URL}/docs/`, `${BASE_URL}/projects/`];
 
 function pagesUnder(dir) {
@@ -60,6 +61,7 @@ if (!existsSync(buildDocs)) {
 }
 
 const orphans = [];
+const missing = [];
 let total = 0;
 
 for (const section of SECTIONS) {
@@ -71,23 +73,29 @@ for (const section of SECTIONS) {
     if (/(^|\/)(ubuntu-server-[^/]*|elk-stack)(\/|$)/.test(rel)) continue;
     const html = readFileSync(file, "utf8");
     if (/http-equiv="refresh"/i.test(html)) continue; // redirect stub
-    const start = html.indexOf("theme-doc-markdown");
-    if (start === -1) continue; // not a doc page
+    const container = html.match(/class="[^"]*\btheme-doc-markdown\b/);
+    if (!container) {
+      missing.push(`${urlPath}/  ->  ${sourceGuess(urlPath)}  (no theme-doc-markdown container)`);
+      continue;
+    }
     total++;
-    const endArticle = html.indexOf("</article>", start);
-    const content = html.slice(start, endArticle === -1 ? undefined : endArticle);
+    const start = container.index;
+    let end = html.indexOf("theme-doc-footer", start);
+    if (end === -1) end = html.indexOf("</article>", start);
+    const content = html.slice(start, end === -1 ? undefined : end);
     const self = normalise(urlPath);
     const linked = [...content.matchAll(/<a\s[^>]*?href="([^"]*)"/g)].some(([, href]) => {
       if (!TARGETS.some((t) => href.startsWith(t))) return false;
+      if (NOT_NOTES.some((t) => href.startsWith(t))) return false;
       return normalise(href) !== self;
     });
     if (!linked) orphans.push(`${urlPath}/  ->  ${sourceGuess(urlPath)}`);
   }
 }
 
-if (orphans.length) {
-  console.error(orphans.sort().join("\n"));
-  console.error(`${total} pages, ${orphans.length} orphans`);
+if (orphans.length || missing.length) {
+  console.error([...orphans.sort(), ...missing].join("\n"));
+  console.error(`${total} pages, ${orphans.length} orphans, ${missing.length} without content container`);
   process.exitCode = 1;
 } else {
   console.log(`${total} pages, 0 orphans`);
